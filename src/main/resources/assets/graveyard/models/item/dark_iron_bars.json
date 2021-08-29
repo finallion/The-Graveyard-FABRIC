@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "graveyard:block/dark_iron_bars"
+  }
+}

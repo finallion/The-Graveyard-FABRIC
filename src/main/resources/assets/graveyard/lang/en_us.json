@@ -1,0 +1,39 @@
+{
+  "container.urn": "Urn",
+
+  "block.graveyard.white_urn": "White Glazed Urn",
+  "block.graveyard.black_urn": "Black Glazed Urn",
+  "block.graveyard.brown_urn": "Brown Glazed Urn",
+  "block.graveyard.gray_urn": "Gray Glazed Urn",
+  "block.graveyard.light_gray_urn": "Light Gray Glazed Urn",
+  "block.graveyard.lime_urn": "Lime Glazed Urn",
+  "block.graveyard.green_urn": "Green Glazed Urn",
+  "block.graveyard.purple_urn": "Purple Glazed Urn",
+  "block.graveyard.magenta_urn": "Magenta Glazed Urn",
+  "block.graveyard.pink_urn": "Pink Glazed Urn",
+  "block.graveyard.red_urn": "Red Glazed Urn",
+  "block.graveyard.orange_urn": "Orange Glazed Urn",
+  "block.graveyard.yellow_urn": "Yellow Glazed Urn",
+  "block.graveyard.blue_urn": "Blue Glazed Urn",
+  "block.graveyard.cyan_urn": "Cyan Glazed Urn",
+  "block.graveyard.light_blue_urn": "Light Blue Glazed Urn",
+
+  "block.graveyard.lying_skeleton": "Lying Skeleton",
+  "block.graveyard.leaning_skeleton": "Leaning Skeleton",
+  "block.graveyard.skeleton_hand": "Skeleton Hand",
+  "block.graveyard.skull_pile": "Skull Pile",
+  "block.graveyard.skull_with_rib_cage": "Skull and Rib Cage",
+
+  "block.graveyard.lying_wither_skeleton": "Lying Wither Skeleton",
+  "block.graveyard.leaning_wither_skeleton": "Leaning Wither Skeleton",
+  "block.graveyard.wither_skeleton_hand": "Wither Skeleton Hand",
+  "block.graveyard.wither_skull_pile": "Wither Skull Pile",
+  "block.graveyard.wither_skull_with_rib_cage": "Wither Skull and Rib Cage",
+  "block.graveyard.creeper_skeleton": "Creeper Skeleton",
+
+  "block.graveyard.dark_iron_bars": "Dark Iron Bars",
+  "block.graveyard.gravestone": "Gravestone",
+  "itemGroup.graveyard.group": "The Graveyard",
+  "gravestone.edit": "Edit Gravestone"
+
+}

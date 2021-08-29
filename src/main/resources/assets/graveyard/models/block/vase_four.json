@@ -1,0 +1,167 @@
+{
+	"textures": {
+		"0": "graveyard:block/tg_terracotta",
+		"1": "graveyard:block/tg_terracotta_one",
+		"2": "graveyard:block/tg_terracotta_two",
+		"particle": "graveyard:block/tg_terracotta"
+	},
+	"elements": [
+		{
+			"name": "vase_two_bottom",
+			"from": [8, 0, 3],
+			"to": [12, 1, 7],
+			"faces": {
+				"north": {"uv": [4, 6, 8, 7], "texture": "#1"},
+				"east": {"uv": [6, 5, 10, 6], "texture": "#1"},
+				"south": {"uv": [5, 5, 9, 6], "texture": "#1"},
+				"west": {"uv": [5, 5, 9, 6], "texture": "#1"},
+				"up": {"uv": [7, 5, 11, 9], "texture": "#1"},
+				"down": {"uv": [6, 5, 10, 9], "texture": "#1"}
+			}
+		},
+		{
+			"name": "vase_one_body",
+			"from": [10, 0, 8],
+			"to": [14, 14, 12],
+			"faces": {
+				"north": {"uv": [3, 1, 7, 15], "texture": "#2"},
+				"east": {"uv": [10, 1, 14, 15], "texture": "#2"},
+				"south": {"uv": [9, 1, 13, 15], "texture": "#2"},
+				"west": {"uv": [3, 1, 7, 15], "texture": "#2"},
+				"up": {"uv": [4, 5, 8, 9], "texture": "#2"},
+				"down": {"uv": [7, 7, 11, 11], "texture": "#2"}
+			}
+		},
+		{
+			"name": "vase_four_body",
+			"from": [2, 0, 4],
+			"to": [6, 11, 8],
+			"faces": {
+				"north": {"uv": [5, 2, 9, 13], "texture": "#2"},
+				"east": {"uv": [6, 2, 10, 13], "texture": "#2"},
+				"south": {"uv": [8, 2, 12, 13], "texture": "#2"},
+				"west": {"uv": [5, 2, 9, 13], "texture": "#2"},
+				"up": {"uv": [3, 7, 7, 11], "texture": "#2"},
+				"down": {"uv": [9, 2, 13, 6], "texture": "#2"}
+			}
+		},
+		{
+			"name": "vase_four_collar",
+			"from": [3, 11, 5],
+			"to": [5, 12, 7],
+			"faces": {
+				"north": {"uv": [5, 7, 7, 8], "texture": "#2"},
+				"east": {"uv": [4, 5, 6, 6], "texture": "#2"},
+				"south": {"uv": [9, 4, 11, 5], "texture": "#2"},
+				"west": {"uv": [8, 6, 10, 7], "texture": "#2"},
+				"up": {"uv": [9, 6, 11, 8], "texture": "#2"},
+				"down": {"uv": [8, 7, 10, 9], "texture": "#2"}
+			}
+		},
+		{
+			"name": "vase_three_bottom",
+			"from": [5, 0, 11],
+			"to": [8, 1, 14],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"east": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"south": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"west": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"up": {"uv": [0, 0, 3, 3], "texture": "#0"},
+				"down": {"uv": [0, 0, 3, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "vase_three_bottom",
+			"from": [5, 10, 11],
+			"to": [8, 11, 14],
+			"faces": {
+				"north": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"east": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"south": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"west": {"uv": [0, 0, 3, 1], "texture": "#0"},
+				"up": {"uv": [0, 0, 3, 3], "texture": "#0"},
+				"down": {"uv": [0, 0, 3, 3], "texture": "#0"}
+			}
+		},
+		{
+			"name": "vase_three_body",
+			"from": [4, 1, 10],
+			"to": [9, 3, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"east": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"south": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"west": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"up": {"uv": [0, 0, 5, 5], "texture": "#0"},
+				"down": {"uv": [0, 0, 5, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "vase_three_body_three",
+			"from": [4, 8, 10],
+			"to": [9, 10, 15],
+			"faces": {
+				"north": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"east": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"south": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"west": {"uv": [0, 0, 5, 2], "texture": "#0"},
+				"up": {"uv": [0, 0, 5, 5], "texture": "#0"},
+				"down": {"uv": [0, 0, 5, 5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "vase_three_body_two",
+			"from": [3, 3, 9],
+			"to": [10, 8, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 7, 4], "texture": "#0"},
+				"east": {"uv": [0, 0, 7, 4], "texture": "#0"},
+				"south": {"uv": [3, 4, 10, 8], "texture": "#0"},
+				"west": {"uv": [0, 0, 7, 4], "texture": "#0"},
+				"up": {"uv": [0, 0, 7, 7], "texture": "#0"},
+				"down": {"uv": [0, 0, 7, 7], "texture": "#0"}
+			}
+		},
+		{
+			"name": "vase_one_collar",
+			"from": [11, 14, 9],
+			"to": [13, 15, 11],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 1], "texture": "#2"},
+				"east": {"uv": [2, 2, 4, 3], "texture": "#2"},
+				"south": {"uv": [0, 0, 2, 1], "texture": "#2"},
+				"west": {"uv": [0, 0, 2, 1], "texture": "#2"},
+				"up": {"uv": [6, 6, 8, 8], "texture": "#2"},
+				"down": {"uv": [7, 7, 9, 9], "texture": "#2"}
+			}
+		},
+		{
+			"name": "vase_two_body",
+			"from": [7, 1, 2],
+			"to": [13, 6, 8],
+			"faces": {
+				"north": {"uv": [4, 5, 10, 10], "texture": "#1"},
+				"east": {"uv": [5, 4, 11, 9], "texture": "#1"},
+				"south": {"uv": [5, 4, 11, 9], "texture": "#1"},
+				"west": {"uv": [4, 4, 10, 9], "texture": "#1"},
+				"up": {"uv": [3, 5, 9, 11], "texture": "#1"},
+				"down": {"uv": [6, 6, 12, 12], "texture": "#1"}
+			}
+		},
+		{
+			"name": "vase_two_collar",
+			"from": [8, 6, 3],
+			"to": [12, 8, 7],
+			"faces": {
+				"north": {"uv": [5, 6, 9, 8], "texture": "#1"},
+				"east": {"uv": [5, 4, 9, 6], "texture": "#1"},
+				"south": {"uv": [4, 5, 8, 7], "texture": "#1"},
+				"west": {"uv": [4, 5, 8, 7], "texture": "#1"},
+				"up": {"uv": [7, 4, 11, 8], "texture": "#1"},
+				"down": {"uv": [4, 6, 8, 10], "texture": "#1"}
+			}
+		}
+	],
+	"display": {}
+}

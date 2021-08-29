@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 180,
+      "model": "graveyard:block/wither_skeleton_hand"
+    },
+    "facing=north": {
+      "y": 90,
+      "model": "graveyard:block/wither_skeleton_hand"
+    },
+    "facing=south": {
+      "y": 270,
+      "model": "graveyard:block/wither_skeleton_hand"
+    },
+    "facing=west": {
+      "y": 0,
+      "model": "graveyard:block/wither_skeleton_hand"
+    }
+  }
+}

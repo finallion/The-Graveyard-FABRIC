@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dirt",
+    "minecraft:grass_block",
+    "minecraft:coarse_dirt",
+    "minecraft:podzol",
+    "minecraft:mycelium",
+    "minecraft:rooted_dirt",
+    "minecraft:moss_block",
+
+    "graveyard:tg_dirt",
+    "graveyard:tg_grass_block",
+    "graveyard:tg_moss_block",
+    "graveyard:tg_coarse_dirt",
+    "graveyard:tg_rooted_dirt"
+  ]
+}

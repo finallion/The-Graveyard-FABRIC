@@ -1,0 +1,18 @@
+{
+  "name": "graveyard:large_walled_graveyard/feature_pool",
+
+  "fallback": "minecraft:empty",
+
+  "elements": [
+    {
+
+      "weight": 1,
+      "element": {
+        "location": "graveyard:wither_skeleton_mill",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
