@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "candles=1": {
+      "model": "graveyard:block/vase_one"
+    },
+    "candles=2": {
+      "model": "graveyard:block/vase_two"
+    },
+    "candles=3": {
+      "model": "graveyard:block/vase_three"
+    },
+    "candles=4": {
+      "model": "graveyard:block/vase_four"
+    }
+  }
+}

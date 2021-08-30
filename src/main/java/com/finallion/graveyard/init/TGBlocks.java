@@ -79,6 +79,8 @@ public class TGBlocks {
     public static final Block SMALL_GREEN_URN = new UrnBlock();
     public static final Block SMALL_LIME_URN = new UrnBlock();
 
+    public static final Block VASE_BLOCK = new VaseBlock();
+
     public static final Block GRAVESTONE = new GravestoneBlock(GRAVESTONE_TEXTURE);
 
 
@@ -142,6 +144,7 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_orange_urn"), SMALL_ORANGE_URN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_yellow_urn"), SMALL_YELLOW_URN);
 
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "vase_block"), VASE_BLOCK);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gravestone"), GRAVESTONE);
 

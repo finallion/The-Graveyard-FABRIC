@@ -1,6 +1,6 @@
 {
 	"textures": {
-		"0": "graveyard:block/tg_terracotta",
+		"0": "graveyard:block/tg_terracotta_two",
 		"1": "graveyard:block/tg_terracotta_one",
 		"2": "graveyard:block/tg_terracotta_two",
 		"particle": "graveyard:block/tg_terracotta"

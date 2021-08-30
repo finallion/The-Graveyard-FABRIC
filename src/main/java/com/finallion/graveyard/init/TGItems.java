@@ -78,6 +78,8 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "small_yellow_urn"), new BlockItem(TGBlocks.SMALL_YELLOW_URN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "small_brown_urn"), new BlockItem(TGBlocks.SMALL_BROWN_URN, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "vase_block"), new BlockItem(TGBlocks.VASE_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
+
 
     }
 
