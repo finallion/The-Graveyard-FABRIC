@@ -3,13 +3,16 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.enitites.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.utils.SpriteIdentifierRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
@@ -59,6 +62,10 @@ public class TheGraveyardClient implements ClientModInitializer {
             }
         }, TGBlocks.TG_GRASS_BLOCK);
 
+
+
+        // entities
+        EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
 
     }
 }

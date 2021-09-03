@@ -45,6 +45,7 @@ public class TheGraveyard implements ModInitializer {
         TGConfiguredFeatures.registerConfiguredStructures();
         TGBiomeKeys.init();
         TGProcessors.init();
+        TGEntities.registerEntities();
 
 
 
