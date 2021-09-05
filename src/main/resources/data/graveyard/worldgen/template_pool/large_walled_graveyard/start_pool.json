@@ -4,11 +4,12 @@
   "fallback": "minecraft:empty",
 
   "elements": [
+
     {
 
       "weight": 1,
       "element": {
-        "location": "graveyard:crossroad_01",
+        "location": "graveyard:graveyard_entrance",
         "processors": "graveyard:simple_surface_list",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

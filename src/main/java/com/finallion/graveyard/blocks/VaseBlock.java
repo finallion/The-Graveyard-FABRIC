@@ -21,7 +21,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 
-public class VaseBlock extends Block {
+public class VaseBlock extends Block implements Waterloggable {
     public static final IntProperty VASES;
     public static final BooleanProperty WATERLOGGED;
     private static final VoxelShape VASE_SHAPE_ONE;

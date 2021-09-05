@@ -61,7 +61,7 @@ public class SkeletonCreeper extends CreeperEntity {
         Entity entity = source.getAttacker();
         if (entity instanceof CreeperEntity) {
             CreeperEntity creeperEntity = (CreeperEntity)entity;
-            // changed from onHeadsDropped so every skeleton creeper will drop its skeleton
+            // changed from onHeadsDropped so every skeleton creeper will drop its skeleton instead of only one per charged creeper
             if (creeperEntity.shouldRenderOverlay()) {
                 this.dropItem(TGBlocks.CREEPER_SKELETON.asItem());
             } else {
@@ -71,12 +71,6 @@ public class SkeletonCreeper extends CreeperEntity {
 
     }
 
-
-
-    // returns the item stack this entity will drop when killed by a charged creeper
-    protected ItemStack getSkull() {
-        return new ItemStack(TGBlocks.CREEPER_SKELETON.asItem());
-    }
 
 
     @Override
