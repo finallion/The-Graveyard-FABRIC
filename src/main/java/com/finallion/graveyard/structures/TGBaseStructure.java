@@ -65,6 +65,8 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
 
         if (!checkForOtherStructures(chunkGenerator, seed, chunkRandom, centerOfChunk.getX(), centerOfChunk.getZ())) {
+            System.out.println(centerOfChunk);
+            System.out.println("OVERWRITES VILLAGE");
             return false;
         }
 
@@ -115,15 +117,9 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
     public boolean checkForOtherStructures(ChunkGenerator generator, long seed, ChunkRandom rand, int chunkX, int chunkZ) {
         StructureConfig configVillage = generator.getStructuresConfig().getForType(StructureFeature.VILLAGE);
-        StructureConfig configMediumGraveyard = generator.getStructuresConfig().getForType(TGStructures.MEDIUM_WALLED_GRAVEYARD);
-        StructureConfig configSmallGraveyard = generator.getStructuresConfig().getForType(TGStructures.SMALL_WALLED_GRAVEYARD);
-        StructureConfig configSmallGraveyardSavanna = generator.getStructuresConfig().getForType(TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA);
-        StructureConfig configMushroomGrave = generator.getStructuresConfig().getForType(TGStructures.MUSHROOM_GRAVE);
-        StructureConfig configLargeBirch = generator.getStructuresConfig().getForType(TGStructures.LARGE_BIRCH_TREE);
-        StructureConfig configSmallGrave = generator.getStructuresConfig().getForType(TGStructures.SMALL_GRAVE);
 
-        for (int k = chunkX - 6; k <= chunkX + 6; ++k) {
-            for (int m = chunkZ - 6; m <= chunkZ + 6; ++m) {
+        for (int k = chunkX - 8; k <= chunkX + 8; ++k) {
+            for (int m = chunkZ - 8; m <= chunkZ + 8; ++m) {
                 if (configVillage != null) {
                     ChunkPos possibleVillagePos = StructureFeature.VILLAGE.getStartChunk(configVillage, seed, rand, k, m);
                     if (k == possibleVillagePos.x && m == possibleVillagePos.z) {

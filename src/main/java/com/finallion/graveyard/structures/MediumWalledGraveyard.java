@@ -13,7 +13,7 @@ public class MediumWalledGraveyard extends TGBaseStructure {
 
 
     public MediumWalledGraveyard(Codec<DefaultFeatureConfig> codec) {
-        super(codec, "medium_walled_graveyard", 2, 0);
+        super(codec, "medium_walled_graveyard", 3, 0);
     }
 
     private static final Pool<SpawnSettings.SpawnEntry> STRUCTURE_MONSTERS = Pool.of(

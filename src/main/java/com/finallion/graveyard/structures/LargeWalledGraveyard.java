@@ -8,7 +8,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class LargeWalledGraveyard extends TGBaseStructure {
 
     public LargeWalledGraveyard(Codec<DefaultFeatureConfig> codec) {
-        super(codec, "large_walled_graveyard", 10, 0);
+        super(codec, "large_walled_graveyard", 15, 0);
     }
 
 
