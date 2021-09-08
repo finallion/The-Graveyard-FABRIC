@@ -94,7 +94,7 @@ public class TheGraveyard implements ModInitializer {
 
         BiomeModifications.create(new Identifier(MOD_ID, "medium_walled_graveyard"))
                 .add(ModificationPhase.ADDITIONS,
-                        BiomeSelectors.categories(Biome.Category.FOREST).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "medium_walled_graveyard")))),
+                        BiomeSelectors.includeByKey(TGBiomeKeys.forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "medium_walled_graveyard")))),
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_MEDIUM_WALLED_GRAVEYARD);
                         });
 
@@ -108,7 +108,7 @@ public class TheGraveyard implements ModInitializer {
 
         BiomeModifications.create(new Identifier(MOD_ID, "large_walled_graveyard"))
                 .add(ModificationPhase.ADDITIONS,
-                        BiomeSelectors.all().and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
+                        BiomeSelectors.includeByKey(TGBiomeKeys.spruce_forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_LARGE_WALLED_GRAVEYARD);
                         });
 

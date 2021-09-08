@@ -63,12 +63,12 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
             return false;
         }
 
-        /*
+
         if (!checkForOtherStructures(chunkGenerator, seed, chunkRandom, centerOfChunk.getX(), centerOfChunk.getZ())) {
             return false;
         }
 
-         */
+
 
         return true;
     }
@@ -130,6 +130,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
                         return false;
                     }
                 }
+                /*
                 if (configSmallGraveyardSavanna != null) {
                     ChunkPos possibleSmallGraveyardSavannaPos = TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA.getStartChunk(configSmallGraveyardSavanna, seed, rand, k, m);
                     if (k == possibleSmallGraveyardSavannaPos.x && m == possibleSmallGraveyardSavannaPos.z && this != TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA) {
@@ -166,6 +167,8 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
                         return false;
                     }
                 }
+
+                 */
             }
 
         }

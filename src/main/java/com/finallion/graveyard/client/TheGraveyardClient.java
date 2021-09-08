@@ -1,9 +1,8 @@
 package com.finallion.graveyard.client;
 
 
-import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
-import com.finallion.graveyard.enitites.renders.SkeletonCreeperRender;
+import com.finallion.graveyard.entites.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.utils.SpriteIdentifierRegistry;
