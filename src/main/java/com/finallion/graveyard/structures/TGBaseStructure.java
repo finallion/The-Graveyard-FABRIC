@@ -1,7 +1,6 @@
 package com.finallion.graveyard.structures;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.TGStructures;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.MarginedStructureStart;
@@ -27,24 +26,21 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
-    private final int sunkenIn;
-    private final double size;
-    private final String name;
+    private final int SUNKEN_IN;
+    private final double SIZE;
+    private final String NAME;
     private int averageHeight;
-    private final int maxWaterHits = 8;
-    private final int maxTerrainDifferenceBase = 2;
-    private final int maxTerrainDifferenceLG = 5;
+    private final int MAX_WATER_HITS = 8;
+    private final int MAX_TERRAIN_DIFFERENCE_BASE = 2;
+    private final int MAX_TERRAIN_DIFFERENCE_LG = 5;
+    private final int OFFSET_WATER_CHECK_LG = 25;
 
     public TGBaseStructure(Codec<DefaultFeatureConfig> codec, String name, double size, int sunkenIn) {
         super(codec);
-        this.sunkenIn = sunkenIn;
-        this.size = size;
-        this.name = name;
+        this.SUNKEN_IN = sunkenIn;
+        this.SIZE = size;
+        this.NAME = name;
     }
 
 
@@ -83,12 +79,12 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
 
 
-        int offset = (int) size * 8;
+        int offset = (int) SIZE * 8;
 
         // checks are in a larger radius if the structure spawns above water
         // needed for the large graveyard to make ugly generation over rivers and in oceans less likely
-        if (size > 2) {
-            offset += 20;
+        if (SIZE > 2) {
+            offset += OFFSET_WATER_CHECK_LG;
         }
 
         int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
@@ -146,7 +142,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
             count += (blockState.getFluidState().isEmpty() ? 1 : 0);
         }
 
-        return count >= maxWaterHits;
+        return count >= MAX_WATER_HITS;
     }
 
 
@@ -158,7 +154,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         // o    i    k
         // q    p    m
 
-        int offset = (int) size * 8;
+        int offset = (int) SIZE * 8;
 
         // check only corners and center or too many structures get cancelled
         int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
@@ -194,11 +190,11 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
         averageHeight = Math.abs((maxHeight + minHeight) / 2);
 
-        if (size > 2) {
-            return Math.abs(maxHeight - minHeight) <= maxTerrainDifferenceLG;
+        if (SIZE > 2) {
+            return Math.abs(maxHeight - minHeight) <= MAX_TERRAIN_DIFFERENCE_LG;
         }
 
-        return Math.abs(maxHeight - minHeight) <= maxTerrainDifferenceBase;
+        return Math.abs(maxHeight - minHeight) <= MAX_TERRAIN_DIFFERENCE_BASE;
     }
 
 
@@ -207,7 +203,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         if (structureConfig == null) {
             return false;
         } else {
-            if (size <= 2) {
+            if (SIZE <= 2) {
                 return true;
             }
 
@@ -225,16 +221,16 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         }
     }
 
-    private int getSunkenIn() {
-        return sunkenIn;
+    private int getSUNKEN_IN() {
+        return SUNKEN_IN;
     }
 
-    private double getSize() {
-        return size;
+    private double getSIZE() {
+        return SIZE;
     }
 
     private String getStructureName() {
-        return name;
+        return NAME;
     }
 
     private int getAverageHeight() {
@@ -243,21 +239,22 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
 
     public static class Start extends MarginedStructureStart<DefaultFeatureConfig> {
-        private final int sunkenIn;
-        private final double size;
-        private final String name;
+        private final int SUNKEN_IN;
+        private final double SIZE;
+        private final String NAME;
         private int averageHeight;
 
 
+
         public Start(StructureFeature<DefaultFeatureConfig> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
-            this(structureIn, chunkPos, referenceIn, seedIn, ((TGBaseStructure) structureIn).getStructureName(), ((TGBaseStructure) structureIn).getSize(), ((TGBaseStructure) structureIn).getSunkenIn(), ((TGBaseStructure) structureIn).getAverageHeight());
+            this(structureIn, chunkPos, referenceIn, seedIn, ((TGBaseStructure) structureIn).getStructureName(), ((TGBaseStructure) structureIn).getSIZE(), ((TGBaseStructure) structureIn).getSUNKEN_IN(), ((TGBaseStructure) structureIn).getAverageHeight());
         }
 
         public Start(StructureFeature<DefaultFeatureConfig> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn, String name, double size, int sunkenIn, int averageHeight) {
             super(structureIn, chunkPos, referenceIn, seedIn);
-            this.size = size;
-            this.sunkenIn = sunkenIn;
-            this.name = name;
+            this.SIZE = size;
+            this.SUNKEN_IN = sunkenIn;
+            this.NAME = name;
             this.averageHeight = averageHeight;
 
         }
@@ -270,7 +267,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
             BlockPos.Mutable centerPos = new BlockPos.Mutable(x, averageHeight, z);
 
             StructurePoolFeatureConfig structureSettingsAndStartPool = new StructurePoolFeatureConfig(() -> dynamicRegistryManager.get(Registry.STRUCTURE_POOL_KEY)
-                    .get(new Identifier(TheGraveyard.MOD_ID, name + "/start_pool")),
+                    .get(new Identifier(TheGraveyard.MOD_ID, NAME + "/start_pool")),
                     10);
 
             StructurePoolBasedGenerator.method_30419(
@@ -288,9 +285,9 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
                     heightLimitView);
 
 
-            this.translateUpward(-sunkenIn);
+            this.translateUpward(-SUNKEN_IN);
             this.children.forEach(piece -> piece.translate(0, 1, 0));
-            this.children.forEach(piece -> piece.getBoundingBox().move(0, sunkenIn, 0));
+            this.children.forEach(piece -> piece.getBoundingBox().move(0, SUNKEN_IN, 0));
 
 
             Vec3i structureCenter = this.children.get(0).getBoundingBox().getCenter();

@@ -18,6 +18,26 @@
   "block.graveyard.cyan_urn": "Cyan Glazed Urn",
   "block.graveyard.light_blue_urn": "Light Blue Glazed Urn",
 
+  "block.graveyard.small_white_urn": "Small White Urn",
+  "block.graveyard.small_black_urn": "Small Black Urn",
+  "block.graveyard.small_brown_urn": "Small Brown Urn",
+  "block.graveyard.small_gray_urn": "Small Gray Urn",
+  "block.graveyard.small_light_gray_urn": "Small Light Gray Urn",
+  "block.graveyard.small_lime_urn": "Small Lime Urn",
+  "block.graveyard.small_green_urn": "Small Green Urn",
+  "block.graveyard.small_purple_urn": "Small Purple Urn",
+  "block.graveyard.small_magenta_urn": "Small Magenta Urn",
+  "block.graveyard.small_pink_urn": "Small Pink Urn",
+  "block.graveyard.small_red_urn": "Small Red Urn",
+  "block.graveyard.small_orange_urn": "Small Orange Urn",
+  "block.graveyard.small_yellow_urn": "Small Yellow Urn",
+  "block.graveyard.small_blue_urn": "Small Blue Urn",
+  "block.graveyard.small_cyan_urn": "Small Cyan Urn",
+  "block.graveyard.small_light_blue_urn": "Small Light Blue Urn",
+
+  "block.graveyard.vase_block": "Vases",
+
+
   "block.graveyard.lying_skeleton": "Lying Skeleton",
   "block.graveyard.leaning_skeleton": "Leaning Skeleton",
   "block.graveyard.skeleton_hand": "Skeleton Hand",
@@ -33,6 +53,10 @@
 
   "block.graveyard.dark_iron_bars": "Dark Iron Bars",
   "block.graveyard.gravestone": "Gravestone",
+
+
+  "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
+  "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"
 
