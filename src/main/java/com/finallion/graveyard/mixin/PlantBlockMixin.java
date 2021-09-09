@@ -24,7 +24,7 @@ public class PlantBlockMixin {
     @Inject(method = "canPlaceAt", at = @At("HEAD"), cancellable = true)
     void canPlaceAt(BlockState state, WorldView world, BlockPos pos, CallbackInfoReturnable<Boolean> info) {
         Block block = world.getBlockState(pos.down()).getBlock();
-        if (block instanceof TGGrassBlock || block instanceof TGMossBlock || block.getDefaultState().isOf(TGBlocks.TG_ROOTED_DIRT) || block.getDefaultState().isOf(TGBlocks.TG_DIRT) || block.getDefaultState().isOf(TGBlocks.TG_COARSE_DIRT)) {
+        if (block instanceof TGGrassBlock || block instanceof TGMossBlock || block.getDefaultState().isOf(TGBlocks.TG_ROOTED_DIRT) || block.getDefaultState().isOf(TGBlocks.TG_DIRT) || block.getDefaultState().isOf(TGBlocks.TG_COARSE_DIRT) || block.getDefaultState().isOf(TGBlocks.TG_PODZOL)) {
             info.setReturnValue(true);
         }
     }

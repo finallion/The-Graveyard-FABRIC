@@ -16,17 +16,18 @@ public class TGItems {
 
 
     public static void registerItems() {
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_grass_block"), new BlockItem(TGBlocks.TG_GRASS_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), new BlockItem(TGBlocks.TG_MOSS_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_stone"), new BlockItem(TGBlocks.TG_STONE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_andesite"), new BlockItem(TGBlocks.TG_ANDESITE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_granite"), new BlockItem(TGBlocks.TG_GRANITE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_diorite"), new BlockItem(TGBlocks.TG_DIORITE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_tuff"), new BlockItem(TGBlocks.TG_TUFF, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_dirt"), new BlockItem(TGBlocks.TG_DIRT, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_coarse_dirt"), new BlockItem(TGBlocks.TG_COARSE_DIRT, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), new BlockItem(TGBlocks.TG_ROOTED_DIRT, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_grass_block"), new BlockItem(TGBlocks.TG_GRASS_BLOCK, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), new BlockItem(TGBlocks.TG_MOSS_BLOCK, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_stone"), new BlockItem(TGBlocks.TG_STONE, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_andesite"), new BlockItem(TGBlocks.TG_ANDESITE, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_granite"), new BlockItem(TGBlocks.TG_GRANITE, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_diorite"), new BlockItem(TGBlocks.TG_DIORITE, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_tuff"), new BlockItem(TGBlocks.TG_TUFF, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_dirt"), new BlockItem(TGBlocks.TG_DIRT, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_coarse_dirt"), new BlockItem(TGBlocks.TG_COARSE_DIRT, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), new BlockItem(TGBlocks.TG_ROOTED_DIRT, new FabricItemSettings()));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), new BlockItem(TGBlocks.TG_PODZOL, new FabricItemSettings()));
 
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), new BlockItem(TGBlocks.DARK_IRON_BARS, new FabricItemSettings().group(TheGraveyard.GROUP)));

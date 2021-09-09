@@ -35,6 +35,7 @@ public class TheGraveyard implements ModInitializer {
     // grave of the giant / skeleton
     // ziggurat
     // dragon graveyard
+    // pirate ship
 
     // vignette
     // particle
@@ -44,11 +45,6 @@ public class TheGraveyard implements ModInitializer {
     // more streets
     // more branches
     // more corners
-
-
-
-    // fix small crypt
-    // make podzol
 
 
     @Override

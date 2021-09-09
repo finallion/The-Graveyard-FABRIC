@@ -23,12 +23,14 @@ import java.util.stream.Collectors;
 
 @Mixin(TreeFeature.class)
 public class TreeFeatureMixin {
-    // makes tree not spawn on custom helper blocks
+    // helper blocks could be swapped to the vanilla ones during generation, but trees generate later than structures
+    // therefore trees would spawn inside the structure
+    // this mixin checks during tree generation if the game tries to place a tree on one of the helper blocks
 
     @Inject(method = "generate(Lnet/minecraft/world/StructureWorldAccess;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos;Ljava/util/function/BiConsumer;Ljava/util/function/BiConsumer;Lnet/minecraft/world/gen/feature/TreeFeatureConfig;)Z", at = @At(value = "HEAD"), cancellable = true)
     private void noTreesInStructuresGenerate(StructureWorldAccess world, Random random, BlockPos pos, BiConsumer<BlockPos, BlockState> trunkReplacer, BiConsumer<BlockPos, BlockState> foliageReplacer, TreeFeatureConfig config, CallbackInfoReturnable<Boolean> info) {
         BlockState state = world.getBlockState(pos.down());
-        if (state.isOf(TGBlocks.TG_DIRT) || state.isOf(TGBlocks.TG_COARSE_DIRT) || state.isOf(TGBlocks.TG_GRASS_BLOCK) || state.isOf(TGBlocks.TG_MOSS_BLOCK) || state.isOf(TGBlocks.TG_ROOTED_DIRT)) {
+        if (state.isOf(TGBlocks.TG_DIRT) || state.isOf(TGBlocks.TG_COARSE_DIRT) || state.isOf(TGBlocks.TG_GRASS_BLOCK) || state.isOf(TGBlocks.TG_MOSS_BLOCK) || state.isOf(TGBlocks.TG_ROOTED_DIRT) || state.isOf(TGBlocks.TG_PODZOL)) {
             info.setReturnValue(false);
         }
     }

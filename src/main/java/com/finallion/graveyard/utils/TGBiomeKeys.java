@@ -25,16 +25,16 @@ public class TGBiomeKeys {
         forest_biomes.add(BiomeKeys.DARK_FOREST_HILLS);
         forest_biomes.add(BiomeKeys.WOODED_HILLS);
         forest_biomes.add(BiomeKeys.WOODED_MOUNTAINS);
+        forest_biomes.add(BiomeKeys.GIANT_SPRUCE_TAIGA);
+        forest_biomes.add(BiomeKeys.GIANT_SPRUCE_TAIGA_HILLS);
+        forest_biomes.add(BiomeKeys.GIANT_TREE_TAIGA);
+        forest_biomes.add(BiomeKeys.GIANT_TREE_TAIGA_HILLS);
 
         thick_forest_biomes.add(BiomeKeys.TAIGA_HILLS);
         thick_forest_biomes.add(BiomeKeys.TAIGA_MOUNTAINS);
         thick_forest_biomes.add(BiomeKeys.SNOWY_TAIGA_HILLS);
         thick_forest_biomes.add(BiomeKeys.SNOWY_TAIGA_MOUNTAINS);
         thick_forest_biomes.add(BiomeKeys.DARK_FOREST);
-        thick_forest_biomes.add(BiomeKeys.GIANT_SPRUCE_TAIGA);
-        thick_forest_biomes.add(BiomeKeys.GIANT_SPRUCE_TAIGA_HILLS);
-        thick_forest_biomes.add(BiomeKeys.GIANT_TREE_TAIGA);
-        thick_forest_biomes.add(BiomeKeys.GIANT_TREE_TAIGA_HILLS);
         thick_forest_biomes.add(BiomeKeys.TAIGA);
         thick_forest_biomes.add(BiomeKeys.SNOWY_TAIGA);
 
