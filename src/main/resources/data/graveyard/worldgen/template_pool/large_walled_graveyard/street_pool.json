@@ -6,7 +6,7 @@
   "elements": [
     {
 
-      "weight": 5,
+      "weight": 4,
       "element": {
         "location": "graveyard:street_01",
         "processors": "minecraft:empty",
@@ -16,7 +16,7 @@
     },
     {
 
-      "weight": 5,
+      "weight": 4,
       "element": {
         "location": "graveyard:street_02",
         "processors": "minecraft:empty",
@@ -26,7 +26,7 @@
     },
     {
 
-      "weight": 5,
+      "weight": 4,
       "element": {
         "location": "graveyard:street_03",
         "processors": "minecraft:empty",
@@ -35,9 +35,57 @@
       }
     },
     {
-      "weight": 5,
+      "weight": 4,
       "element": {
         "location": "graveyard:street_04",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 4,
+      "element": {
+        "location": "graveyard:street_05",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 4,
+      "element": {
+        "location": "graveyard:street_06",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 4,
+      "element": {
+        "location": "graveyard:street_07",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "graveyard:street_08",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "graveyard:street_09",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -65,6 +113,42 @@
       "weight": 7,
       "element": {
         "location": "graveyard:corner_02",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "location": "graveyard:corner_03",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "location": "graveyard:corner_04",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "location": "graveyard:corner_05",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 7,
+      "element": {
+        "location": "graveyard:corner_06",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
