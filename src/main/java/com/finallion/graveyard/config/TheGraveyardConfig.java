@@ -19,7 +19,9 @@ public class TheGraveyardConfig implements Config {
              // The Graveyard uses the vanilla structure spawning system. That is -
              // - Separation is the minimum chunks between structures
              // - Spacing is the average chunks between structures (Spacing value needs to be higher than Separation value!)
-             // - Salt is a special field that gives structures unique spawning positions. (Only change if you know what you are doing!)  
+             // - Salt is a special field that gives structures unique spawning positions. (Only change if you know what you are doing!)
+             //
+             // Notice: reducing the generation settings will increase the risk of structures overlapping. Especially jigsaw structures are unpredictable!  
             """)
     public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(8);
 

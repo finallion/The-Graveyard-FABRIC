@@ -36,6 +36,9 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
     private final double size;
     private final String name;
     private int averageHeight;
+    private final int maxWaterHits = 8;
+    private final int maxTerrainDifferenceBase = 2;
+    private final int maxTerrainDifferenceLG = 5;
 
     public TGBaseStructure(Codec<DefaultFeatureConfig> codec, String name, double size, int sunkenIn) {
         super(codec);
@@ -78,21 +81,25 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         // o    i    k
         // q    p    m
 
+
+
         int offset = (int) size * 8;
 
+        // checks are in a larger radius if the structure spawns above water
+        // needed for the large graveyard to make ugly generation over rivers and in oceans less likely
+        if (size > 2) {
+            offset += 20;
+        }
 
-        // only check corners and center for water for now!
         int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int j1 = generator.getHeightInGround(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int k1 = generator.getHeightInGround(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int j1 = generator.getHeightInGround(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int k1 = generator.getHeightInGround(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int l1 = generator.getHeightInGround(chunkX + offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int m1 = generator.getHeightInGround(chunkX - offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int n1 = generator.getHeightInGround(chunkX + offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int o1 = generator.getHeightInGround(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int p1 = generator.getHeightInGround(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int o1 = generator.getHeightInGround(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int p1 = generator.getHeightInGround(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int q1 = generator.getHeightInGround(chunkX - offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-
-        //System.out.println("Heights: " + i1 + " " + j1 + " " + o1 + " " + p1 + " " + k1);
 
         VerticalBlockSample vi1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
         VerticalBlockSample vj1 = generator.getColumnSample(chunkX, chunkZ + offset, heightLimitView);
@@ -105,31 +112,41 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         VerticalBlockSample vq1 = generator.getColumnSample(chunkX - offset, chunkZ - offset, heightLimitView);
 
         BlockState bi1 = vi1.getState(centerOfChunk.up(i1));
-        //BlockState bj1 = vj1.getState(centerOfChunk.up(j1));
-        //BlockState bk1 = vk1.getState(centerOfChunk.up(k1));
+        BlockState bj1 = vj1.getState(centerOfChunk.up(j1));
+        BlockState bk1 = vk1.getState(centerOfChunk.up(k1));
         BlockState bl1 = vl1.getState(centerOfChunk.up(l1));
         BlockState bm1 = vm1.getState(centerOfChunk.up(m1));
         BlockState bn1 = vn1.getState(centerOfChunk.up(n1));
-        //BlockState bo1 = vo1.getState(centerOfChunk.up(o1));
-        //BlockState bp1 = vp1.getState(centerOfChunk.up(p1));
+        BlockState bo1 = vo1.getState(centerOfChunk.up(o1));
+        BlockState bp1 = vp1.getState(centerOfChunk.up(p1));
         BlockState bq1 = vq1.getState(centerOfChunk.up(q1));
 
-        //System.out.println("BlockStates: " + bi1 + " " + bj1 + " " + bo1 + " " + bp1 + " " + bk1);
+        /*
+        System.out.println("Water hits results: ");
+        System.out.println("One: " + bi1 + " Height: " + i1 + " at: " + chunkX + " " + chunkZ);
+        System.out.println("Two: " + bj1 + " Height: " + j1 + " at: " + chunkX + " " + (chunkZ + offset));
+        System.out.println("Three: " + bk1 + " Height: " + k1 + " at: " + (chunkX + offset) + " " + chunkZ);
+        System.out.println("Four: " + bl1 + " Height: " + l1 + " at: " + (chunkX + offset) + " " + (chunkZ + offset));
+        System.out.println("Five: " + bm1 + " Height: " + m1 + " at: " + (chunkX - offset) + " " + (chunkZ + offset));
+        System.out.println("Six: " + bn1 + " Height: " + n1 + " at: " + (chunkX + offset) + " " + (chunkZ - offset));
+        System.out.println("Seven: " + bo1 + " Height: " + o1 + " at: " + chunkX + " " + (chunkZ - offset));
+        System.out.println("Eight: " + bp1 + " Height: " + p1 + " at: " + (chunkX - offset) + " " + chunkZ);
+        System.out.println("Nine: " + bq1 + " Height: " + q1 + " at: " + (chunkX - offset) + " " + (chunkZ - offset));
+         */
 
-        return countWaterMatches(bi1, bl1, bm1, bn1, bq1);
-        //return countWaterMatches(bi1, bj1, bk1, bl1, bm1, bn1, bo1, bq1, bp1);
-        //return bi1.getFluidState().isEmpty() && bj1.getFluidState().isEmpty() && bk1.getFluidState().isEmpty() && bl1.getFluidState().isEmpty() && bm1.getFluidState().isEmpty() && bn1.getFluidState().isEmpty() && bo1.getFluidState().isEmpty() && bp1.getFluidState().isEmpty() && bq1.getFluidState().isEmpty();
+        return countWaterMatches(bi1, bj1, bk1, bl1, bm1, bn1, bo1, bq1, bp1);
     }
 
     private boolean countWaterMatches(BlockState... blockStates) {
         // counts how many blockstates are in water
-        // if there are less than two or equal to two return true and allow structure to spawn
+        // if there are more than two or equal to four return true and allow structure to spawn
+        // if more checks are added the threshold number should be raised
         int count = 0;
         for (BlockState blockState : blockStates) {
             count += (blockState.getFluidState().isEmpty() ? 1 : 0);
         }
 
-        return count >= 4;
+        return count >= maxWaterHits;
     }
 
 
@@ -143,37 +160,45 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
         int offset = (int) size * 8;
 
+        // check only corners and center or too many structures get cancelled
         int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int l1 = generator.getHeight(chunkX + offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int m1 = generator.getHeight(chunkX - offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int n1 = generator.getHeight(chunkX + offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int o1 = generator.getHeight(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int p1 = generator.getHeight(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int o1 = generator.getHeight(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int p1 = generator.getHeight(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int q1 = generator.getHeight(chunkX - offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
-        // check only corners and center or too many structures get cancelled
+        /*
+        System.out.println("Terrain flatness results: ");
+        System.out.println("One: " + " Height: " + i1 + " at: " + chunkX + " " + chunkZ);
+        System.out.println("Two: " + " Height: " + j1 + " at: " + chunkX + " " + (chunkZ + offset));
+        System.out.println("Three: " + " Height: " + k1 + " at: " + (chunkX + offset) + " " + chunkZ);
+        System.out.println("Four: " + " Height: " + l1 + " at: " + (chunkX + offset) + " " + (chunkZ + offset));
+        System.out.println("Five: " + " Height: " + m1 + " at: " + (chunkX - offset) + " " + (chunkZ + offset));
+        System.out.println("Six: " + " Height: " + n1 + " at: " + (chunkX + offset) + " " + (chunkZ - offset));
+        System.out.println("Seven: " + " Height: " + o1 + " at: " + chunkX + " " + (chunkZ - offset));
+        System.out.println("Eight: " + " Height: " + p1 + " at: " + (chunkX - offset) + " " + chunkZ);
+        System.out.println("Nine: " + " Height: " + q1 + " at: " + (chunkX - offset) + " " + (chunkZ - offset));
+         */
+
         int minCorners = Math.min(Math.min(n1, m1), Math.min(q1, l1));
-        //int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
-        int minHeight = Math.min(minCorners, i1);
+        int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
+        int minHeight = Math.min(Math.min(minCorners, minSides), i1);
 
         int maxCorners = Math.max(Math.max(n1, m1), Math.max(q1, l1));
-        //int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
-        int maxHeight = Math.max(maxCorners, i1);
-
-        /*
-        int minHeight = Math.min(Math.min(i1, j1), Math.min(k1, l1));
-        int maxHeight = Math.max(Math.max(i1, j1), Math.max(k1, l1));
-         */
+        int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
+        int maxHeight = Math.max(Math.max(maxCorners, maxSides), i1);
 
         averageHeight = Math.abs((maxHeight + minHeight) / 2);
 
         if (size > 2) {
-            return Math.abs(maxHeight - minHeight) <= 4;
+            return Math.abs(maxHeight - minHeight) <= maxTerrainDifferenceLG;
         }
 
-        return Math.abs(maxHeight - minHeight) <= 2;
+        return Math.abs(maxHeight - minHeight) <= maxTerrainDifferenceBase;
     }
 
 

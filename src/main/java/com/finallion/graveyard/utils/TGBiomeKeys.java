@@ -14,7 +14,7 @@ public class TGBiomeKeys {
     public static List<RegistryKey<Biome>> thick_forest_biomes = new ArrayList<>();
 
     public static void init() {
-        // villages generate in plains, savanna, desert, taiga and snowy taiga
+        // villages generate in plains, savanna, desert, taiga and snowy tundra
 
         birch_biomes.add(BiomeKeys.BIRCH_FOREST_HILLS);
         birch_biomes.add(BiomeKeys.TALL_BIRCH_HILLS);
@@ -37,6 +37,7 @@ public class TGBiomeKeys {
         thick_forest_biomes.add(BiomeKeys.DARK_FOREST);
         thick_forest_biomes.add(BiomeKeys.TAIGA);
         thick_forest_biomes.add(BiomeKeys.SNOWY_TAIGA);
+        thick_forest_biomes.add(BiomeKeys.JUNGLE);
 
 
     }

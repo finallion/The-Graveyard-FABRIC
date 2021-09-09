@@ -35,7 +35,7 @@ public class TheGraveyard implements ModInitializer {
     // grave of the giant / skeleton
     // ziggurat
     // dragon graveyard
-    // pirate ship
+    // pirate ship -> jigsaw battle
 
     // vignette
     // particle
