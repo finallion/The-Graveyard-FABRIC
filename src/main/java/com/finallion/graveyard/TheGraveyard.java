@@ -46,6 +46,11 @@ public class TheGraveyard implements ModInitializer {
     // more corners
 
 
+
+    // fix small crypt
+    // make podzol
+
+
     @Override
     public void onInitialize() {
         TGBlocks.registerBlocks();
@@ -108,7 +113,7 @@ public class TheGraveyard implements ModInitializer {
 
         BiomeModifications.create(new Identifier(MOD_ID, "large_walled_graveyard"))
                 .add(ModificationPhase.ADDITIONS,
-                        BiomeSelectors.includeByKey(TGBiomeKeys.spruce_forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
+                        BiomeSelectors.includeByKey(TGBiomeKeys.thick_forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_LARGE_WALLED_GRAVEYARD);
                         });
 

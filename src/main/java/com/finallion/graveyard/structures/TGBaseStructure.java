@@ -45,7 +45,6 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
     }
 
 
-
     @Override
     public StructureStartFactory<DefaultFeatureConfig> getStructureStartFactory() {
         return TGBaseStructure.Start::new;
@@ -63,112 +62,142 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
             return false;
         }
 
-
         if (!checkForOtherStructures(chunkGenerator, seed, chunkRandom, centerOfChunk.getX(), centerOfChunk.getZ())) {
-            System.out.println(centerOfChunk);
-            System.out.println("OVERWRITES VILLAGE");
             return false;
         }
-
-
 
         return true;
     }
 
 
-
     protected boolean isWater(ChunkGenerator generator, int chunkX, int chunkZ, HeightLimitView heightLimitView, BlockPos centerOfChunk) {
+        // center of generation is chunkX 0 chunkZ (i)
+        // checks:
+        //
+        // n    j    l
+        // o    i    k
+        // q    p    m
+
         int offset = (int) size * 8;
 
+
+        // only check corners and center for water for now!
         int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int j1 = generator.getHeightInGround(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int k1 = generator.getHeightInGround(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int j1 = generator.getHeightInGround(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int k1 = generator.getHeightInGround(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int l1 = generator.getHeightInGround(chunkX + offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int m1 = generator.getHeightInGround(chunkX - offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int n1 = generator.getHeightInGround(chunkX + offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int o1 = generator.getHeightInGround(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int p1 = generator.getHeightInGround(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int q1 = generator.getHeightInGround(chunkX - offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+
+        //System.out.println("Heights: " + i1 + " " + j1 + " " + o1 + " " + p1 + " " + k1);
 
         VerticalBlockSample vi1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
-        VerticalBlockSample vj1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
-        VerticalBlockSample vk1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
-        VerticalBlockSample vl1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
+        VerticalBlockSample vj1 = generator.getColumnSample(chunkX, chunkZ + offset, heightLimitView);
+        VerticalBlockSample vk1 = generator.getColumnSample(chunkX + offset, chunkZ, heightLimitView);
+        VerticalBlockSample vl1 = generator.getColumnSample(chunkX + offset, chunkZ + offset, heightLimitView);
+        VerticalBlockSample vm1 = generator.getColumnSample(chunkX - offset, chunkZ + offset, heightLimitView);
+        VerticalBlockSample vn1 = generator.getColumnSample(chunkX + offset, chunkZ - offset, heightLimitView);
+        VerticalBlockSample vo1 = generator.getColumnSample(chunkX, chunkZ - offset, heightLimitView);
+        VerticalBlockSample vp1 = generator.getColumnSample(chunkX - offset, chunkZ, heightLimitView);
+        VerticalBlockSample vq1 = generator.getColumnSample(chunkX - offset, chunkZ - offset, heightLimitView);
 
         BlockState bi1 = vi1.getState(centerOfChunk.up(i1));
-        BlockState bj1 = vj1.getState(centerOfChunk.up(j1));
-        BlockState bk1 = vk1.getState(centerOfChunk.up(k1));
+        //BlockState bj1 = vj1.getState(centerOfChunk.up(j1));
+        //BlockState bk1 = vk1.getState(centerOfChunk.up(k1));
         BlockState bl1 = vl1.getState(centerOfChunk.up(l1));
+        BlockState bm1 = vm1.getState(centerOfChunk.up(m1));
+        BlockState bn1 = vn1.getState(centerOfChunk.up(n1));
+        //BlockState bo1 = vo1.getState(centerOfChunk.up(o1));
+        //BlockState bp1 = vp1.getState(centerOfChunk.up(p1));
+        BlockState bq1 = vq1.getState(centerOfChunk.up(q1));
 
-        return bi1.getFluidState().isEmpty() && bj1.getFluidState().isEmpty() && bk1.getFluidState().isEmpty() && bl1.getFluidState().isEmpty();
+        //System.out.println("BlockStates: " + bi1 + " " + bj1 + " " + bo1 + " " + bp1 + " " + bk1);
+
+        return countWaterMatches(bi1, bl1, bm1, bn1, bq1);
+        //return countWaterMatches(bi1, bj1, bk1, bl1, bm1, bn1, bo1, bq1, bp1);
+        //return bi1.getFluidState().isEmpty() && bj1.getFluidState().isEmpty() && bk1.getFluidState().isEmpty() && bl1.getFluidState().isEmpty() && bm1.getFluidState().isEmpty() && bn1.getFluidState().isEmpty() && bo1.getFluidState().isEmpty() && bp1.getFluidState().isEmpty() && bq1.getFluidState().isEmpty();
+    }
+
+    private boolean countWaterMatches(BlockState... blockStates) {
+        // counts how many blockstates are in water
+        // if there are less than two or equal to two return true and allow structure to spawn
+        int count = 0;
+        for (BlockState blockState : blockStates) {
+            count += (blockState.getFluidState().isEmpty() ? 1 : 0);
+        }
+
+        return count >= 4;
     }
 
 
-
     protected boolean isTerrainFlat(ChunkGenerator generator, int chunkX, int chunkZ, HeightLimitView heightLimitView) {
+        // center of generation is chunkX 0 chunkZ (i)
+        // checks:
+        //
+        // n    j    l
+        // o    i    k
+        // q    p    m
+
         int offset = (int) size * 8;
 
         int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int l1 = generator.getHeight(chunkX + offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int m1 = generator.getHeight(chunkX - offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int n1 = generator.getHeight(chunkX + offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int o1 = generator.getHeight(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        //int p1 = generator.getHeight(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int q1 = generator.getHeight(chunkX - offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+
+        // check only corners and center or too many structures get cancelled
+        int minCorners = Math.min(Math.min(n1, m1), Math.min(q1, l1));
+        //int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
+        int minHeight = Math.min(minCorners, i1);
+
+        int maxCorners = Math.max(Math.max(n1, m1), Math.max(q1, l1));
+        //int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
+        int maxHeight = Math.max(maxCorners, i1);
+
+        /*
         int minHeight = Math.min(Math.min(i1, j1), Math.min(k1, l1));
         int maxHeight = Math.max(Math.max(i1, j1), Math.max(k1, l1));
+         */
+
         averageHeight = Math.abs((maxHeight + minHeight) / 2);
+
+        if (size > 2) {
+            return Math.abs(maxHeight - minHeight) <= 4;
+        }
 
         return Math.abs(maxHeight - minHeight) <= 2;
     }
 
 
     public boolean checkForOtherStructures(ChunkGenerator generator, long seed, ChunkRandom rand, int chunkX, int chunkZ) {
-        StructureConfig configVillage = generator.getStructuresConfig().getForType(StructureFeature.VILLAGE);
-
-        for (int k = chunkX - 8; k <= chunkX + 8; ++k) {
-            for (int m = chunkZ - 8; m <= chunkZ + 8; ++m) {
-                if (configVillage != null) {
-                    ChunkPos possibleVillagePos = StructureFeature.VILLAGE.getStartChunk(configVillage, seed, rand, k, m);
-                    if (k == possibleVillagePos.x && m == possibleVillagePos.z) {
-                        return false;
-                    }
-                }
-                /*
-                if (configSmallGraveyardSavanna != null) {
-                    ChunkPos possibleSmallGraveyardSavannaPos = TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA.getStartChunk(configSmallGraveyardSavanna, seed, rand, k, m);
-                    if (k == possibleSmallGraveyardSavannaPos.x && m == possibleSmallGraveyardSavannaPos.z && this != TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA) {
-                        return false;
-                    }
-                }
-                if (configMushroomGrave != null) {
-                    ChunkPos possibleMushroomGravePos = TGStructures.MUSHROOM_GRAVE.getStartChunk(configMushroomGrave, seed, rand, k, m);
-                    if (k == possibleMushroomGravePos.x && m == possibleMushroomGravePos.z && this != TGStructures.MUSHROOM_GRAVE) {
-                        return false;
-                    }
-                }
-                if (configLargeBirch != null) {
-                    ChunkPos possibleLargeBirchPos = TGStructures.LARGE_BIRCH_TREE.getStartChunk(configLargeBirch, seed, rand, k, m);
-                    if (k == possibleLargeBirchPos.x && m == possibleLargeBirchPos.z && this != TGStructures.LARGE_BIRCH_TREE) {
-                        return false;
-                    }
-                }
-                if (configSmallGrave != null) {
-                    ChunkPos possibleSmallGravePos = TGStructures.SMALL_GRAVE.getStartChunk(configSmallGrave, seed, rand, k, m);
-                    if (k == possibleSmallGravePos.x && m == possibleSmallGravePos.z && this != TGStructures.SMALL_GRAVE) {
-                        return false;
-                    }
-                }
-                if (configSmallGraveyard != null) {
-                    ChunkPos possibleSmallGraveyardPos = TGStructures.SMALL_WALLED_GRAVEYARD.getStartChunk(configSmallGraveyard, seed, rand, k, m);
-                    if (k == possibleSmallGraveyardPos.x && m == possibleSmallGraveyardPos.z && this != TGStructures.SMALL_WALLED_GRAVEYARD) {
-                        return false;
-                    }
-                }
-                if (configMediumGraveyard != null) {
-                    ChunkPos possibleMediumGraveyardPos = TGStructures.MEDIUM_WALLED_GRAVEYARD.getStartChunk(configMediumGraveyard, seed, rand, k, m);
-                    if (k == possibleMediumGraveyardPos.x && m == possibleMediumGraveyardPos.z && this != TGStructures.MEDIUM_WALLED_GRAVEYARD) {
-                        return false;
-                    }
-                }
-
-                 */
+        StructureConfig structureConfig = generator.getStructuresConfig().getForType(StructureFeature.VILLAGE);
+        if (structureConfig == null) {
+            return false;
+        } else {
+            if (size <= 2) {
+                return true;
             }
 
+            int blocksAwayToCheck = 15;
+            for (int k = chunkX - blocksAwayToCheck; k <= chunkX + blocksAwayToCheck; ++k) {
+                for (int l = chunkZ - blocksAwayToCheck; l <= chunkZ + blocksAwayToCheck; ++l) {
+                    ChunkPos chunkPos = StructureFeature.VILLAGE.getStartChunk(structureConfig, seed, rand, k, l);
+                    if (k == chunkPos.x && l == chunkPos.z) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
-        return true;
     }
 
     private int getSunkenIn() {
