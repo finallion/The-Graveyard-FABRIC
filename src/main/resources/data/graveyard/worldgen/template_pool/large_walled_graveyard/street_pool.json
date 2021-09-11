@@ -92,9 +92,27 @@
       }
     },
     {
-      "weight": 5,
+      "weight": 6,
       "element": {
         "location": "graveyard:walled_street_01",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "graveyard:walled_street_02",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "location": "graveyard:walled_street_03",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -180,7 +198,7 @@
       "element": {
         "location": "graveyard:street_end_01",
         "processors": "graveyard:simple_surface_list",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     },
@@ -190,7 +208,7 @@
       "element": {
         "location": "graveyard:street_end_02",
         "processors": "graveyard:simple_surface_list",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     },
@@ -200,7 +218,7 @@
       "element": {
         "location": "graveyard:street_end_03",
         "processors": "graveyard:simple_surface_list",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     }

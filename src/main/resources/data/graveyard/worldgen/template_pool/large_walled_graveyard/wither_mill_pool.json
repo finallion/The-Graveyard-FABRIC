@@ -10,7 +10,7 @@
       "element": {
         "location": "graveyard:high_graveyard_01",
         "processors": "minecraft:empty",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     },
@@ -20,7 +20,7 @@
       "element": {
         "location": "graveyard:high_graveyard_02",
         "processors": "minecraft:empty",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     },
@@ -30,7 +30,7 @@
       "element": {
         "location": "graveyard:high_graveyard_03",
         "processors": "minecraft:empty",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     }

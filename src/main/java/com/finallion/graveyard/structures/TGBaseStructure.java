@@ -26,6 +26,8 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
+import java.util.Set;
+
 public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
     private final int SUNKEN_IN;
     private final double SIZE;
@@ -83,9 +85,20 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
         // checks are in a larger radius if the structure spawns above water
         // needed for the large graveyard to make ugly generation over rivers and in oceans less likely
+        // additionally checks are for oceans
         if (SIZE > 2) {
             offset += OFFSET_WATER_CHECK_LG;
+
+            Set<Biome> biomesInArea = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 156);
+
+            for (Biome biome : biomesInArea) {
+                if (biome.getCategory() == Biome.Category.OCEAN) {
+                    return false;
+                }
+            }
+
         }
+
 
         int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int j1 = generator.getHeightInGround(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
@@ -128,9 +141,10 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         System.out.println("Seven: " + bo1 + " Height: " + o1 + " at: " + chunkX + " " + (chunkZ - offset));
         System.out.println("Eight: " + bp1 + " Height: " + p1 + " at: " + (chunkX - offset) + " " + chunkZ);
         System.out.println("Nine: " + bq1 + " Height: " + q1 + " at: " + (chunkX - offset) + " " + (chunkZ - offset));
-         */
+        */
 
         return countWaterMatches(bi1, bj1, bk1, bl1, bm1, bn1, bo1, bq1, bp1);
+
     }
 
     private boolean countWaterMatches(BlockState... blockStates) {

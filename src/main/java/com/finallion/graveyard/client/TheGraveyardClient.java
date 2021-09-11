@@ -1,10 +1,12 @@
 package com.finallion.graveyard.client;
 
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.entites.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.utils.SpriteIdentifierRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -34,6 +36,10 @@ public class TheGraveyardClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+
+        TGParticles.init();
+
+
 
         BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK);
 

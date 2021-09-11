@@ -90,7 +90,7 @@
       "element": {
         "location": "graveyard:branch_willow",
         "processors": "minecraft:empty",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     },
@@ -110,7 +110,7 @@
       "element": {
         "location": "graveyard:branch_boulder",
         "processors": "minecraft:empty",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     }
