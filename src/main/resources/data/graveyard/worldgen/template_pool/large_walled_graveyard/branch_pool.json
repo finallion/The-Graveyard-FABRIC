@@ -6,7 +6,7 @@
   "elements": [
     {
 
-      "weight": 6,
+      "weight": 10,
       "element": {
         "location": "graveyard:branch_large_grave_01",
         "processors": "minecraft:empty",
@@ -16,17 +16,7 @@
     },
     {
 
-      "weight": 6,
-      "element": {
-        "location": "graveyard:branch_gallows_hills",
-        "processors": "minecraft:empty",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-
-      "weight": 3,
+      "weight": 8,
       "element": {
         "location": "graveyard:branch_spider_den",
         "processors": "minecraft:empty",
@@ -36,7 +26,7 @@
     },
     {
 
-      "weight": 5,
+      "weight": 10,
       "element": {
         "location": "graveyard:branch_lost_grave",
         "processors": "minecraft:empty",
@@ -46,7 +36,7 @@
     },
     {
 
-      "weight": 5,
+      "weight": 12,
       "element": {
         "location": "graveyard:branch_walled_graves",
         "processors": "minecraft:empty",
@@ -86,7 +76,47 @@
     },
     {
 
-      "weight": 3,
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_graves_04",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_graves_05",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_looted_graves_01",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_looted_graves_02",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 9,
       "element": {
         "location": "graveyard:branch_willow",
         "processors": "minecraft:empty",
@@ -96,7 +126,7 @@
     },
     {
 
-      "weight": 7,
+      "weight": 10,
       "element": {
         "location": "graveyard:branch_large_grave_02",
         "processors": "minecraft:empty",
@@ -106,9 +136,69 @@
     },
     {
 
-      "weight": 5,
+      "weight": 9,
       "element": {
-        "location": "graveyard:branch_boulder",
+        "location": "graveyard:branch_boulder_01",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_boulder_02",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 10,
+      "element": {
+        "location": "graveyard:branch_boulder_03",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 11,
+      "element": {
+        "location": "graveyard:branch_nature_01",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 11,
+      "element": {
+        "location": "graveyard:branch_nature_02",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 11,
+      "element": {
+        "location": "graveyard:branch_nature_03",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+
+      "weight": 11,
+      "element": {
+        "location": "graveyard:branch_nature_04",
         "processors": "minecraft:empty",
         "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"

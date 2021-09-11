@@ -170,7 +170,6 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
         int offset = (int) SIZE * 8;
 
-        // check only corners and center or too many structures get cancelled
         int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
@@ -221,6 +220,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
                 return true;
             }
 
+
             int blocksAwayToCheck = 15;
             for (int k = chunkX - blocksAwayToCheck; k <= chunkX + blocksAwayToCheck; ++k) {
                 for (int l = chunkZ - blocksAwayToCheck; l <= chunkZ + blocksAwayToCheck; ++l) {
@@ -235,11 +235,11 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         }
     }
 
-    private int getSUNKEN_IN() {
+    private int getSunkenIn() {
         return SUNKEN_IN;
     }
 
-    private double getSIZE() {
+    private double getSize() {
         return SIZE;
     }
 
@@ -261,7 +261,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
 
 
         public Start(StructureFeature<DefaultFeatureConfig> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
-            this(structureIn, chunkPos, referenceIn, seedIn, ((TGBaseStructure) structureIn).getStructureName(), ((TGBaseStructure) structureIn).getSIZE(), ((TGBaseStructure) structureIn).getSUNKEN_IN(), ((TGBaseStructure) structureIn).getAverageHeight());
+            this(structureIn, chunkPos, referenceIn, seedIn, ((TGBaseStructure) structureIn).getStructureName(), ((TGBaseStructure) structureIn).getSize(), ((TGBaseStructure) structureIn).getSunkenIn(), ((TGBaseStructure) structureIn).getAverageHeight());
         }
 
         public Start(StructureFeature<DefaultFeatureConfig> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn, String name, double size, int sunkenIn, int averageHeight) {

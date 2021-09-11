@@ -78,7 +78,7 @@ public class TheGraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("small_walled_graveyard", ConfigStructureEntry.of(20, 18, 1690192399));
         structureConfigEntries.putIfAbsent("small_walled_graveyard_desert", ConfigStructureEntry.of(32, 28, 661903018));
         structureConfigEntries.putIfAbsent("small_walled_graveyard_savanna", ConfigStructureEntry.of(14, 12, 451235912));
-        structureConfigEntries.putIfAbsent("large_walled_graveyard", ConfigStructureEntry.of(10, 12, 739017628));
+        structureConfigEntries.putIfAbsent("large_walled_graveyard", ConfigStructureEntry.of(9, 11, 739017628));
 
 
         Config.super.save();

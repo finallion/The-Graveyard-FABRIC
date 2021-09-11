@@ -38,13 +38,16 @@ public class TheGraveyard implements ModInitializer {
     // pirate ship -> jigsaw battle
 
     // vignette
-    // particle
+
 
     // one way street
     // end street
-    // more streets
     // more branches
     // more corners
+
+    // remake skeleton creeper
+    // more fog particles!
+    // map for lg
 
 
     @Override
