@@ -89,10 +89,19 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
         if (SIZE > 2) {
             offset += OFFSET_WATER_CHECK_LG;
 
-            Set<Biome> biomesInArea = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 156);
+            Set<Biome> biomesInAreaOne = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 156);
+            Set<Biome> biomesInAreaTwo = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 32);
 
-            for (Biome biome : biomesInArea) {
+            for (Biome biome : biomesInAreaOne) {
                 if (biome.getCategory() == Biome.Category.OCEAN) {
+                    return false;
+                }
+            }
+
+            // clears the inner circle of generation from water sources
+            // following checks clear the outer circle from possible water
+            for (Biome biome : biomesInAreaTwo) {
+                if (biome.getCategory() == Biome.Category.RIVER) {
                     return false;
                 }
             }

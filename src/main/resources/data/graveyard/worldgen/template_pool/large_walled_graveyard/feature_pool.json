@@ -23,6 +23,16 @@
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
+    },
+    {
+
+      "weight": 1,
+      "element": {
+        "location": "graveyard:walled_graves_with_crypt",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
     }
   ]
 }

@@ -47,7 +47,7 @@ public class TheGraveyard implements ModInitializer {
 
     // remake skeleton creeper
     // more fog particles!
-    // map for lg
+
 
 
     @Override

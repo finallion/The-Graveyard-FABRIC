@@ -9,7 +9,8 @@
     "ServerPlayNetworkHandlerMixin",
     "LakeFeatureMixin",
     "PlantBlockMixin",
-    "TreeFeatureMixin"
+    "TreeFeatureMixin",
+    "CreeperEntityMixin"
 
   ],
   "client": [
