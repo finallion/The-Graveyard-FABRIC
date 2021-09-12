@@ -39,13 +39,11 @@ public class TheGraveyard implements ModInitializer {
 
     // vignette
 
-
     // one way street
     // end street
     // more branches
     // more corners
 
-    // remake skeleton creeper
     // more fog particles!
 
 
@@ -59,6 +57,7 @@ public class TheGraveyard implements ModInitializer {
         TGBiomeKeys.init();
         TGProcessors.init();
         TGEntities.registerEntities();
+        TGVillagerTrades.init();
 
 
 

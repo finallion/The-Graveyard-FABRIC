@@ -35,7 +35,7 @@
   "block.graveyard.small_cyan_urn": "Small Cyan Urn",
   "block.graveyard.small_light_blue_urn": "Small Light Blue Urn",
 
-  "block.graveyard.vase_block": "Vases",
+  "block.graveyard.vase_block": "Ceramics",
 
 
   "block.graveyard.lying_skeleton": "Lying Skeleton",
@@ -57,6 +57,7 @@
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",
+  "filled_map.graveyard:large_walled_graveyard": "Large Graveyard Explorer Map",
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"
 

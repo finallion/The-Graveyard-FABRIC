@@ -90,7 +90,7 @@ public class TGBaseStructure extends StructureFeature<DefaultFeatureConfig> {
             offset += OFFSET_WATER_CHECK_LG;
 
             Set<Biome> biomesInAreaOne = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 156);
-            Set<Biome> biomesInAreaTwo = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 32);
+            Set<Biome> biomesInAreaTwo = generator.getBiomeSource().getBiomesInArea(chunkX, 0, chunkZ, 28);
 
             for (Biome biome : biomesInAreaOne) {
                 if (biome.getCategory() == Biome.Category.OCEAN) {
