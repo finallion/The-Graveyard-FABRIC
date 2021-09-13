@@ -39,11 +39,6 @@ public class TheGraveyard implements ModInitializer {
 
     // vignette
 
-    // one way street
-    // end street
-    // more branches
-    // more corners
-
     // more fog particles!
 
 
