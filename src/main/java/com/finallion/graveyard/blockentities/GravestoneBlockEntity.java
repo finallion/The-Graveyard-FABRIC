@@ -147,7 +147,6 @@ public class GravestoneBlockEntity extends BlockEntity {
     @Nullable
     @Environment(EnvType.CLIENT)
     public OrderedText getTextBeingEditedOnRow(int row, Function<Text, OrderedText> function) {
-        System.out.println("getTextBeingEditedOnRow");
         if (this.textsBeingEdited[row] == null && this.texts[row] != null) {
             this.textsBeingEdited[row] = (OrderedText) function.apply(this.texts[row]);
         }
@@ -247,7 +246,6 @@ public class GravestoneBlockEntity extends BlockEntity {
 
 
     private void updateListeners() {
-        System.out.println("UPDATED");
         this.markDirty();
         this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
     }
