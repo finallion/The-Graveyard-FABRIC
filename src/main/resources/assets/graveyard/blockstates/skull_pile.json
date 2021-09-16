@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 180,
+      "model": "graveyard:block/skull_pile"
+    },
+    "facing=north": {
+      "y": 90,
+      "model": "graveyard:block/skull_pile"
+    },
+    "facing=south": {
+      "y": 270,
+      "model": "graveyard:block/skull_pile"
+    },
+    "facing=west": {
+      "y": 0,
+      "model": "graveyard:block/skull_pile"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:sand",
+    "minecraft:bamboo",
+    "minecraft:bamboo_sapling",
+    "minecraft:gravel",
+    "minecraft:dirt",
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:coarse_dirt",
+    "minecraft:mycelium",
+
+    "graveyard:tg_dirt",
+    "graveyard:tg_grass_block",
+    "graveyard:tg_moss_block",
+    "graveyard:tg_coarse_dirt",
+    "graveyard:tg_rooted_dirt"
+  ]
+}

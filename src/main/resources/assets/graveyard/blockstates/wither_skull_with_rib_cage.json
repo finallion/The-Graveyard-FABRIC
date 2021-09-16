@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/wither_skull_with_rib_cage"
+    },
+    "facing=north": {
+      "model": "graveyard:block/wither_skull_with_rib_cage"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/wither_skull_with_rib_cage"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/wither_skull_with_rib_cage"
+    }
+  }
+}

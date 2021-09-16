@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/lying_wither_skeleton"
+    },
+    "facing=north": {
+      "model": "graveyard:block/lying_wither_skeleton"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/lying_wither_skeleton"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/lying_wither_skeleton"
+    }
+  }
+}

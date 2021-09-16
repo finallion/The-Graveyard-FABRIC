@@ -1,0 +1,19 @@
+{
+  "name": "graveyard:large_walled_graveyard/start_pool",
+
+  "fallback": "minecraft:empty",
+
+  "elements": [
+
+    {
+
+      "weight": 1,
+      "element": {
+        "location": "graveyard:bp_graveyard_entrance",
+        "processors": "graveyard:simple_surface_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

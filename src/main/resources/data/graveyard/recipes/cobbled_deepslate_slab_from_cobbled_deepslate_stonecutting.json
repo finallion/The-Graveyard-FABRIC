@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "graveyard:tg_cobbled_deepslate"
+  },
+  "result": "graveyard:tg_cobbled_deepslate_slab",
+  "count": 2
+}

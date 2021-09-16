@@ -1,0 +1,127 @@
+{
+  "textures": {
+    "0": "minecraft:block/white_terracotta",
+    "particle": "minecraft:block/white_terracotta"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [4, 0, 4],
+      "to": [12, 6, 12],
+      "faces": {
+        "north": {"uv": [0, 0, 8, 6], "texture": "#0"},
+        "east": {"uv": [0, 0, 8, 6], "texture": "#0"},
+        "south": {"uv": [0, 0, 8, 6], "texture": "#0"},
+        "west": {"uv": [0, 0, 8, 6], "texture": "#0"},
+        "up": {"uv": [0, 0, 8, 8], "texture": "#0"},
+        "down": {"uv": [0, 0, 8, 8], "texture": "#0"}
+      }
+    },
+    {
+      "name": "collar",
+      "from": [6, 6, 6],
+      "to": [10, 7, 10],
+      "faces": {
+        "north": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 4, 4], "texture": "#0"},
+        "down": {"uv": [0, 0, 4, 4], "texture": "#0"}
+      }
+    },
+    {
+      "name": "spout_lower",
+      "from": [5, 7, 5],
+      "to": [11, 8, 11],
+      "faces": {
+        "north": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 6, 6], "texture": "#0"},
+        "down": {"uv": [0, 0, 6, 6], "texture": "#0"}
+      }
+    },
+    {
+      "name": "spout_long",
+      "from": [5, 8, 10],
+      "to": [11, 9, 11],
+      "faces": {
+        "north": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "down": {"uv": [0, 0, 6, 1], "texture": "#0"}
+      }
+    },
+    {
+      "name": "spout_long",
+      "from": [5, 8, 5],
+      "to": [11, 9, 6],
+      "faces": {
+        "north": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 6, 1], "texture": "#0"},
+        "down": {"uv": [0, 0, 6, 1], "texture": "#0"}
+      }
+    },
+    {
+      "name": "spout_short",
+      "from": [10, 8, 6],
+      "to": [11, 9, 10],
+      "faces": {
+        "north": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 4, 1], "rotation": 270, "texture": "#0"},
+        "down": {"uv": [0, 0, 4, 1], "rotation": 90, "texture": "#0"}
+      }
+    },
+    {
+      "name": "spout_short",
+      "from": [5, 8, 6],
+      "to": [6, 9, 10],
+      "faces": {
+        "north": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "east": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "south": {"uv": [0, 0, 1, 1], "texture": "#0"},
+        "west": {"uv": [0, 0, 4, 1], "texture": "#0"},
+        "up": {"uv": [0, 0, 4, 1], "rotation": 270, "texture": "#0"},
+        "down": {"uv": [0, 0, 4, 1], "rotation": 90, "texture": "#0"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [0, 3.75, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "thirdperson_lefthand": {
+      "translation": [0, 3, 0],
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "firstperson_righthand": {
+      "translation": [4.5, 0, 0]
+    },
+    "firstperson_lefthand": {
+      "translation": [4, 0, 0]
+    },
+    "ground": {
+      "scale": [0.5, 0.5, 0.5]
+    },
+    "gui": {
+      "translation": [0, 2.75, 0]
+    },
+    "head": {
+      "translation": [0, 12.5, 0]
+    },
+    "fixed": {
+      "translation": [0, 3.5, 0]
+    }
+  }
+}

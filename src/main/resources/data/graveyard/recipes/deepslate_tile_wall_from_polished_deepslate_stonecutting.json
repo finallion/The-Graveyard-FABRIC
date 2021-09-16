@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "graveyard:tg_polished_deepslate"
+  },
+  "result": "graveyard:tg_deepslate_tile_wall",
+  "count": 1
+}

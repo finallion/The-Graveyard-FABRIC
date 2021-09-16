@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "graveyard:tg_cobbled_deepslate"
+    }
+  },
+  "result": {
+    "item": "graveyard:tg_cobbled_deepslate_stairs",
+    "count": 4
+  }
+}

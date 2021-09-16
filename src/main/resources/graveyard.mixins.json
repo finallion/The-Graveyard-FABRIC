@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.finallion.graveyard.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "NoiseChunkGeneratorMixin",
+    "StructuresConfigAccessor",
+    "ServerPlayNetworkHandlerMixin",
+    "LakeFeatureMixin",
+    "PlantBlockMixin",
+    "TreeFeatureMixin",
+    "CreeperEntityMixin"
+
+  ],
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "TexturedRenderLayersMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "graveyard:block/tg_deepslate_tile_slab"
+    },
+    "type=double": {
+      "model": "graveyard:block/tg_deepslate_tiles"
+    },
+    "type=top": {
+      "model": "graveyard:block/tg_deepslate_tile_slab_top"
+    }
+  }
+}

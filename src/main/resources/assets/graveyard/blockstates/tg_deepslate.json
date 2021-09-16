@@ -1,0 +1,62 @@
+{
+  "variants": {
+    "axis=x": [
+      {
+        "model": "graveyard:block/tg_deepslate",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate",
+        "y": 90,
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored",
+        "y": 90,
+        "x": 90
+      }
+    ],
+    "axis=y": [
+      {
+        "model": "graveyard:block/tg_deepslate"
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored"
+      },
+      {
+        "model": "graveyard:block/tg_deepslate",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored",
+        "y": 180
+      }
+    ],
+    "axis=z": [
+      {
+        "model": "graveyard:block/tg_deepslate",
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored",
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate",
+        "y": 180,
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/tg_deepslate_mirrored",
+        "y": 180,
+        "x": 90
+      }
+    ]
+  }
+}
