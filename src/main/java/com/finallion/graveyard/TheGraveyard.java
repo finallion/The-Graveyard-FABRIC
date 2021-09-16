@@ -41,6 +41,9 @@ public class TheGraveyard implements ModInitializer {
 
     // more fog particles!
 
+    // add recipes for small urns
+    // sugar cane/bamboo plantable
+
 
 
     @Override
