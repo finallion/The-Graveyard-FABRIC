@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "1.0",
+  "version": "1.5",
 
   "name": "The Graveyard",
-  "description": "Adds new structures and blocks themed around the graveyard.",
+  "description": "Adds new structures, mobs and blocks themed around the graveyard.",
   "authors": [
     "Finallion"
   ],
