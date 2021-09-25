@@ -30,8 +30,8 @@ public class TGGrassBlock extends GrassBlock {
         int k = pos.getZ();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        for(int l = 0; l < 14; ++l) {
-            mutable.set(i + MathHelper.nextInt(random, -10, 10), j - random.nextInt(10), k + MathHelper.nextInt(random, -10, 10));
+        if (random.nextInt(5) == 0) {
+            mutable.set(i + MathHelper.nextInt(random, -5, 5), j + random.nextInt(5), k + MathHelper.nextInt(random, -5, 5));
             BlockState blockState = world.getBlockState(mutable);
             if (!blockState.isFullCube(world, mutable)) {
                 world.addParticle(ParticleTypes.SPORE_BLOSSOM_AIR, (double)mutable.getX() + random.nextDouble(), (double)mutable.getY() + random.nextDouble(), (double)mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
