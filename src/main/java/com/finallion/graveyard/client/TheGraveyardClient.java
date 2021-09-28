@@ -3,7 +3,9 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.entites.models.GhoulModel;
 import com.finallion.graveyard.entites.renders.AcolyteRender;
+import com.finallion.graveyard.entites.renders.DecayingGhoulRenderer;
 import com.finallion.graveyard.entites.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -14,6 +16,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -23,6 +26,7 @@ import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -34,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class TheGraveyardClient implements ClientModInitializer {
     private static final RenderLayer CUTOUT_MIPPED = RenderLayer.getCutoutMipped();
+    public static final EntityModelLayer GHOUL_MODEL_LAYER = new EntityModelLayer(new Identifier(TheGraveyard.MOD_ID, "ghoul"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -73,6 +78,9 @@ public class TheGraveyardClient implements ClientModInitializer {
         // entities
         EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.ACOLYTE, AcolyteRender::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.DECAYING_GHOUL, DecayingGhoulRenderer::new);
+
+        EntityModelLayerRegistry.registerModelLayer(GHOUL_MODEL_LAYER, GhoulModel::getTexturedModelData);
 
     }
 }

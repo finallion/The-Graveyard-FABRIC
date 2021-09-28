@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entites.renders;
 
+import com.finallion.graveyard.entites.renders.features.AcolyteEyes;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.IllagerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -13,6 +14,8 @@ public class AcolyteRender extends IllagerEntityRenderer<VindicatorEntity> {
 
     public AcolyteRender(EntityRendererFactory.Context ctx) {
         super(ctx, new IllagerEntityModel<>(ctx.getPart(EntityModelLayers.VINDICATOR)), 0.5F);
+        this.addFeature(new AcolyteEyes(this));
+        this.model.getHat().visible = true;
     }
 
     @Override

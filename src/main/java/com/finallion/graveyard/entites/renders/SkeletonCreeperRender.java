@@ -19,7 +19,7 @@ public class SkeletonCreeperRender extends MobEntityRenderer<CreeperEntity, Cree
     private static final Identifier TEXTURE = new Identifier("graveyard:textures/entity/skeleton_creeper.png");
 
     public SkeletonCreeperRender(EntityRendererFactory.Context context) {
-        super(context, new CreeperEntityModel(context.getPart(EntityModelLayers.CREEPER)), 0.5F);
+        super(context, new CreeperEntityModel<>(context.getPart(EntityModelLayers.CREEPER)), 0.5F);
         this.addFeature(new CreeperChargeFeatureRenderer(this, context.getModelLoader()));
         this.addFeature(new SkeletonCreeperEyes(this));
     }

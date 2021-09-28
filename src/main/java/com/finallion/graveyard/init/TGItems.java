@@ -82,6 +82,7 @@ public class TGItems {
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper_spawn_egg"), new SpawnEggItem(TGEntities.SKELETON_CREEPER, 7960171, 15263976, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acolyte_spawn_egg"), new SpawnEggItem(TGEntities.ACOLYTE, 0, 0, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "decaying_ghoul_spawn_egg"), new SpawnEggItem(TGEntities.DECAYING_GHOUL, 0, 0, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
     }
 
