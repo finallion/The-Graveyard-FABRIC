@@ -1,4 +1,4 @@
-package com.finallion.graveyard.entites;
+package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -12,11 +12,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 

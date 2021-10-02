@@ -1,9 +1,9 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.entites.Acolyte;
-import com.finallion.graveyard.entites.Ghoul;
-import com.finallion.graveyard.entites.SkeletonCreeper;
+import com.finallion.graveyard.entities.Acolyte;
+import com.finallion.graveyard.entities.Ghoul;
+import com.finallion.graveyard.entities.SkeletonCreeper;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;

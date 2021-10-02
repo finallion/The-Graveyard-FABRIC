@@ -1,11 +1,10 @@
-package com.finallion.graveyard.entites.renders;
+package com.finallion.graveyard.entities.renders;
 
-import com.finallion.graveyard.entites.renders.features.AcolyteEyes;
+import com.finallion.graveyard.entities.renders.features.AcolyteEyes;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.IllagerEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.IllagerEntityModel;
-import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.util.Identifier;
 

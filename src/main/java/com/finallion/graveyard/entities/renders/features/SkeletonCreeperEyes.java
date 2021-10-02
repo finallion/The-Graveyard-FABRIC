@@ -1,4 +1,4 @@
-package com.finallion.graveyard.entites.renders.features;
+package com.finallion.graveyard.entities.renders.features;
 
 
 import net.fabricmc.api.EnvType;

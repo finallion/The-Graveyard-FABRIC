@@ -1,4 +1,4 @@
-package com.finallion.graveyard.entites.renders.features;
+package com.finallion.graveyard.entities.renders.features;
 
 
 import net.fabricmc.api.EnvType;
@@ -9,10 +9,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.CreeperEntityModel;
 import net.minecraft.client.render.entity.model.IllagerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.util.Identifier;
 

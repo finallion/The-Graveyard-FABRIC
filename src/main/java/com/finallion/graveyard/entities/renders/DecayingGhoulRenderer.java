@@ -1,9 +1,9 @@
-package com.finallion.graveyard.entites.renders;
+package com.finallion.graveyard.entities.renders;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.client.TheGraveyardClient;
-import com.finallion.graveyard.entites.Ghoul;
-import com.finallion.graveyard.entites.models.GhoulModel;
+import com.finallion.graveyard.entities.Ghoul;
+import com.finallion.graveyard.entities.models.GhoulModel;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;

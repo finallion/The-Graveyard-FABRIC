@@ -1,6 +1,6 @@
-package com.finallion.graveyard.entites.renders;
+package com.finallion.graveyard.entities.renders;
 
-import com.finallion.graveyard.entites.renders.features.SkeletonCreeperEyes;
+import com.finallion.graveyard.entities.renders.features.SkeletonCreeperEyes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;

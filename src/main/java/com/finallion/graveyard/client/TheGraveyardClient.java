@@ -3,10 +3,10 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
-import com.finallion.graveyard.entites.models.GhoulModel;
-import com.finallion.graveyard.entites.renders.AcolyteRender;
-import com.finallion.graveyard.entites.renders.DecayingGhoulRenderer;
-import com.finallion.graveyard.entites.renders.SkeletonCreeperRender;
+import com.finallion.graveyard.entities.models.GhoulModel;
+import com.finallion.graveyard.entities.renders.AcolyteRender;
+import com.finallion.graveyard.entities.renders.DecayingGhoulRenderer;
+import com.finallion.graveyard.entities.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;

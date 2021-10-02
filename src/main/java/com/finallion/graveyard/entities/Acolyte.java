@@ -1,11 +1,9 @@
-package com.finallion.graveyard.entites;
+package com.finallion.graveyard.entities;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.IllusionerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.world.World;
 
