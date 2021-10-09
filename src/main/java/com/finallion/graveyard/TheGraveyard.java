@@ -39,7 +39,6 @@ public class TheGraveyard implements ModInitializer {
 
     // vignette
 
-    // more fog particles!
 
     // sugar cane/bamboo plantable
     // check moss replacables
@@ -118,6 +117,13 @@ public class TheGraveyard implements ModInitializer {
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_LARGE_WALLED_GRAVEYARD);
                         });
 
+
+
+        BiomeModifications.create(new Identifier(MOD_ID, "haunted_house"))
+                .add(ModificationPhase.ADDITIONS,
+                        BiomeSelectors.categories(Biome.Category.FOREST, Biome.Category.SWAMP).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "haunted_house")))),
+                        context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_HAUNTED_HOUSE);
+                        });
 
 
 

@@ -25,7 +25,7 @@ public class TheGraveyardConfig implements Config {
              //
              // Notice: reducing the generation settings will increase the risk of structures overlapping. Especially jigsaw structures are unpredictable!  
             """)
-    public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(8);
+    public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(9);
     public final Map<String, ConfigFogParticleEntry> particleConfigEntries = new HashMap<>(1);
 
     @Override
@@ -79,6 +79,7 @@ public class TheGraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("small_walled_graveyard_desert", ConfigStructureEntry.of(32, 28, 661903018));
         structureConfigEntries.putIfAbsent("small_walled_graveyard_savanna", ConfigStructureEntry.of(14, 12, 451235912));
         structureConfigEntries.putIfAbsent("large_walled_graveyard", ConfigStructureEntry.of(11, 9, 739017628));
+        structureConfigEntries.putIfAbsent("haunted_house", ConfigStructureEntry.of(25, 20, 529239621));
 
 
         Config.super.save();

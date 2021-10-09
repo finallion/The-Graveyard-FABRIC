@@ -24,21 +24,5 @@ public class TGGrassBlock extends GrassBlock {
         return new ItemStack(Blocks.GRASS_BLOCK);
     }
 
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        int i = pos.getX();
-        int j = pos.getY();
-        int k = pos.getZ();
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
-
-        if (random.nextInt(5) == 0) {
-            mutable.set(i + MathHelper.nextInt(random, -5, 5), j + random.nextInt(5), k + MathHelper.nextInt(random, -5, 5));
-            BlockState blockState = world.getBlockState(mutable);
-            if (!blockState.isFullCube(world, mutable)) {
-                world.addParticle(ParticleTypes.SPORE_BLOSSOM_AIR, (double)mutable.getX() + random.nextDouble(), (double)mutable.getY() + random.nextDouble(), (double)mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
-            }
-        }
-
-    }
-
 
 }

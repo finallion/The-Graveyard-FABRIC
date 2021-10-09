@@ -17,6 +17,7 @@ public class TGConfiguredFeatures {
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_LARGE_BIRCH_TREE = TGStructures.LARGE_BIRCH_TREE.configure(DefaultFeatureConfig.DEFAULT);
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_MEDIUM_WALLED_GRAVEYARD = TGStructures.MEDIUM_WALLED_GRAVEYARD.configure(DefaultFeatureConfig.DEFAULT);
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_LARGE_WALLED_GRAVEYARD = TGStructures.LARGE_WALLED_GRAVEYARD.configure(DefaultFeatureConfig.DEFAULT);
+    public static ConfiguredStructureFeature<?, ?> CONFIGURED_HAUNTED_HOUSE = TGStructures.HAUNTED_HOUSE.configure(DefaultFeatureConfig.DEFAULT);
 
     public static void registerConfiguredStructures() {
         Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
@@ -29,5 +30,7 @@ public class TGConfiguredFeatures {
         Registry.register(registry, new Identifier(TheGraveyard.MOD_ID, "configured_large_birch_tree"), CONFIGURED_LARGE_BIRCH_TREE);
         Registry.register(registry, new Identifier(TheGraveyard.MOD_ID, "configured_medium_walled_graveyard"), CONFIGURED_MEDIUM_WALLED_GRAVEYARD);
         Registry.register(registry, new Identifier(TheGraveyard.MOD_ID, "configured_large_walled_graveyard"), CONFIGURED_LARGE_WALLED_GRAVEYARD);
+        Registry.register(registry, new Identifier(TheGraveyard.MOD_ID, "configured_haunted_house"), CONFIGURED_HAUNTED_HOUSE);
+
     }
 }

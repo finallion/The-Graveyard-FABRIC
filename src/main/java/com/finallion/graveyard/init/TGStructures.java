@@ -27,6 +27,7 @@ public class TGStructures {
     public static StructureFeature<DefaultFeatureConfig> LARGE_BIRCH_TREE = new LargeBirchTree(DefaultFeatureConfig.CODEC);
     public static StructureFeature<DefaultFeatureConfig> MEDIUM_WALLED_GRAVEYARD = new MediumWalledGraveyard(DefaultFeatureConfig.CODEC);
     public static StructureFeature<DefaultFeatureConfig> LARGE_WALLED_GRAVEYARD = new LargeWalledGraveyard(DefaultFeatureConfig.CODEC);
+    public static StructureFeature<DefaultFeatureConfig> HAUNTED_HOUSE = new HauntedHouse(DefaultFeatureConfig.CODEC);
 
     private static void register(String id, StructureFeature<DefaultFeatureConfig> feature) {
         ConfigStructureEntry entry = TheGraveyard.config.get(new Identifier(TheGraveyard.MOD_ID, id));
@@ -54,7 +55,7 @@ public class TGStructures {
         register("mushroom_grave", MUSHROOM_GRAVE);
         register("small_walled_graveyard_desert", SMALL_WALLED_GRAVEYARD_DESERT);
         register("large_walled_graveyard", LARGE_WALLED_GRAVEYARD);
-
+        register("haunted_house", HAUNTED_HOUSE);
 
 
     }
