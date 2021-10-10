@@ -17,11 +17,11 @@ public class TGEntities {
     public static final EntityType<Acolyte> ACOLYTE = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Acolyte::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
     public static final EntityType<Ghoul> DECAYING_GHOUL = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, Ghoul::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
 
-
     public static void registerEntities() {
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper"), SKELETON_CREEPER);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "acolyte"), ACOLYTE);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "decaying_ghoul"), DECAYING_GHOUL);
+
     }
 
 
