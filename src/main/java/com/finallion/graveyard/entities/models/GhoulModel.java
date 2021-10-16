@@ -1,15 +1,14 @@
 package com.finallion.graveyard.entities.models;
 
-import com.finallion.graveyard.entities.Ghoul;
+import com.finallion.graveyard.entities.GhoulEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 
 
-public class GhoulModel extends BipedEntityModel<Ghoul> {
+public class GhoulModel extends BipedEntityModel<GhoulEntity> {
 	private final ModelPart root;
 	/*
 	private final ModelPart lower_leg_right;
@@ -152,7 +151,7 @@ public class GhoulModel extends BipedEntityModel<Ghoul> {
 
 
 	@Override
-	public void setAngles(Ghoul livingEntity, float f, float g, float h, float i, float j) {
+	public void setAngles(GhoulEntity livingEntity, float f, float g, float h, float i, float j) {
 		super.setAngles(livingEntity, f, g, h, i, j);
 
 

@@ -3,9 +3,8 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
-import com.finallion.graveyard.entities.models.GhoulModel;
 import com.finallion.graveyard.entities.renders.AcolyteRender;
-import com.finallion.graveyard.entities.renders.DecayingGhoulRenderer;
+import com.finallion.graveyard.entities.renders.GhoulRenderer;
 import com.finallion.graveyard.entities.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -16,7 +15,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -78,9 +76,8 @@ public class TheGraveyardClient implements ClientModInitializer {
         // entities
         EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.ACOLYTE, AcolyteRender::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.DECAYING_GHOUL, DecayingGhoulRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.DECAYING_GHOUL, GhoulRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(GHOUL_MODEL_LAYER, GhoulModel::getTexturedModelData);
 
     }
 }

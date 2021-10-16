@@ -16,6 +16,7 @@ runServer {
 
 repositories {
 	maven { url 'https://jitpack.io' }
+	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -29,6 +30,8 @@ dependencies {
 
 	//Dependencies
 	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${project.config_version}")
+
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.17:${project.geckolib_version_fabric}:dev"
 }
 
 processResources {

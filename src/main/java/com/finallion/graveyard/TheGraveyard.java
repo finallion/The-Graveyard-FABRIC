@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
+import software.bernie.geckolib3.GeckoLib;
 
 
 public class TheGraveyard implements ModInitializer {
@@ -52,6 +53,9 @@ public class TheGraveyard implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        GeckoLib.initialize();
+
+
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGStructures.setupAndRegisterStructureFeatures();
