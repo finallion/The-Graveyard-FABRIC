@@ -76,7 +76,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         // entities
         EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.ACOLYTE, AcolyteRender::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.DECAYING_GHOUL, GhoulRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.GHOUL, GhoulRenderer::new);
 
 
     }

@@ -1,24 +1,18 @@
 package com.finallion.graveyard.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -41,13 +35,21 @@ public class GhoulEntity extends HostileEntity implements IAnimatable {
     protected final byte ANIMATION_WALK = 1;
     protected final byte ANIMATION_RAGE = 2;
     protected final byte ANIMATION_DEATH = 3;
-    protected final TrackedData<Byte> ANIMATION = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
 
     public GhoulEntity(EntityType<? extends GhoulEntity> entityType, World world) {
         super(entityType, world);
     }
 
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        byte variant = (byte) random.nextInt(3);
+        this.dataTracker.startTracking(VARIANT, variant);
+        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+    }
 
     @SuppressWarnings("rawtypes")
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -70,21 +72,32 @@ public class GhoulEntity extends HostileEntity implements IAnimatable {
         return PlayState.CONTINUE;
     }
 
-
-    @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
+        tag.putByte("ghoulVariant", getVariant());
     }
+
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
+        setVariant(tag.getByte("ghoulVariant"));
+    }
+
 
 
     public byte getAnimation() {
         return dataTracker.get(ANIMATION);
     }
 
-    public void setAnimation(byte animation) {
-        dataTracker.set(ANIMATION, animation);
+
+    public byte getVariant() {
+        return dataTracker.get(VARIANT);
     }
+
+    public void setVariant(byte variant) {
+        dataTracker.set(VARIANT, variant);
+    }
+
+
 
     @Override
     public void registerControllers(AnimationData data) {

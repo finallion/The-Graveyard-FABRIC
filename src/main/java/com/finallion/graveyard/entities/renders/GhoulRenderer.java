@@ -28,12 +28,4 @@ public class GhoulRenderer extends GeoEntityRenderer<GhoulEntity> {
         return 0.0F;
     }
 
-
-
-    @Override
-    public Identifier getTexture(GhoulEntity entity) {
-        return new Identifier(TheGraveyard.MOD_ID, "textures/entity/decaying_ghoul.png");
-    }
-
-
 }
