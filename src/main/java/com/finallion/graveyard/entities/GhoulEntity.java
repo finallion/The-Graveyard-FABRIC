@@ -211,17 +211,17 @@ public class GhoulEntity extends HostileEntity implements IAnimatable {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 2.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.5F, -5.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_HUSK_HURT, 2.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_HURT, 1.5F, -5.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 2.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.5F, -5.0F);
     }
 
 

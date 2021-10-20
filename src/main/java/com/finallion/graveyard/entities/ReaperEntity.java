@@ -207,9 +207,6 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
         return this.factory;
     }
 
-    public float getBrightnessAtEyes() {
-        return 2.0F;
-    }
 
     @Override
     public void playAmbientSound() {
