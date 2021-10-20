@@ -29,10 +29,10 @@ public class BaseGhoulModel extends AnimatedGeoModel<GhoulEntity> {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
 
         switch (entity.getVariant()) {
-            case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "withered_ghoul.png");
-            case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "frostbitten_ghoul.png");
-            case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "rotten_ghoul.png");
-            default -> texture = new Identifier(TheGraveyard.MOD_ID, "decaying_ghoul.png");
+            case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/withered_ghoul.png");
+            case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/frostbitten_ghoul.png");
+            case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/rotten_ghoul.png");
+            default -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/decaying_ghoul.png");
         };
     }
 }

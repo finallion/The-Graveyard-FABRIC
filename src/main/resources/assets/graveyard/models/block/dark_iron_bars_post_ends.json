@@ -5,8 +5,8 @@
         "edge": "graveyard:block/dark_iron_bars"
     },
     "elements": [
-        {   "from": [ 7, 0.001, 7 ],
-            "to": [ 9, 0.001, 9 ],
+        {   "from": [ 7, 0.1, 7 ],
+            "to": [ 9, 0.1, 9 ],
             "faces": {
                 "down":  { "uv": [  7, 7,  9,  9 ], "texture": "#edge" },
                 "up":    { "uv": [  7, 7,  9,  9 ], "texture": "#edge" }

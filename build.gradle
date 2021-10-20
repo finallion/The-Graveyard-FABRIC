@@ -32,6 +32,7 @@ dependencies {
 	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${project.config_version}")
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-1.17:${project.geckolib_version_fabric}:dev"
+
 }
 
 processResources {
@@ -40,7 +41,9 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+
 }
+
 
 tasks.withType(JavaCompile).configureEach {
 	// ensure that the encoding is set to UTF-8, no matter what the system default is

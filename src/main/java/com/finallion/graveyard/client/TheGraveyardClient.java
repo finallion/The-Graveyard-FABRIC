@@ -5,6 +5,7 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.entities.renders.AcolyteRender;
 import com.finallion.graveyard.entities.renders.GhoulRenderer;
+import com.finallion.graveyard.entities.renders.ReaperRenderer;
 import com.finallion.graveyard.entities.renders.SkeletonCreeperRender;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -77,7 +78,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.ACOLYTE, AcolyteRender::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.GHOUL, GhoulRenderer::new);
-
+        EntityRendererRegistry.INSTANCE.register(TGEntities.REAPER, ReaperRenderer::new);
 
     }
 }
