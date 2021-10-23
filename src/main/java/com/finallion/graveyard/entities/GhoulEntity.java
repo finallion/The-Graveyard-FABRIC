@@ -91,7 +91,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
     @Override
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D).add(EntityAttributes.GENERIC_ARMOR, 3.0D).add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
+            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.18D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D).add(EntityAttributes.GENERIC_ARMOR, 3.0D).add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.8D).build());
         }
         return attributeContainer;
     }
@@ -109,9 +109,6 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
             }
         }
 
-        if (!this.getMoveControl().isMoving() && getAnimationState() == ANIMATION_RUNNING) {
-            setState(ANIMATION_RAGE);
-        }
 
         System.out.println(this.getAnimationState());
         System.out.println(isTargetInRange());
@@ -220,7 +217,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
     private boolean isTargetInRange() {
         PlayerEntity player = this.world.getClosestPlayer(this, 30.0D);
         if (player != null) {
-            return !this.isInRange(player, 2.0D);
+            return !this.isInRange(player, 3.0D);
         }
         setState(ANIMATION_RAGE);
         return true;
@@ -330,7 +327,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
         @Override
         public void stop() {
             super.stop();
-            this.ghoul.setState(ANIMATION_RUNNING);
+            this.ghoul.setState(ANIMATION_RAGE);
             this.ghoul.setAngryAt(null);
             animationTimer = 0;
         }
