@@ -105,13 +105,11 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
         if (animationTimer > 0) {
             animationTimer--;
             if (animationTimer == 0) {
-                setState(ANIMATION_RUNNING);
+                setState(ANIMATION_RAGE);
             }
         }
 
 
-        System.out.println(this.getAnimationState());
-        System.out.println(isTargetInRange());
 
 
     }
@@ -136,7 +134,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
                 lock = 25;
                 break;
             case ANIMATION_RAGE:
-                if (isTargetInRange()) {
+                if (isTargetInRange(3.0D)) {
                     controller.setAnimation(RAGE_ANIMATION);
                     setState(ANIMATION_RUNNING);
                 }
@@ -147,7 +145,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
                     return PlayState.CONTINUE;
                 }
 
-                if (lock == 20 && isTargetInRange()) {
+                if (lock == 20 && isTargetInRange(3.0D)) {
                     controller.setAnimation(RAGE_ANIMATION);
                     setState(ANIMATION_RUNNING);
                     return PlayState.CONTINUE;
@@ -214,10 +212,10 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
         this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.5F, -5.0F);
     }
 
-    private boolean isTargetInRange() {
+    private boolean isTargetInRange(double radius) {
         PlayerEntity player = this.world.getClosestPlayer(this, 30.0D);
         if (player != null) {
-            return !this.isInRange(player, 3.0D);
+            return !this.isInRange(player, radius);
         }
         setState(ANIMATION_RAGE);
         return true;
