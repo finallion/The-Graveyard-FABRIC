@@ -51,15 +51,7 @@ public class AnimatedGraveyardEntity extends HostileEntity implements Angerable 
         return this.dataTracker.get(ANIMATION_STATE);
     }
 
-    public void setAttackingState(byte time) {
-        this.dataTracker.set(ANIMATION_STATE, time);
-    }
-
-    public void setRageState(byte time) {
-        this.dataTracker.set(ANIMATION_STATE, time);
-    }
-
-    public void setIdleState(byte time) {
+    public void setState(byte time) {
         this.dataTracker.set(ANIMATION_STATE, time);
     }
 

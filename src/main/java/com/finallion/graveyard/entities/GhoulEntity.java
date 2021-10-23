@@ -40,7 +40,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
     private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", true);
     private final AnimationBuilder RAGE_ANIMATION = new AnimationBuilder().addAnimation("rage", false);
     private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", false);
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
     protected static final byte ANIMATION_RAGE = 2;
@@ -52,6 +52,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
     private AnimationFactory factory = new AnimationFactory(this);
     private int animationTimer = 0;
     private int lock = 0;
+    private LivingEntity target;
 
     public GhoulEntity(EntityType<? extends GhoulEntity> entityType, World world) {
         super(entityType, world);
@@ -98,18 +99,25 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
     @Override
     public void tickMovement() {
         super.tickMovement();
+        lock--;
 
 
         if (animationTimer > 0) {
             animationTimer--;
             if (animationTimer == 0) {
-                setIdleState(ANIMATION_IDLE);
+                setState(ANIMATION_RUNNING);
             }
         }
 
+        if (!this.getMoveControl().isMoving() && getAnimationState() == ANIMATION_RUNNING) {
+            setState(ANIMATION_RAGE);
+        }
+
+        System.out.println(this.getAnimationState());
+        System.out.println(isTargetInRange());
+
 
     }
-
 
     @SuppressWarnings("rawtypes")
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -128,22 +136,23 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
             case ANIMATION_ATTACK:
                 controller.setAnimation(ATTACK_ANIMATION);
                 animationTimer = 15;
-                // TODO:
-                // target switches between null and actual target
-                // to prevent a sudden stop in action, this will lock the idle animation for a time
-                // long enough, so the getTarget-call can return the target
                 lock = 25;
                 break;
             case ANIMATION_RAGE:
-                controller.setAnimation(RAGE_ANIMATION);
-                break;
+                if (isTargetInRange()) {
+                    controller.setAnimation(RAGE_ANIMATION);
+                    setState(ANIMATION_RUNNING);
+                }
+                return PlayState.CONTINUE;
             default:
                 if (isAttacking()) {
                     controller.setAnimation(RUNNING_ANIMATION);
                     return PlayState.CONTINUE;
                 }
-                if (lock == 20) {
+
+                if (lock == 20 && isTargetInRange()) {
                     controller.setAnimation(RAGE_ANIMATION);
+                    setState(ANIMATION_RUNNING);
                     return PlayState.CONTINUE;
                 }
 
@@ -208,18 +217,35 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
         this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.5F, -5.0F);
     }
 
+    private boolean isTargetInRange() {
+        PlayerEntity player = this.world.getClosestPlayer(this, 30.0D);
+        if (player != null) {
+            return !this.isInRange(player, 2.0D);
+        }
+        setState(ANIMATION_RAGE);
+        return true;
+    }
 
 
     class GhoulMeleeAttackGoal extends MeleeAttackGoal {
         private final GhoulEntity ghoul;
         private final int ANIMATION_ATTACK_LENGTH = 15;
+        private static final int ANIMATION_ATTACK_START = 14;
+        private int animationTimer = 0;
+        private int ticksUntilNextPathRecalculation;
+        private final boolean followingTargetEvenIfNotSeen;
+        private double pathedTargetX;
+        private double pathedTargetY;
+        private double pathedTargetZ;
+        private final double speedModifier;
 
         public GhoulMeleeAttackGoal(GhoulEntity ghoulEntity, double speed, boolean pauseWhenIdle) {
             super(ghoulEntity, speed, pauseWhenIdle);
             this.ghoul = ghoulEntity;
+            this.followingTargetEvenIfNotSeen = pauseWhenIdle;
+            this.speedModifier = speed;
         }
 
-        private static final int ANIMATION_ATTACK_START = 14;
 
         @Override
         public boolean canStart() {
@@ -231,19 +257,56 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
             super.tick();
             LivingEntity livingentity = this.ghoul.getTarget();
             if (livingentity != null) {
+                this.mob.getLookControl().lookAt(livingentity, 30.0F, 30.0F);
+                double d0 = this.mob.squaredDistanceTo(livingentity.getX(), livingentity.getY(), livingentity.getZ());
+                this.ticksUntilNextPathRecalculation = Math.max(this.ticksUntilNextPathRecalculation - 1, 0);
+                if (this.followingTargetEvenIfNotSeen
+                        && this.ticksUntilNextPathRecalculation <= 0
+                        && (this.pathedTargetX == 0.0D && this.pathedTargetY == 0.0D && this.pathedTargetZ == 0.0D
+                        || livingentity.squaredDistanceTo(this.pathedTargetX, this.pathedTargetY, this.pathedTargetZ) >= 1.0D
+                        || this.mob.getRandom().nextFloat() < 0.05F)) {
+                    this.pathedTargetX = livingentity.getX();
+                    this.pathedTargetY = livingentity.getY();
+                    this.pathedTargetZ = livingentity.getZ();
+                    this.ticksUntilNextPathRecalculation = 4 + this.mob.getRandom().nextInt(7);
+                    if (d0 > 1024.0D) {
+                        this.ticksUntilNextPathRecalculation += 10;
+                    } else if (d0 > 256.0D) {
+                        this.ticksUntilNextPathRecalculation += 5;
+                    }
+
+                    if (!this.mob.getNavigation().startMovingTo(livingentity, this.speedModifier)) {
+                        this.ticksUntilNextPathRecalculation += 15;
+                    }
+                }
+
+
+
+                target = livingentity;
                 this.ghoul.setAngryAt(livingentity.getUuid());
             }
+
 
         }
 
 
         @Override
+        public boolean shouldContinue() {
+            if (this.ghoul.hasAngerTime()) {
+                return true;
+            }
+            return super.shouldContinue();
+        }
+
+
+
+        @Override
         protected void attack(LivingEntity target, double squaredDistance) {
-            double d = 3.0D; // distance from where the target can be hit
+            double d = 4.0D; // distance from where the target can be hit
 
 
             if (squaredDistance <= d && animationTimer <= 0) {
-                ghoul.setAttackingState(ANIMATION_ATTACK);
+                ghoul.setState(ANIMATION_ATTACK);
                 animationTimer = ANIMATION_ATTACK_LENGTH;
             }
 
@@ -255,7 +318,7 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
                 }
 
                 if (animationTimer == 0) {
-                    ghoul.setIdleState(ANIMATION_IDLE);
+                    ghoul.setState(ANIMATION_RUNNING);
                 }
 
 
@@ -267,7 +330,8 @@ public class GhoulEntity extends AnimatedGraveyardEntity implements IAnimatable 
         @Override
         public void stop() {
             super.stop();
-            ghoul.setIdleState(ANIMATION_RUNNING);
+            this.ghoul.setState(ANIMATION_RUNNING);
+            this.ghoul.setAngryAt(null);
             animationTimer = 0;
         }
     }
