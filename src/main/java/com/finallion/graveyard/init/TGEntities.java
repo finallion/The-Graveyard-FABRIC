@@ -13,7 +13,7 @@ public class TGEntities {
 
     public static final EntityType<SkeletonCreeper> SKELETON_CREEPER = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, SkeletonCreeper::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
     public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AcolyteEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
-    public static final EntityType<GhoulEntity> GHOUL = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, GhoulEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
+    public static final EntityType<BaseGhoulEntity> GHOUL = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, BaseGhoulEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
     public static final EntityType<ReaperEntity> REAPER = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ReaperEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.7F)).build();
 
     public static void registerEntities() {

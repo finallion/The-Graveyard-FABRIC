@@ -26,7 +26,7 @@ import java.util.UUID;
 public class AnimatedGraveyardEntity extends HostileEntity implements Angerable {
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
-    protected static final TrackedData<Byte> ANIMATION_STATE = DataTracker.registerData(AnimatedGraveyardEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(AnimatedGraveyardEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Boolean> ANGRY;
     private static final TrackedData<Boolean> PROVOKED;
     private static final UniformIntProvider ANGER_TIME;
@@ -44,15 +44,15 @@ public class AnimatedGraveyardEntity extends HostileEntity implements Angerable 
         super.initDataTracker();
         this.dataTracker.startTracking(ANGRY, false);
         this.dataTracker.startTracking(PROVOKED, false);
-        this.dataTracker.startTracking(ANIMATION_STATE, (byte) 0);
+        this.dataTracker.startTracking(ANIMATION_MOVE_STATE, (byte) 0);
     }
 
     public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION_STATE);
+        return this.dataTracker.get(ANIMATION_MOVE_STATE);
     }
 
     public void setState(byte time) {
-        this.dataTracker.set(ANIMATION_STATE, time);
+        this.dataTracker.set(ANIMATION_MOVE_STATE, time);
     }
 
 
