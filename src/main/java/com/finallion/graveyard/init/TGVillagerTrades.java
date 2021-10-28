@@ -1,5 +1,6 @@
 package com.finallion.graveyard.init;
 
+import com.finallion.graveyard.TheGraveyard;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.FilledMapItem;
@@ -10,6 +11,7 @@ import net.minecraft.item.map.MapIcon;
 import net.minecraft.item.map.MapState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
@@ -24,6 +26,7 @@ import java.util.Random;
 public class TGVillagerTrades {
 
 
+    // copy of the private mapTrade method
     private static TradeOffer createMapTrade(int price, StructureFeature<?> structure, MapIcon.Type iconType, int maxUses, int experience, Entity entity) {
         if (!(entity.world instanceof ServerWorld)) {
             return null;
@@ -50,9 +53,12 @@ public class TGVillagerTrades {
 
     public static void init() {
 
-        TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 1, (factories -> {
-            sellMapItem(factories, TGStructures.LARGE_WALLED_GRAVEYARD, 25,1, 10);
-        }));
+        // disables map trade from config
+        if (TheGraveyard.config.additionalEnabled(new Identifier(TheGraveyard.MOD_ID, "graveyard_villager_large_graveyard_map_trade"))) {
+            TradeOfferHelper.registerVillagerOffers(VillagerProfession.CARTOGRAPHER, 1, (factories -> {
+                sellMapItem(factories, TGStructures.LARGE_WALLED_GRAVEYARD, 25,1, 10);
+            }));
+        }
 
     }
 

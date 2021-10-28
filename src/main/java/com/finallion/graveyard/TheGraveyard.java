@@ -45,10 +45,6 @@ public class TheGraveyard implements ModInitializer {
     // check moss replacables
 
 
-    // particle
-
-    // leaf persistency
-
 
 
     @Override
@@ -103,7 +99,7 @@ public class TheGraveyard implements ModInitializer {
 
         BiomeModifications.create(new Identifier(MOD_ID, "medium_walled_graveyard"))
                 .add(ModificationPhase.ADDITIONS,
-                        BiomeSelectors.includeByKey(TGBiomeKeys.forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "medium_walled_graveyard")))),
+                        BiomeSelectors.categories(Biome.Category.FOREST, Biome.Category.TAIGA).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "medium_walled_graveyard")))),
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_MEDIUM_WALLED_GRAVEYARD);
                         });
 
@@ -117,7 +113,7 @@ public class TheGraveyard implements ModInitializer {
 
         BiomeModifications.create(new Identifier(MOD_ID, "large_walled_graveyard"))
                 .add(ModificationPhase.ADDITIONS,
-                        BiomeSelectors.includeByKey(TGBiomeKeys.thick_forest_biomes).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
+                        BiomeSelectors.categories(Biome.Category.FOREST, Biome.Category.TAIGA, Biome.Category.JUNGLE).and(StructureGenerationUtil.booleanToPredicate(config.enabled(new Identifier(MOD_ID, "large_walled_graveyard")))),
                         context -> { context.getGenerationSettings().addBuiltInStructure(TGConfiguredFeatures.CONFIGURED_LARGE_WALLED_GRAVEYARD);
                         });
 
