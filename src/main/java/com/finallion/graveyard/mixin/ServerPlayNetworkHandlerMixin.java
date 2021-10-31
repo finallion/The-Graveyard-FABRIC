@@ -42,19 +42,6 @@ public class ServerPlayNetworkHandlerMixin {
     public ClientConnection connection;
 
 
-    /*
-    @Inject(method = "(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;)V", at = @At(value = "HEAD"), cancellable = true)
-    public void signUpdate(UpdateSignC2SPacket packet, CallbackInfo info) {
-        List<String> list = (List)Stream.of(packet.getText()).map(Formatting::strip).collect(Collectors.toList());
-        this.filterTexts(list, (listx) -> {
-            this.signUpdate(packet, listx, info);
-        });
-    }
-
-     */
-
-
-
     @Inject(method = "onSignUpdate(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;Ljava/util/List;)V", at = @At(value = "HEAD"), cancellable = true)
     private void signUpdate(UpdateSignC2SPacket packet, List<TextStream.Message> signText, CallbackInfo info) {
         this.player.updateLastActionTime();
@@ -88,31 +75,6 @@ public class ServerPlayNetworkHandlerMixin {
             }
         }
     }
-
-
-    /*
-    private <T, R> void filterText(T text, Consumer<R> consumer, BiFunction<TextStream, T, CompletableFuture<R>> backingFilterer) {
-        ThreadExecutor<?> threadExecutor = this.player.getServerWorld().getServer();
-        Consumer<R> consumer2 = (object) -> {
-            if (this.connection.isOpen()) {
-                consumer.accept(object);
-            } else {
-                LOGGER.debug("Ignoring packet due to disconnection");
-            }
-
-        };
-        ((CompletableFuture)backingFilterer.apply(this.player.getTextStream(), text)).thenAcceptAsync(consumer2, threadExecutor);
-    }
-
-    private void filterText(String text, Consumer<TextStream.Message> consumer) {
-        this.filterText(text, consumer, TextStream::filterText);
-    }
-
-    private void filterTexts(List<String> texts, Consumer<List<TextStream.Message>> consumer) {
-        this.filterText(texts, consumer, TextStream::filterTexts);
-    }
-
-     */
 
 
 }

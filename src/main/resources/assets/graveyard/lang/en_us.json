@@ -52,7 +52,10 @@
   "block.graveyard.creeper_skeleton": "Creeper Skeleton",
 
   "block.graveyard.dark_iron_bars": "Dark Iron Bars",
-  "block.graveyard.gravestone": "Gravestone",
+  "block.graveyard.gravestone": "Polished Basalt Gravestone",
+  "block.graveyard.cobblestone_gravestone": "Cobblestone Gravestone",
+  "block.graveyard.mossy_cobblestone_gravestone": "Mossy Cobblestone Gravestone",
+  "block.graveyard.deepslate_gravestone": "Deepslate Gravestone",
 
   "item.graveyard.bone_dagger": "Bone Dagger",
 

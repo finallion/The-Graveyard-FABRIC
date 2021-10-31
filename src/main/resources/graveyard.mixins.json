@@ -10,7 +10,8 @@
     "LakeFeatureMixin",
     "PlantBlockMixin",
     "TreeFeatureMixin",
-    "CreeperEntityMixin"
+    "CreeperEntityMixin",
+    "FoliagePlacerTypeAccessor"
 
   ],
   "client": [

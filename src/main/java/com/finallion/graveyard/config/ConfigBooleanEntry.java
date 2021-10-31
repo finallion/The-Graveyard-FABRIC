@@ -9,7 +9,7 @@ public class ConfigBooleanEntry {
     }
 
     private ConfigBooleanEntry() {
-        this(true);
+        this(false);
     }
 
     public static ConfigBooleanEntry of() {

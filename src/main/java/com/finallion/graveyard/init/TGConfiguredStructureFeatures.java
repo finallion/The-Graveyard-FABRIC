@@ -7,7 +7,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
-public class TGConfiguredFeatures {
+public class TGConfiguredStructureFeatures {
 
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_SMALL_WALLED_GRAVEYARD = TGStructures.SMALL_WALLED_GRAVEYARD.configure(DefaultFeatureConfig.DEFAULT);
     public static ConfiguredStructureFeature<?, ?> CONFIGURED_SMALL_WALLED_GRAVEYARD_SAVANNA = TGStructures.SMALL_WALLED_GRAVEYARD_SAVANNA.configure(DefaultFeatureConfig.DEFAULT);

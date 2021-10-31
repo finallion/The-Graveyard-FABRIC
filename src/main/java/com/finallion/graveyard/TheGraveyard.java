@@ -4,19 +4,14 @@ import com.finallion.graveyard.config.TheGraveyardConfig;
 import com.finallion.graveyard.init.*;
 import com.finallion.graveyard.utils.MobBiomeSettings;
 import com.finallion.graveyard.utils.StructureBiomeSettings;
-import com.finallion.graveyard.utils.StructureGenerationUtil;
 import com.finallion.graveyard.utils.TGBiomeKeys;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 import software.bernie.geckolib3.GeckoLib;
 
 
@@ -57,7 +52,7 @@ public class TheGraveyard implements ModInitializer {
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGStructures.setupAndRegisterStructureFeatures();
-        TGConfiguredFeatures.registerConfiguredStructures();
+        TGConfiguredStructureFeatures.registerConfiguredStructures();
         TGBiomeKeys.init();
         TGProcessors.init();
         TGEntities.registerEntities();

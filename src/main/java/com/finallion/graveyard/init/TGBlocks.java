@@ -31,7 +31,10 @@ public class TGBlocks {
     public static final Block TG_PODZOL = new TGStoneBlock(() -> Blocks.PODZOL, FabricBlockSettings.copyOf(Blocks.PODZOL).drops(Blocks.PODZOL.getLootTableId()));
 
 
-    public static final Identifier GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/polished_basalt_side");
+    public static final Identifier POLISHED_BASALT_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/polished_basalt_side");
+    public static final Identifier COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/cobblestone");
+    public static final Identifier MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/mossy_cobblestone");
+    public static final Identifier DEEPSLATE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
 
     public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque());
     public static final Block SKULL_WITH_RIB_CAGE = new BoneDisplayBlock();
@@ -82,8 +85,10 @@ public class TGBlocks {
 
     public static final Block VASE_BLOCK = new VaseBlock();
 
-    public static final Block GRAVESTONE = new GravestoneBlock(GRAVESTONE_TEXTURE);
-
+    public static final Block GRAVESTONE = new GravestoneBlock(POLISHED_BASALT_GRAVESTONE_TEXTURE);
+    public static final Block COBBLESTONE_GRAVESTONE = new GravestoneBlock(COBBLESTONE_GRAVESTONE_TEXTURE);
+    public static final Block MOSSY_COBBLESTONE_GRAVESTONE = new GravestoneBlock(MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE);
+    public static final Block DEEPSLATE_GRAVESTONE = new GravestoneBlock(DEEPSLATE_GRAVESTONE_TEXTURE);
 
     public static void registerBlocks() {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
@@ -149,10 +154,17 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "vase_block"), VASE_BLOCK);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gravestone"), GRAVESTONE);
-
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cobblestone_gravestone"), COBBLESTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
     }
 
-    public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new, GRAVESTONE).build(null));
+    public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
+            GRAVESTONE,
+            COBBLESTONE_GRAVESTONE,
+            MOSSY_COBBLESTONE_GRAVESTONE,
+            DEEPSLATE_GRAVESTONE).build(null));
+
     public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
             BLACK_URN,
             BLUE_URN,

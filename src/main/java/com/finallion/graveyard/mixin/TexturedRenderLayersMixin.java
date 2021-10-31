@@ -16,6 +16,7 @@ public class TexturedRenderLayersMixin {
     @Inject(method = "addDefaultTextures", at = @At("RETURN"))
     private static void injectTGSigns(Consumer<SpriteIdentifier> consumer, CallbackInfo info) {
         for(SpriteIdentifier identifier: SpriteIdentifierRegistry.INSTANCE.getIdentifiers()) {
+            System.out.println("ID: " + identifier);
             consumer.accept(identifier);
         }
     }
