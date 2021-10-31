@@ -1,7 +1,9 @@
 package com.finallion.graveyard.entities;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -21,7 +23,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -29,6 +34,8 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+
+import java.util.Random;
 
 public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimatable {
     private AttributeContainer attributeContainer;
@@ -83,6 +90,13 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return attributeContainer;
     }
 
+
+
+
+    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+        return isSpawnDark(world, pos, random);
+    }
+
     public void writeCustomDataToNbt(NbtCompound tag) {
         super.writeCustomDataToNbt(tag);
         tag.putByte("ghoulVariant", getVariant());
@@ -95,7 +109,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     private void isInAttackDistance() {
         if (this.getTarget() != null) {
-            if (this.getTarget().squaredDistanceTo(this) > 3.5D) {
+            if (this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE) {
                 isInRange = false;
                 setState(ANIMATION_RAGE);
             }
@@ -105,7 +119,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     private boolean isInRageDistance() {
         // clean up!
-        Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 15.0, 15.0);
+        Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 5.0, 15.0);
         PlayerEntity player = this.world.getClosestPlayer(targetPredicate, this);
         LivingEntity villager = this.world.getClosestEntity(MerchantEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
         LivingEntity ironGolem = this.world.getClosestEntity(IronGolemEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
@@ -190,8 +204,8 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 2, this::predicate));
-        data.addAnimationController(new AnimationController(this, "controller2", 2, this::predicate2));
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller2", 0, this::predicate2));
     }
 
     @Override
@@ -233,14 +247,14 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
                 double squaredDistance = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 
                 // if target is in range, allow attack animation to actually happen
-                isInRange = squaredDistance < 3.5D;
+                isInRange = squaredDistance < ATTACK_RANGE;
             }
             super.tick();
         }
 
         @Override
         protected void attack(LivingEntity target, double squaredDistance) {
-            double d = 3.5D;
+            double d = ATTACK_RANGE;
 
             if (squaredDistance <= d && attackTimer <= 0) {
                 ghoul.setState(ANIMATION_ATTACK);
