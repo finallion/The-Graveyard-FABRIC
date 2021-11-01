@@ -48,7 +48,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         TGParticles.init();
 
 
-        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK);
+        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK, TGBlocks.SMALL_GRAVEYARD_SPRUCE_SAPLING);
 
 
         // texture of the edit screen of the gravestone
@@ -78,23 +78,6 @@ public class TheGraveyardClient implements ClientModInitializer {
                 return GrassColors.getColor(0.5D, 1.0D);
             }
         }, TGBlocks.TG_GRASS_BLOCK);
-
-
-        // particle coloring
-        /*
-        ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
-            @Override
-            public int getColor(BlockState state, @Nullable BlockRenderView world, @Nullable BlockPos pos, int tintIndex) {
-                if (state.getBlock() instanceof GravestoneBlock && world != null) {
-                    //return ((GravestoneBlock) state.getBlock()).getTexture().hashCode();
-                    return 2200000;
-                }
-                return 0;
-                }
-            }, TGBlocks.COBBLESTONE_GRAVESTONE, TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE, TGBlocks.DEEPSLATE_GRAVESTONE
-        );
-
-         */
 
 
 

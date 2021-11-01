@@ -48,7 +48,7 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
-
+        TGBiomes.registerBiomes();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGStructures.setupAndRegisterStructureFeatures();

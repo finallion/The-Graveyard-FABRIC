@@ -5,6 +5,8 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blockentities.UrnBlockEntity;
 import com.finallion.graveyard.blocks.*;
+import com.finallion.graveyard.blocks.saplings.GraveyardSpruceTreeSapling;
+import com.finallion.graveyard.blocks.saplings.GraveyardSpruceTreeSaplingGenerator;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.*;
@@ -90,6 +92,9 @@ public class TGBlocks {
     public static final Block MOSSY_COBBLESTONE_GRAVESTONE = new GravestoneBlock(MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE);
     public static final Block DEEPSLATE_GRAVESTONE = new GravestoneBlock(DEEPSLATE_GRAVESTONE_TEXTURE);
 
+   // public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(TGConfiguredFeatures.SMALL_GRAVEYARD_SPRUCE_TREE), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
+    public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
+
     public static void registerBlocks() {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_stone"), TG_STONE);
@@ -157,6 +162,8 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cobblestone_gravestone"), COBBLESTONE_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
+
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), SMALL_GRAVEYARD_SPRUCE_SAPLING);
     }
 
     public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,

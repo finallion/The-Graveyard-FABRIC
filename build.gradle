@@ -14,6 +14,10 @@ runServer {
 	standardInput = System.in
 }
 
+minecraft {
+	accessWidener = file("src/main/resources/graveyard.accesswidener")
+}
+
 repositories {
 	maven { url 'https://jitpack.io' }
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }

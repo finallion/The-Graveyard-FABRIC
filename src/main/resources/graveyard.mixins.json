@@ -11,7 +11,8 @@
     "PlantBlockMixin",
     "TreeFeatureMixin",
     "CreeperEntityMixin",
-    "FoliagePlacerTypeAccessor"
+    "FoliagePlacerTypeAccessor",
+    "TrunkPlacerTypeAccessor"
 
   ],
   "client": [
