@@ -66,7 +66,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         super.initDataTracker();
 
         // selects one of four skins for the ghoul
-        byte variant = (byte) random.nextInt(4);
+        byte variant = (byte) random.nextInt(8);
         this.dataTracker.startTracking(VARIANT, variant);
     }
 
@@ -158,7 +158,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             return PlayState.CONTINUE;
         }
 
-        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance()) {
+        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance() && getAnimationState() != ANIMATION_WALK) {
             //this.playSound(SoundEvents.ENTITY_ENDERMAN_SCREAM, 1.0F, -5.0F);
             event.getController().setAnimation(RAGE_ANIMATION);
             return PlayState.CONTINUE;
@@ -177,15 +177,19 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         }
 
 
-        if (isMoving) {
+
+        if (event.isMoving() || isMoving) {
             if (isWet()) {
                 event.getController().setAnimation(WALK_ANIMATION);
+                setState(ANIMATION_WALK);
             } else if (isAttacking()) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
             } else {
+                setState(ANIMATION_WALK);
                 event.getController().setAnimation(WALK_ANIMATION);
             }
         } else {
+            System.out.println("IDLE");
             event.getController().setAnimation(IDLE_ANIMATION);
         }
         return PlayState.CONTINUE;
@@ -215,17 +219,17 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.0F, -5.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_HUSK_HURT, 1.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_HURT, 1.0F, -5.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.5F, -5.0F);
+        this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.0F, -5.0F);
     }
 
 

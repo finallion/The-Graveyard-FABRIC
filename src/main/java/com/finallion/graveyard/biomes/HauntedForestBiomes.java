@@ -1,6 +1,6 @@
 package com.finallion.graveyard.biomes;
 
-import com.finallion.graveyard.biomes.biomeFeatures.TGBiomeFeatures;
+import com.finallion.graveyard.biomes.features.TGBiomeFeatures;
 import com.finallion.graveyard.init.TGEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
@@ -31,7 +31,6 @@ public class HauntedForestBiomes {
         generationSettings.surfaceBuilder(HAUNTED_FOREST_MOSS_SURFACE);
         DefaultBiomeFeatures.addDefaultUndergroundStructures(generationSettings);
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
-        DefaultBiomeFeatures.addDefaultLakes(generationSettings);
         DefaultBiomeFeatures.addDungeons(generationSettings);
         DefaultBiomeFeatures.addMineables(generationSettings);
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
@@ -39,6 +38,9 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addSprings(generationSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
         DefaultBiomeFeatures.addAmethystGeodes(generationSettings);
+        DefaultBiomeFeatures.addMossyRocks(generationSettings);
+        DefaultBiomeFeatures.addTaigaGrass(generationSettings);
+        DefaultBiomeFeatures.addGiantTaigaGrass(generationSettings);
         TGBiomeFeatures.addGraveyardSpruceTrees(generationSettings);
 
         return (new Biome.Builder())

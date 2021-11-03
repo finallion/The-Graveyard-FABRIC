@@ -1,4 +1,4 @@
-package com.finallion.graveyard.biomes.biomeFeatures;
+package com.finallion.graveyard.biomes.features;
 
 import com.finallion.graveyard.init.TGConfiguredFeatures;
 import net.minecraft.world.biome.GenerationSettings;

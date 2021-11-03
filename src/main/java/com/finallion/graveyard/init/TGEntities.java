@@ -22,7 +22,7 @@ public class TGEntities {
     public static final EntityType<BaseGhoulEntity> GHOUL = FabricEntityTypeBuilder.createMob()
                     .spawnGroup(SpawnGroup.CREATURE)
                     .entityFactory(BaseGhoulEntity::new)
-                    .dimensions(EntityDimensions.changing(0.8F, 2.1F))
+                    .dimensions(EntityDimensions.changing(0.8F, 2.15F))
                     .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseGhoulEntity::canSpawn)
                     .build();
 

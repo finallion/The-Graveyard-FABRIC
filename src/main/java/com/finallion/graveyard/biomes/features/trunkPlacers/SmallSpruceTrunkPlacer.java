@@ -1,4 +1,4 @@
-package com.finallion.graveyard.features.trunkPlacers;
+package com.finallion.graveyard.biomes.features.trunkPlacers;
 
 import com.finallion.graveyard.init.TGConfiguredFeatures;
 import com.google.common.collect.ImmutableList;

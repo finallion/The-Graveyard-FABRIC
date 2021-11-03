@@ -12,6 +12,11 @@ public class GraveyardSpruceTreeSaplingGenerator extends SaplingGenerator {
 
     @Override
     protected ConfiguredFeature<TreeFeatureConfig, ?> createTreeFeature(Random random, boolean bl) {
-        return Feature.TREE.configure(TGConfiguredFeatures.SMALL_GRAVEYARD_SPRUCE_TREE);
+        int rand = random.nextInt(2);
+        if (rand == 0) {
+            return Feature.TREE.configure(TGConfiguredFeatures.SMALL_GRAVEYARD_SPRUCE_TREE);
+        } else {
+            return Feature.TREE.configure(TGConfiguredFeatures.LARGE_GRAVEYARD_SPRUCE_TREE);
+        }
     }
 }

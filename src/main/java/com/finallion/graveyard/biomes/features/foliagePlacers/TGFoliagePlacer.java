@@ -1,4 +1,4 @@
-package com.finallion.graveyard.features.foliagePlacers;
+package com.finallion.graveyard.biomes.features.foliagePlacers;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -15,16 +15,6 @@ public abstract class TGFoliagePlacer extends FoliagePlacer {
 
     public TGFoliagePlacer(IntProvider radius, IntProvider offset) {
         super(radius, offset);
-    }
-
-    @Override
-    protected FoliagePlacerType<?> getType() {
-        return null;
-    }
-
-    @Override
-    protected void generate(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random, TreeFeatureConfig config, int trunkHeight, TreeNode treeNode, int foliageHeight, int radius, int offset) {
-
     }
 
     public void generateOneStar(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random, TreeFeatureConfig config, BlockPos.Mutable pos, int height) {
@@ -171,13 +161,4 @@ public abstract class TGFoliagePlacer extends FoliagePlacer {
         }
     }
 
-    @Override
-    public int getRandomHeight(Random random, int trunkHeight, TreeFeatureConfig config) {
-        return 0;
-    }
-
-    @Override
-    protected boolean isInvalidForLeaves(Random random, int dx, int y, int dz, int radius, boolean giantTrunk) {
-        return false;
-    }
 }

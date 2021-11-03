@@ -29,10 +29,15 @@ public class BaseGhoulModel extends AnimatedGeoModel<BaseGhoulEntity> {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
 
         switch (entity.getVariant()) {
-            case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/withered_ghoul.png");
-            case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/frostbitten_ghoul.png");
-            case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/rotten_ghoul.png");
-            default -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/decaying_ghoul.png");
+            case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
+            case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin2.png");
+            case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin3.png");
+            case 3 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin4.png");
+            case 4 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin5.png");
+            case 5 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin6.png");
+            case 6 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin7.png");
+            case 7 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin8.png");
+            default -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
         };
     }
 }

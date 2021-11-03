@@ -1,4 +1,4 @@
-package com.finallion.graveyard.features.foliagePlacers;
+package com.finallion.graveyard.biomes.features.foliagePlacers;
 
 import com.finallion.graveyard.init.TGConfiguredFeatures;
 import com.mojang.serialization.Codec;
@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.world.TestableWorld;
 import net.minecraft.world.gen.feature.TreeFeatureConfig;
+import net.minecraft.world.gen.foliage.FoliagePlacer;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
 
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 
 public class SmallSpruceFoliagePlacer extends TGFoliagePlacer {
     public static final Codec<SmallSpruceFoliagePlacer> CODEC = RecordCodecBuilder.create(instance -> fillFoliagePlacerFields(instance)
-            .and(IntProvider.createValidatingCodec(1, 512).fieldOf("foliage_height").forGetter(SmallSpruceFoliagePlacer::getFoliageHeight))
+            .and(IntProvider.createValidatingCodec(1, 512).fieldOf("foliageHeight").forGetter(SmallSpruceFoliagePlacer::getFoliageHeight))
             .apply(instance, SmallSpruceFoliagePlacer::new));
 
     private final IntProvider foliageHeight;
@@ -63,6 +64,8 @@ public class SmallSpruceFoliagePlacer extends TGFoliagePlacer {
         // forth layer
         generateTwoStar(world, replacer, random, config, blockPos, -9, false);
         generateThreeStar(world, replacer, random, config, blockPos, -10, false);
+
+
 
 
     }
