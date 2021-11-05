@@ -86,7 +86,7 @@ public class TheGraveyardConfig implements Config {
 
     @Override
     public void save() {
-        additionalGenerationEntries.putIfAbsent("graveyard_villager_large_graveyard_map_trade", ConfigBooleanEntry.of());
+        //additionalGenerationEntries.putIfAbsent("graveyard_villager_large_graveyard_map_trade", ConfigBooleanEntry.of());
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ConfigFogParticleEntry.of(50));
 

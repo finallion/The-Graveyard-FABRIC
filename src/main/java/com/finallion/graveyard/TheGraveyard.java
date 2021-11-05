@@ -2,6 +2,7 @@ package com.finallion.graveyard;
 
 import com.finallion.graveyard.config.TheGraveyardConfig;
 import com.finallion.graveyard.init.*;
+import com.finallion.graveyard.utils.FeatureBiomeSettings;
 import com.finallion.graveyard.utils.MobBiomeSettings;
 import com.finallion.graveyard.utils.StructureBiomeSettings;
 import com.finallion.graveyard.utils.TGBiomeKeys;
@@ -48,7 +49,11 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
-        TGBiomes.registerBiomes();
+        //TGBiomes.registerBiomes();
+        //TGConfiguredFeatures.registerFeatures();
+        //TGConfiguredFeatures.registerConfiguredFeatures();
+        //FeatureBiomeSettings.init();
+        //MobBiomeSettings.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGStructures.setupAndRegisterStructureFeatures();
@@ -56,9 +61,8 @@ public class TheGraveyard implements ModInitializer {
         TGBiomeKeys.init();
         TGProcessors.init();
         TGEntities.registerEntities();
-        TGVillagerTrades.init();
+        //TGVillagerTrades.init();
         StructureBiomeSettings.init();
-        MobBiomeSettings.init();
 
     }
 

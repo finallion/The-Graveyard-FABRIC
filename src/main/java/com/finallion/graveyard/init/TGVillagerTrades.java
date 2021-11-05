@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Random;
 
 public class TGVillagerTrades {
-
+    /*
 
     // copy of the private mapTrade method
     private static TradeOffer createMapTrade(int price, StructureFeature<?> structure, MapIcon.Type iconType, int maxUses, int experience, Entity entity) {
@@ -62,5 +62,7 @@ public class TGVillagerTrades {
 
     }
 
+
+     */
 
 }

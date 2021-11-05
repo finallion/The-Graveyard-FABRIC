@@ -92,7 +92,7 @@ public class TGItems {
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, -1.0F, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), new BlockItem(TGBlocks.SMALL_GRAVEYARD_SPRUCE_SAPLING, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        //Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), new BlockItem(TGBlocks.SMALL_GRAVEYARD_SPRUCE_SAPLING, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
     }
 

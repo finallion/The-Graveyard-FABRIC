@@ -1,0 +1,17 @@
+package com.finallion.graveyard.utils;
+
+import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGBiomes;
+import com.finallion.graveyard.init.TGConfiguredFeatures;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.GenerationStep;
+
+
+public class FeatureBiomeSettings {
+
+    public static void init() {
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.UNDERGROUND_ORES, TGConfiguredFeatures.MOSS_CARPET_FEATURE_KEY);
+    }
+}

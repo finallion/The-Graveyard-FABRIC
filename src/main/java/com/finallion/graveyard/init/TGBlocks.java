@@ -92,8 +92,8 @@ public class TGBlocks {
     public static final Block MOSSY_COBBLESTONE_GRAVESTONE = new GravestoneBlock(MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE);
     public static final Block DEEPSLATE_GRAVESTONE = new GravestoneBlock(DEEPSLATE_GRAVESTONE_TEXTURE);
 
-   // public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(TGConfiguredFeatures.SMALL_GRAVEYARD_SPRUCE_TREE), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
-    public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
+    //public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(TGConfiguredFeatures.SMALL_GRAVEYARD_SPRUCE_TREE), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
+    //public static final Block SMALL_GRAVEYARD_SPRUCE_SAPLING = new GraveyardSpruceTreeSapling(new GraveyardSpruceTreeSaplingGenerator(), FabricBlockSettings.copyOf(Blocks.OAK_SAPLING));
 
     public static void registerBlocks() {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
@@ -163,7 +163,7 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), SMALL_GRAVEYARD_SPRUCE_SAPLING);
+        //Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), SMALL_GRAVEYARD_SPRUCE_SAPLING);
     }
 
     public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,

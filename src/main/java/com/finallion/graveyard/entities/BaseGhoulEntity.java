@@ -118,7 +118,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
 
     private boolean isInRageDistance() {
-        // clean up!
+        // TODO: clean up!
         Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 5.0, 15.0);
         PlayerEntity player = this.world.getClosestPlayer(targetPredicate, this);
         LivingEntity villager = this.world.getClosestEntity(MerchantEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
@@ -181,15 +181,14 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         if (event.isMoving() || isMoving) {
             if (isWet()) {
                 event.getController().setAnimation(WALK_ANIMATION);
-                setState(ANIMATION_WALK);
+                //setState(ANIMATION_WALK);
             } else if (isAttacking()) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
             } else {
-                setState(ANIMATION_WALK);
+                //setState(ANIMATION_WALK);
                 event.getController().setAnimation(WALK_ANIMATION);
             }
         } else {
-            System.out.println("IDLE");
             event.getController().setAnimation(IDLE_ANIMATION);
         }
         return PlayState.CONTINUE;

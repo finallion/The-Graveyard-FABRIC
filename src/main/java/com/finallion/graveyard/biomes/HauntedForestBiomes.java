@@ -4,10 +4,8 @@ import com.finallion.graveyard.biomes.features.TGBiomeFeatures;
 import com.finallion.graveyard.init.TGEntities;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
@@ -41,7 +39,10 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addMossyRocks(generationSettings);
         DefaultBiomeFeatures.addTaigaGrass(generationSettings);
         DefaultBiomeFeatures.addGiantTaigaGrass(generationSettings);
+        DefaultBiomeFeatures.addLargeFerns(generationSettings);
         TGBiomeFeatures.addGraveyardSpruceTrees(generationSettings);
+
+
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -53,14 +54,16 @@ public class HauntedForestBiomes {
                 .effects((new BiomeEffects.Builder())
                         .waterColor(0x3f76e4)
                         .waterFogColor(0x050533)
-                        .fogColor(0xc0d8ff)
-                        .skyColor(0x77adff)
+                        .fogColor(0x363636)
+                        .skyColor(0x363636)
+                        //.particleConfig(new BiomeParticleConfig(ParticleTypes.SOUL, 0.625F))
                         .build())
                 .spawnSettings(spawnSettings.build())
                 .generationSettings(generationSettings.build())
                 .build();
 
     }
+
 }
 
 

@@ -48,7 +48,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         TGParticles.init();
 
 
-        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK, TGBlocks.SMALL_GRAVEYARD_SPRUCE_SAPLING);
+        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK);
 
 
         // texture of the edit screen of the gravestone
