@@ -12,6 +12,10 @@ import net.minecraft.world.gen.GenerationStep;
 public class FeatureBiomeSettings {
 
     public static void init() {
-        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.UNDERGROUND_ORES, TGConfiguredFeatures.MOSS_CARPET_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.TOP_LAYER_MODIFICATION, TGConfiguredFeatures.COBWEB_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSSY_BOULDER_FEATURE_KEY);
+
     }
 }

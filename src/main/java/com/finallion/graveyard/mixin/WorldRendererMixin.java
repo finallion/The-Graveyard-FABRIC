@@ -46,7 +46,7 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V", ordinal = 0, shift = At.Shift.AFTER))
     public void render(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo callback) {
-        if (this.client.world.getBiomeKey(camera.getBlockPos()).get().toString().contains("haunted_forest") && ConfigConsts.enableFog) {
+        if (this.client.world.getBiomeKey(camera.getBlockPos()).get().toString().contains("graveyard:haunted_forest") && ConfigConsts.enableFog) {
 
             float g = gameRenderer.getViewDistance();
             Vec3d vec3d = camera.getPos();

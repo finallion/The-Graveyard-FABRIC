@@ -1,19 +1,15 @@
 package com.finallion.graveyard.biomes.features.trees;
 
-import com.finallion.graveyard.biomes.features.TGTreeFeatureConfig;
+import com.finallion.graveyard.biomes.features.surfaceFeatures.FeatureHelper;
+import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
-import java.util.Random;
-
 public class SmallSpruceTree01 extends BaseSpruceTree {
+    private final int trunkHeight = 12;
 
 
     public SmallSpruceTree01(Codec<TGTreeFeatureConfig> configCodec) {
@@ -29,9 +25,15 @@ public class SmallSpruceTree01 extends BaseSpruceTree {
         BlockState leaf = context.getConfig().leafState;
         int offsetTrunk = context.getRandom().nextInt(3);
 
-        if (world.getBlockState(blockPos.down()) != Blocks.MOSS_BLOCK.getDefaultState()) return false;
+        if (!FeatureHelper.canBePlaced(world.getBlockState(blockPos.down()))) {
+            return false;
+        }
 
-        for (int i = 0; i < 12 + offsetTrunk; i++) {
+        if (!FeatureHelper.canGenerate(world, blockPos, 12)) {
+            return false;
+        }
+
+        for (int i = 0; i < trunkHeight + offsetTrunk; i++) {
             world.setBlockState(blockPos.up(i), wood, 2);
             mutable.move(0, 1, 0);
         }

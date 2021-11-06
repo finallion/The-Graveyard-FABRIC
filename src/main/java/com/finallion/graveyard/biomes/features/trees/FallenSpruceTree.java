@@ -1,10 +1,10 @@
 package com.finallion.graveyard.biomes.features.trees;
 
-import com.finallion.graveyard.biomes.features.TGTreeFeatureConfig;
+import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.block.PlantBlock;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -37,7 +37,7 @@ public class FallenSpruceTree extends BaseSpruceTree {
         if (!world.getBlockState(blockPos).isAir()) return false;
 
         for (int i = 0; i < length; i++) {
-            if (world.getBlockState(blockPos.offset(direction, i).down()).isOf(Blocks.MOSS_BLOCK) && world.getBlockState(blockPos.offset(direction, i)).isAir()) {
+            if (world.getBlockState(blockPos.offset(direction, i).down()).isSolidBlock(world, blockPos.offset(direction, i).down()) && canBeReplaced(world.getBlockState(blockPos.offset(direction, i)))) {
                 world.setBlockState(blockPos.offset(direction, i), wood.with(Properties.AXIS, axis), 2);
                 if (random.nextBoolean() && world.getBlockState(blockPos.offset(direction, i).up()).isAir()) {
                     world.setBlockState(blockPos.offset(direction, i).up(), Blocks.MOSS_CARPET.getDefaultState(), 2);
@@ -51,5 +51,12 @@ public class FallenSpruceTree extends BaseSpruceTree {
 
         return false;
 
+    }
+
+    private boolean canBeReplaced(BlockState state) {
+        if (state.getBlock() instanceof PlantBlock || state.isAir()) {
+            return true;
+        }
+        return false;
     }
 }

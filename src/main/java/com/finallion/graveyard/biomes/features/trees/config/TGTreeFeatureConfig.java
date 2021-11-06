@@ -1,4 +1,4 @@
-package com.finallion.graveyard.biomes.features;
+package com.finallion.graveyard.biomes.features.trees.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

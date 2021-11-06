@@ -1,18 +1,14 @@
 package com.finallion.graveyard.biomes.features.trees;
 
-import com.finallion.graveyard.biomes.features.TGTreeFeatureConfig;
+import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.TestableWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
 import net.minecraft.world.gen.feature.util.FeatureContext;
-
-import java.util.Random;
-import java.util.function.BiConsumer;
 
 public abstract class BaseSpruceTree extends Feature<TGTreeFeatureConfig> {
 
@@ -25,6 +21,9 @@ public abstract class BaseSpruceTree extends Feature<TGTreeFeatureConfig> {
     public boolean generate(FeatureContext<TGTreeFeatureConfig> context) {
         return false;
     }
+
+
+
 
     public void generateOneStar(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, boolean beSquare) {
         /*

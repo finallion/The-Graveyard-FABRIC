@@ -14,7 +14,6 @@ public class TGBiomes {
     public static final RegistryKey<Biome> HAUNTED_FOREST_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "haunted_forest"));
 
     public static void registerBiomes() {
-        Registry.register(BuiltinRegistries.CONFIGURED_SURFACE_BUILDER, new Identifier(TheGraveyard.MOD_ID, "haunted_forest_moss_surface"), HauntedForestBiomes.HAUNTED_FOREST_MOSS_SURFACE);
         Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.HauntedForestBiome());
 
         OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, 2D);
