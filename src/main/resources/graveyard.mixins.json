@@ -14,7 +14,8 @@
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
-    "TexturedRenderLayersMixin"
+    "TexturedRenderLayersMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

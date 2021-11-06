@@ -14,8 +14,8 @@ public class TheGraveyardConfig implements Config {
              //
              // Here, you can disable structures to spawn, change their chance of spawning, change their separation and also change their salt.
              // Additionally, you can turn the graveyard fog particles on and set the chance of spawning them (higher numbers = lower chance of spawning).
-             // You can also turn off the cartographer map trade for the large graveyard. As minecraft structure search algorithm isn't the fastest, loading the map can cause lag.
              // Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
+             // You can also disable and/or set the density of the fog in the biomes added by this mod. A lower value means a denser fog.
              //
              // To disable a structure to spawn, simply go to the corresponding entry and set `enabled` to false.
              //
@@ -28,6 +28,7 @@ public class TheGraveyardConfig implements Config {
             """)
     public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(9);
     public final Map<String, ConfigFogParticleEntry> particleConfigEntries = new HashMap<>(1);
+    public final Map<String, ConfigBiomeFogParticleEntry> biomeFogConfigEntries = new HashMap<>(1);
     public final Map<String, ConfigBooleanEntry> additionalGenerationEntries = new HashMap<>(1);
 
     @Override
@@ -40,18 +41,24 @@ public class TheGraveyardConfig implements Config {
         return "json5";
     }
 
+    // generation booleans
     public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
     }
 
+    public boolean biomeFogSpawn(Identifier id) {
+        return getBiomeFog(id).canGenerate;
+    }
+
     public boolean enabled(Identifier id) {
-        return get(id).enabled;
+        return getStructure(id).enabled;
     }
 
     public boolean additionalEnabled(Identifier id) {
         return getAddons(id).canGenerate;
     }
 
+    // additional boolean values
     public ConfigBooleanEntry getAddons(Identifier id) {
         for (Map.Entry<String, ConfigBooleanEntry> entry : additionalGenerationEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
@@ -59,11 +66,12 @@ public class TheGraveyardConfig implements Config {
             }
         }
 
-        throw new NullPointerException("Tried StructureConfigEntry with id: " + id + ", but it was null!");
+        throw new NullPointerException("Tried AdditionalGenerationEntries with id: " + id + ", but it was null!");
     }
 
 
-    public ConfigStructureEntry get(Identifier id) {
+    // structure config
+    public ConfigStructureEntry getStructure(Identifier id) {
         for (Map.Entry<String, ConfigStructureEntry> entry : structureConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -73,6 +81,7 @@ public class TheGraveyardConfig implements Config {
         throw new NullPointerException("Tried StructureConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // moss particle config
     public ConfigFogParticleEntry getParticle(Identifier id) {
         for (Map.Entry<String, ConfigFogParticleEntry> entry : particleConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
@@ -83,12 +92,25 @@ public class TheGraveyardConfig implements Config {
         throw new NullPointerException("Tried FogParticleConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // biome fog config
+    public ConfigBiomeFogParticleEntry getBiomeFog(Identifier id) {
+        for (Map.Entry<String, ConfigBiomeFogParticleEntry> entry : biomeFogConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+
+        throw new NullPointerException("Tried BiomeFogConfigEntry with id: " + id + ", but it was null!");
+    }
+
 
     @Override
     public void save() {
         //additionalGenerationEntries.putIfAbsent("graveyard_villager_large_graveyard_map_trade", ConfigBooleanEntry.of());
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ConfigFogParticleEntry.of(50));
+
+        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog", ConfigBiomeFogParticleEntry.of(0.4F));
 
         structureConfigEntries.putIfAbsent("large_birch_tree", ConfigStructureEntry.of(14, 12, 304812394));
         structureConfigEntries.putIfAbsent("medium_walled_graveyard", ConfigStructureEntry.of(16, 14, 379123039));

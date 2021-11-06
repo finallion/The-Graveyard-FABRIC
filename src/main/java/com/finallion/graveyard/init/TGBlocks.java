@@ -18,7 +18,7 @@ public class TGBlocks {
 
 
 
-    // helper blocks that get don't get replaced on world generation, generate ores or generate trees on
+    // helper blocks that getStructure don't getStructure replaced on world generation, generate ores or generate trees on
     public static final Block TG_DEEPSLATE = new TGDeepslateBlock(() -> Blocks.DEEPSLATE, FabricBlockSettings.copyOf(Blocks.DEEPSLATE).drops(Blocks.DEEPSLATE.getLootTableId()));
     public static final Block TG_GRASS_BLOCK = new TGGrassBlock(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).drops(Blocks.GRASS_BLOCK.getLootTableId()));
     public static final Block TG_MOSS_BLOCK = new TGMossBlock(FabricBlockSettings.copyOf(Blocks.MOSS_BLOCK).drops(Blocks.MOSS_BLOCK.getLootTableId()));

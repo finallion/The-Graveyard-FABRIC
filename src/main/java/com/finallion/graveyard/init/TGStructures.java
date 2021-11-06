@@ -6,11 +6,9 @@ import com.finallion.graveyard.structures.*;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class TGStructures {
     public static StructureFeature<DefaultFeatureConfig> HAUNTED_HOUSE = new HauntedHouse(DefaultFeatureConfig.CODEC);
 
     private static void register(String id, StructureFeature<DefaultFeatureConfig> feature) {
-        ConfigStructureEntry entry = TheGraveyard.config.get(new Identifier(TheGraveyard.MOD_ID, id));
+        ConfigStructureEntry entry = TheGraveyard.config.getStructure(new Identifier(TheGraveyard.MOD_ID, id));
 
 
         FabricStructureBuilder.create(new Identifier(TheGraveyard.MOD_ID, id), feature)

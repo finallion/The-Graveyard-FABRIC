@@ -52,7 +52,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.translate(0.5D, 0.25D, 0.5D);
 
         float rotation = -blockState.get(GravestoneBlock.FACING).asRotation();
-        //float h = -((float)((Integer)blockState.get(SignBlock.ROTATION) * 360) / 16.0F);
+        //float h = -((float)((Integer)blockState.getStructure(SignBlock.ROTATION) * 360) / 16.0F);
         matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
         matrixStack.push();
         // size

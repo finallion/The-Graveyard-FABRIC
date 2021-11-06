@@ -216,6 +216,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return this.factory;
     }
 
+    // TODO: custom sounds
     @Override
     public void playAmbientSound() {
         this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.0F, -5.0F);

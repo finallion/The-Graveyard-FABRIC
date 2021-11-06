@@ -49,10 +49,11 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
-        //TGBiomes.registerBiomes();
-        //TGConfiguredFeatures.registerFeatures();
-        //TGConfiguredFeatures.registerConfiguredFeatures();
-        //FeatureBiomeSettings.init();
+        // TODO: change hitboxes on large urns
+        TGBiomes.registerBiomes();
+        TGConfiguredFeatures.registerFeatures();
+        TGConfiguredFeatures.registerConfiguredFeatures();
+        FeatureBiomeSettings.init();
         //MobBiomeSettings.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
