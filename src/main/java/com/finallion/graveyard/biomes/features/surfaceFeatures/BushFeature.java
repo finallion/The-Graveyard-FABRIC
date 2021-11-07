@@ -6,7 +6,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
@@ -28,8 +30,9 @@ public class BushFeature extends Feature<DefaultFeatureConfig> {
         context.getConfig();
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
 
-        // cap at height 90
-        for (int i = 64; i < 90; i++) {
+
+        for (int i = 64; i < world.getHeight(); i++) {
+            mutable.set(blockPos);
             mutable.move(random.nextInt(3) - random.nextInt(3), 0, random.nextInt(3) - random.nextInt(3));
             mutable.setY(i);
             if (FeatureHelper.canBePlaced(world.getBlockState(mutable)) && world.getBlockState(mutable.up()).isAir()) {

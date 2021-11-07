@@ -92,6 +92,7 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
         // TODO: Surfacebuilder with beach blocks
+        // TODO: grass and foliage color
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
         generationSettings.surfaceBuilder(TGSurfaceBuilders.HAUNTED_FOREST_SURFACE_CONFIG);
         generationSettings.structureFeature(ConfiguredStructureFeatures.MINESHAFT);
