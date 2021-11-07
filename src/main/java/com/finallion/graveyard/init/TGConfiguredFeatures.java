@@ -5,6 +5,7 @@ import com.finallion.graveyard.biomes.features.surfaceFeatures.BushFeature;
 import com.finallion.graveyard.biomes.features.surfaceFeatures.CobwebFeature;
 import com.finallion.graveyard.biomes.features.surfaceFeatures.MoosCarpetFeature;
 import com.finallion.graveyard.biomes.features.surfaceFeatures.MossyBoulderFeature;
+import com.finallion.graveyard.biomes.features.trees.LargeBentSpruceTree01;
 import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
 import com.finallion.graveyard.biomes.features.trees.FallenSpruceTree;
 import com.finallion.graveyard.biomes.features.trees.SmallBentSpruceTree01;
@@ -23,11 +24,13 @@ import net.minecraft.world.gen.feature.*;
 
 public class TGConfiguredFeatures {
 
+    //TODO: fix "Detected setBlock in a far chunk"
+
     // tree features
     public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_01 = new SmallSpruceTree01(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> SMALL_BENT_SPRUCE_TREE_01 = new SmallBentSpruceTree01(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> FALLEN_SPRUCE_TREE = new FallenSpruceTree(TGTreeFeatureConfig.CODEC);
-
+    public static final Feature<TGTreeFeatureConfig> LARGE_BENT_SPRUCE_TREE_01 = new LargeBentSpruceTree01(TGTreeFeatureConfig.CODEC);
 
     // other features
     private static final Feature<DefaultFeatureConfig> MOSS_CARPET_FEATURE = new MoosCarpetFeature(DefaultFeatureConfig.CODEC);
@@ -54,11 +57,12 @@ public class TGConfiguredFeatures {
                     ImmutableList.of(
                             TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
                             TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F)
-                            ),
+                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
+                            TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F)
+                    ),
                     ConfiguredFeatures.SPRUCE))
             .decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP)
-            .decorate(Decorator.COUNT.configure(new CountConfig(7))));
+            .decorate(Decorator.COUNT.configure(new CountConfig(12))));
 
 
 
@@ -77,6 +81,7 @@ public class TGConfiguredFeatures {
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_01"), SMALL_SPRUCE_TREE_01);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_bent_spruce_tree_01"), SMALL_BENT_SPRUCE_TREE_01);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "fallen_spruce_tree"), FALLEN_SPRUCE_TREE);
+        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "large_bent_spruce_tree_01"), LARGE_BENT_SPRUCE_TREE_01);
     }
 
     public static void registerConfiguredFeatures() {

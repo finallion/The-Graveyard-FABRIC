@@ -26,8 +26,8 @@ public class MoosCarpetFeature extends Feature<DefaultFeatureConfig> {
         context.getConfig();
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
 
-        // cap at height 75
-        for (int i = 64; i < 75; i++) {
+        // cap at height 80
+        for (int i = 64; i < 80; i++) {
             mutable.move(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
             mutable.setY(i);
             if (world.getBlockState(mutable).getBlock() instanceof LeavesBlock && world.getBlockState(mutable.up()).isAir()) {

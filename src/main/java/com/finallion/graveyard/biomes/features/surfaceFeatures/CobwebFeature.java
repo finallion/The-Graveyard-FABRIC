@@ -26,11 +26,16 @@ public class CobwebFeature extends Feature<DefaultFeatureConfig> {
         context.getConfig();
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
 
-        for (int i = 64; i < world.getHeight(); i++) {
+        // cap at height 100
+        for (int i = 64; i < 100; i++) {
             mutable.move(random.nextInt(4) - random.nextInt(4), 0, random.nextInt(4) - random.nextInt(4));
             mutable.setY(i);
-            if (world.getBlockState(mutable).getBlock() instanceof LeavesBlock && world.getBlockState(mutable.down()).isAir()) {
-                world.setBlockState(mutable.down(), Blocks.COBWEB.getDefaultState(), 2);
+            if (world.getBlockState(mutable).isOf(Blocks.SPRUCE_LEAVES) && world.getBlockState(mutable.down()).isAir()) {
+                System.out.println(mutable.down());
+                BlockPos setPos = mutable.down();
+                world.setBlockState(setPos, Blocks.COBWEB.getDefaultState(), 2);
+                System.out.println(setPos);
+                System.out.println("----");
                 break;
             }
         }

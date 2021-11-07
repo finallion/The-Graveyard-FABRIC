@@ -45,13 +45,13 @@ public class MossyBoulderFeature extends Feature<DefaultFeatureConfig> {
         world.setBlockState(mutable.add(-1, 0, 1), Blocks.MOSS_BLOCK.getDefaultState(), 2);
         world.setBlockState(mutable.add(1, 0, -1), Blocks.MOSSY_COBBLESTONE_SLAB.getDefaultState(), 2);
         world.setBlockState(mutable.add(2, 0, 0), Blocks.MOSS_BLOCK.getDefaultState(), 2);
-        world.setBlockState(mutable.add(-2, 0, 0), Blocks.COBBLESTONE.getDefaultState(), 2);
+        world.setBlockState(mutable.add(-2, 0, 0), Blocks.COBBLESTONE_SLAB.getDefaultState(), 2);
 
-        world.setBlockState(mutable.add(0, 1, 0), Blocks.COBBLED_DEEPSLATE_SLAB.getDefaultState(), 2);
-        world.setBlockState(mutable.add(0, 1, 1), Blocks.COBBLED_DEEPSLATE_SLAB.getDefaultState(), 2);
+        world.setBlockState(mutable.add(0, 1, 0), Blocks.MOSSY_COBBLESTONE.getDefaultState(), 2);
+        world.setBlockState(mutable.add(0, 1, 1), Blocks.COBBLESTONE_SLAB.getDefaultState(), 2);
         world.setBlockState(mutable.add(1, 1, 0), Blocks.MOSSY_COBBLESTONE_SLAB.getDefaultState(), 2);
         world.setBlockState(mutable.add(-1, 1, 0), Blocks.MOSSY_COBBLESTONE_SLAB.getDefaultState(), 2);
-        world.setBlockState(mutable.add(0, 1, -1), Blocks.COBBLED_DEEPSLATE_SLAB.getDefaultState(), 2);
+        world.setBlockState(mutable.add(0, 1, -1), Blocks.COBBLESTONE_SLAB.getDefaultState(), 2);
 
 
 

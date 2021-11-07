@@ -56,34 +56,31 @@ public class SmallBentSpruceTree01 extends BaseSpruceTree {
         mutable.move(direction);
 
         // single tree top
-        world.setBlockState(mutable.add(0, 3, 0), leaf, 2);
-        world.setBlockState(mutable.add(0, 2, 0), leaf, 2);
-        world.setBlockState(mutable.add(0, 1, 0), leaf, 2);
-        world.setBlockState(mutable.add(0, 0, 0), leaf, 2);
+        setLeaves(context, mutable.add(0, 3, 0), leaf);
+        setLeaves(context, mutable.add(0, 2, 0), leaf);
+        setLeaves(context, mutable.add(0, 1, 0), leaf);
+        setLeaves(context, mutable.add(0, 0, 0), leaf);
 
         generateOneStar(context, mutable.add(0, 0, 0), false);
-        generateOneStar(context, mutable.add(0, -1, 0), false);
+        randomSpreadTwo(context, mutable.add(0, -1, 0), true, 2);
 
         // second layer
         generateOneStar(context, mutable.add(0, -3, 0), false);
         generateTwoStar(context, mutable.add(0, -4, 0), false);
 
-        world.setBlockState(mutable.add(1, -5, 0), leaf, 2);
-        world.setBlockState(mutable.add(0, -5, 1), leaf, 2);
-        world.setBlockState(mutable.add(-1, -5, -1), leaf, 2);
+        randomSpreadTwo(context, mutable.add(0, -5, 0), false, 2);
 
         // third layer
         generateTwoStar(context, mutable.add(0, -6, 0), false);
         generateThreeStar(context, mutable.add(0, -7, 0), true);
 
         // revert bending direction
-        world.setBlockState(mutable.add(1, -8, 0).offset(direction.getOpposite()), leaf, 2);
-        world.setBlockState(mutable.add(0, -8, 1).offset(direction.getOpposite()), leaf, 2);
-        world.setBlockState(mutable.add(0, -8, -1).offset(direction.getOpposite()), leaf, 2);
+        mutable.move(direction.getOpposite());
+        randomSpreadOne(context, mutable.add(0, -8, 0), false, 4);
 
         // forth layer
-        generateTwoStar(context, mutable.add(0, -9, 0).offset(direction.getOpposite()), false);
-        generateThreeStar(context, mutable.add(0, -10, 0).offset(direction.getOpposite()), false);
+        generateTwoStar(context, mutable.add(0, -9, 0), false);
+        generateThreeStar(context, mutable.add(0, -10, 0), false);
 
 
 

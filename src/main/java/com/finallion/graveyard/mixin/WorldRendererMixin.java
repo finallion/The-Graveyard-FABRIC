@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class WorldRendererMixin {
     // TODO: transition when entering biome
     // smaller values = denser fog
-    private final float density = ConfigConsts.fogDensity;
+    private float density = ConfigConsts.fogDensity;
     private float densityStart = 1.0F;
 
     @Shadow

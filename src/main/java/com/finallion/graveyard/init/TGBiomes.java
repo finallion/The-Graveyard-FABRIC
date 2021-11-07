@@ -12,12 +12,17 @@ import net.minecraft.world.biome.Biome;
 
 public class TGBiomes {
     public static final RegistryKey<Biome> HAUNTED_FOREST_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "haunted_forest"));
+    public static final RegistryKey<Biome> HAUNTED_FOREST_LAKE_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "haunted_forest_lake"));
 
     public static void registerBiomes() {
         Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.HauntedForestBiome());
+        Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_LAKE_KEY.getValue(), HauntedForestBiomes.HauntedForestLakeBiome());
 
         OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, 2D);
         OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.COOL, 2D);
+
+        OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_LAKE_KEY, OverworldClimate.TEMPERATE, 2D);
+        OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_LAKE_KEY, OverworldClimate.COOL, 2D);
 
     }
 }
