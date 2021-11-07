@@ -11,10 +11,10 @@ import net.minecraft.world.gen.feature.util.FeatureContext;
 
 import java.util.Random;
 
-public class MoosCarpetFeature extends Feature<DefaultFeatureConfig> {
+public class MossCarpetFeature extends Feature<DefaultFeatureConfig> {
 
 
-    public MoosCarpetFeature(Codec<DefaultFeatureConfig> configCodec) {
+    public MossCarpetFeature(Codec<DefaultFeatureConfig> configCodec) {
         super(configCodec);
     }
 

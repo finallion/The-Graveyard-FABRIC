@@ -5,8 +5,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
+import net.minecraft.state.property.Properties;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.TestableWorld;
 import net.minecraft.world.World;
@@ -38,6 +40,12 @@ public abstract class BaseSpruceTree extends Feature<TGTreeFeatureConfig> {
         }
     }
 
+    public void setBranchRandomized(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, BlockState state, int chance) {
+        if (canReplace(context.getWorld(), pos) && context.getRandom().nextInt(chance) == 0) {
+            context.getWorld().setBlockState(pos, state, 2);
+        }
+    }
+
     public static boolean canReplace(StructureWorldAccess world, BlockPos pos) {
         return isAirOrLeaves(world, pos) || isReplaceablePlant(world, pos) || isWater(world, pos);
     }
@@ -60,6 +68,28 @@ public abstract class BaseSpruceTree extends Feature<TGTreeFeatureConfig> {
             return material == Material.REPLACEABLE_PLANT;
         });
     }
+
+
+    public void generateBranchesOne(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, int chance) {
+
+        setBranchRandomized(context, pos.add(1, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, 1), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+        setBranchRandomized(context, pos.add(-1, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, -1), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+
+    }
+
+    public void generateBranchesTwo(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, int chance) {
+        setBranchRandomized(context, pos.add(1, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, 1), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+        setBranchRandomized(context, pos.add(-1, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, -1), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+        setBranchRandomized(context, pos.add(2, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, 2), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+        setBranchRandomized(context, pos.add(-2, 0, 0), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.X), chance);
+        setBranchRandomized(context, pos.add(0, 0, -2), context.getConfig().woodState.with(Properties.AXIS, Direction.Axis.Z), chance);
+    }
+
 
 
     public void randomSpreadOne(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, boolean beSquare, int chance) {
