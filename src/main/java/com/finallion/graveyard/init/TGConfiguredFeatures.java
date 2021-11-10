@@ -24,6 +24,8 @@ public class TGConfiguredFeatures {
     public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_02 = new SmallSpruceTree02(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_03 = new SmallSpruceTree03(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_04 = new SmallSpruceTree04(TGTreeFeatureConfig.CODEC);
+    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_05 = new SmallSpruceTree05(TGTreeFeatureConfig.CODEC);
+    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_06 = new SmallSpruceTree06(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> SMALL_BENT_SPRUCE_TREE_01 = new SmallBentSpruceTree01(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> FALLEN_SPRUCE_TREE = new FallenSpruceTree(TGTreeFeatureConfig.CODEC);
     public static final Feature<TGTreeFeatureConfig> LARGE_BENT_SPRUCE_TREE_01 = new LargeBentSpruceTree01(TGTreeFeatureConfig.CODEC);
@@ -54,29 +56,33 @@ public class TGConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> BUSH_CONFIG = BUSH_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(35).spreadHorizontally();
     public static final ConfiguredFeature<?, ?> MOSSY_BOULDER_CONFIG = MOSSY_BOULDER_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(5).spreadHorizontally();
     public static final ConfiguredFeature<?, ?> GRAVESTONE_CONFIG = GRAVESTONE_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(50).spreadHorizontally();
+    public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(100).spreadHorizontally();
 
 
     // configured tree feature collections
     public static final ConfiguredFeature<?, ?> HAUNTED_FOREST_TREES = register("haunted_forest_trees", Feature.RANDOM_SELECTOR.configure(
             new RandomFeatureConfig(
                     ImmutableList.of(
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.75F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.375F),
                             TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
+                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.75F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.375F),
                             TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
+                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
+                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F)
                             ),
@@ -88,18 +94,18 @@ public class TGConfiguredFeatures {
             new RandomFeatureConfig(
                     ImmutableList.of(
                             TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.075F),
+                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.75F),
                             TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
+                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
 
                             TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.075F),
+                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.75F),
                             TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.05F),
+                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
                             TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F)
                     ),
@@ -127,6 +133,8 @@ public class TGConfiguredFeatures {
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_02"), SMALL_SPRUCE_TREE_02);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_03"), SMALL_SPRUCE_TREE_03);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_04"), SMALL_SPRUCE_TREE_04);
+        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_05"), SMALL_SPRUCE_TREE_05);
+        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_06"), SMALL_SPRUCE_TREE_06);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_bent_spruce_tree_01"), SMALL_BENT_SPRUCE_TREE_01);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "fallen_spruce_tree"), FALLEN_SPRUCE_TREE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "large_bent_spruce_tree_01"), LARGE_BENT_SPRUCE_TREE_01);

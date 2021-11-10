@@ -27,14 +27,13 @@ public class SoulLightFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
 
         mutable.set(blockPos);
-        mutable.move(random.nextInt(10) - random.nextInt(10), 63, random.nextInt(10) - random.nextInt(10));
+        mutable.move(random.nextInt(10) - random.nextInt(10), 0, random.nextInt(10) - random.nextInt(10));
+        mutable.setY(63);
 
-        int randomHeight = random.nextInt(6) + 1;
 
-        if (world.getBlockState(mutable).isOf(Blocks.LILY_PAD) && world.getBlockState(mutable.up()).isAir()) {
-            System.out.println(mutable);
-            world.setBlockState(mutable.move(0, randomHeight, 0), Blocks.BLACK_CANDLE.getDefaultState()
-                    .with(Properties.CANDLES, random.nextInt(4) + 1)
+        if (world.getBlockState(mutable).isOf(Blocks.LILY_PAD) && world.getBlockState(mutable.up()).isAir() && world.getBlockState(mutable.up(2)).isAir()) {
+            world.setBlockState(mutable.move(0, random.nextInt(2) + 1, 0), Blocks.BLACK_CANDLE.getDefaultState()
+                    .with(Properties.CANDLES, random.nextInt(3) + 2)
                     .with(Properties.LIT, true), 2);
 
             return true;

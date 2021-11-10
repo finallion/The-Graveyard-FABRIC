@@ -33,7 +33,6 @@ public class HauntedForestBiomes {
         generationSettings.surfaceBuilder(TGSurfaceBuilders.HAUNTED_FOREST_SURFACE_CONFIG);
         generationSettings.structureFeature(ConfiguredStructureFeatures.MINESHAFT);
         generationSettings.structureFeature(ConfiguredStructureFeatures.STRONGHOLD);
-        generationSettings.structureFeature(ConfiguredStructureFeatures.MANSION);
         generationSettings.structureFeature(ConfiguredStructureFeatures.RUINED_PORTAL);
         DefaultBiomeFeatures.addDefaultUndergroundStructures(generationSettings);
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
@@ -67,8 +66,8 @@ public class HauntedForestBiomes {
                 .effects((new BiomeEffects.Builder())
                         .grassColor(0x6F932A)
                         .foliageColor(0x6F932A)
-                        .waterColor(0x7E918F)
-                        .waterFogColor(0x8DA3A0)
+                        .waterColor(0xAEC1BE)
+                        .waterFogColor(0xC9DDDA)
                         .fogColor(0x878787)
                         .skyColor(0x878787)
                         .music(MusicType.GAME)
@@ -137,7 +136,7 @@ public class HauntedForestBiomes {
                 .effects((new BiomeEffects.Builder())
                         .grassColor(0x7EA530)
                         .foliageColor(0x7EA530)
-                        .waterColor(0xC60B21)
+                        .waterColor(0x9B091C)
                         .waterFogColor(0xD80D28)
                         .fogColor(0xB2B2B2)
                         .skyColor(0xB2B2B2)
@@ -200,8 +199,8 @@ public class HauntedForestBiomes {
                 .effects((new BiomeEffects.Builder())
                         .grassColor(0x77AB2F)
                         .foliageColor(0x77AB2F)
-                        .waterColor(0x7E918F)
-                        .waterFogColor(0x8DA3A0)
+                        .waterColor(0xAEC1BE)
+                        .waterFogColor(0xC9DDDA)
                         .fogColor(0x6B6B6B)
                         .skyColor(0x6B6B6B)
                         .music(MusicType.GAME)

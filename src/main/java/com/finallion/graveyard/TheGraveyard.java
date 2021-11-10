@@ -46,6 +46,7 @@ public class TheGraveyard implements ModInitializer {
 
     // death island
     // bone desert
+    // blood woods
 
 
 
