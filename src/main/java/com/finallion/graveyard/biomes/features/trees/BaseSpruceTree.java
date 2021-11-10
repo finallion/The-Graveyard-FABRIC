@@ -28,6 +28,7 @@ public abstract class BaseSpruceTree extends Feature<TGTreeFeatureConfig> {
     }
 
 
+    //TODO set to dirt
     public void setLeaves(FeatureContext<TGTreeFeatureConfig> context, BlockPos pos, BlockState state) {
         if (canReplace(context.getWorld(), pos)) {
             context.getWorld().setBlockState(pos, state, 2);

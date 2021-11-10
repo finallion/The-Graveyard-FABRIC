@@ -32,7 +32,7 @@ public class FallenSpruceTree extends BaseSpruceTree {
         Direction direction = Direction.from(axis, random.nextBoolean() ? Direction.AxisDirection.POSITIVE : Direction.AxisDirection.NEGATIVE);
 
 
-        int length = random.nextInt(7) + 2;
+        int length = random.nextInt(9) + 2;
 
         if (!world.getBlockState(blockPos).isAir()) return false;
 

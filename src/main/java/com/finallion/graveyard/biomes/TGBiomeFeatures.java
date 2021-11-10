@@ -9,4 +9,8 @@ public class TGBiomeFeatures {
     public static void addGraveyardSpruceTrees(GenerationSettings.Builder gen) {
         gen.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.HAUNTED_FOREST_TREES);
     }
+
+    public static void addErodedGraveyardSpruceTrees(GenerationSettings.Builder gen) {
+        gen.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ERODED_HAUNTED_FOREST_TREES);
+    }
 }

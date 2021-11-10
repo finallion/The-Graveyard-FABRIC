@@ -20,8 +20,9 @@ public class FeatureBiomeSettings {
         BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_LAKE_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_FEATURE_KEY);
         BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_LAKE_KEY), GenerationStep.Feature.UNDERGROUND_ORES, TGConfiguredFeatures.COBWEB_FEATURE_KEY);
         BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_LAKE_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_FEATURE_KEY);
-        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_FEATURE_KEY);
-        //BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSSY_BOULDER_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_LAKE_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.SOUL_LIGHT_FEATURE_KEY);
 
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.ERODED_HAUNTED_FOREST_KEY), GenerationStep.Feature.UNDERGROUND_ORES, TGConfiguredFeatures.COBWEB_FEATURE_KEY);
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(TGBiomes.ERODED_HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_FEATURE_KEY);
     }
 }

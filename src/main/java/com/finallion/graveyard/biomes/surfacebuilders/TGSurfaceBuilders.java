@@ -16,6 +16,9 @@ public class TGSurfaceBuilders {
     public static final SurfaceBuilder<TernarySurfaceConfig> HAUNTED_FOREST_SURFACE = registerSurfaceBuilder("haunted_forest_surface", new HauntedForestSurfaceBuilder(TernarySurfaceConfig.CODEC));
     public static final ConfiguredSurfaceBuilder HAUNTED_FOREST_SURFACE_CONFIG = registerConfiguredSurfaceBuilder("haunted_forest_surface_config", new ConfiguredSurfaceBuilder<>(HAUNTED_FOREST_SURFACE, Configs.MOSS_CONFIG));
 
+    public static final SurfaceBuilder<TernarySurfaceConfig> ERODED_HAUNTED_FOREST_SURFACE = registerSurfaceBuilder("eroded_haunted_forest_surface", new ErodedHauntedForestSurfaceBuilder(TernarySurfaceConfig.CODEC));
+    public static final ConfiguredSurfaceBuilder ERODED_HAUNTED_FOREST_SURFACE_CONFIG = registerConfiguredSurfaceBuilder("eroded_haunted_forest_surface_config", new ConfiguredSurfaceBuilder<>(ERODED_HAUNTED_FOREST_SURFACE, Configs.MOSS_CONFIG));
+
     public static <SBC extends SurfaceConfig, SB extends SurfaceBuilder<SBC>> SB registerSurfaceBuilder(String id, SB surfaceBuilder) {
         Registry.register(Registry.SURFACE_BUILDER, new Identifier(TheGraveyard.MOD_ID, id), surfaceBuilder);
         return surfaceBuilder;
@@ -31,7 +34,8 @@ public class TGSurfaceBuilders {
 
         public static final TernarySurfaceConfig PARTICLE_MOSS_CONFIG = new TernarySurfaceConfig(TGBlocks.TG_MOSS_BLOCK.getDefaultState(), Blocks.ROOTED_DIRT.getDefaultState(), Blocks.DIRT.getDefaultState());
         public static final TernarySurfaceConfig MOSS_CONFIG = new TernarySurfaceConfig(Blocks.MOSS_BLOCK.getDefaultState(), Blocks.ROOTED_DIRT.getDefaultState(), Blocks.DIRT.getDefaultState());
-        public static final TernarySurfaceConfig ROOTED_DIRT_CONFIG = new TernarySurfaceConfig(Blocks.ROOTED_DIRT.getDefaultState(), Blocks.COARSE_DIRT.getDefaultState(), Blocks.DIRT.getDefaultState());
+        public static final TernarySurfaceConfig SOUL_SOIL_CONFIG = new TernarySurfaceConfig(Blocks.SOUL_SOIL.getDefaultState(), Blocks.COARSE_DIRT.getDefaultState(), Blocks.DIRT.getDefaultState());
+        public static final TernarySurfaceConfig SOUL_SAND_CONFIG = new TernarySurfaceConfig(Blocks.SOUL_SAND.getDefaultState(), Blocks.COARSE_DIRT.getDefaultState(), Blocks.DIRT.getDefaultState());
     }
 
 }

@@ -47,7 +47,7 @@ public class LargeSpruceTree03 extends BaseSpruceTree {
         setLeaves(context, mutable.add(0, 0, 0), leaf);
         generateOneStar(context, mutable.add(0, 0, 0), false);
         randomSpreadOne(context, mutable.add(0, -1, 0), false, 2);
-        randomSpreadTwo(context, mutable.add(0, -2, 0), false, 2);
+        randomSpreadTwo(context, mutable.add(0, -2, 0), true, 2);
         randomSpreadOne(context, mutable.add(0, -3, 0), false, 2);
         generateTwoStar(context, mutable.add(0, -4, 0), false);
         randomSpreadThree(context, mutable.add(0, -5, 0), true, 2);
@@ -63,8 +63,8 @@ public class LargeSpruceTree03 extends BaseSpruceTree {
         randomSpreadFour(context, mutable.add(0, -14, 0), false, 2);
         generateTwoStar(context, mutable.add(0, -15, 0), false);
 
-        generateFourStar(context, mutable.add(0, -12, 0), true);
-        randomSpreadFour(context, mutable.add(0, -13, 0), true, 2);
+        randomSpreadFour(context, mutable.add(0, -12, 0), true, 2);
+        randomSpreadFour(context, mutable.add(0, -13, 0), true, 4);
         randomSpreadFour(context, mutable.add(0, -14, 0), false, 2);
         generateTwoStar(context, mutable.add(0, -15, 0), false);
 
@@ -75,8 +75,10 @@ public class LargeSpruceTree03 extends BaseSpruceTree {
         generateFiveStar(context, mutable.add(0, -19, 0), false);
         randomSpreadFive(context, mutable.add(0, -20, 0), false, 2);
         randomSpreadFour(context, mutable.add(0, -21, 0), false, 2);
-        randomSpreadThree(context, mutable.add(0, -22, 0), false, 2);
-        generateTwoStar(context, mutable.add(0, -23, 0), false);
+
+        randomSpreadFive(context, mutable.add(0, -22, 0), false, 2);
+        generateFiveStar(context, mutable.add(0, -23, 0), false);
+        randomSpreadFour(context, mutable.add(0, -24, 0), false, 2);
         return false;
     }
 }
