@@ -9,7 +9,7 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class SmallSpruceTree06 extends BaseSpruceTree {
-    private final int trunkHeight = 10;
+    private final int trunkHeight = 14;
 
 
     public SmallSpruceTree06(Codec<TGTreeFeatureConfig> configCodec) {
@@ -29,7 +29,7 @@ public class SmallSpruceTree06 extends BaseSpruceTree {
             return false;
         }
 
-        if (!FeatureHelper.canGenerate(world, blockPos, 10)) {
+        if (!FeatureHelper.canGenerate(world, blockPos, 14)) {
             return false;
         }
 

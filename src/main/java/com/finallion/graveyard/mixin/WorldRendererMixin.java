@@ -33,10 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(WorldRenderer.class)
 @Environment(EnvType.CLIENT)
 public abstract class WorldRendererMixin {
-    // TODO: transition when entering biome
     // smaller values = denser fog
-    private float density = ConfigConsts.fogDensity;
-    private float densityStart = 1.0F;
+    private float fogDensity;
 
     @Shadow
     private ClientWorld world;
@@ -46,7 +44,23 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V", ordinal = 0, shift = At.Shift.AFTER))
     public void render(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo callback) {
-        if (this.client.world.getBiomeKey(camera.getBlockPos()).get().toString().contains("graveyard:haunted_forest") && ConfigConsts.enableFog) {
+        String biomeName = this.client.world.getBiomeKey(camera.getBlockPos()).get().toString();
+
+        if (!ConfigConsts.enableFogLakes && !ConfigConsts.enableFogEroded && !ConfigConsts.enableFogForest) {
+            return;
+        }
+
+
+        if (biomeName.contains("graveyard:haunted_") || biomeName.contains("graveyard:eroded")) {
+            if (biomeName.contains("lakes") && ConfigConsts.enableFogLakes) {
+                fogDensity = ConfigConsts.fogDensityLakes;
+            } else if (biomeName.contains("eroded") && ConfigConsts.enableFogEroded) {
+                fogDensity = ConfigConsts.fogDensityEroded;
+            } else if (biomeName.contains("forest") && ConfigConsts.enableFogForest) {
+                fogDensity = ConfigConsts.fogDensityForest;
+            } else {
+                return;
+            }
 
             float g = gameRenderer.getViewDistance();
             Vec3d vec3d = camera.getPos();
@@ -54,7 +68,7 @@ public abstract class WorldRendererMixin {
             double e = vec3d.getY();
             boolean bl2 = this.client.world.getSkyProperties().useThickFog(MathHelper.floor(d), MathHelper.floor(e)) || this.client.inGameHud.getBossBarHud().shouldThickenFog();
 
-            applyCustomFog(camera, BackgroundRenderer.FogType.FOG_TERRAIN, Math.max(g - 16.0F, 32.0F), bl2, density);
+            applyCustomFog(camera, BackgroundRenderer.FogType.FOG_TERRAIN, Math.max(g - 16.0F, 32.0F), bl2, fogDensity);
         }
     }
 

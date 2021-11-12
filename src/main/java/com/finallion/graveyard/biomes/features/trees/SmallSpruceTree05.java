@@ -9,7 +9,7 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class SmallSpruceTree05 extends BaseSpruceTree {
-    private final int trunkHeight = 14;
+    private final int trunkHeight = 15;
 
 
     public SmallSpruceTree05(Codec<TGTreeFeatureConfig> configCodec) {
@@ -23,13 +23,13 @@ public class SmallSpruceTree05 extends BaseSpruceTree {
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
         BlockState wood = context.getConfig().woodState;
         BlockState leaf = context.getConfig().leafState;
-        int offsetTrunk = context.getRandom().nextInt(2);
+        int offsetTrunk = context.getRandom().nextInt(3);
 
         if (!FeatureHelper.canBePlaced(world.getBlockState(blockPos.down()))) {
             return false;
         }
 
-        if (!FeatureHelper.canGenerate(world, blockPos, 14)) {
+        if (!FeatureHelper.canGenerate(world, blockPos, 15)) {
             return false;
         }
 

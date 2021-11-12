@@ -5,7 +5,7 @@ public class ConfigBiomeFogParticleEntry {
     public final float density;
 
     private ConfigBiomeFogParticleEntry(float density) {
-        this(true, density);
+        this(false, density);
     }
 
     private ConfigBiomeFogParticleEntry(boolean canGenerate, float density) {

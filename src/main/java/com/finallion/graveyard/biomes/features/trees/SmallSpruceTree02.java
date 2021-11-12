@@ -52,7 +52,7 @@ public class SmallSpruceTree02 extends BaseSpruceTree {
         generateTwoStar(context, mutable.add(0, -6, 0), false);
         randomSpreadTwo(context, mutable.add(0, -7, 0), false, 2);
         generateTwoStar(context, mutable.add(0, -8, 0), false);
-        randomSpreadTwo(context, mutable.add(0, -8, 0), false, 4);
+        randomSpreadThree(context, mutable.add(0, -8, 0), false, 4);
         randomSpreadTwo(context, mutable.add(0, -9, 0), false, 2);
         generateOneStar(context, mutable.add(0, -10, 0), false);
         randomSpreadTwo(context, mutable.add(0, -10, 0), false, 2);

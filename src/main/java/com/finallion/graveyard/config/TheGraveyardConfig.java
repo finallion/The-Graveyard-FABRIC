@@ -29,7 +29,7 @@ public class TheGraveyardConfig implements Config {
     public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(9);
     public final Map<String, ConfigFogParticleEntry> particleConfigEntries = new HashMap<>(1);
     public final Map<String, ConfigBiomeFogParticleEntry> biomeFogConfigEntries = new HashMap<>(1);
-    public final Map<String, ConfigBooleanEntry> additionalGenerationEntries = new HashMap<>(1);
+    public final Map<String, ConfigBooleanEntry> additionalGenerationEntries = new HashMap<>(4);
 
     @Override
     public String getName() {
@@ -106,14 +106,20 @@ public class TheGraveyardConfig implements Config {
 
     @Override
     public void save() {
-        //additionalGenerationEntries.putIfAbsent("graveyard_villager_large_graveyard_map_trade", ConfigBooleanEntry.of());
+        //additionalGenerationEntries.putIfAbsent("lake_candle_feature", ConfigBooleanEntry.of());
+
+        additionalGenerationEntries.putIfAbsent("haunted_lakes_biome", ConfigBooleanEntry.of());
+        additionalGenerationEntries.putIfAbsent("eroded_haunted_forest_biome", ConfigBooleanEntry.of());
+        additionalGenerationEntries.putIfAbsent("haunted_forest_biome", ConfigBooleanEntry.of());
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ConfigFogParticleEntry.of(50));
 
-        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog", ConfigBiomeFogParticleEntry.of(0.4F));
+        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_forest", ConfigBiomeFogParticleEntry.of(0.6F));
+        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_lakes", ConfigBiomeFogParticleEntry.of(0.7F));
+        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_eroded", ConfigBiomeFogParticleEntry.of(0.9F));
 
         structureConfigEntries.putIfAbsent("large_birch_tree", ConfigStructureEntry.of(14, 12, 304812394));
-        structureConfigEntries.putIfAbsent("medium_walled_graveyard", ConfigStructureEntry.of(16, 14, 379123039));
+        structureConfigEntries.putIfAbsent("medium_walled_graveyard", ConfigStructureEntry.of(18, 16, 379123039));
         structureConfigEntries.putIfAbsent("mushroom_grave", ConfigStructureEntry.of(24, 18, 598017285));
         structureConfigEntries.putIfAbsent("small_grave", ConfigStructureEntry.of(12, 8, 240451934));
         structureConfigEntries.putIfAbsent("small_walled_graveyard", ConfigStructureEntry.of(20, 18, 1690192399));
