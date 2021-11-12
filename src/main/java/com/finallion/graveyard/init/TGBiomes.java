@@ -22,15 +22,15 @@ public class TGBiomes {
         Registry.register(BuiltinRegistries.BIOME, ERODED_HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.ErodedHauntedForestBiome());
 
         if (ConfigConsts.enableForestBiome) {
-            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, 0.3);
+            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceForest);
         }
 
         if (ConfigConsts.enableLakesBiome) {
-            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_LAKE_KEY, OverworldClimate.TEMPERATE, 0.3);
+            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_LAKE_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceLakes);
         }
 
         if (ConfigConsts.enableErodedBiome) {
-            OverworldBiomes.addContinentalBiome(ERODED_HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, 0.25);
+            OverworldBiomes.addContinentalBiome(ERODED_HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceEroded);
         }
 
 

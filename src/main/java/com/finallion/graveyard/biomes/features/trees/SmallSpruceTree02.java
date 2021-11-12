@@ -25,7 +25,7 @@ public class SmallSpruceTree02 extends BaseSpruceTree {
         BlockState leaf = context.getConfig().leafState;
         int offsetTrunk = context.getRandom().nextInt(2);
 
-        if (!FeatureHelper.canBePlaced(world.getBlockState(blockPos.down()))) {
+        if (!FeatureHelper.canBePlaced(world, blockPos.down(), world.getBlockState(blockPos.down()))) {
             return false;
         }
 

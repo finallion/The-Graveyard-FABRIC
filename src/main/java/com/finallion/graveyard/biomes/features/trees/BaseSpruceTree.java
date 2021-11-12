@@ -1,5 +1,6 @@
 package com.finallion.graveyard.biomes.features.trees;
 
+import com.finallion.graveyard.biomes.features.surfaceFeatures.FeatureHelper;
 import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;

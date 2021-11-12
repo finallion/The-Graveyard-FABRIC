@@ -28,8 +28,8 @@ public class TheGraveyardConfig implements Config {
             """)
     public final Map<String, ConfigStructureEntry> structureConfigEntries = new HashMap<>(9);
     public final Map<String, ConfigFogParticleEntry> particleConfigEntries = new HashMap<>(1);
-    public final Map<String, ConfigBiomeFogParticleEntry> biomeFogConfigEntries = new HashMap<>(1);
-    public final Map<String, ConfigBooleanEntry> additionalGenerationEntries = new HashMap<>(4);
+    public final Map<String, ConfigBiomeEntry> biomeConfigEntries = new HashMap<>(3);
+
 
     @Override
     public String getName() {
@@ -46,27 +46,12 @@ public class TheGraveyardConfig implements Config {
         return getParticle(id).canGenerate;
     }
 
-    public boolean biomeFogSpawn(Identifier id) {
-        return getBiomeFog(id).canGenerate;
-    }
-
     public boolean enabled(Identifier id) {
         return getStructure(id).enabled;
     }
 
-    public boolean additionalEnabled(Identifier id) {
-        return getAddons(id).canGenerate;
-    }
-
-    // additional boolean values
-    public ConfigBooleanEntry getAddons(Identifier id) {
-        for (Map.Entry<String, ConfigBooleanEntry> entry : additionalGenerationEntries.entrySet()) {
-            if (entry.getKey().equals(id.getPath())) {
-                return entry.getValue();
-            }
-        }
-
-        throw new NullPointerException("Tried AdditionalGenerationEntries with id: " + id + ", but it was null!");
+    public boolean biomeEnabled(Identifier id) {
+        return getBiome(id).biomeSpawn;
     }
 
 
@@ -92,31 +77,24 @@ public class TheGraveyardConfig implements Config {
         throw new NullPointerException("Tried FogParticleConfigEntry with id: " + id + ", but it was null!");
     }
 
-    // biome fog config
-    public ConfigBiomeFogParticleEntry getBiomeFog(Identifier id) {
-        for (Map.Entry<String, ConfigBiomeFogParticleEntry> entry : biomeFogConfigEntries.entrySet()) {
+    // biome config
+    public ConfigBiomeEntry getBiome(Identifier id) {
+        for (Map.Entry<String, ConfigBiomeEntry> entry : biomeConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
             }
         }
 
-        throw new NullPointerException("Tried BiomeFogConfigEntry with id: " + id + ", but it was null!");
+        throw new NullPointerException("Tried BiomeConfigEntry with id: " + id + ", but it was null!");
     }
+
 
 
     @Override
     public void save() {
-        //additionalGenerationEntries.putIfAbsent("lake_candle_feature", ConfigBooleanEntry.of());
-
-        additionalGenerationEntries.putIfAbsent("haunted_lakes_biome", ConfigBooleanEntry.of());
-        additionalGenerationEntries.putIfAbsent("eroded_haunted_forest_biome", ConfigBooleanEntry.of());
-        additionalGenerationEntries.putIfAbsent("haunted_forest_biome", ConfigBooleanEntry.of());
-
-        particleConfigEntries.putIfAbsent("graveyard_fog_particle", ConfigFogParticleEntry.of(50));
-
-        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_forest", ConfigBiomeFogParticleEntry.of(0.6F));
-        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_lakes", ConfigBiomeFogParticleEntry.of(0.7F));
-        biomeFogConfigEntries.putIfAbsent("graveyard_biome_fog_eroded", ConfigBiomeFogParticleEntry.of(0.9F));
+        biomeConfigEntries.putIfAbsent("haunted_lakes_biome", ConfigBiomeEntry.of(false, 0.7F, 0.2F));
+        biomeConfigEntries.putIfAbsent("eroded_haunted_forest_biome", ConfigBiomeEntry.of(false, 0.9F, 0.15F));
+        biomeConfigEntries.putIfAbsent("haunted_forest_biome", ConfigBiomeEntry.of(false, 0.5F, 0.2F));
 
         structureConfigEntries.putIfAbsent("large_birch_tree", ConfigStructureEntry.of(14, 12, 304812394));
         structureConfigEntries.putIfAbsent("medium_walled_graveyard", ConfigStructureEntry.of(18, 16, 379123039));
@@ -128,7 +106,7 @@ public class TheGraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("large_walled_graveyard", ConfigStructureEntry.of(11, 9, 739017628));
         structureConfigEntries.putIfAbsent("haunted_house", ConfigStructureEntry.of(25, 20, 529239621));
 
-
+        particleConfigEntries.putIfAbsent("graveyard_fog_particle", ConfigFogParticleEntry.of(50));
         Config.super.save();
     }
 }

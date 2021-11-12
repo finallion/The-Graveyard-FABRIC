@@ -50,7 +50,6 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
 
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_LARGE_FERN);
 
         TGBiomeFeatures.addGraveyardSpruceTrees(generationSettings);
 
@@ -120,7 +119,6 @@ public class HauntedForestBiomes {
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.SEAGRASS_SWAMP);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_WATERLILLY);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_LARGE_FERN);
 
         TGBiomeFeatures.addGraveyardSpruceTrees(generationSettings);
 
@@ -183,7 +181,6 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
 
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_PUMPKIN);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, ConfiguredFeatures.PATCH_LARGE_FERN);
 
         TGBiomeFeatures.addErodedGraveyardSpruceTrees(generationSettings);
 

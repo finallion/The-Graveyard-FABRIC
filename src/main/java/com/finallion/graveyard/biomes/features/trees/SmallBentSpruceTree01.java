@@ -31,7 +31,7 @@ public class SmallBentSpruceTree01 extends BaseSpruceTree {
         Direction direction = Direction.from(axis, random.nextBoolean() ? Direction.AxisDirection.POSITIVE : Direction.AxisDirection.NEGATIVE);
 
 
-        if (!FeatureHelper.canBePlaced(world.getBlockState(blockPos.down()))) {
+        if (!FeatureHelper.canBePlaced(world, blockPos.down(), world.getBlockState(blockPos.down()))) {
             return false;
         }
 

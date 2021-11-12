@@ -24,9 +24,7 @@ public class FallenSpruceTree extends BaseSpruceTree {
         StructureWorldAccess world = context.getWorld();
         BlockPos blockPos = context.getOrigin();
         Random random = context.getRandom();
-        BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
         BlockState wood = context.getConfig().woodState;
-        BlockState leaf = context.getConfig().leafState;
 
         Direction.Axis axis = random.nextBoolean() ? Direction.Axis.X : Direction.Axis.Z;
         Direction direction = Direction.from(axis, random.nextBoolean() ? Direction.AxisDirection.POSITIVE : Direction.AxisDirection.NEGATIVE);

@@ -56,7 +56,7 @@ public abstract class WorldRendererMixin {
                 fogDensity = ConfigConsts.fogDensityLakes;
             } else if (biomeName.contains("eroded") && ConfigConsts.enableFogEroded) {
                 fogDensity = ConfigConsts.fogDensityEroded;
-            } else if (biomeName.contains("forest") && ConfigConsts.enableFogForest) {
+            } else if (biomeName.contains("graveyard:haunted_forest") && ConfigConsts.enableFogForest) {
                 fogDensity = ConfigConsts.fogDensityForest;
             } else {
                 return;

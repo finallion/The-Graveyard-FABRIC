@@ -25,7 +25,7 @@ public class SmallSpruceTree05 extends BaseSpruceTree {
         BlockState leaf = context.getConfig().leafState;
         int offsetTrunk = context.getRandom().nextInt(3);
 
-        if (!FeatureHelper.canBePlaced(world.getBlockState(blockPos.down()))) {
+        if (!FeatureHelper.canBePlaced(world, blockPos.down(), world.getBlockState(blockPos.down()))) {
             return false;
         }
 
@@ -53,10 +53,14 @@ public class SmallSpruceTree05 extends BaseSpruceTree {
         randomSpreadTwo(context, mutable.add(0, -5, 0), false, 2);
         generateOneStar(context, mutable.add(0, -6, 0), false);
         randomSpreadThree(context, mutable.add(0, -7, 0), false, 2);
+        generateTwoStar(context, mutable.add(0, -8, 0), false);
         randomSpreadThree(context, mutable.add(0, -8, 0), false, 2);
         randomSpreadTwo(context, mutable.add(0, -9, 0), false, 2);
+        generateThreeStar(context, mutable.add(0, -10, 0), false);
         randomSpreadFour(context, mutable.add(0, -10, 0), false, 2);
+        generateTwoStar(context, mutable.add(0, -11, 0), false);
         randomSpreadThree(context, mutable.add(0, -11, 0), false, 2);
+        generateThreeStar(context, mutable.add(0, -12, 0), false);
         randomSpreadFour(context, mutable.add(0, -12, 0), false, 2);
 
         return false;
