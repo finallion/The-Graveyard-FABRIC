@@ -68,8 +68,11 @@
   "entity.graveyard.reaper": "Reaper",
   "item.graveyard.reaper_spawn_egg": "Reaper Spawn Egg",
 
+  "biome.graveyard.haunted_forest": "Haunted Forest",
+  "biome.graveyard.haunted_lakes": "Haunted Lakes",
+  "biome.graveyard.eroded_haunted_forest": "Eroded Haunted Forest",
 
-  "filled_map.graveyard:large_walled_graveyard": "Large Graveyard Explorer Map",
+
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"
 

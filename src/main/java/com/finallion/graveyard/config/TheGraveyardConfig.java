@@ -92,9 +92,9 @@ public class TheGraveyardConfig implements Config {
 
     @Override
     public void save() {
-        biomeConfigEntries.putIfAbsent("haunted_lakes_biome", ConfigBiomeEntry.of(false, 0.7F, 0.2F));
-        biomeConfigEntries.putIfAbsent("eroded_haunted_forest_biome", ConfigBiomeEntry.of(false, 0.9F, 0.15F));
-        biomeConfigEntries.putIfAbsent("haunted_forest_biome", ConfigBiomeEntry.of(false, 0.5F, 0.2F));
+        biomeConfigEntries.putIfAbsent("haunted_lakes_biome", ConfigBiomeEntry.of(true, 0.7F, 0.2F, 256, 62));
+        biomeConfigEntries.putIfAbsent("eroded_haunted_forest_biome", ConfigBiomeEntry.of(true, 0.9F, 0.15F, 256, 62));
+        biomeConfigEntries.putIfAbsent("haunted_forest_biome", ConfigBiomeEntry.of(true, 0.5F, 0.2F, 256, 62));
 
         structureConfigEntries.putIfAbsent("large_birch_tree", ConfigStructureEntry.of(14, 12, 304812394));
         structureConfigEntries.putIfAbsent("medium_walled_graveyard", ConfigStructureEntry.of(18, 16, 379123039));

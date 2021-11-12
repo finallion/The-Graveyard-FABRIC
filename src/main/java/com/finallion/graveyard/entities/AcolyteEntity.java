@@ -104,21 +104,6 @@ public class AcolyteEntity extends IllagerEntity {
         }
     }
 
-    /*
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_VINDICATOR_AMBIENT;
-    }
-
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_VINDICATOR_DEATH;
-    }
-
-    protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_VINDICATOR_HURT;
-    }
-
-     */
-
     @Override
     public void playAmbientSound() {
         this.playSound(SoundEvents.ENTITY_VINDICATOR_AMBIENT, 1.0F, 1.0F);
@@ -131,6 +116,7 @@ public class AcolyteEntity extends IllagerEntity {
 
     @Override
     public void onDeath(DamageSource source) {
+        super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_VINDICATOR_DEATH, 1.0F, 1.0F);
     }
 

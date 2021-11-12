@@ -1,6 +1,8 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -12,6 +14,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
@@ -21,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.ServerWorldAccess;
@@ -229,6 +233,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void onDeath(DamageSource source) {
+        super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.0F, -5.0F);
     }
 

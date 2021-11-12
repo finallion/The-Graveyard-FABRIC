@@ -3,7 +3,6 @@ package com.finallion.graveyard;
 import com.finallion.graveyard.config.TheGraveyardConfig;
 import com.finallion.graveyard.init.*;
 import com.finallion.graveyard.utils.FeatureBiomeSettings;
-import com.finallion.graveyard.utils.MobBiomeSettings;
 import com.finallion.graveyard.utils.StructureBiomeSettings;
 import com.finallion.graveyard.utils.TGBiomeKeys;
 import draylar.omegaconfig.OmegaConfig;
@@ -60,7 +59,6 @@ public class TheGraveyard implements ModInitializer {
         TGConfiguredFeatures.registerFeatures();
         TGConfiguredFeatures.registerConfiguredFeatures();
         FeatureBiomeSettings.init();
-        //MobBiomeSettings.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGStructures.setupAndRegisterStructureFeatures();
@@ -68,7 +66,6 @@ public class TheGraveyard implements ModInitializer {
         TGBiomeKeys.init();
         TGProcessors.init();
         TGEntities.registerEntities();
-        //TGVillagerTrades.init();
         StructureBiomeSettings.init();
 
     }

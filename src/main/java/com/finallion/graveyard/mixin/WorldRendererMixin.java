@@ -16,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
@@ -44,32 +45,41 @@ public abstract class WorldRendererMixin {
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V", ordinal = 0, shift = At.Shift.AFTER))
     public void render(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo callback) {
-        String biomeName = this.client.world.getBiomeKey(camera.getBlockPos()).get().toString();
+        BlockPos pos = camera.getBlockPos();
+        String biomeName = this.client.world.getBiomeKey(pos).get().toString();
 
         if (!ConfigConsts.enableFogLakes && !ConfigConsts.enableFogEroded && !ConfigConsts.enableFogForest) {
             return;
         }
 
 
-        if (biomeName.contains("graveyard:haunted_") || biomeName.contains("graveyard:eroded")) {
-            if (biomeName.contains("lakes") && ConfigConsts.enableFogLakes) {
-                fogDensity = ConfigConsts.fogDensityLakes;
-            } else if (biomeName.contains("eroded") && ConfigConsts.enableFogEroded) {
-                fogDensity = ConfigConsts.fogDensityEroded;
-            } else if (biomeName.contains("graveyard:haunted_forest") && ConfigConsts.enableFogForest) {
-                fogDensity = ConfigConsts.fogDensityForest;
-            } else {
+        if (biomeName.contains("graveyard:haunted_lakes") && ConfigConsts.enableFogLakes) {
+            if (pos.getY() > ConfigConsts.fogLakesMaxY || pos.getY() < ConfigConsts.fogLakesMinY) {
                 return;
             }
-
-            float g = gameRenderer.getViewDistance();
-            Vec3d vec3d = camera.getPos();
-            double d = vec3d.getX();
-            double e = vec3d.getY();
-            boolean bl2 = this.client.world.getSkyProperties().useThickFog(MathHelper.floor(d), MathHelper.floor(e)) || this.client.inGameHud.getBossBarHud().shouldThickenFog();
-
-            applyCustomFog(camera, BackgroundRenderer.FogType.FOG_TERRAIN, Math.max(g - 16.0F, 32.0F), bl2, fogDensity);
+            fogDensity = ConfigConsts.fogDensityLakes;
+        } else if (biomeName.contains("graveyard:eroded_haunted") && ConfigConsts.enableFogEroded) {
+            if (pos.getY() > ConfigConsts.fogErodedMaxY || pos.getY() < ConfigConsts.fogErodedMinY) {
+                return;
+            }
+            fogDensity = ConfigConsts.fogDensityEroded;
+        } else if (biomeName.contains("graveyard:haunted_forest") && ConfigConsts.enableFogForest) {
+            if (pos.getY() > ConfigConsts.fogForestMaxY || pos.getY() < ConfigConsts.fogForestMinY) {
+                return;
+            }
+            fogDensity = ConfigConsts.fogDensityForest;
+        } else {
+            return;
         }
+
+        float g = gameRenderer.getViewDistance();
+        Vec3d vec3d = camera.getPos();
+        double d = vec3d.getX();
+        double e = vec3d.getY();
+        boolean bl2 = this.client.world.getSkyProperties().useThickFog(MathHelper.floor(d), MathHelper.floor(e)) || this.client.inGameHud.getBossBarHud().shouldThickenFog();
+
+        applyCustomFog(camera, BackgroundRenderer.FogType.FOG_TERRAIN, Math.max(g - 16.0F, 32.0F), bl2, fogDensity);
+
     }
 
     // copy of the BackgroundRenderer method applyFog with density parameter

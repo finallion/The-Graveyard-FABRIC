@@ -7,7 +7,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BaseGhoulModel extends AnimatedGeoModel<BaseGhoulEntity> {
-    private Identifier texture = new Identifier(TheGraveyard.MOD_ID, "decaying_ghoul.png");
+    private Identifier texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
 
     @Override
     public Identifier getModelLocation(BaseGhoulEntity object) {
@@ -29,7 +29,7 @@ public class BaseGhoulModel extends AnimatedGeoModel<BaseGhoulEntity> {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
 
         switch (entity.getVariant()) {
-            case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
+            //case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
             case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin2.png");
             case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin3.png");
             case 3 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin4.png");

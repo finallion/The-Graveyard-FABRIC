@@ -220,6 +220,7 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
 
     @Override
     public void onDeath(DamageSource source) {
+        super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_VEX_DEATH, 1.0F, -10.0F);
     }
 
