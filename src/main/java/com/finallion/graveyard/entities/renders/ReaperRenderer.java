@@ -11,7 +11,7 @@ public class ReaperRenderer extends GeoEntityRenderer<ReaperEntity> {
     public ReaperRenderer(EntityRendererFactory.Context context) {
         super(context, new ReaperModel());
         this.addLayer(new ReaperEyesFeatureRenderer(this));
-        this.shadowRadius = 0.7F;
+        this.shadowRadius = 0.4F;
     }
 
     // stops the vanilla death animation

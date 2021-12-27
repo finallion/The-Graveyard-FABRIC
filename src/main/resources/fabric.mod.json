@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "2.0",
+  "version": "2.1",
 
   "name": "The Graveyard",
-  "description": "Adds new structures, mobs and blocks themed around the graveyard.",
+  "description": "Adds new biomes, structures, mobs and blocks themed around the graveyard.",
   "authors": [
     "Finallion"
   ],
   "contact": {
     "homepage": "",
-    "sources": ""
+    "sources": "https://github.com/finallion/The_Graveyard_-FABRIC-"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/graveyard/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -34,10 +34,8 @@
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
+    "geckolib3": ">=3.0.15",
     "minecraft": "1.17.x",
     "java": ">=16"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }

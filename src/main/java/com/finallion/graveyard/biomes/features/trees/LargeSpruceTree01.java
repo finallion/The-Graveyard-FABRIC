@@ -63,7 +63,7 @@ public class LargeSpruceTree01 extends BaseSpruceTree {
         generateThreeStar(context, mutable.add(0, -12, 0), false);
         randomSpreadFour(context, mutable.add(0, -12, 0), false, 4);
         generateFourStar(context, mutable.add(0, -13, 0), false);
-        generateThreeStar(context, mutable.add(0, -15, 0), false);
+        generateThreeStar(context, mutable.add(0, -14, 0), false);
         generateBranchesOne(context, mutable.add(0, -14, 0), 1);
         generateFourStar(context, mutable.add(0, -15, 0), false);
         generateTwoStar(context, mutable.add(0, -16, 0), true);

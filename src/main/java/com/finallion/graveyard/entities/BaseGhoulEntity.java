@@ -58,7 +58,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
     private static boolean isInRange = false;
-    private static final double ATTACK_RANGE = 3.5D;
+    private static final double ATTACK_RANGE = 2.0D;
     private TargetPredicate targetPredicate = TargetPredicate.createAttackable().setBaseMaxDistance(25.0D).ignoreVisibility();
 
     public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
