@@ -1,0 +1,94 @@
+{
+  "block.graveyard.tg_grass_block": "Блок травы",
+  "block.graveyard.tg_moss_block": "Блок мха",
+  "block.graveyard.tg_podzol": "Подзол",
+  "block.graveyard.tg_deepslate": "Глубинный сланец",
+  "block.graveyard.tg_coarse_dirt": "Каменистая земля",
+  "block.graveyard.tg_rooted_dirt": "Земля с корнями",
+  "block.graveyard.tg_stone": "Камень",
+  "block.graveyard.tg_granite": "Гранит",
+  "block.graveyard.tg_andesite": "Андезит",
+  "block.graveyard.tg_diorite": "Диорит",
+  "block.graveyard.tg_tuff": "Туф",
+  "block.graveyard.tg_dirt": "Земля",
+
+
+
+  "container.urn": "Урна",
+
+  "block.graveyard.white_urn": "Белая глазированная урна",
+  "block.graveyard.black_urn": "Чёрная глазированная урна",
+  "block.graveyard.brown_urn": "Коричневая глазированная урна",
+  "block.graveyard.gray_urn": "Серая глазированная урна",
+  "block.graveyard.light_gray_urn": "Светло-серая глазированная урна",
+  "block.graveyard.lime_urn": "Лаймовая глазированная урна",
+  "block.graveyard.green_urn": "Зелёная глазированная урна",
+  "block.graveyard.purple_urn": "Фиолетовая глазированная урна",
+  "block.graveyard.magenta_urn": "Пурпурная глазированная урна",
+  "block.graveyard.pink_urn": "Розовая глазированная урна",
+  "block.graveyard.red_urn": "Красная глазированная урна",
+  "block.graveyard.orange_urn": "Оранжевая глазированная урна",
+  "block.graveyard.yellow_urn": "Жёлтая глазированная урна",
+  "block.graveyard.blue_urn": "Синяя глазированная урна",
+  "block.graveyard.cyan_urn": "Голубая глазированная урна",
+  "block.graveyard.light_blue_urn": "Светло-синяя глазированная урна",
+
+  "block.graveyard.small_white_urn": "Маленькая белая урна",
+  "block.graveyard.small_black_urn": "Маленькая чёрная урна",
+  "block.graveyard.small_brown_urn": "Маленькая коричневая урна",
+  "block.graveyard.small_gray_urn": "Маленькая серая урна",
+  "block.graveyard.small_light_gray_urn": "Маленькая светло-серая урна",
+  "block.graveyard.small_lime_urn": "Маленькая лаймовая урна",
+  "block.graveyard.small_green_urn": "Маленькая зелёная урна",
+  "block.graveyard.small_purple_urn": "Маленькая фиолетовая урна",
+  "block.graveyard.small_magenta_urn": "Маленькая пурпурная урна",
+  "block.graveyard.small_pink_urn": "Маленькая розовая урна",
+  "block.graveyard.small_red_urn": "Маленькая красная урна",
+  "block.graveyard.small_orange_urn": "Маленькая оранжевая урна",
+  "block.graveyard.small_yellow_urn": "Маленькая жёлтая урна",
+  "block.graveyard.small_blue_urn": "Маленькая синяя урна",
+  "block.graveyard.small_cyan_urn": "Маленькая голубая урна",
+  "block.graveyard.small_light_blue_urn": "Маленькая светло-синяя урна",
+
+  "block.graveyard.vase_block": "Керамика",
+
+
+  "block.graveyard.lying_skeleton": "Лежащий скелет",
+  "block.graveyard.leaning_skeleton": "Наклоняющийся скелет",
+  "block.graveyard.skeleton_hand": "Рука скелета",
+  "block.graveyard.skull_pile": "Куча черепов",
+  "block.graveyard.skull_with_rib_cage": "Череп и грудная клетка",
+
+  "block.graveyard.lying_wither_skeleton": "Лежащий Визер-скелет",
+  "block.graveyard.leaning_wither_skeleton": "Наклоняющийся Визер-скелет",
+  "block.graveyard.wither_skeleton_hand": "Рука Визер-скелета",
+  "block.graveyard.wither_skull_pile": "Куча черепов Визер-скелета",
+  "block.graveyard.wither_skull_with_rib_cage": "Череп и грудная клетка Визер-скелет",
+  "block.graveyard.creeper_skeleton": "Ползучий скелет",
+
+  "block.graveyard.dark_iron_bars": "Прутья из тёмного железа",
+  "block.graveyard.gravestone": "Надгробие изполировоного базальта",
+  "block.graveyard.cobblestone_gravestone": "Надгробие из камня",
+  "block.graveyard.mossy_cobblestone_gravestone": "Надгробие из замшелого булыжника",
+  "block.graveyard.deepslate_gravestone": "Надгробие из глубинного сланца",
+
+  "item.graveyard.bone_dagger": "Костянной кинжал",
+
+  "entity.graveyard.skeleton_creeper": "Ползучий скелет",
+  "item.graveyard.skeleton_creeper_spawn_egg": "Яйцо призыва Ползучего скелета",
+  "entity.graveyard.acolyte": "Тёмный жрец",
+  "item.graveyard.acolyte_spawn_egg": "Яйцо призыва Тёмного жреца",
+  "entity.graveyard.ghoul": "Гуль",
+  "item.graveyard.ghoul_spawn_egg": "Яйцо призыва Гуля",
+  "entity.graveyard.reaper": "Жнец душ",
+  "item.graveyard.reaper_spawn_egg": "Яйцо призыва Жнеца душ",
+
+  "biome.graveyard.haunted_forest": "Лес с привидениями",
+  "biome.graveyard.haunted_lakes": "Озера с привидениями",
+  "biome.graveyard.eroded_haunted_forest": "Выветренный лес с привидениями",
+
+
+  "itemGroup.graveyard.group": "The Graveyard",
+  "gravestone.edit": "Редактировать надгробие"
+
+}

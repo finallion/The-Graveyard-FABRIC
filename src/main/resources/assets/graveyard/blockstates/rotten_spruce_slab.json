@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "graveyard:block/rotten_spruce_slab"
+    },
+    "type=double": {
+      "model": "graveyard:block/rotten_spruce_planks"
+    },
+    "type=top": {
+      "model": "graveyard:block/rotten_spruce_slab_top"
+    }
+  }
+}

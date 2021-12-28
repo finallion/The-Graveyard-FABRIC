@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "graveyard:block/rotten_spruce_planks",
+    "top": "graveyard:block/rotten_spruce_planks",
+    "side": "graveyard:block/rotten_spruce_planks"
+  }
+}

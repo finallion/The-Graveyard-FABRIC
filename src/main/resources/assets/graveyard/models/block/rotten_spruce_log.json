@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "graveyard:block/rotten_spruce_log_top",
+    "side": "graveyard:block/rotten_spruce_log"
+  }
+}
