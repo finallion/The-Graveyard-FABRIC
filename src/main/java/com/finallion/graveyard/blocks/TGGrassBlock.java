@@ -1,16 +1,11 @@
 package com.finallion.graveyard.blocks;
 
-import com.finallion.graveyard.init.TGParticles;
-import net.minecraft.block.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.GrassBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-
-import java.util.Random;
-import java.util.function.Supplier;
 
 public class TGGrassBlock extends GrassBlock {
 

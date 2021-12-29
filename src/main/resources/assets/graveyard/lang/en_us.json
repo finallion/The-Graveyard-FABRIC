@@ -1,4 +1,19 @@
 {
+  "block.graveyard.tg_grass_block": "Grass Block",
+  "block.graveyard.tg_moss_block": "Moss Block",
+  "block.graveyard.tg_podzol": "Podzol",
+  "block.graveyard.tg_deepslate": "Deepslate",
+  "block.graveyard.tg_coarse_dirt": "Coarse Dirt",
+  "block.graveyard.tg_rooted_dirt": "Rooted Dirt",
+  "block.graveyard.tg_stone": "Stone",
+  "block.graveyard.tg_granite": "Granite",
+  "block.graveyard.tg_andesite": "Andesite",
+  "block.graveyard.tg_diorite": "Diorite",
+  "block.graveyard.tg_tuff": "Tuff",
+  "block.graveyard.tg_dirt": "Dirt",
+
+
+
   "container.urn": "Urn",
 
   "block.graveyard.white_urn": "White Glazed Urn",

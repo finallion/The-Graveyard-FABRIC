@@ -8,7 +8,10 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.*;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.IllagerEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,13 +38,13 @@ public class AcolyteEntity extends IllagerEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new IllagerEntity.LongDoorInteractGoal(this));
-        this.goalSelector.add(2, new RaiderEntity.PatrolApproachGoal(this, 10.0F));
-        this.goalSelector.add(3, new AcolyteEntity.AttackGoal(this));
+        this.goalSelector.add(1, new LongDoorInteractGoal(this));
+        this.goalSelector.add(2, new PatrolApproachGoal(this, 10.0F));
+        this.goalSelector.add(3, new AttackGoal(this));
         this.targetSelector.add(1, (new RevengeGoal(this, new Class[]{RaiderEntity.class})).setGroupRevenge());
-        this.targetSelector.add(2, new FollowTargetGoal(this, PlayerEntity.class, true));
-        this.targetSelector.add(3, new FollowTargetGoal(this, MerchantEntity.class, true));
-        this.targetSelector.add(3, new FollowTargetGoal(this, IronGolemEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
         this.goalSelector.add(8, new WanderAroundGoal(this, 0.6D));
         this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
@@ -70,11 +73,11 @@ public class AcolyteEntity extends IllagerEntity {
         return attributeContainer;
     }
 
-    public IllagerEntity.State getState() {
+    public State getState() {
         if (this.isAttacking()) {
-            return IllagerEntity.State.ATTACKING;
+            return State.ATTACKING;
         } else {
-            return this.isCelebrating() ? IllagerEntity.State.CELEBRATING : IllagerEntity.State.CROSSED;
+            return this.isCelebrating() ? State.CELEBRATING : State.CROSSED;
         }
     }
 

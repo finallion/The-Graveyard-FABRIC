@@ -1,11 +1,9 @@
-# The Graveyard (FABRIC)
+# Fabric Example Mod
 
 ## Setup
 
-Download the .jar file from curseforge site and drag it into your mods folder located in the .minecraft folder.
-On loading the game, the mod will create a config file, which can be found in the config folder in the .minecraft folder.
-There you can customize generation settings and some other stuff.
+For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
 
 ## License
 
-This template is available under the CC0 license.
+This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.

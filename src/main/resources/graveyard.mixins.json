@@ -4,18 +4,16 @@
   "package": "com.finallion.graveyard.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "NoiseChunkGeneratorMixin",
-    "StructuresConfigAccessor",
     "ServerPlayNetworkHandlerMixin",
     "LakeFeatureMixin",
+    "SpringFeatureMixin",
     "PlantBlockMixin",
     "TreeFeatureMixin",
-    "CreeperEntityMixin"
+    "CreeperEntityMixin",
+    "NoiseChunkGeneratorMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
-    "TexturedRenderLayersMixin",
-    "WorldRendererMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

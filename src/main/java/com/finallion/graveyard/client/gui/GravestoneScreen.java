@@ -1,8 +1,8 @@
 package com.finallion.graveyard.client.gui;
 
-import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
@@ -84,7 +84,7 @@ public class GravestoneScreen extends Screen {
 
     private void finishEditing() {
         this.sign.markDirty();
-        this.client.openScreen((Screen) null);
+        this.client.setScreen((Screen)null);
     }
 
     public boolean charTyped(char chr, int modifiers) {
@@ -135,9 +135,10 @@ public class GravestoneScreen extends Screen {
         SignBlockEntityRenderer.SignModel var10002 = this.model;
         Objects.requireNonNull(var10002);
         VertexConsumer vertexConsumer = spriteIdentifier.getVertexConsumer(immediate, var10002::getLayer);
+        VertexConsumer vertexConsumer2 = GravestoneBlockEntityRenderer.getConsumer(immediate, sign.getCachedState().getBlock());
 
         this.model.stick.visible = false;
-        this.model.root.render(matrices, vertexConsumer, 15728880, OverlayTexture.DEFAULT_UV);
+        this.model.root.render(matrices, vertexConsumer2, 15728880, OverlayTexture.DEFAULT_UV);
         matrices.pop();
         float h = 0.010416667F;
         matrices.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
@@ -146,7 +147,7 @@ public class GravestoneScreen extends Screen {
         int j = this.selectionManager.getSelectionStart();
         int k = this.selectionManager.getSelectionEnd();
         int l = this.currentRow * 10 - this.text.length * 5;
-        Matrix4f matrix4f = matrices.peek().getModel();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
 
         int m;
         String string2;

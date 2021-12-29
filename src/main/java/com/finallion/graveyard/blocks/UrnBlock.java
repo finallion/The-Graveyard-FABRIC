@@ -32,8 +32,8 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     public static final BooleanProperty WATERLOGGED;
     public static final DirectionProperty FACING;
     public static final BooleanProperty OPEN;
-    private static final VoxelShape SMALL_URN = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 10.0D, 14.0D);
-
+    private static final VoxelShape LARGE_URN = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+    private static final VoxelShape SMALL_URN = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 10.0D, 13.0D);
     public UrnBlock() {
         super(FabricBlockSettings.of(Material.GLASS).nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(0.3F));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(OPEN, false));
@@ -66,16 +66,18 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         if (state.getBlock().toString().contains("small")) {
             return SMALL_URN;
+        } else {
+            return LARGE_URN;
         }
-        return super.getOutlineShape(state, world, pos, context);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         if (state.getBlock().toString().contains("small")) {
             return SMALL_URN;
+        } else {
+            return LARGE_URN;
         }
-        return super.getCollisionShape(state, world, pos, context);
     }
 
     @Override
@@ -111,7 +113,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof UrnBlockEntity) {
-            ((UrnBlockEntity)blockEntity).tick();
+            ((UrnBlockEntity)blockEntity).onScheduledTick();
         }
 
     }

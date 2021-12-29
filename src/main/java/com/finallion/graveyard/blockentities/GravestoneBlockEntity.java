@@ -49,7 +49,7 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
 
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
 
         for(int i = 0; i < 4; ++i) {
@@ -64,7 +64,6 @@ public class GravestoneBlockEntity extends BlockEntity {
 
         nbt.putString("Color", this.textColor.getName());
         nbt.putBoolean("GlowingText", this.glowingText);
-        return nbt;
     }
 
 
@@ -160,15 +159,13 @@ public class GravestoneBlockEntity extends BlockEntity {
         return filtered ? this.filteredTexts : this.texts;
     }
 
-    @Nullable
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(this.pos, 9, this.toInitialChunkDataNbt());
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     public NbtCompound toInitialChunkDataNbt() {
-        return this.writeNbt(new NbtCompound());
+        return this.createNbt();
     }
-
     public boolean copyItemDataRequiresOperator() {
         return true;
     }

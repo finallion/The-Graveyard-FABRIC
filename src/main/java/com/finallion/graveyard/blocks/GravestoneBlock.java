@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -41,9 +42,9 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
     public static final IntProperty ROTATION = Properties.ROTATION;
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty FLOOR = Properties.BOTTOM;
+    private static final VoxelShape SHAPE_FACING_EW = Block.createCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
+    private static final VoxelShape SHAPE_FACING_NS = Block.createCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
     private final Identifier texture;
-
-    private static final VoxelShape SHAPE = Block.createCuboidShape(0, 0, 0, 16, 16, 16);
 
     public GravestoneBlock(Identifier texture) {
         super(FabricBlockSettings.of(Material.STONE).noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F), SignType.OAK);
@@ -58,7 +59,11 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return SHAPE;
+        if (Direction.NORTH == state.get(FACING) || Direction.SOUTH == state.get(FACING)) {
+            return SHAPE_FACING_NS;
+        } else {
+            return SHAPE_FACING_EW;
+        }
     }
 
     public BlockState rotate(BlockState state, BlockRotation rotation) {
@@ -85,26 +90,28 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
             if (!(blockEntity instanceof GravestoneBlockEntity)) {
                 return ActionResult.PASS;
             } else {
-                GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity) blockEntity;
+                GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)blockEntity;
                 boolean bl5 = signBlockEntity.isGlowingText();
-                if ((!bl2 || !bl5) && (!bl3 || bl5)) {
+                if (bl2 && bl5 || bl3 && !bl5) {
+                    return ActionResult.PASS;
+                } else {
                     if (bl4) {
-                        boolean bl8;
+                        boolean bl6;
                         if (bl2) {
-                            world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_GLOW_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            bl8 = signBlockEntity.setGlowingText(true);
+                            world.playSound((PlayerEntity)null, pos, SoundEvents.ITEM_GLOW_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            bl6 = signBlockEntity.setGlowingText(true);
                             if (player instanceof ServerPlayerEntity) {
-                                Criteria.ITEM_USED_ON_BLOCK.test((ServerPlayerEntity) player, pos, itemStack);
+                                Criteria.ITEM_USED_ON_BLOCK.trigger((ServerPlayerEntity)player, pos, itemStack);
                             }
                         } else if (bl3) {
-                            world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            bl8 = signBlockEntity.setGlowingText(false);
+                            world.playSound((PlayerEntity)null, pos, SoundEvents.ITEM_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            bl6 = signBlockEntity.setGlowingText(false);
                         } else {
-                            world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            bl8 = signBlockEntity.setTextColor(((DyeItem) item).getColor());
+                            world.playSound((PlayerEntity)null, pos, SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            bl6 = signBlockEntity.setTextColor(((DyeItem)item).getColor());
                         }
 
-                        if (bl8) {
+                        if (bl6) {
                             if (!player.isCreative()) {
                                 itemStack.decrement(1);
                             }
@@ -113,9 +120,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
                         }
                     }
 
-                    return signBlockEntity.onActivate((ServerPlayerEntity) player) ? ActionResult.SUCCESS : ActionResult.PASS;
-                } else {
-                    return ActionResult.PASS;
+                    return signBlockEntity.onActivate((ServerPlayerEntity)player) ? ActionResult.SUCCESS : ActionResult.PASS;
                 }
             }
         }
@@ -136,14 +141,6 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
     }
 
 
-
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean)state.get(WATERLOGGED)) {
-            world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-    }
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());

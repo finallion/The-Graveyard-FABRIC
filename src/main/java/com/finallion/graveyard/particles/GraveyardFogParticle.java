@@ -3,16 +3,8 @@ package com.finallion.graveyard.particles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class GraveyardFogParticle extends SpriteBillboardParticle {

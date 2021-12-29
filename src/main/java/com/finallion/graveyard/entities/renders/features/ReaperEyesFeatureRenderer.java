@@ -1,7 +1,6 @@
 package com.finallion.graveyard.entities.renders.features;
 
 
-import com.finallion.graveyard.entities.AcolyteEntity;
 import com.finallion.graveyard.entities.ReaperEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

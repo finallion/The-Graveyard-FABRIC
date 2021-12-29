@@ -1,7 +1,7 @@
 package com.finallion.graveyard.mixin;
 
 
-import com.finallion.graveyard.utils.CreeperExplosionAccessor;
+import com.finallion.graveyard.util.CreeperExplosionAccessor;
 import net.minecraft.entity.mob.CreeperEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

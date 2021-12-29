@@ -1,10 +1,11 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.biomes.features.surfaceFeatures.*;
-import com.finallion.graveyard.biomes.features.trees.*;
-import com.finallion.graveyard.biomes.features.trees.config.TGTreeFeatureConfig;
+import com.finallion.graveyard.world.features.surfaceFeatures.*;
+import com.finallion.graveyard.world.features.trees.*;
+import com.finallion.graveyard.world.features.trees.config.TGTreeFeatureConfig;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -12,9 +13,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.CountConfig;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.HeightmapDecoratorConfig;
+import net.minecraft.world.gen.decorator.*;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
+
+import java.util.List;
 
 public class TGConfiguredFeatures {
 
@@ -38,7 +41,6 @@ public class TGConfiguredFeatures {
     private static final Feature<DefaultFeatureConfig> MOSS_CARPET_FEATURE = new MossCarpetFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> COBWEB_FEATURE = new CobwebFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> BUSH_FEATURE = new BushFeature(DefaultFeatureConfig.CODEC);
-    private static final Feature<DefaultFeatureConfig> MOSSY_BOULDER_FEATURE = new MossyBoulderFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> GRAVESTONE_FEATURE = new GraveFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> SOUL_LIGHT_FEATURE = new SoulLightFeature(DefaultFeatureConfig.CODEC);
 
@@ -46,75 +48,82 @@ public class TGConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> MOSS_CARPET_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "moss_carpet_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> COBWEB_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "cobweb_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> BUSH_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "bush_feature"));
-    public static final RegistryKey<ConfiguredFeature<?, ?>> MOSSY_BOULDER_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "mossy_boulder_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> GRAVESTONE_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> SOUL_LIGHT_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "soul_light_feature"));
 
     // configured features
-    public static final ConfiguredFeature<?, ?> MOSS_CARPET_CONFIG = MOSS_CARPET_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(100).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> COBWEB_CONFIG = COBWEB_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(60).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> BUSH_CONFIG = BUSH_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(35).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> MOSSY_BOULDER_CONFIG = MOSSY_BOULDER_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(5).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> GRAVESTONE_CONFIG = GRAVESTONE_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).spreadHorizontally();
-    public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig()).decorate(Decorator.HEIGHTMAP.configure(new HeightmapDecoratorConfig(Heightmap.Type.WORLD_SURFACE_WG))).repeat(100).spreadHorizontally();
+    public static final ConfiguredFeature<?, ?> MOSS_CARPET_CONFIG = MOSS_CARPET_FEATURE.configure(new DefaultFeatureConfig());
+    public static final ConfiguredFeature<?, ?> COBWEB_CONFIG = COBWEB_FEATURE.configure(new DefaultFeatureConfig());
+    public static final ConfiguredFeature<?, ?> BUSH_CONFIG = BUSH_FEATURE.configure(new DefaultFeatureConfig());
+    public static final ConfiguredFeature<?, ?> GRAVESTONE_CONFIG = GRAVESTONE_FEATURE.configure(new DefaultFeatureConfig());
+    public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig());
+
+    public static PlacedFeature MOSS_CARPET_PLACED_FEATURE = MOSS_CARPET_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
+    public static PlacedFeature COBWEB_PLACED_FEATURE = COBWEB_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(60));
+    public static PlacedFeature BUSH_PLACED_FEATURE = BUSH_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
+    public static PlacedFeature GRAVESTONE_PLACED_FEATURE = GRAVESTONE_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(1));
+    public static PlacedFeature SOUL_LIGHT_PLACED_FEATURE = SOUL_LIGHT_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
+
+
+
+    /*
+BAMBOO_VEGETATION = ConfiguredFeatures.register("bamboo_vegetation", Feature.RANDOM_SELECTOR.configure(
+new RandomFeatureConfig(List.of(new RandomFeatureEntry(TreePlacedFeatures.FANCY_OAK_CHECKED, 0.05F),
+new RandomFeatureEntry(TreePlacedFeatures.JUNGLE_BUSH, 0.15F),
+new RandomFeatureEntry(TreePlacedFeatures.MEGA_JUNGLE_TREE_CHECKED, 0.7F))
+     */
 
 
     // configured tree feature collections
     public static final ConfiguredFeature<?, ?> HAUNTED_FOREST_TREES = register("haunted_forest_trees", Feature.RANDOM_SELECTOR.configure(
-            new RandomFeatureConfig(
-                    ImmutableList.of(
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.375F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.375F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.25F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F)
-                            ),
-                    ConfiguredFeatures.SPRUCE))
-            .decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP)
-            .decorate(Decorator.COUNT.configure(new CountConfig(17))));
+            new RandomFeatureConfig(List.of(
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.375F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.375F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_04.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_05.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_SPRUCE_TREE_06.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.25F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F)),
+                    TreePlacedFeatures.SPRUCE_CHECKED)
+            ));
 
     public static final ConfiguredFeature<?, ?> ERODED_HAUNTED_FOREST_TREES = register("eroded_haunted_forest_trees", Feature.RANDOM_SELECTOR.configure(
-            new RandomFeatureConfig(
-                    ImmutableList.of(
-                            TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.075F),
-                            TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-
-                            TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.075F),
-                            TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.5F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F),
-                            TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withChance(0.1F)
-                    ),
-                    ConfiguredFeatures.SPRUCE))
-            .decorate(ConfiguredFeatures.Decorators.SQUARE_HEIGHTMAP)
-            .decorate(Decorator.COUNT.configure(new CountConfig(5))));
+            new RandomFeatureConfig(List.of(
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.SMALL_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.075F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.FALLEN_SPRUCE_TREE.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.075F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_BENT_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.5F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_01.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.5F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_02.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F),
+                    new RandomFeatureEntry(TGConfiguredFeatures.LARGE_SPRUCE_TREE_03.configure(new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())).withWouldSurviveFilter(Blocks.SPRUCE_SAPLING), 0.1F)),
+                    TreePlacedFeatures.SPRUCE_CHECKED)
+    ));
 
 
-
+    public static PlacedFeature ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE = ERODED_HAUNTED_FOREST_TREES.withPlacement(VegetationPlacedFeatures.modifiers(PlacedFeatures.createCountExtraModifier(50, 0.1F, 1)));
+    public static PlacedFeature HAUNTED_FOREST_TREES_PLACED_FEATURE = HAUNTED_FOREST_TREES.withPlacement(VegetationPlacedFeatures.modifiers(PlacedFeatures.createCountExtraModifier(50, 0.1F, 1)));
 
 
     private static <FC extends FeatureConfig> ConfiguredFeature<FC, ?> register(String id, ConfiguredFeature<FC, ?> feature) {
@@ -125,7 +134,6 @@ public class TGConfiguredFeatures {
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "moss_carpet_feature"), MOSS_CARPET_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "cobweb_feature"), COBWEB_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "bush_feature"), BUSH_FEATURE);
-        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "mossy_boulder_feature"), MOSSY_BOULDER_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"), GRAVESTONE_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "soul_light_feature"), SOUL_LIGHT_FEATURE);
 
@@ -149,8 +157,17 @@ public class TGConfiguredFeatures {
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, MOSS_CARPET_FEATURE_KEY.getValue(), MOSS_CARPET_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, COBWEB_FEATURE_KEY.getValue(), COBWEB_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, BUSH_FEATURE_KEY.getValue(), BUSH_CONFIG);
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, MOSSY_BOULDER_FEATURE_KEY.getValue(), MOSSY_BOULDER_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, GRAVESTONE_FEATURE_KEY.getValue(), GRAVESTONE_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, SOUL_LIGHT_FEATURE_KEY.getValue(), SOUL_LIGHT_CONFIG);
+
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "moss_carpet_placed_feature"), MOSS_CARPET_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "cobweb_placed_feature"), COBWEB_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "bush_placed_feature"), BUSH_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature"), GRAVESTONE_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "soul_light_placed_feature"), SOUL_LIGHT_PLACED_FEATURE);
+
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "eroded_haunted_forest_trees_placed_feature"), ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "haunted_forest_trees_placed_feature"), HAUNTED_FOREST_TREES_PLACED_FEATURE);
+
     }
 }

@@ -1,6 +1,5 @@
 package com.finallion.graveyard.entities;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -14,11 +13,9 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -36,7 +33,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.EnumSet;
-import java.util.Optional;
 
 public class ReaperEntity extends HostileEntity implements IAnimatable {
     private AttributeContainer attributeContainer;
@@ -98,7 +94,7 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
         this.targetSelector.add(1, (new RevengeGoal(this, new Class[]{RaiderEntity.class})).setGroupRevenge(new Class[0]));
         this.targetSelector.add(2, new TrackOwnerTargetGoal(this));
-        this.targetSelector.add(3, new FollowTargetGoal(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal(this, PlayerEntity.class, true));
     }
 
 
@@ -256,7 +252,7 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
 
     class ChargeTargetGoal extends Goal {
         public ChargeTargetGoal() {
-            this.setControls(EnumSet.of(Goal.Control.MOVE));
+            this.setControls(EnumSet.of(Control.MOVE));
         }
 
         public boolean canStart() {

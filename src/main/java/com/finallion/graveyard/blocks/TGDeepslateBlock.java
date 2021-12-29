@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-import java.util.Properties;
 import java.util.function.Supplier;
 
 public class TGDeepslateBlock extends PillarBlock {

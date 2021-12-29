@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "2.1",
+  "version": "1.1",
 
   "name": "The Graveyard",
   "description": "Adds new biomes, structures, mobs and blocks themed around the graveyard.",
@@ -29,13 +29,11 @@
     "graveyard.mixins.json"
   ],
 
-  "accessWidener": "graveyard.accesswidener",
-
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "geckolib3": ">=3.0.15",
-    "minecraft": "1.17.x",
-    "java": ">=16"
+    "minecraft": "1.18.x",
+    "geckolib3": ">=3.0.20",
+    "java": ">=17"
   }
 }

@@ -12,6 +12,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.SignEditorOpenS2CPacket;
 import net.minecraft.util.math.BlockPos;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +25,7 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
 
+    @Final
     @Shadow
     private MinecraftClient client;
 
@@ -36,7 +38,7 @@ public class ClientPlayNetworkHandlerMixin {
             BlockState blockState = this.world.getBlockState(blockPos);
             blockEntity = new GravestoneBlockEntity(blockPos, blockState);
             ((BlockEntity)blockEntity).setWorld(this.world);
-            MinecraftClient.getInstance().openScreen(new GravestoneScreen((GravestoneBlockEntity) blockEntity,  false));
+            MinecraftClient.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) blockEntity,  false));
             info.cancel();
         }
     }

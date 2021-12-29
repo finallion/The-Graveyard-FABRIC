@@ -2,13 +2,16 @@ package com.finallion.graveyard.item;
 
 
 import net.minecraft.block.*;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.tag.BlockTags;
 
 public class DaggerItem extends SwordItem {
 
    public DaggerItem(ToolMaterial material, float effectiveDamage, float effectiveSpeed, Item.Settings settings) {
-      super(material, (int) (effectiveDamage - material.getAttackDamage()), effectiveSpeed, settings);
+      super(material, (int) (effectiveDamage - material.getAttackDamage()), 2 - effectiveSpeed, settings);
    }
 
    public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {

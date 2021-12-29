@@ -1,16 +1,21 @@
 package com.finallion.graveyard.blockentities.render;
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.finallion.graveyard.init.TGBlocks;
-import com.finallion.graveyard.init.TGItems;
+import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractSignBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
@@ -23,17 +28,21 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<GravestoneBlockEntity> {
     private static final int RENDER_DISTANCE = MathHelper.square(16);
     private final TextRenderer textRenderer;
+    private static final HashMap<Block, RenderLayer> LAYERS = Maps.newHashMap();
+    private static RenderLayer defaultLayer;
 
     private static ItemStack stack = new ItemStack(TGBlocks.GRAVESTONE.asItem(), 1);
 
@@ -88,9 +97,9 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
             OrderedText orderedText = orderedTexts[s];
             float t = (float)(-this.textRenderer.getWidth(orderedText) / 2);
             if (bl2) {
-                this.textRenderer.drawWithOutline(orderedText, t, (float)(s * 10 - 20), q, m, matrixStack.peek().getModel(), vertexConsumerProvider, r);
+                this.textRenderer.drawWithOutline(orderedText, t, (float)(s * 10 - 20), q, m, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, r);
             } else {
-                this.textRenderer.draw(orderedText, t, (float)(s * 10 - 20), q, false, matrixStack.peek().getModel(), vertexConsumerProvider, false, 0, r);
+                this.textRenderer.draw(orderedText, t, (float)(s * 10 - 20), q, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, false, 0, r);
             }
 
         }
@@ -135,7 +144,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         int j = (int)((double) NativeImage.getRed(i) * 0.4D);
         int k = (int)((double)NativeImage.getGreen(i) * 0.4D);
         int l = (int)((double)NativeImage.getBlue(i) * 0.4D);
-        return i == DyeColor.BLACK.getSignColor() && sign.isGlowingText() ? -988212 : NativeImage.getAbgrColor(0, l, k, j);
+        return i == DyeColor.BLACK.getSignColor() && sign.isGlowingText() ? -988212 : NativeImage.packColor(0, l, k, j);
     }
 
     public static SignType getSignType(Block block) {
@@ -151,6 +160,26 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
 
     public static SignBlockEntityRenderer.SignModel createSignModel(EntityModelLoader entityModelLoader, SignType type) {
         return new SignBlockEntityRenderer.SignModel(entityModelLoader.getModelPart(EntityModelLayers.createSign(type)));
+    }
+
+
+    static {
+        defaultLayer = RenderLayer.getEntitySolid(new Identifier("textures/entity/signs/oak.png"));
+        RenderLayer layer1 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_basalt.png"));
+        RenderLayer layer2 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cobblestone.png"));
+        RenderLayer layer3 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/mossy_cobblestone.png"));
+        RenderLayer layer4 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/deepslate.png"));
+        LAYERS.put(TGBlocks.GRAVESTONE, layer1);
+        LAYERS.put(TGBlocks.COBBLESTONE_GRAVESTONE, layer2);
+        LAYERS.put(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE, layer3);
+        LAYERS.put(TGBlocks.DEEPSLATE_GRAVESTONE, layer4);
+
+    }
+
+
+
+    public static VertexConsumer getConsumer(VertexConsumerProvider provider, Block block) {
+        return provider.getBuffer(LAYERS.getOrDefault(block, defaultLayer));
     }
 }
 

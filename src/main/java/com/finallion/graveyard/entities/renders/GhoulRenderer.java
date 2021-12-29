@@ -2,8 +2,6 @@ package com.finallion.graveyard.entities.renders;
 
 import com.finallion.graveyard.entities.BaseGhoulEntity;
 import com.finallion.graveyard.entities.models.BaseGhoulModel;
-import com.finallion.graveyard.entities.renders.features.GhoulEyesFeatureRenderer;
-import com.finallion.graveyard.entities.renders.features.ReaperEyesFeatureRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 

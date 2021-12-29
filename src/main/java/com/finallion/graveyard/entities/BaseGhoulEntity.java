@@ -1,8 +1,5 @@
 package com.finallion.graveyard.entities;
 
-import com.finallion.graveyard.init.TGBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -14,23 +11,16 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -58,7 +48,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
     private static boolean isInRange = false;
-    private static final double ATTACK_RANGE = 2.0D;
+    private static final double ATTACK_RANGE = 4.5D;
     private TargetPredicate targetPredicate = TargetPredicate.createAttackable().setBaseMaxDistance(25.0D).ignoreVisibility();
 
     public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
@@ -69,7 +59,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected void initDataTracker() {
         super.initDataTracker();
 
-        // selects one of four skins for the ghoul
+        // selects one of eight skins for the ghoul
         byte variant = (byte) random.nextInt(8);
         this.dataTracker.startTracking(VARIANT, variant);
     }
@@ -80,9 +70,9 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(3, new FollowTargetGoal<>(this, PlayerEntity.class, true));
-        this.targetSelector.add(3, new FollowTargetGoal<>(this, MerchantEntity.class, false));
-        this.targetSelector.add(3, new FollowTargetGoal<>(this, IronGolemEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
         this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
     }
 
@@ -122,7 +112,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
 
     private boolean isInRageDistance() {
-        // TODO: clean up!
         Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 5.0, 15.0);
         PlayerEntity player = this.world.getClosestPlayer(targetPredicate, this);
         LivingEntity villager = this.world.getClosestEntity(MerchantEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
@@ -130,11 +119,11 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
         // getTarget is useless because it returns sometimes null, even when the mob is tracking
         if (player != null) {
-            return !(this.distanceTo(player) < 4.5D);
+            return !(this.distanceTo(player) < ATTACK_RANGE);
         } else if (villager != null) {
-            return !(this.distanceTo(villager) < 4.5D);
+            return !(this.distanceTo(villager) < ATTACK_RANGE);
         } else if (ironGolem != null) {
-            return !(this.distanceTo(ironGolem) < 4.5D);
+            return !(this.distanceTo(ironGolem) < ATTACK_RANGE);
         }
 
         return true;
@@ -162,8 +151,8 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             return PlayState.CONTINUE;
         }
 
+        // some checks here a pretty useless
         if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance() && getAnimationState() != ANIMATION_WALK) {
-            //this.playSound(SoundEvents.ENTITY_ENDERMAN_SCREAM, 1.0F, -5.0F);
             event.getController().setAnimation(RAGE_ANIMATION);
             return PlayState.CONTINUE;
         }
@@ -185,11 +174,9 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         if (event.isMoving() || isMoving) {
             if (isWet()) {
                 event.getController().setAnimation(WALK_ANIMATION);
-                //setState(ANIMATION_WALK);
             } else if (isAttacking()) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
             } else {
-                //setState(ANIMATION_WALK);
                 event.getController().setAnimation(WALK_ANIMATION);
             }
         } else {
@@ -268,7 +255,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             if (squaredDistance <= d && attackTimer <= 0) {
                 ghoul.setState(ANIMATION_ATTACK);
                 attackTimer = ATTACK_DURATION;
-                //this.ghoul.playSound(SoundEvents.ENTITY_HUSK_STEP, 1.5F, -5.0F);
                 this.mob.tryAttack(target);
                 attackTimer--;
             }

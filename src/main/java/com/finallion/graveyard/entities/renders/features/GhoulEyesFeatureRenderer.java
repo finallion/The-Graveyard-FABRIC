@@ -3,8 +3,6 @@ package com.finallion.graveyard.entities.renders.features;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.BaseGhoulEntity;
-import com.finallion.graveyard.entities.ReaperEntity;
-import com.finallion.graveyard.entities.models.BaseGhoulModel;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
