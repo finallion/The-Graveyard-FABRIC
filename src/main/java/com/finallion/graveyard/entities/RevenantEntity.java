@@ -83,7 +83,7 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
     @Override
     public AttributeContainer getAttributes() {
         if(attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13D).build());
+            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.13D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D).build());
         }
         return attributeContainer;
     }

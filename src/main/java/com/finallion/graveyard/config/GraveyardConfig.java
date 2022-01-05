@@ -3,9 +3,13 @@ package com.finallion.graveyard.config;
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GraveyardConfig implements Config {
     @Comment("""
@@ -15,6 +19,11 @@ public class GraveyardConfig implements Config {
              // Additionally, you can turn the graveyard fog particles on and set the chance of spawning them (higher numbers = lower chance of spawning).
              // Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
              // To disable a structure to spawn, simply go to the corresponding entry and set `enabled` to false.
+             // You can also disable if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners),
+             // and set their spawning weight and group size.
+             // You can set in which biomes ("minecraft:biome_name") or in which biome categories ("#biome_category") the mobs can spawn.
+             // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain.
+             // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
              //
              // The Graveyard uses the vanilla structure spawning system. That is -
              // - Separation is the minimum chunks between structures
@@ -26,7 +35,7 @@ public class GraveyardConfig implements Config {
 
     public final Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();
     public final Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
-
+    public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -46,7 +55,9 @@ public class GraveyardConfig implements Config {
     public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
     }
-
+    public boolean mobSpawn(Identifier id) {
+        return getMob(id).enabled;
+    }
 
     // structure config
     public StructureConfigEntry getStructure(Identifier id) {
@@ -70,6 +81,16 @@ public class GraveyardConfig implements Config {
         throw new NullPointerException("Tried ParticleConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // mob spawn config
+    public MobConfigEntry getMob(Identifier id) {
+        for (Map.Entry<String, MobConfigEntry> entry : mobConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+
+        throw new NullPointerException("Tried MobConfigEntry with id: " + id + ", but it was null!");
+    }
 
     @Override
     public void save() {
@@ -86,9 +107,40 @@ public class GraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("small_mountain_grave", StructureConfigEntry.of(12, 8, 725689810));
 
 
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(45, 2, 5, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(45, 5, 8, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(15, 1, 1, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(35, 1, 4, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
+
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
         Config.super.save();
     }
 
+    private List<String> getAllOverworldBiomes() {
+        Set<Biome> biomes = MultiNoiseBiomeSource.Preset.OVERWORLD.getBiomeSource(BuiltinRegistries.BIOME).getBiomes();
+        List<String> biomeNames = new ArrayList<>();
+        for (Biome biome : biomes) {
+            biomeNames.add(biome.toString());
+        }
+        return biomeNames;
+
+    }
+
+    private List<String> getAllOverworldBiomeCategories() {
+        Biome.Category[] biomeCategory = Biome.Category.values();
+        List<String> biomeNames = new ArrayList<>();
+        for (Biome.Category biome : biomeCategory) {
+            if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether")) {
+                continue;
+            }
+            biomeNames.add("#" + biome.toString().toLowerCase(Locale.ROOT));
+        }
+        return biomeNames;
+
+    }
 
 }
+
+

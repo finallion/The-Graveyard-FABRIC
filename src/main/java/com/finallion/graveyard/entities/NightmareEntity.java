@@ -122,7 +122,7 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
 
         if (!this.world.isClient) {
             if (this.getTarget() != null) {
-                if (this.getTarget().squaredDistanceTo(this) >= 512.0D) {
+                if (this.getTarget().squaredDistanceTo(this) >= 1024.0D) {
                     stopAnger();
                 }
             }
@@ -271,9 +271,9 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
     boolean teleportTo(Entity entity) {
         Vec3d vec3d = new Vec3d(this.getX() - entity.getX(), this.getBodyY(0.5D) - entity.getEyeY(), this.getZ() - entity.getZ());
         vec3d = vec3d.normalize();
-        double e = this.getX() + (this.random.nextDouble() - 0.5D) * 4.0D - vec3d.x * 16.0D;
-        double f = this.getY() + (double)(this.random.nextInt(8) - 4) - vec3d.y * 16.0D;
-        double g = this.getZ() + (this.random.nextDouble() - 0.5D) * 4.0D - vec3d.z * 16.0D;
+        double e = this.getX() + (this.random.nextDouble() - 0.5D) * 2.0D - vec3d.x * 16.0D;
+        double f = this.getY() + (double)(this.random.nextInt(4) - 2) - vec3d.y * 16.0D;
+        double g = this.getZ() + (this.random.nextDouble() - 0.5D) * 2.0D - vec3d.z * 16.0D;
         return this.teleportTo(e, f, g);
     }
 
@@ -525,14 +525,16 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
                 }
             } else {
                 if (this.targetEntity != null && !this.nightmare.hasVehicle()) {
+                    // custom teleport injection
                     if (this.nightmare.isPlayerStaring((PlayerEntity)this.targetEntity)) {
-                        if (targetEntity.squaredDistanceTo(this.nightmare) > 256.0D && targetEntity != null) {
+                        if (targetEntity.squaredDistanceTo(this.nightmare) <= 384.0D && targetEntity != null) {
                             if (targetEntity.squaredDistanceTo(this.nightmare) > 24.0D) {
                                 targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100));
                                 this.nightmare.teleportTo(targetEntity);
                             }
                         }
                         this.ticksSinceUnseenTeleport = 0;
+                    // custom stop
                     } else if (this.targetEntity.squaredDistanceTo(this.nightmare) > 256.0D && this.ticksSinceUnseenTeleport++ >= this.getTickCount(80) && this.nightmare.teleportTo(this.targetEntity)) {
                         this.ticksSinceUnseenTeleport = 0;
                     }

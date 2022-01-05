@@ -4,6 +4,7 @@ import com.finallion.graveyard.config.GraveyardConfig;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.*;
 
+import com.finallion.graveyard.util.MobSpawningRules;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -57,6 +58,7 @@ public class TheGraveyard implements ModInitializer {
         TGStructures.registerStructures();
         TGStructures.registerConfiguredStructures();
         addStructureSpawningToDimensionsAndBiomes();
+        MobSpawningRules.addSpawnEntries();
 
     }
 
