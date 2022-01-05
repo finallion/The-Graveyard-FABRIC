@@ -1,10 +1,7 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.entities.AcolyteEntity;
-import com.finallion.graveyard.entities.BaseGhoulEntity;
-import com.finallion.graveyard.entities.ReaperEntity;
-import com.finallion.graveyard.entities.SkeletonCreeper;
+import com.finallion.graveyard.entities.*;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -31,9 +28,22 @@ public class TGEntities {
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(BaseGhoulEntity::new)
             .dimensions(EntityDimensions.changing(0.8F, 2.1F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BaseGhoulEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
             .build();
 
+    public static final EntityType<RevenantEntity> REVENANT = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(RevenantEntity::new)
+            .dimensions(EntityDimensions.changing(0.6F, 1.9F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
+            .build();
+
+    public static final EntityType<NightmareEntity> NIGHTMARE = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(NightmareEntity::new)
+            .dimensions(EntityDimensions.changing(0.6F, 2.6F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, NightmareEntity::canSpawn)
+            .build();
 
 
     public static void registerEntities() {
@@ -41,6 +51,8 @@ public class TGEntities {
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "acolyte"), ACOLYTE);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "ghoul"), GHOUL);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "reaper"), REAPER);
+        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "revenant"), REVENANT);
+        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "nightmare"), NIGHTMARE);
     }
 
 

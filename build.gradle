@@ -12,6 +12,7 @@ group = project.maven_group
 
 repositories {
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -24,6 +25,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${project.geckolib_version_fabric}"
+
+	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${project.config_version}")
 }
 
 processResources {

@@ -84,13 +84,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return attributeContainer;
     }
 
-
-
-
-    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return isSpawnDark(world, pos, random);
-    }
-
     public void writeCustomDataToNbt(NbtCompound tag) {
         super.writeCustomDataToNbt(tag);
         tag.putByte("ghoulVariant", getVariant());
@@ -168,8 +161,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             event.getController().setAnimation(DEATH_ANIMATION);
             return PlayState.CONTINUE;
         }
-
-
 
         if (event.isMoving() || isMoving) {
             if (isWet()) {

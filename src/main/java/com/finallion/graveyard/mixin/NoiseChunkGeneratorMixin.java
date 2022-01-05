@@ -2,6 +2,7 @@ package com.finallion.graveyard.mixin;
 
 
 import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.world.structures.LargeGraveyardStructure;
 import com.finallion.graveyard.world.structures.MediumGraveyardStructure;
 import com.finallion.graveyard.world.structures.SmallDesertGraveyardStructure;
 import net.minecraft.entity.SpawnGroup;
@@ -40,6 +41,10 @@ public class NoiseChunkGeneratorMixin {
 
             if (accessor.getStructureAt(pos, TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE).hasChildren()) {
                 return SmallDesertGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.LARGE_GRAVEYARD_STRUCTURE).hasChildren()) {
+                return LargeGraveyardStructure.MONSTER_SPAWNS;
             }
         }
 

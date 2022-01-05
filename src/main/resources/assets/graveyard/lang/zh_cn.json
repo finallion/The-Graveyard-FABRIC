@@ -107,6 +107,12 @@
   "item.graveyard.acolyte_spawn_egg": "守灵人刷怪蛋",
   "item.graveyard.ghoul_spawn_egg": "食尸鬼刷怪蛋",
   "item.graveyard.reaper_spawn_egg": "死神刷怪蛋",
+
+  "entity.graveyard.revenant": "Revenant",
+  "item.graveyard.revenant_spawn_egg": "Revenant Spawn Egg",
+  "entity.graveyard.nightmare": "Nightmare",
+  "item.graveyard.nightmare_spawn_egg": "Nightmare Spawn Egg",
+
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "编辑墓碑"
 

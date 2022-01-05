@@ -30,11 +30,14 @@ public class TGMossBlock extends MossBlock {
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         super.randomDisplayTick(state, world, pos, random);
 
-
-        // how much will spawn
-        if (random.nextInt(50) == 0) {
-            world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, (double) pos.getX() + random.nextDouble(), (double) pos.getY() + random.nextDouble(), (double) pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+        // can spawn
+        if (TheGraveyard.config.fogSpawn(new Identifier(TheGraveyard.MOD_ID, "graveyard_fog_particle"))) {
+            // how much will spawn
+            if (random.nextInt(TheGraveyard.config.getParticle(new Identifier(TheGraveyard.MOD_ID, "graveyard_fog_particle")).spawnChance) == 0) {
+                world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, (double) pos.getX() + random.nextDouble(), (double) pos.getY() + random.nextDouble(), (double) pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            }
         }
+
 
 
 

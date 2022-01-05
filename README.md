@@ -1,4 +1,4 @@
-# Fabric Example Mod
+# The Graveyard (FABRIC)
 
 ## Setup
 

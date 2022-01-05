@@ -1,20 +1,23 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.world.structures.*;
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TGStructures {
-    public static List<StructureFeature> structures = new ArrayList<>();
-
+    public static Set<StructureFeature<StructurePoolFeatureConfig>> structures = new HashSet<>();
 
     // structure features
     public static final StructureFeature<StructurePoolFeatureConfig> MEDIUM_GRAVEYARD_STRUCTURE = new MediumGraveyardStructure(StructurePoolFeatureConfig.CODEC);
@@ -64,29 +67,37 @@ public class TGStructures {
     public static final ConfiguredStructureFeature<StructurePoolFeatureConfig, ? extends StructureFeature<StructurePoolFeatureConfig>> SMALL_MOUNTAIN_GRAVE_STRUCTURE_CONFIG = SMALL_MOUNTAIN_GRAVE_STRUCTURE.configure(
             new StructurePoolFeatureConfig(() -> {return SmallMountainGraveStructure.SmallMountainGraveGenerator.STARTING_POOL;}, 0));
 
-    private static void register(String id, StructureFeature<?> feature, int spacing, int separation, int salt) {
-        structures.add(feature);
 
-        FabricStructureBuilder.create(new Identifier(TheGraveyard.MOD_ID, id), feature)
-                .step(GenerationStep.Feature.SURFACE_STRUCTURES)
-                .defaultConfig(spacing, separation, salt)
-                .enableSuperflat()
-                .adjustsSurface()
-                .register();
+    private static void register() {
+        for (StructureFeature<?> structure : structures) {
+            AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
+            StructureConfig entry = abstractStructure.getStructureFeatureConfiguration();
+
+            FabricStructureBuilder.create(new Identifier(TheGraveyard.MOD_ID, abstractStructure.getStructureName()), structure)
+                    .step(GenerationStep.Feature.SURFACE_STRUCTURES)
+                    .defaultConfig(entry)
+                    .enableSuperflat()
+                    .adjustsSurface()
+                    .register();
+
+        }
     }
 
     public static void registerStructures() {
-        register("medium_graveyard", MEDIUM_GRAVEYARD_STRUCTURE, 18, 16, 1690192399);
-        register("small_graveyard", SMALL_GRAVEYARD_STRUCTURE, 20, 18, 240451934);
-        register("large_graveyard", LARGE_GRAVEYARD_STRUCTURE, 20, 18, 304812394);
-        register("mushroom_grave", MUSHROOM_GRAVE_STRUCTURE, 24, 18, 379123039);
-        register("haunted_house", HAUNTED_HOUSE_STRUCTURE, 25, 20, 451235912);
-        register("memorial_tree", MEMORIAL_TREE_STRUCTURE, 14, 12, 529239621);
-        register("small_desert_graveyard", SMALL_DESERT_GRAVEYARD_STRUCTURE, 32, 28, 598017285);
-        register("small_grave", SMALL_GRAVE_STRUCTURE, 12, 8, 661903018);
-        register("small_desert_grave", SMALL_DESERT_GRAVE_STRUCTURE, 20, 16, 681236914);
-        register("small_savanna_grave", SMALL_SAVANNA_GRAVE_STRUCTURE, 12, 8, 709787761);
-        register("small_mountain_grave", SMALL_MOUNTAIN_GRAVE_STRUCTURE, 12, 8, 725689810);
+        structures.add(MEDIUM_GRAVEYARD_STRUCTURE);
+        structures.add(SMALL_GRAVEYARD_STRUCTURE);
+        structures.add(LARGE_GRAVEYARD_STRUCTURE);
+        structures.add(MUSHROOM_GRAVE_STRUCTURE);
+        structures.add(HAUNTED_HOUSE_STRUCTURE);
+        structures.add(MEMORIAL_TREE_STRUCTURE);
+        structures.add(SMALL_DESERT_GRAVEYARD_STRUCTURE);
+        structures.add(SMALL_GRAVE_STRUCTURE);
+        structures.add(SMALL_DESERT_GRAVE_STRUCTURE);
+        structures.add(SMALL_SAVANNA_GRAVE_STRUCTURE);
+        structures.add(SMALL_MOUNTAIN_GRAVE_STRUCTURE);
+
+        register();
+
 
         // link to the structure pools
         MediumGraveyardStructure.MediumGraveyardGenerator.init();
