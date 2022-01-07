@@ -65,6 +65,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     }
 
     protected void initGoals() {
+        super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(2, new GhoulMeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));

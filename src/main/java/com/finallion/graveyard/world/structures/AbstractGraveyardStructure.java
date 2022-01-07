@@ -114,40 +114,16 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
 
         int offset = size;
 
-
         int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int l1 = generator.getHeight(chunkX + offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int m1 = generator.getHeight(chunkX - offset, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int n1 = generator.getHeight(chunkX + offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int o1 = generator.getHeight(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
         int p1 = generator.getHeight(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        //int q1 = generator.getHeight(chunkX - offset, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
-        /*
-        System.out.println("Terrain flatness results: ");
-        System.out.println("One: " + " Height: " + i1 + " at: " + chunkX + " " + chunkZ);
-        System.out.println("Two: " + " Height: " + j1 + " at: " + chunkX + " " + (chunkZ + offset));
-        System.out.println("Three: " + " Height: " + k1 + " at: " + (chunkX + offset) + " " + chunkZ);
-        //System.out.println("Four: " + " Height: " + l1 + " at: " + (chunkX + offset) + " " + (chunkZ + offset));
-        //System.out.println("Five: " + " Height: " + m1 + " at: " + (chunkX - offset) + " " + (chunkZ + offset));
-        //System.out.println("Six: " + " Height: " + n1 + " at: " + (chunkX + offset) + " " + (chunkZ - offset));
-        System.out.println("Seven: " + " Height: " + o1 + " at: " + chunkX + " " + (chunkZ - offset));
-        System.out.println("Eight: " + " Height: " + p1 + " at: " + (chunkX - offset) + " " + chunkZ);
-        //System.out.println("Nine: " + " Height: " + q1 + " at: " + (chunkX - offset) + " " + (chunkZ - offset));
-
-         */
-
-
-        //int minCorners = Math.min(Math.min(n1, m1), Math.min(q1, l1));
         int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
-        //int minHeight = Math.min(Math.min(minCorners, minSides), i1);
         int minHeight = Math.min(minSides, i1);
 
-        //int maxCorners = Math.max(Math.max(n1, m1), Math.max(q1, l1));
         int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
-        //int maxHeight = Math.max(Math.max(maxCorners, maxSides), i1);
         int maxHeight = Math.max(maxSides, i1);
 
         return Math.abs(maxHeight - minHeight) <= 3;

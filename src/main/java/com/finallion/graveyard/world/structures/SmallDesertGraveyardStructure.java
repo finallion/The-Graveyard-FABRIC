@@ -26,6 +26,8 @@ import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 public class SmallDesertGraveyardStructure extends AbstractGraveyardStructure {
@@ -34,8 +36,8 @@ public class SmallDesertGraveyardStructure extends AbstractGraveyardStructure {
             new SpawnSettings.SpawnEntry(EntityType.VINDICATOR, 1, 1, 1));
 
     public SmallDesertGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(32, 28, 598017285),
-                        //Biome.Category.DESERT.getName()),
+        super(codec, new StructureConfigEntry(32, 28, 598017285,
+                Arrays.asList(Biome.Category.DESERT.getName()), Collections.emptyList()),
                 20, 598017285, SmallDesertGraveyardGenerator.STARTING_POOL, "small_desert_graveyard");
     }
 

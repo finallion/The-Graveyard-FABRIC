@@ -22,14 +22,15 @@ import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 public class SmallMountainGraveStructure extends AbstractGraveyardStructure {
 
     public SmallMountainGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(12, 8, 725689810),
-                //Biome.Category.EXTREME_HILLS.getName(),
-                //Biome.Category.MOUNTAIN.getName()),
+        super(codec, new StructureConfigEntry(12, 8, 725689810,
+                Arrays.asList(Biome.Category.MOUNTAIN.getName(), Biome.Category.EXTREME_HILLS.getName()), Collections.emptyList()),
                 4, 725689810, SmallMountainGraveGenerator.STARTING_POOL, "small_mountain_grave");
     }
 

@@ -35,9 +35,9 @@ public class MediumGraveyardStructure extends AbstractGraveyardStructure {
             new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 10, 1, 3));
 
     public MediumGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(18, 16, 1690192399),
-                        //Arrays.asList(Biome.Category.FOREST.getName()),
-                        //Arrays.asList("dark_forest", "birch_forest", "old_growth_birch_forest")), // blacklist birch and dark forest
+        super(codec, new StructureConfigEntry(18, 16, 1690192399,
+                        Arrays.asList(Biome.Category.FOREST.getName()),
+                        Arrays.asList("dark_forest", "birch_forest", "old_growth_birch_forest")), // blacklist birch and dark forest
                 30, 1690192399, MediumGraveyardGenerator.STARTING_POOL, "medium_graveyard");
     }
 

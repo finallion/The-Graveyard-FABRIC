@@ -1,5 +1,7 @@
 package com.finallion.graveyard.config;
 
+import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.world.structures.AbstractGraveyardStructure;
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
@@ -8,6 +10,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.*;
 
@@ -21,7 +24,7 @@ public class GraveyardConfig implements Config {
              // To disable a structure to spawn, simply go to the corresponding entry and set `enabled` to false.
              // You can also disable if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners),
              // and set their spawning weight and group size.
-             // You can set in which biomes ("minecraft:biome_name") or in which biome categories ("#biome_category") the mobs can spawn.
+             // You can set in which biomes ("minecraft:biome_name") or in which biome categories ("biome_category") the mobs can spawn.
              // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain.
              // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
              //
@@ -36,6 +39,7 @@ public class GraveyardConfig implements Config {
     public final Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();
     public final Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
+    public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -51,12 +55,14 @@ public class GraveyardConfig implements Config {
     public boolean enabled(Identifier id) {
         return getStructure(id).enabled;
     }
-
     public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
     }
     public boolean mobSpawn(Identifier id) {
         return getMob(id).enabled;
+    }
+    public boolean hordeSpawn(Identifier id) {
+        return getHorde(id).enabled;
     }
 
     // structure config
@@ -92,20 +98,25 @@ public class GraveyardConfig implements Config {
         throw new NullPointerException("Tried MobConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // horde spawn config
+    public HordeConfigEntry getHorde(Identifier id) {
+        for (Map.Entry<String, HordeConfigEntry> entry : hordeConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+
+        throw new NullPointerException("Tried HordeConfigEntry with id: " + id + ", but it was null!");
+    }
+
     @Override
     public void save() {
-        structureConfigEntries.putIfAbsent("memorial_tree", StructureConfigEntry.of(14, 12, 529239621));
-        structureConfigEntries.putIfAbsent("medium_graveyard", StructureConfigEntry.of(18, 16, 1690192399));
-        structureConfigEntries.putIfAbsent("mushroom_grave", StructureConfigEntry.of(24, 18, 379123039));
-        structureConfigEntries.putIfAbsent("small_grave", StructureConfigEntry.of(12, 8, 661903018));
-        structureConfigEntries.putIfAbsent("small_graveyard", StructureConfigEntry.of(20, 18, 240451934));
-        structureConfigEntries.putIfAbsent("small_desert_graveyard", StructureConfigEntry.of(32, 28, 598017285));
-        structureConfigEntries.putIfAbsent("large_graveyard", StructureConfigEntry.of(16, 12, 304812394));
-        structureConfigEntries.putIfAbsent("haunted_house", StructureConfigEntry.of(25, 20, 451235912));
-        structureConfigEntries.putIfAbsent("small_desert_grave", StructureConfigEntry.of(20, 16, 681236914));
-        structureConfigEntries.putIfAbsent("small_savanna_grave", StructureConfigEntry.of(12, 8, 709787761));
-        structureConfigEntries.putIfAbsent("small_mountain_grave", StructureConfigEntry.of(12, 8, 725689810));
 
+        for (StructureFeature<?> structure : getStructures()) {
+            AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
+            StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
+            structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
+        }
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(45, 2, 5, getAllOverworldBiomeCategories()));
         mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(45, 5, 8, getAllOverworldBiomeCategories()));
@@ -115,7 +126,26 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
+
+        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(30, 12000));
         Config.super.save();
+    }
+
+    // config gets called earlier than the structure registry
+    private List<StructureFeature<?>> getStructures() {
+        List<StructureFeature<?>> structures = new ArrayList<>();
+        structures.add(TGStructures.MEDIUM_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructures.SMALL_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructures.LARGE_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructures.MUSHROOM_GRAVE_STRUCTURE);
+        structures.add(TGStructures.HAUNTED_HOUSE_STRUCTURE);
+        structures.add(TGStructures.MEMORIAL_TREE_STRUCTURE);
+        structures.add(TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructures.SMALL_GRAVE_STRUCTURE);
+        structures.add(TGStructures.SMALL_DESERT_GRAVE_STRUCTURE);
+        structures.add(TGStructures.SMALL_SAVANNA_GRAVE_STRUCTURE);
+        structures.add(TGStructures.SMALL_MOUNTAIN_GRAVE_STRUCTURE);
+        return structures;
     }
 
     private List<String> getAllOverworldBiomes() {
@@ -135,7 +165,7 @@ public class GraveyardConfig implements Config {
             if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether")) {
                 continue;
             }
-            biomeNames.add("#" + biome.toString().toLowerCase(Locale.ROOT));
+            biomeNames.add(biome.toString().toLowerCase(Locale.ROOT));
         }
         return biomeNames;
 

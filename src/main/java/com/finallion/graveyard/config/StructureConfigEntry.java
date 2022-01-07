@@ -1,7 +1,5 @@
 package com.finallion.graveyard.config;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class StructureConfigEntry {
@@ -55,20 +53,24 @@ public class StructureConfigEntry {
     public final int separation;
     public final int spacing;
     public final int salt;
+    public final List<String> allowedBiomeCategories;
+    public final List<String> blacklistedBiomes;
 
-    public StructureConfigEntry(int spacing, int separation, int salt) {
-        this(true, spacing, separation, salt);
+    public StructureConfigEntry(int spacing, int separation, int salt, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
+        this(true, spacing, separation, salt, allowedBiomeCategories, blacklistedBiomes);
     }
 
-    private StructureConfigEntry(boolean enabled, int spacing, int separation, int salt) {
+    private StructureConfigEntry(boolean enabled, int spacing, int separation, int salt, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
         this.enabled = enabled;
         this.spacing = spacing;
         this.separation = separation;
         this.salt = salt;
+        this.allowedBiomeCategories = allowedBiomeCategories;
+        this.blacklistedBiomes = blacklistedBiomes;
     }
 
-    public static StructureConfigEntry of(int spacing, int separation, int salt) {
-        return new StructureConfigEntry(spacing, separation, salt);
+    public static StructureConfigEntry of(int spacing, int separation, int salt, List<String> allowedBiomeCategory, List<String> blacklistedBiomes) {
+        return new StructureConfigEntry(spacing, separation, salt, allowedBiomeCategory, blacklistedBiomes);
     }
 
 }

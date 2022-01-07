@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.entities.horde.GraveyardHordeEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 import java.util.UUID;
 
-public class AnimatedGraveyardEntity extends HostileEntity implements Angerable {
+public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Angerable {
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
     protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(AnimatedGraveyardEntity.class, TrackedDataHandlerRegistry.BYTE);

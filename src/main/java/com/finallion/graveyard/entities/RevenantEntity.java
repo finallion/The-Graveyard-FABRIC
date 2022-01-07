@@ -51,6 +51,7 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
     }
 
     protected void initGoals() {
+        super.initGoals();
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
         this.goalSelector.add(2, new RevenantMeleeAttackGoal(this, 1.0D, false));

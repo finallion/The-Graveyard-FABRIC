@@ -22,15 +22,16 @@ import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 public class SmallGraveStructure extends AbstractGraveyardStructure {
 
     public SmallGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(12, 8, 661903018),
-                //Biome.Category.TAIGA.getName(),
-                //Biome.Category.FOREST.getName(),
-                //Biome.Category.PLAINS.getName()),
+        super(codec, new StructureConfigEntry(12, 8, 661903018,
+                 Arrays.asList(Biome.Category.TAIGA.getName(), Biome.Category.FOREST.getName(), Biome.Category.PLAINS.getName()),
+                 Collections.emptyList()),
                 4, 661903018, SmallGraveGenerator.STARTING_POOL, "small_grave");
     }
 

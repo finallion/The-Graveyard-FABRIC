@@ -17,7 +17,7 @@ public class MobSpawningRules {
     public static void addSpawnEntries() {
         BiomeModifications.addSpawn(BiomeSelectors.all()
                  .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("ghoul").allowedBiomes, context))
-                 .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "ghoul")))),
+                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "ghoul")))),
                 SpawnGroup.MONSTER, TGEntities.GHOUL,
                 TheGraveyard.config.mobConfigEntries.get("ghoul").weight,
                 TheGraveyard.config.mobConfigEntries.get("ghoul").minGroup,
@@ -25,7 +25,7 @@ public class MobSpawningRules {
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("acolyte").allowedBiomes, context))
-                        .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "acolyte")))),
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "acolyte")))),
                 SpawnGroup.MONSTER, TGEntities.ACOLYTE,
                 TheGraveyard.config.mobConfigEntries.get("acolyte").weight,
                 TheGraveyard.config.mobConfigEntries.get("acolyte").minGroup,
@@ -33,7 +33,7 @@ public class MobSpawningRules {
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("revenant").allowedBiomes, context))
-                        .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "revenant")))),
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "revenant")))),
                 SpawnGroup.MONSTER, TGEntities.REVENANT,
                 TheGraveyard.config.mobConfigEntries.get("revenant").weight,
                 TheGraveyard.config.mobConfigEntries.get("revenant").minGroup,
@@ -41,7 +41,7 @@ public class MobSpawningRules {
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("reaper").allowedBiomes, context))
-                        .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "reaper")))),
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "reaper")))),
                 SpawnGroup.MONSTER, TGEntities.REAPER,
                 TheGraveyard.config.mobConfigEntries.get("reaper").weight,
                 TheGraveyard.config.mobConfigEntries.get("reaper").minGroup,
@@ -49,7 +49,7 @@ public class MobSpawningRules {
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("nightmare").allowedBiomes, context))
-                        .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "nightmare")))),
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "nightmare")))),
                 SpawnGroup.MONSTER, TGEntities.NIGHTMARE,
                 TheGraveyard.config.mobConfigEntries.get("nightmare").weight,
                 TheGraveyard.config.mobConfigEntries.get("nightmare").minGroup,
@@ -57,18 +57,16 @@ public class MobSpawningRules {
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").allowedBiomes, context))
-                        .and(booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper")))),
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobSpawn(new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper")))),
                 SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").weight,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").maxGroup);
     }
 
-    public static Predicate<BiomeSelectionContext> booleanToPredicate(boolean bol) {
-        return (context) -> bol;
-    }
+
 
     private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {
-        return biomes.contains(biomeContext.getBiomeKey().getValue().toString()) || biomes.contains("#" + biomeContext.getBiome().getCategory().asString());
+        return biomes.contains(biomeContext.getBiomeKey().getValue().toString()) || biomes.contains(biomeContext.getBiome().getCategory().asString());
     }
 }

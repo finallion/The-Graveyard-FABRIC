@@ -22,13 +22,15 @@ import net.minecraft.world.gen.feature.JigsawFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 public class SmallGraveyardStructure extends AbstractGraveyardStructure {
 
     public SmallGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(20, 18, 240451934),
-                //Biome.Category.PLAINS.getName()),
+        super(codec, new StructureConfigEntry(20, 18, 240451934,
+                        Arrays.asList(Biome.Category.PLAINS.getName()), Collections.emptyList()),
                 15, 240451934, SmallGraveyardGenerator.STARTING_POOL, "small_graveyard");
     }
 
