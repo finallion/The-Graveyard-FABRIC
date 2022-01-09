@@ -128,6 +128,7 @@ public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Ang
 
     }
 
+
     static {
         ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, EntityAttributeModifier.Operation.ADDITION);
         ANGRY = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);

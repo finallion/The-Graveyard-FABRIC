@@ -18,22 +18,23 @@ public class GraveyardConfig implements Config {
     @Comment("""
              Welcome to The Graveyard Config!
              //
-             // Here, you can disable structures to spawn, change their chance of spawning, change their separation and also change their salt.
-             // Additionally, you can turn the graveyard fog particles on and set the chance of spawning them (higher numbers = lower chance of spawning).
-             // Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
-             // To disable a structure to spawn, simply go to the corresponding entry and set `enabled` to false.
-             // You can also disable if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners),
-             // and set their spawning weight and group size.
-             // You can set in which biomes ("minecraft:biome_name") or in which biome categories ("biome_category") the mobs can spawn.
+             // Structures:
+             // Disable structures to spawn, change their chance of spawning, change their separation and also change their salt.
+             //
+             // Mob Spawning:
+             // Disable, which and if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners), and set their spawning weight and group size.
+             // Disable, if hordes can spawn in the world and set their spawning chance and size.
+             //
+             // Biome whitelist and blacklist:
+             // Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
              // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain.
              // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
+             // So for example to allow a structure to only spawn in one specific biome, whitelist the biome category and blacklist all biomes of that category except the chosen one.
              //
-             // The Graveyard uses the vanilla structure spawning system. That is -
-             // - Separation is the minimum chunks between structures
-             // - Spacing is the average chunks between structures (Spacing value needs to be higher than Separation value!)
-             // - Salt is a special field that gives structures unique spawning positions. (Only change if you know what you are doing!)
+             // Graveyard Fog:
+             // Turn the graveyard fog particles off and set the chance of spawning them (higher numbers = lower chance of spawning).
+             // Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
              //
-             // Notice: reducing the generation settings will increase the risk of structures overlapping. Especially jigsaw structures are unpredictable!  
             """)
 
     public final Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();
@@ -72,7 +73,6 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-
         throw new NullPointerException("Tried StructureConfigEntry with id: " + id + ", but it was null!");
     }
 
@@ -83,7 +83,6 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-
         throw new NullPointerException("Tried ParticleConfigEntry with id: " + id + ", but it was null!");
     }
 
@@ -94,7 +93,6 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-
         throw new NullPointerException("Tried MobConfigEntry with id: " + id + ", but it was null!");
     }
 
@@ -105,7 +103,6 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-
         throw new NullPointerException("Tried HordeConfigEntry with id: " + id + ", but it was null!");
     }
 

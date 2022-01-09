@@ -11,11 +11,21 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 
-public class TGEntities {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AcolyteEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.9F)).build();
+public class TGEntities {
+    public static List<EntityType<?>> entities = new ArrayList<>();
+
+    //public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AcolyteEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.9F)).build();
     public static final EntityType<ReaperEntity> REAPER = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ReaperEntity::new).dimensions(EntityDimensions.changing(0.5F, 1.4F)).build();
 
+    public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(AcolyteEntity::new)
+            .dimensions(EntityDimensions.changing(0.6F, 1.9F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AcolyteEntity::canSpawn)
+            .build();
 
     public static final EntityType<SkeletonCreeper> SKELETON_CREEPER = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
@@ -46,13 +56,20 @@ public class TGEntities {
             .build();
 
 
+    private static void register(String name, EntityType<?> type) {
+        entities.add(type);
+        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, name), type);
+
+    }
+
+
     public static void registerEntities() {
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper"), SKELETON_CREEPER);
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "acolyte"), ACOLYTE);
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "ghoul"), GHOUL);
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "reaper"), REAPER);
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "revenant"), REVENANT);
-        Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "nightmare"), NIGHTMARE);
+        register("skeleton_creeper", SKELETON_CREEPER);
+        register("acolyte", ACOLYTE);
+        register("ghoul", GHOUL);
+        register("reaper", REAPER);
+        register("revenant", REVENANT);
+        register("nightmare", NIGHTMARE);
     }
 
 

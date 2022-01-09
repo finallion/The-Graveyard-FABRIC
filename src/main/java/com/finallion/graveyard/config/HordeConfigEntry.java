@@ -1,5 +1,7 @@
 package com.finallion.graveyard.config;
 
+import java.util.List;
+
 public class HordeConfigEntry {
     public final boolean enabled;
     public final int size;

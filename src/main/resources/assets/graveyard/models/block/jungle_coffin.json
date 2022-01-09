@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "1": "graveyard:block/jungle_coffin",
+    "particle": "graveyard:block/jungle_coffin"
+  }
+}

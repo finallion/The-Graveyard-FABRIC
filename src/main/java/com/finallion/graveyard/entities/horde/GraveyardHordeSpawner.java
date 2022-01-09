@@ -2,8 +2,10 @@ package com.finallion.graveyard.entities.horde;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.AnimatedGraveyardEntity;
+import com.finallion.graveyard.entities.BaseGhoulEntity;
 import com.finallion.graveyard.init.TGEntities;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -11,15 +13,20 @@ import net.minecraft.entity.mob.PatrolEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Spawner;
 
-import java.util.Random;
+
+import java.util.*;
 
 public class GraveyardHordeSpawner implements Spawner {
     private int ticksUntilNextSpawn;
@@ -29,7 +36,7 @@ public class GraveyardHordeSpawner implements Spawner {
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
         if (!spawnMonsters) {
             return 0;
-        } else if (!TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID + "horde_spawn")).enabled) {
+        } else if (!TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).enabled) {
            return 0;
         } else {
             Random random = world.random;
@@ -37,7 +44,7 @@ public class GraveyardHordeSpawner implements Spawner {
             if (this.ticksUntilNextSpawn > 0) {
                 return 0;
             } else {
-                this.ticksUntilNextSpawn += TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID + "horde_spawn")).ticksUntilNextSpawn + random.nextInt(1200);
+                this.ticksUntilNextSpawn += TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).ticksUntilNextSpawn + random.nextInt(1200);
                 if (world.isNight()) {
                     if (random.nextInt(5) != 0) {
                         return 0;
@@ -65,7 +72,7 @@ public class GraveyardHordeSpawner implements Spawner {
                                     } else {
                                         int n = 0;
                                         // how many entities will spawn
-                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID + "horde_spawn")).size;
+                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).size;
 
                                         for (int p = 0; p < o; ++p) {
                                             ++n;
@@ -98,6 +105,8 @@ public class GraveyardHordeSpawner implements Spawner {
     private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain) {
         BlockState blockState = world.getBlockState(pos);
         if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT)) {
+            return false;
+        } else if (blockState.getFluidState().isIn(FluidTags.WATER)) {
             return false;
         } else if (!AnimatedGraveyardEntity.canSpawn(TGEntities.GHOUL, world, SpawnReason.PATROL, pos, random)) {
             return false;

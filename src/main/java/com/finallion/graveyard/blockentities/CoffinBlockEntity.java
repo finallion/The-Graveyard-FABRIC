@@ -1,11 +1,15 @@
 package com.finallion.graveyard.blockentities;
 
+import com.finallion.graveyard.entities.AnimatedGraveyardEntity;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.entity.ViewerCountManager;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -35,16 +39,21 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
     private final AnimationFactory factory = new AnimationFactory(this);
+    private static boolean open = false;
 
     public CoffinBlockEntity(BlockPos pos, BlockState state) {
         super(TGBlocks.COFFIN_BLOCK_ENTITY, pos, state);
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
+                System.out.println("OPENING");
+                open = true;
                 CoffinBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
+                System.out.println("CLOSING");
+                open = false;
                 CoffinBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
             }
 
@@ -136,7 +145,6 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
 
 
         world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
-
     }
 
 
@@ -154,7 +162,16 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
     @SuppressWarnings("unchecked")
     private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         event.getController().transitionLengthTicks = 0;
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("open", true));
-        return PlayState.CONTINUE;
+        if (open) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("open", false));
+            return PlayState.STOP;
+        }
+
+        if (!open) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("close", false));
+            return PlayState.STOP;
+        }
+
+        return PlayState.STOP;
     }
 }

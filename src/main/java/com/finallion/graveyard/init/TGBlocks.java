@@ -103,6 +103,11 @@ public class TGBlocks {
 
     public static final Block SARCOPHAGUS = new CoffinBlock();
     public static final Block OAK_COFFIN = new CoffinBlock();
+    public static final Block SPRUCE_COFFIN = new CoffinBlock();
+    public static final Block BIRCH_COFFIN = new CoffinBlock();
+    public static final Block DARK_OAK_COFFIN = new CoffinBlock();
+    public static final Block JUNGLE_COFFIN = new CoffinBlock();
+    public static final Block ACACIA_COFFIN = new CoffinBlock();
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();
@@ -203,6 +208,11 @@ public class TGBlocks {
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), SARCOPHAGUS);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), OAK_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), SPRUCE_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), DARK_OAK_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "birch_coffin"), BIRCH_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), JUNGLE_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), ACACIA_COFFIN);
 
         /*
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
@@ -223,6 +233,11 @@ public class TGBlocks {
 
     public static final BlockEntityType<CoffinBlockEntity> COFFIN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "coffin_block_entity"), FabricBlockEntityTypeBuilder.create(CoffinBlockEntity::new,
             OAK_COFFIN,
+            DARK_OAK_COFFIN,
+            SPRUCE_COFFIN,
+            BIRCH_COFFIN,
+            JUNGLE_COFFIN,
+            ACACIA_COFFIN,
             SARCOPHAGUS).build(null));
 
     public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,

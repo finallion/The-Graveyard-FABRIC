@@ -39,10 +39,11 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
-        ServerWorldEvents.LOAD.register(new TGSpawner.WorldLoad());
-        ServerLifecycleEvents.SERVER_STOPPED.register(new TGSpawner.ServerStopped());
-        ServerTickEvents.END_WORLD_TICK.register(new TGSpawner.OnWorldTick());
-
+        if (config.getHorde(new Identifier(MOD_ID, "horde_spawn")).enabled) {
+            ServerWorldEvents.LOAD.register(new TGSpawner.WorldLoad());
+            ServerLifecycleEvents.SERVER_STOPPED.register(new TGSpawner.ServerStopped());
+            ServerTickEvents.END_WORLD_TICK.register(new TGSpawner.OnWorldTick());
+        }
 
         TGBlocks.registerBlocks();
         TGItems.registerItems();
@@ -117,43 +118,8 @@ public class TheGraveyard implements ModInitializer {
             ((StructuresConfigAccessor) worldStructureSettings).setConfiguredStructures(immutableOuterMap.build());
 
         });
-
-
          */
 
-        /*
-        // desert graveyard
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.DESERT).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_desert_graveyard")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE_CONFIG)));
-
-        // graves
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.DESERT).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_desert_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_DESERT_GRAVE_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.SAVANNA).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_savanna_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_SAVANNA_GRAVE_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.MESA).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_savanna_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_SAVANNA_GRAVE_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.EXTREME_HILLS).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_mountain_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_MOUNTAIN_GRAVE_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.MOUNTAIN).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_mountain_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_MOUNTAIN_GRAVE_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.PLAINS, Biome.Category.FOREST, Biome.Category.TAIGA).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_GRAVE_STRUCTURE_CONFIG)));
-
-        // mushroom grave
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.SWAMP, Biome.Category.JUNGLE, Biome.Category.MUSHROOM).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "mushroom_grave")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.MUSHROOM_GRAVE_STRUCTURE_CONFIG)));
-
-        // small graveyard
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.PLAINS).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_graveyard")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_GRAVEYARD_STRUCTURE_CONFIG)));
-
-        // memorial tree
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.FOREST).and(context -> context.getBiomeKey().toString().contains("birch")).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "memorial_tree")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.MEMORIAL_TREE_STRUCTURE_CONFIG)));
-
-        // medium graveyard
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.FOREST).and((context -> !context.getBiomeKey().toString().contains("birch") || !context.getBiomeKey().toString().contains("dark_forest"))).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "medium_graveyard")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.MEDIUM_GRAVEYARD_STRUCTURE_CONFIG)));
-
-        // large graveyard
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.TAIGA).and((context -> !context.getBiomeKey().toString().contains("birch"))).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "large_graveyard")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.LARGE_GRAVEYARD_STRUCTURE_CONFIG)));
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.FOREST).and((context -> context.getBiomeKey().toString().contains("dark_forest"))).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "large_graveyard")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.LARGE_GRAVEYARD_STRUCTURE_CONFIG)));
-
-        // haunted house
-        BiomeModifications.addStructure(BiomeSelectors.categories(Biome.Category.SWAMP).or(context -> context.getBiomeKey().toString().contains("dark_forest")).and(booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "haunted_house")))), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.HAUNTED_HOUSE_STRUCTURE_CONFIG)));
-
-
-         */
 
         // desert graveyard
         BiomeModifications.addStructure(BiomeSelectors.all()
@@ -191,22 +157,22 @@ public class TheGraveyard implements ModInitializer {
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("small_graveyard").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("small_graveyard").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.SMALL_GRAVEYARD_STRUCTURE_CONFIG)));
 
         // memorial tree
-        BiomeModifications.addStructure(BiomeSelectors.all()//.and(context -> context.getBiomeKey().toString().contains("birch"))
+        BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "memorial_tree"))))
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("memorial_tree").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("memorial_tree").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.MEMORIAL_TREE_STRUCTURE_CONFIG)));
 
         // medium graveyard
-        BiomeModifications.addStructure(BiomeSelectors.all()//.and((context -> !context.getBiomeKey().toString().contains("birch") || !context.getBiomeKey().toString().contains("dark_forest")))
+        BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "medium_graveyard"))))
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("medium_graveyard").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("medium_graveyard").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.MEDIUM_GRAVEYARD_STRUCTURE_CONFIG)));
 
         // large graveyard
-        BiomeModifications.addStructure(BiomeSelectors.all()//.and((context -> !context.getBiomeKey().toString().contains("birch")))
+        BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "large_graveyard"))))
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("large_graveyard").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("large_graveyard").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.LARGE_GRAVEYARD_STRUCTURE_CONFIG)));
 
         // haunted house
-        BiomeModifications.addStructure(BiomeSelectors.all()//.or(context -> context.getBiomeKey().toString().contains("dark_forest"))
+        BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "haunted_house"))))
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("haunted_house").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("haunted_house").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.HAUNTED_HOUSE_STRUCTURE_CONFIG)));
 

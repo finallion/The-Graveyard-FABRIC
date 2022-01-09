@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entities;
 
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
@@ -48,7 +49,9 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
     private static boolean isInRange = false;
+    private static boolean canAttack = false;
     private static final double ATTACK_RANGE = 4.5D;
+    private static int timeSinceLastAttack = 0;
     private TargetPredicate targetPredicate = TargetPredicate.createAttackable().setBaseMaxDistance(25.0D).ignoreVisibility();
 
     public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
@@ -67,20 +70,25 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new GhoulMeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[0]));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
-        this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
     }
 
     @Override
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.195D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D).add(EntityAttributes.GENERIC_ARMOR, 3.0D).add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
+            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
+                    .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
+                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
+                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                    .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
+                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
         }
         return attributeContainer;
     }
@@ -95,15 +103,14 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         setVariant(tag.getByte("ghoulVariant"));
     }
 
-    private void isInAttackDistance() {
-        if (this.getTarget() != null) {
-            if (this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE) {
-                isInRange = false;
-                setState(ANIMATION_RAGE);
-            }
-        }
+    public EntityGroup getGroup() {
+        return EntityGroup.UNDEAD;
     }
 
+    @Override
+    public double squaredAttackRange(LivingEntity target) {
+        return ATTACK_RANGE;
+    }
 
     private boolean isInRageDistance() {
         Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 5.0, 15.0);
@@ -111,18 +118,18 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         LivingEntity villager = this.world.getClosestEntity(MerchantEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
         LivingEntity ironGolem = this.world.getClosestEntity(IronGolemEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
 
-        // getTarget is useless because it returns sometimes null, even when the mob is tracking
         if (player != null) {
             return !(this.distanceTo(player) < ATTACK_RANGE);
         } else if (villager != null) {
             return !(this.distanceTo(villager) < ATTACK_RANGE);
         } else if (ironGolem != null) {
-            return !(this.distanceTo(ironGolem) < ATTACK_RANGE);
+            return !(this.distanceTo(ironGolem) < ATTACK_RANGE + 4.0D);
         }
 
         return true;
     }
 
+    // to play the rage animation when the mob is spawned in and disengages
     private void stopAttackAnimation() {
         if (!this.hasAngerTime()) {
             setState(ANIMATION_RAGE);
@@ -131,26 +138,38 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void tickMovement() {
-        // hinders attack animation from playing when there is no target
-        isInAttackDistance();
         // stops attack animation when anger time is 0 and sets rage animation to play
         stopAttackAnimation();
+
+        timeSinceLastAttack--;
+
+        if (!this.world.isClient()) {
+            if (this.getTarget() != null) {
+                canAttack = this.getTarget().squaredDistanceTo(this) <= ATTACK_RANGE;
+            }
+        }
+
 
         super.tickMovement();
     }
 
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
-        if (getAnimationState() == ANIMATION_ATTACK && !(this.isDead() || this.getHealth() < 0.01) && isInRange) {
+        if (isAttacking() && canAttack && !(this.isDead() || this.getHealth() < 0.01)) {
+            timeSinceLastAttack = 35;
+            canAttack = false;
             event.getController().setAnimation(ATTACK_ANIMATION);
             return PlayState.CONTINUE;
         }
 
-        // some checks here a pretty useless
-        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance() && getAnimationState() != ANIMATION_WALK) {
+        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance()) {
             event.getController().setAnimation(RAGE_ANIMATION);
             return PlayState.CONTINUE;
         }
-        return PlayState.STOP;
+
+        if (timeSinceLastAttack < 0) {
+            return PlayState.STOP;
+        }
+        return PlayState.CONTINUE;
     }
 
 
@@ -166,7 +185,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         if (event.isMoving() || isMoving) {
             if (isWet()) {
                 event.getController().setAnimation(WALK_ANIMATION);
-            } else if (isAttacking()) {
+            } else if (isAttacking() && timeSinceLastAttack < 0) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
             } else {
                 event.getController().setAnimation(WALK_ANIMATION);
@@ -177,7 +196,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return PlayState.CONTINUE;
 
     }
-
 
     public byte getVariant() {
         return dataTracker.get(VARIANT);
@@ -190,8 +208,8 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
-        data.addAnimationController(new AnimationController(this, "controller2", 0, this::predicate2));
+        data.addAnimationController(new AnimationController(this, "controller", 2, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller2", 5, this::predicate2));
     }
 
     @Override
@@ -199,7 +217,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return this.factory;
     }
 
-    // TODO: custom sounds
     @Override
     public void playAmbientSound() {
         this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.0F, -5.0F);
@@ -217,6 +234,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     }
 
 
+    /*
     static class GhoulMeleeAttackGoal extends MeleeAttackGoal {
         private final BaseGhoulEntity ghoul;
         private static final int ATTACK_DURATION = 7;
@@ -230,7 +248,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         @Override
         public void tick() {
             LivingEntity livingEntity = this.mob.getTarget();
-            isInRange = false;
+            //isInRange = false;
             if (livingEntity != null) {
                 double squaredDistance = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
 
@@ -268,5 +286,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             attackTimer = 0;
         }
     }
+
+     */
 
 }

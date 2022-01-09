@@ -36,7 +36,7 @@ public class CoffinBlock extends BlockWithEntity implements Waterloggable, Block
     public static final DirectionProperty FACING;
 
     public CoffinBlock() {
-        super(FabricBlockSettings.of(Material.STONE).noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F));
+        super(FabricBlockSettings.of(Material.STONE).noCollision().nonOpaque().strength(1.5F));
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(FACING, Direction.NORTH));
     }
 

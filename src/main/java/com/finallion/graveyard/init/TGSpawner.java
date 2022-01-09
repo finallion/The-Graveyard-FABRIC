@@ -15,14 +15,12 @@ import java.util.Map;
 
 public class TGSpawner {
     private static Map<Identifier, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
+    private static boolean loaded = false;
 
     public TGSpawner(){}
 
     public static class WorldLoad implements ServerWorldEvents.Load {
-        boolean loaded = false;
-        public WorldLoad() {
-
-        }
+        public WorldLoad() {}
 
         @Override
         public void onWorldLoad(MinecraftServer server, ServerWorld world) {
@@ -37,8 +35,8 @@ public class TGSpawner {
         public ServerStopped(){}
 
         @Override
-        public void onServerStopped(MinecraftServer server)
-        {
+        public void onServerStopped(MinecraftServer server) {
+            loaded = false;
             spawners.clear();
         }
     }

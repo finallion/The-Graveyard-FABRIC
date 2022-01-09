@@ -7,21 +7,21 @@ public class MobConfigEntry {
     public final int weight;
     public final int minGroup;
     public final int maxGroup;
-    public final List<String> allowedBiomes;
+    public final List<String> allowedBiomesAndBiomeCategories;
 
-    public MobConfigEntry(int weight, int minGroup, int maxGroup, List<String> allowedBiomes) {
-        this(true, weight, minGroup, maxGroup, allowedBiomes);
+    public MobConfigEntry(int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
+        this(true, weight, minGroup, maxGroup, allowedBiomesAndBiomeCategories);
     }
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, List<String> allowedBiomes) {
+    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
         this.maxGroup = maxGroup;
-        this.allowedBiomes = allowedBiomes;
+        this.allowedBiomesAndBiomeCategories = allowedBiomesAndBiomeCategories;
     }
 
-    public static MobConfigEntry of(int weight, int minGroup, int maxGroup, List<String> allowedBiomes) {
-        return new MobConfigEntry(weight, minGroup, maxGroup, allowedBiomes);
+    public static MobConfigEntry of(int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
+        return new MobConfigEntry(weight, minGroup, maxGroup, allowedBiomesAndBiomeCategories);
     }
 }
