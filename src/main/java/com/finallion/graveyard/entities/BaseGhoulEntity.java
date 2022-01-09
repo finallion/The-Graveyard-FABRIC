@@ -48,11 +48,10 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected static final byte ANIMATION_ATTACK = 5;
     protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
-    private static boolean isInRange = false;
+    private static boolean canRage = false;
     private static boolean canAttack = false;
     private static final double ATTACK_RANGE = 4.5D;
     private static int timeSinceLastAttack = 0;
-    private TargetPredicate targetPredicate = TargetPredicate.createAttackable().setBaseMaxDistance(25.0D).ignoreVisibility();
 
     public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
         super(entityType, world);
@@ -112,23 +111,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return ATTACK_RANGE;
     }
 
-    private boolean isInRageDistance() {
-        Box box = new Box(new BlockPos(this.getX(), this.getY(), this.getZ())).expand(15.0, 5.0, 15.0);
-        PlayerEntity player = this.world.getClosestPlayer(targetPredicate, this);
-        LivingEntity villager = this.world.getClosestEntity(MerchantEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
-        LivingEntity ironGolem = this.world.getClosestEntity(IronGolemEntity.class, targetPredicate, this, this.getX(), this.getY(), this.getZ(), box);
-
-        if (player != null) {
-            return !(this.distanceTo(player) < ATTACK_RANGE);
-        } else if (villager != null) {
-            return !(this.distanceTo(villager) < ATTACK_RANGE);
-        } else if (ironGolem != null) {
-            return !(this.distanceTo(ironGolem) < ATTACK_RANGE + 4.0D);
-        }
-
-        return true;
-    }
-
     // to play the rage animation when the mob is spawned in and disengages
     private void stopAttackAnimation() {
         if (!this.hasAngerTime()) {
@@ -146,6 +128,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         if (!this.world.isClient()) {
             if (this.getTarget() != null) {
                 canAttack = this.getTarget().squaredDistanceTo(this) <= ATTACK_RANGE;
+                canRage = this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE * 6;
             }
         }
 
@@ -155,13 +138,13 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
         if (isAttacking() && canAttack && !(this.isDead() || this.getHealth() < 0.01)) {
-            timeSinceLastAttack = 35;
+            timeSinceLastAttack = 25;
             canAttack = false;
             event.getController().setAnimation(ATTACK_ANIMATION);
             return PlayState.CONTINUE;
         }
 
-        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && isInRageDistance()) {
+        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && canRage) {
             event.getController().setAnimation(RAGE_ANIMATION);
             return PlayState.CONTINUE;
         }
@@ -169,6 +152,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         if (timeSinceLastAttack < 0) {
             return PlayState.STOP;
         }
+
         return PlayState.CONTINUE;
     }
 
@@ -187,10 +171,10 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
                 event.getController().setAnimation(WALK_ANIMATION);
             } else if (isAttacking() && timeSinceLastAttack < 0) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
-            } else {
+            } else if (timeSinceLastAttack < 0) {
                 event.getController().setAnimation(WALK_ANIMATION);
             }
-        } else {
+        } else if (timeSinceLastAttack < 0) {
             event.getController().setAnimation(IDLE_ANIMATION);
         }
         return PlayState.CONTINUE;
@@ -208,8 +192,8 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 2, this::predicate));
-        data.addAnimationController(new AnimationController(this, "controller2", 5, this::predicate2));
+        data.addAnimationController(new AnimationController(this, "controller", 3, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller2", 3, this::predicate2));
     }
 
     @Override
