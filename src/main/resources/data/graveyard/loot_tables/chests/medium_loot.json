@@ -5,23 +5,23 @@
       "rolls": {
         "type": "minecraft:uniform",
         "min": 1.0,
-        "max": 3.0
+        "max": 2.0
       },
       "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 15,
+          "weight": 10,
           "name": "minecraft:golden_apple"
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
+          "weight": 1,
           "name": "minecraft:enchanted_golden_apple"
         },
         {
           "type": "minecraft:item",
-          "weight": 20,
+          "weight": 10,
           "name": "minecraft:name_tag"
         },
         {
@@ -36,6 +36,11 @@
         },
         {
           "type": "minecraft:item",
+          "weight": 3,
+          "name": "minecraft:diamond_horse_armor"
+        },
+        {
+          "type": "minecraft:item",
           "weight": 1,
           "name": "minecraft:spyglass"
         },
@@ -43,6 +48,15 @@
           "type": "minecraft:item",
           "weight": 5,
           "functions": [
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.6
+              },
+              "add": false
+            },
             {
               "function": "minecraft:enchant_randomly"
             }
@@ -54,6 +68,15 @@
           "weight": 5,
           "functions": [
             {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.6
+              },
+              "add": false
+            },
+            {
               "function": "minecraft:enchant_randomly"
             }
           ],
@@ -63,6 +86,15 @@
           "type": "minecraft:item",
           "weight": 5,
           "functions": [
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.6
+              },
+              "add": false
+            },
             {
               "function": "minecraft:enchant_randomly"
             }
@@ -74,6 +106,15 @@
           "weight": 5,
           "functions": [
             {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.6
+              },
+              "add": false
+            },
+            {
               "function": "minecraft:enchant_randomly"
             }
           ],
@@ -82,46 +123,6 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:diamond_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:diamond_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:diamond_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:diamond_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
@@ -230,7 +231,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:big_dripleaf"
+          "name": "minecraft:cobweb"
         },
         {
           "type": "minecraft:item",
@@ -401,6 +402,38 @@
             }
           ],
           "name": "minecraft:orange_tulip"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:raw_gold"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:raw_iron"
         }
       ]
     },

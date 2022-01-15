@@ -31,7 +31,6 @@ public class TheGraveyard implements ModInitializer {
     public static final String MOD_ID = "graveyard";
     public static final GraveyardConfig config = OmegaConfig.register(GraveyardConfig.class);
 
-    // ghoul raids
     // chisel gravestone
     // double skeleton
 

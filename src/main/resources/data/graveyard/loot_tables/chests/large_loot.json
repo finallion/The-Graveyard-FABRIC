@@ -5,7 +5,7 @@
       "rolls": {
         "type": "minecraft:uniform",
         "min": 1.0,
-        "max": 3.0
+        "max": 2.0
       },
       "bonus_rolls": 0.0,
       "entries": [
@@ -16,7 +16,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 2,
           "name": "minecraft:enchanted_golden_apple"
         },
         {
@@ -36,43 +36,8 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:netherite_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:netherite_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:netherite_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:netherite_chestplate"
+          "weight": 5,
+          "name": "minecraft:netherite_scrap"
         },
         {
           "type": "minecraft:item",
@@ -80,16 +45,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:diamond_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
+            },
             {
-              "function": "minecraft:enchant_randomly"
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_boots"
@@ -100,6 +64,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_helmet"
@@ -110,6 +83,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_chestplate"
@@ -120,6 +102,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_sword"
@@ -130,6 +121,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_shovel"
@@ -140,6 +140,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_axe"
@@ -150,6 +159,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_pickaxe"
@@ -160,6 +178,15 @@
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "type": "minecraft:uniform",
+                "min": 0.1,
+                "max": 0.5
+              },
+              "add": false
             }
           ],
           "name": "minecraft:diamond_hoe"
@@ -167,16 +194,6 @@
         {
           "type": "minecraft:item",
           "weight": 10,
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly"
-            }
-          ],
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
           "functions": [
             {
               "function": "minecraft:enchant_randomly"
@@ -513,6 +530,38 @@
             }
           ],
           "name": "minecraft:pink_tulip"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:raw_gold"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:raw_iron"
         }
       ]
     },

@@ -129,7 +129,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         double f = (double) pos.getZ() + 0.5D;
 
 
-        world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5F, -15.0F);
+        world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.75F, -70.0F);
     }
 
     /*
