@@ -27,8 +27,9 @@ public class GraveyardConfig implements Config {
              //
              // Biome whitelist and blacklist:
              // Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
-             // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain.
+             // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain, nether.
              // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
+             // Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
              // So for example to allow a structure to only spawn in one specific biome, whitelist the biome category and blacklist all biomes of that category except the chosen one.
              //
              // Graveyard Fog:
@@ -124,7 +125,7 @@ public class GraveyardConfig implements Config {
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
-        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(30, 12000));
+        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 12000));
         Config.super.save();
     }
 

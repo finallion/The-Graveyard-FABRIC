@@ -2,6 +2,7 @@ package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.item.DaggerItem;
+import com.finallion.graveyard.item.SarcophagusItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -82,7 +83,8 @@ public class TGItems {
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "vase_block"), new BlockItem(TGBlocks.VASE_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), new BlockItem(TGBlocks.SARCOPHAGUS, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), new SarcophagusItem(new FabricItemSettings().group(TheGraveyard.GROUP)));
+        /*
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), new BlockItem(TGBlocks.OAK_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), new BlockItem(TGBlocks.OAK_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), new BlockItem(TGBlocks.SPRUCE_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
@@ -90,6 +92,8 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), new BlockItem(TGBlocks.JUNGLE_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), new BlockItem(TGBlocks.ACACIA_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
+
+         */
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper_spawn_egg"), new SpawnEggItem(TGEntities.SKELETON_CREEPER, 7960171, 15263976, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acolyte_spawn_egg"), new SpawnEggItem(TGEntities.ACOLYTE, 2688830, 5898240, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "ghoul_spawn_egg"), new SpawnEggItem(TGEntities.GHOUL, 6239802, 16487198, new FabricItemSettings().group(TheGraveyard.GROUP)));

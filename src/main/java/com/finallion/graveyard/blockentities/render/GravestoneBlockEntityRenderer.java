@@ -47,14 +47,12 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     private static ItemStack stack = new ItemStack(TGBlocks.GRAVESTONE.asItem(), 1);
 
     public GravestoneBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-
         this.textRenderer = ctx.getTextRenderer();
     }
 
     public void render(GravestoneBlockEntity signBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
         BlockState blockState = signBlockEntity.getCachedState();
         matrixStack.push();
-
 
         // text render location in world
         // offset on block

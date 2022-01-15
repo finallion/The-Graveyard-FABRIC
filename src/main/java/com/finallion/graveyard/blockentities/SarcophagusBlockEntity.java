@@ -1,15 +1,12 @@
 package com.finallion.graveyard.blockentities;
 
-import com.finallion.graveyard.entities.AnimatedGraveyardEntity;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.ChestLidAnimator;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.entity.ViewerCountManager;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -35,30 +32,25 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class CoffinBlockEntity extends LootableContainerBlockEntity implements IAnimatable {
+public class SarcophagusBlockEntity extends LootableContainerBlockEntity {
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
-    private final AnimationFactory factory = new AnimationFactory(this);
-    private static boolean open = false;
+    private final SarcophagusLidAnimator lidAnimator;
 
-    public CoffinBlockEntity(BlockPos pos, BlockState state) {
-        super(TGBlocks.COFFIN_BLOCK_ENTITY, pos, state);
+    public SarcophagusBlockEntity(BlockPos pos, BlockState state) {
+        super(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, pos, state);
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                System.out.println("OPENING");
-                open = true;
-                CoffinBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
+                SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                System.out.println("CLOSING");
-                open = false;
-                CoffinBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
+                SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
             }
 
             protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
-                CoffinBlockEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
+                SarcophagusBlockEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
             }
 
             protected boolean isPlayerViewing(PlayerEntity player) {
@@ -66,10 +58,11 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
                     return false;
                 } else {
                     Inventory inventory = ((GenericContainerScreenHandler) player.currentScreenHandler).getInventory();
-                    return inventory == CoffinBlockEntity.this || inventory instanceof DoubleInventory && ((DoubleInventory) inventory).isPart(CoffinBlockEntity.this);
+                    return inventory == SarcophagusBlockEntity.this || inventory instanceof DoubleInventory && ((DoubleInventory) inventory).isPart(SarcophagusBlockEntity.this);
                 }
             }
         };
+        this.lidAnimator = new SarcophagusLidAnimator();
     }
 
     public void readNbt(NbtCompound nbt) {
@@ -78,7 +71,6 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
         if (!this.deserializeLootTable(nbt)) {
             Inventories.readNbt(nbt, this.inventory);
         }
-
     }
 
     protected void writeNbt(NbtCompound nbt) {
@@ -88,6 +80,7 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
         }
 
     }
+
 
     public int size() {
         return 54;
@@ -102,7 +95,7 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
     }
 
     protected Text getContainerName() {
-        return new TranslatableText("container.coffin");
+        return new TranslatableText("container.sarcophagus");
     }
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
@@ -137,41 +130,36 @@ public class CoffinBlockEntity extends LootableContainerBlockEntity implements I
     }
 
 
-
     static void playSound(World world, BlockPos pos, BlockState state, SoundEvent soundEvent) {
         double d = (double) pos.getX() + 0.5D;
         double e = (double) pos.getY() + 0.5D;
         double f = (double) pos.getZ() + 0.5D;
 
 
-        world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+        world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5F, -15.0F);
     }
 
+    /*
+    ANIMATION STUFF
+     */
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+    public static void clientTick(World world, BlockPos pos, BlockState state, SarcophagusBlockEntity blockEntity) {
+        blockEntity.lidAnimator.step();
     }
 
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <E extends BlockEntity & IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        event.getController().transitionLengthTicks = 0;
-        if (open) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("open", false));
-            return PlayState.STOP;
+    public boolean onSyncedBlockEvent(int type, int data) {
+        if (type == 1) {
+            this.lidAnimator.setOpen(data > 0);
+            return true;
+        } else {
+            return super.onSyncedBlockEvent(type, data);
         }
-
-        if (!open) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("close", false));
-            return PlayState.STOP;
-        }
-
-        return PlayState.STOP;
     }
+
+    public float getAnimationProgress(float tickDelta) {
+        return this.lidAnimator.getProgress(tickDelta);
+    }
+
+
+
 }
