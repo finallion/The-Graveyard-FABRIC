@@ -12,7 +12,6 @@ import java.util.List;
 
 public class MobSpawningRules {
 
-
     public static void addSpawnEntries() {
         BiomeModifications.addSpawn(BiomeSelectors.all()
                  .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("ghoul").allowedBiomesAndBiomeCategories, context))

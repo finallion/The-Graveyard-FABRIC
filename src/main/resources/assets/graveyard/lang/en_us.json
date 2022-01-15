@@ -73,6 +73,8 @@
   "block.graveyard.deepslate_gravestone": "Deepslate Gravestone",
 
   "item.graveyard.bone_dagger": "Bone Dagger",
+  "item.graveyard.sarcophagus": "Sarcophagus",
+  "block.graveyard.sarcophagus": "Sarcophagus",
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",

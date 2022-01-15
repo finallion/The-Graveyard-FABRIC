@@ -1,12 +1,12 @@
 package com.finallion.graveyard.blockentities;
 
+import com.finallion.graveyard.blockentities.animation.SarcophagusLidAnimator;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.ChestLidAnimator;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.entity.ViewerCountManager;
+import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -24,15 +24,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class SarcophagusBlockEntity extends LootableContainerBlockEntity {
+public class SarcophagusBlockEntity extends LootableContainerBlockEntity implements ChestAnimationProgress {
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
     private final SarcophagusLidAnimator lidAnimator;

@@ -1,4 +1,4 @@
-package com.finallion.graveyard.blockentities;
+package com.finallion.graveyard.blockentities.animation;
 
 
 import net.minecraft.util.math.MathHelper;

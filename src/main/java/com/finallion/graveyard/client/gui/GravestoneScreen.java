@@ -1,7 +1,7 @@
 package com.finallion.graveyard.client.gui;
 
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
-import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

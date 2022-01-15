@@ -245,9 +245,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         return world.isClient ? checkType(type, this.getExpectedEntityType(), SarcophagusBlockEntity::clientTick) : null;
     }
 
-    public static boolean isChestBlocked(WorldAccess world, BlockPos pos) {
-        return false;
-    }
 
     @Override
     public DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> getBlockEntitySource(BlockState state, World world, BlockPos pos, boolean ignoreBlocked) {

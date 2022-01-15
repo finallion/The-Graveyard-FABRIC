@@ -73,6 +73,8 @@
   "block.graveyard.deepslate_gravestone": "Надгробие из глубинного сланца",
 
   "item.graveyard.bone_dagger": "Костянной кинжал",
+  "item.graveyard.sarcophagus": "Sarcophagus",
+  "block.graveyard.sarcophagus": "Sarcophagus",
 
   "entity.graveyard.skeleton_creeper": "Ползучий скелет",
   "item.graveyard.skeleton_creeper_spawn_egg": "Яйцо призыва Ползучего скелета",

@@ -1,4 +1,4 @@
-package com.finallion.graveyard.blockentities.render;
+package com.finallion.graveyard.blockentities.renders;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;

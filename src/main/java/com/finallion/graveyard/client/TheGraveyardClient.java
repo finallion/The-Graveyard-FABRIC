@@ -1,9 +1,8 @@
 package com.finallion.graveyard.client;
 
 
-import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
-import com.finallion.graveyard.blockentities.render.GravestoneBlockEntityRenderer;
-import com.finallion.graveyard.blockentities.render.SarcophagusBlockEntityRenderer;
+import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.finallion.graveyard.entities.renders.*;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -74,6 +73,8 @@ public class TheGraveyardClient implements ClientModInitializer {
         ModelLoadingRegistry.INSTANCE.registerModelProvider((ResourceManager manager, Consumer<Identifier> out) -> {
             out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT);
             out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD);
+            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT_LID);
+            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD_LID);
         });
 
     }
