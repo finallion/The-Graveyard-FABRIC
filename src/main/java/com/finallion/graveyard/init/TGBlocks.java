@@ -8,6 +8,7 @@ import com.finallion.graveyard.blockentities.UrnBlockEntity;
 import com.finallion.graveyard.blocks.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
@@ -112,15 +113,7 @@ public class TGBlocks {
 
      */
 
-    /*
-    TEST
-     */
-
     public static final Block SARCOPHAGUS = new SarcophagusBlock();
-
-    /*
-    TEST END
-     */
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();
