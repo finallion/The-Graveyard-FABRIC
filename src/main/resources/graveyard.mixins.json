@@ -10,7 +10,8 @@
     "PlantBlockMixin",
     "TreeFeatureMixin",
     "CreeperEntityMixin",
-    "NoiseChunkGeneratorMixin"
+    "NoiseChunkGeneratorMixin",
+    "StructuresConfigAccessor"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin"

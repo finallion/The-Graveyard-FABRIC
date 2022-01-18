@@ -3,29 +3,46 @@ package com.finallion.graveyard;
 import com.finallion.graveyard.config.GraveyardConfig;
 import com.finallion.graveyard.init.*;
 
+import com.finallion.graveyard.mixin.StructuresConfigAccessor;
+import com.finallion.graveyard.util.BiomeInjection;
 import com.finallion.graveyard.util.BiomeUtils;
 import com.finallion.graveyard.util.MobSpawningRules;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.chunk.FlatChunkGenerator;
+import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.chunk.StructuresConfig;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 import software.bernie.geckolib3.GeckoLib;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class TheGraveyard implements ModInitializer {
     public static final String MOD_ID = "graveyard";
@@ -63,48 +80,16 @@ public class TheGraveyard implements ModInitializer {
 
 
     public static void addStructureSpawningToDimensionsAndBiomes() {
-        /*
+        // thanks to TelephaticGrunt https://github.com/TelepathicGrunt/RepurposedStructures-Fabric/blob/1.18/src/main/java/com/telepathicgrunt/repurposedstructures/RepurposedStructures.java
         Identifier runAfterFabricAPIPhase = new Identifier(TheGraveyard.MOD_ID, "run_after_fabric_api");
         ServerWorldEvents.LOAD.addPhaseOrdering(Event.DEFAULT_PHASE, runAfterFabricAPIPhase);
 
         ServerWorldEvents.LOAD.register(runAfterFabricAPIPhase, (MinecraftServer minecraftServer, ServerWorld serverWorld) -> {
-
             StructuresConfig worldStructureSettings = serverWorld.getChunkManager().getChunkGenerator().getStructuresConfig();
 
             Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> tempStructureToMultiMap = new HashMap<>();
-
-            biomeLoop:
-            for (Map.Entry<RegistryKey<Biome>, Biome> biomeEntry : serverWorld.getRegistryManager().get(Registry.BIOME_KEY).getEntries()) {
-                Biome.Category biomeCategory = biomeEntry.getValue().getCategory();
-
-                String name = biomeEntry.getValue().toString();
-
-                if (name == null) {
-                    continue;
-                }
-
-                if (biomeCategory.equals(Biome.Category.OCEAN) || biomeCategory.equals(Biome.Category.RIVER)) {
-                    continue biomeLoop;
-                }
-
-                for (StructureFeature<?> structure : TGStructures.structures) {
-                    AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
-                    StructureConfigEntry structureConfig = abstractStructure.getStructureConfigEntry();
-
-                    // check in config if structure is allowed to generate
-                    if (structureConfig.canGenerate) {
-                        // check the biome blacklist
-                        if (checkBiome(structureConfig.getBiomeCategories(), structureConfig.getBlacklistedBiomes(), name, biomeCategory)) {
-                            tempStructureToMultiMap.put(structure, HashMultimap.create());
-                            Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>> configuredStructureToBiomeMultiMap = tempStructureToMultiMap.get(structure);
-                            configuredStructureToBiomeMultiMap.put(((AbstractGraveyardStructure) structure).getStructureFeature(), biomeEntry.getKey());
-
-                        }
-                    }
-
-                }
-            }
-
+            ((StructuresConfigAccessor) worldStructureSettings).getConfiguredStructures().forEach((key, value) -> tempStructureToMultiMap.put(key, HashMultimap.create(value)));
+            BiomeInjection.addStructureToBiomes(tempStructureToMultiMap, minecraftServer.getRegistryManager().get(Registry.BIOME_KEY));
 
             ImmutableMap.Builder<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> immutableOuterMap = ImmutableMap.builder();
             tempStructureToMultiMap.forEach((key, value) -> {
@@ -113,13 +98,21 @@ public class TheGraveyard implements ModInitializer {
                 immutableOuterMap.put(key, immutableInnerMultiMap.build());
             });
 
-
             ((StructuresConfigAccessor) worldStructureSettings).setConfiguredStructures(immutableOuterMap.build());
 
+            Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>(worldStructureSettings.getStructures());
+
+            if (serverWorld.getChunkManager().getChunkGenerator() instanceof FlatChunkGenerator && serverWorld.getDimension().equals(World.OVERWORLD)) {
+                tempMap.keySet().removeAll(TGStructures.structures);
+            }
+            ((StructuresConfigAccessor) worldStructureSettings).setStructures(tempMap);
         });
-         */
+
+    }
 
 
+    /*
+    private static void addStructureToBiomes(Map<StructureFeature<?>, Multimap<ConfiguredStructureFeature<?, ?>, RegistryKey<Biome>>> tempStructureToMultiMap, Registry<Biome> biomeRegistry) {
         // desert graveyard
         BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "small_desert_graveyard"))))
@@ -174,27 +167,9 @@ public class TheGraveyard implements ModInitializer {
         BiomeModifications.addStructure(BiomeSelectors.all()
                 .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, "haunted_house"))))
                 .and(context -> parseBiomes(TheGraveyard.config.structureConfigEntries.get("haunted_house").allowedBiomeCategories, TheGraveyard.config.structureConfigEntries.get("haunted_house").blacklistedBiomes, context)), RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(TGStructures.HAUNTED_HOUSE_STRUCTURE_CONFIG)));
-
-
-
     }
 
-    private static boolean parseBiomes(List<String> allowedBiomeCategory, List<String> blacklistedBiomes, BiomeSelectionContext biomeContext) {
-        // no blacklist and biome is allowed
-        if (allowedBiomeCategory.contains(biomeContext.getBiome().getCategory().toString().toLowerCase(Locale.ROOT)) && blacklistedBiomes.isEmpty()) {
-            return true;
-        }
+     */
 
-        // blacklist and check if biome is on the blacklist
-        if (allowedBiomeCategory.contains(biomeContext.getBiome().getCategory().toString().toLowerCase(Locale.ROOT)) && !blacklistedBiomes.isEmpty()) {
-            if (blacklistedBiomes.contains(biomeContext.getBiomeKey().getValue().getPath())) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
 }
