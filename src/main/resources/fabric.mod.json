@@ -14,7 +14,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/graveyard/icon.png",
+  "icon": "assets/graveyard/graveyard_logo.png",
 
   "environment": "*",
   "entrypoints": {

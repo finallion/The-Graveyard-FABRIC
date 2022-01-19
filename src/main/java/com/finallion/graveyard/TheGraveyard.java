@@ -37,6 +37,8 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
 
 import java.util.HashMap;
@@ -47,6 +49,7 @@ import java.util.Map;
 public class TheGraveyard implements ModInitializer {
     public static final String MOD_ID = "graveyard";
     public static final GraveyardConfig config = OmegaConfig.register(GraveyardConfig.class);
+    public static final Logger LOGGER = LogManager.getLogger();
 
     // chisel gravestone
     // double skeleton
