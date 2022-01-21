@@ -9,17 +9,28 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 public class TGBiomes {
-    public static final RegistryKey<Biome> HAUNTED_FOREST_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "haunted_forest"));
-    public static final RegistryKey<Biome> HAUNTED_FOREST_LAKE_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "haunted_lakes"));
-    public static final RegistryKey<Biome> ERODED_HAUNTED_FOREST_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, "eroded_haunted_forest"));
+    public static final RegistryKey<Biome> ERODED_HAUNTED_FOREST_KEY = registerBiomeKeys("eroded_haunted_forest");
+    public static final RegistryKey<Biome> HAUNTED_LAKES_KEY = registerBiomeKeys("haunted_lakes");
+
+    private static RegistryKey<Biome> registerBiomeKeys(String name) {
+        return RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, name));
+    }
+
+    public static void registerBiomes() {
+        register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
+        register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
+    }
+
+    private static Biome register(RegistryKey<Biome> key, Biome biome) {
+        return BuiltinRegistries.add(BuiltinRegistries.BIOME, key, biome);
+    }
 
 
-
+    /*
     public static void registerBiomes() {
         Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.createHauntedForest());
         Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_LAKE_KEY.getValue(), HauntedForestBiomes.createHauntedLakes());
         Registry.register(BuiltinRegistries.BIOME, ERODED_HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.createErodedHauntedForest());
-
 
 
         /*
@@ -36,8 +47,7 @@ public class TGBiomes {
             OverworldBiomes.addContinentalBiome(ERODED_HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceEroded);
         }
 
-         */
-
-
     }
+
+     */
 }

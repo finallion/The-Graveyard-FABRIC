@@ -13,6 +13,7 @@ group = project.maven_group
 repositories {
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 	maven { url 'https://jitpack.io' }
+	maven { url = 'https://maven.minecraftforge.net/' }
 }
 
 dependencies {
@@ -27,6 +28,8 @@ dependencies {
 	modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${project.geckolib_version_fabric}"
 
 	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${project.config_version}")
+
+	modImplementation "com.github.glitchfiend:TerraBlender-fabric:${project.minecraft_version}-${project.terrablender_version}"
 }
 
 processResources {

@@ -2,18 +2,21 @@ package com.finallion.graveyard.world.structures;
 
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.mojang.serialization.Codec;
+import net.minecraft.block.BlockState;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.PostPlacementProcessor;
 import net.minecraft.structure.StructureGeneratorFactory;
 import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
@@ -61,7 +64,7 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
 
 
     private static boolean canGenerate(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context, int size) {
-        BlockPos centerOfChunk = new BlockPos(context.chunkPos().x * 16, 0, context.chunkPos().z * 16);
+        BlockPos centerOfChunk = context.chunkPos().getCenterAtY(0);
 
         if (!isTerrainFlat(context.chunkGenerator(), centerOfChunk.getX(), centerOfChunk.getZ(), context.world(), size)) {
             return false;
@@ -70,6 +73,7 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         if (!isWater(context.chunkGenerator(), centerOfChunk.getX(), centerOfChunk.getZ(), context.world(), size)) {
             return false;
         }
+
 
         return true;
     }
@@ -112,13 +116,23 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         // o    i    k
         // q    p    m
 
-        int offset = size;
 
-        int i1 = generator.getHeight(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int j1 = generator.getHeight(chunkX, chunkZ + offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int k1 = generator.getHeight(chunkX + offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int o1 = generator.getHeight(chunkX, chunkZ - offset, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int p1 = generator.getHeight(chunkX - offset, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int j1 = generator.getHeightInGround(chunkX, chunkZ + size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int k1 = generator.getHeightInGround(chunkX + size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int o1 = generator.getHeightInGround(chunkX, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int p1 = generator.getHeightInGround(chunkX - size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+
+        VerticalBlockSample sample1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
+        VerticalBlockSample sample2 = generator.getColumnSample(chunkX, chunkZ + size, heightLimitView);
+        VerticalBlockSample sample3 = generator.getColumnSample(chunkX + size, chunkZ, heightLimitView);
+        VerticalBlockSample sample4 = generator.getColumnSample(chunkX, chunkZ - size, heightLimitView);
+        VerticalBlockSample sample5 = generator.getColumnSample(chunkX - size, chunkZ, heightLimitView);
+
+        if (sample1.getState(i1).getFluidState().isIn(FluidTags.WATER) || sample2.getState(j1).getFluidState().isIn(FluidTags.WATER) || sample3.getState(k1).getFluidState().isIn(FluidTags.WATER) || sample4.getState(o1).getFluidState().isIn(FluidTags.WATER) || sample5.getState(p1).getFluidState().isIn(FluidTags.WATER)) {
+            return false;
+        }
+
 
         int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
         int minHeight = Math.min(minSides, i1);

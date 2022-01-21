@@ -23,6 +23,9 @@
     ],
     "client": [
       "com.finallion.graveyard.client.TheGraveyardClient"
+    ],
+    "terrablender": [
+      "com.finallion.graveyard.TheGraveyard"
     ]
   },
   "mixins": [

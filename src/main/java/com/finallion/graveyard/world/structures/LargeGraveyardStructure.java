@@ -32,10 +32,8 @@ import java.util.Optional;
 
 public class LargeGraveyardStructure extends AbstractGraveyardStructure {
     public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
-            new SpawnSettings.SpawnEntry(EntityType.ZOMBIE, 10, 1, 3),
-            new SpawnSettings.SpawnEntry(EntityType.SKELETON, 10, 1, 2),
-            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 10, 1, 1),
-            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 10, 1, 3));
+            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 25, 1, 1),
+            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 25, 1, 3));
 
     public LargeGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 10, 304812394,

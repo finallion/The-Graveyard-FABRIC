@@ -64,16 +64,6 @@ public class TGConfiguredFeatures {
     public static PlacedFeature GRAVESTONE_PLACED_FEATURE = GRAVESTONE_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(1));
     public static PlacedFeature SOUL_LIGHT_PLACED_FEATURE = SOUL_LIGHT_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
 
-
-
-    /*
-BAMBOO_VEGETATION = ConfiguredFeatures.register("bamboo_vegetation", Feature.RANDOM_SELECTOR.configure(
-new RandomFeatureConfig(List.of(new RandomFeatureEntry(TreePlacedFeatures.FANCY_OAK_CHECKED, 0.05F),
-new RandomFeatureEntry(TreePlacedFeatures.JUNGLE_BUSH, 0.15F),
-new RandomFeatureEntry(TreePlacedFeatures.MEGA_JUNGLE_TREE_CHECKED, 0.7F))
-     */
-
-
     // configured tree feature collections
     public static final ConfiguredFeature<?, ?> HAUNTED_FOREST_TREES = register("haunted_forest_trees", Feature.RANDOM_SELECTOR.configure(
             new RandomFeatureConfig(List.of(

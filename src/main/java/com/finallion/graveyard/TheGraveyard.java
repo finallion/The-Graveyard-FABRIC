@@ -7,6 +7,7 @@ import com.finallion.graveyard.mixin.StructuresConfigAccessor;
 import com.finallion.graveyard.util.BiomeInjection;
 import com.finallion.graveyard.util.BiomeUtils;
 import com.finallion.graveyard.util.MobSpawningRules;
+import com.finallion.graveyard.world.biomes.TGBiomeProvider;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -40,13 +41,15 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+import terrablender.api.BiomeProviders;
+import terrablender.api.TerraBlenderApi;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class TheGraveyard implements ModInitializer {
+public class TheGraveyard implements ModInitializer, TerraBlenderApi {
     public static final String MOD_ID = "graveyard";
     public static final GraveyardConfig config = OmegaConfig.register(GraveyardConfig.class);
     public static final Logger LOGGER = LogManager.getLogger();
@@ -75,6 +78,14 @@ public class TheGraveyard implements ModInitializer {
         addStructureSpawningToDimensionsAndBiomes();
         MobSpawningRules.addSpawnEntries();
 
+        TGBiomes.registerBiomes();
+
+    }
+
+
+    @Override
+    public void onTerraBlenderInitialized() {
+        BiomeProviders.register(new TGBiomeProvider(new Identifier(MOD_ID, "biome_provider"), 10));
     }
 
     public static ItemGroup GROUP = FabricItemGroupBuilder.create(
