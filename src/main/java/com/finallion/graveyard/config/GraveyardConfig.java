@@ -116,10 +116,10 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(45, 2, 5, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(45, 5, 8, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(15, 1, 1, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(35, 1, 4, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories()));
         mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
 
@@ -160,7 +160,7 @@ public class GraveyardConfig implements Config {
         Biome.Category[] biomeCategory = Biome.Category.values();
         List<String> biomeNames = new ArrayList<>();
         for (Biome.Category biome : biomeCategory) {
-            if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether")) {
+            if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether") || biome.getName().contains("mushroom")) {
                 continue;
             }
             biomeNames.add(biome.toString().toLowerCase(Locale.ROOT));

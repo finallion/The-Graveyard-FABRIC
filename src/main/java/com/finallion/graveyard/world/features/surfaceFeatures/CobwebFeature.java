@@ -30,7 +30,7 @@ public class CobwebFeature extends Feature<DefaultFeatureConfig> {
             mutable.move(random.nextInt(10) - random.nextInt(10), 0, random.nextInt(10) - random.nextInt(10));
             mutable.setY(i);
 
-            if (world.getBlockState(mutable).isOf(Blocks.SPRUCE_LEAVES) && world.getBlockState(mutable.down()).isAir() && random.nextBoolean()) {
+            if (world.getBlockState(mutable).isOf(Blocks.SPRUCE_LEAVES) && world.getBlockState(mutable.down()).isAir() && random.nextBoolean() && FeatureUtil.isCorrectBiome(world.getBiomeKey(mutable).get())) {
                 world.setBlockState(mutable.down(), Blocks.COBWEB.getDefaultState(), 2);
                 break;
             }

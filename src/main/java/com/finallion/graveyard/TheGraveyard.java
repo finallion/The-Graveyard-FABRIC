@@ -8,6 +8,7 @@ import com.finallion.graveyard.util.BiomeInjection;
 import com.finallion.graveyard.util.BiomeUtils;
 import com.finallion.graveyard.util.MobSpawningRules;
 import com.finallion.graveyard.world.biomes.TGBiomeProvider;
+import com.finallion.graveyard.world.noise.TGNoiseParameters;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
@@ -75,9 +76,11 @@ public class TheGraveyard implements ModInitializer, TerraBlenderApi {
         TGConfiguredFeatures.registerConfiguredFeatures();
         TGStructures.registerStructures();
         TGStructures.registerConfiguredStructures();
+
         addStructureSpawningToDimensionsAndBiomes();
         MobSpawningRules.addSpawnEntries();
 
+        TGNoiseParameters.init();
         TGBiomes.registerBiomes();
 
     }

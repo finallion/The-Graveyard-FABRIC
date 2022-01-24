@@ -27,11 +27,11 @@ public class MossCarpetFeature extends Feature<DefaultFeatureConfig> {
         BlockPos.Mutable mutable = new BlockPos.Mutable().set(blockPos);
 
         // cap at height 85
-        for (int i = 64; i < 85; i++) {
+        for (int i = 62; i < 93; i++) {
             mutable.set(blockPos);
             mutable.move(random.nextInt(10) - random.nextInt(10), 0, random.nextInt(10) - random.nextInt(10));
             mutable.setY(i);
-            if (world.getBlockState(mutable).getBlock() instanceof LeavesBlock && world.getBlockState(mutable.up()).isAir()) {
+            if (world.getBlockState(mutable).getBlock() instanceof LeavesBlock && world.getBlockState(mutable.up()).isAir() && FeatureUtil.isCorrectBiome(world.getBiomeKey(mutable).get())) {
                 world.setBlockState(mutable.up(), Blocks.MOSS_CARPET.getDefaultState(), 2);
                 break;
 

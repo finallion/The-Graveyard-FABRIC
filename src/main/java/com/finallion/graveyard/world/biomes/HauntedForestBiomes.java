@@ -1,18 +1,26 @@
 package com.finallion.graveyard.world.biomes;
 
+import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGBiomes;
+import com.finallion.graveyard.init.TGConfiguredFeatures;
 import com.finallion.graveyard.init.TGEntities;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.*;
 
 public class HauntedForestBiomes {
-    /*
 
     public static Biome createHauntedForest() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
@@ -26,23 +34,20 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
-        //generationSettings.surfaceBuilder(TGSurfaceBuilders.HAUNTED_FOREST_SURFACE_CONFIG);
-        // TODO: vanilla structures
 
-        DefaultBiomeFeatures.addDefaultOres(generationSettings);
-        DefaultBiomeFeatures.addDefaultDisks(generationSettings);
-        DefaultBiomeFeatures.addMossyRocks(generationSettings);
-        DefaultBiomeFeatures.addTaigaGrass(generationSettings);
-        DefaultBiomeFeatures.addGiantTaigaGrass(generationSettings);
-        DefaultBiomeFeatures.addLargeFerns(generationSettings);
-        DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
-
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_PUMPKIN);
+        addBasicFeatures(generationSettings);
+        addTaigaFeatures(generationSettings);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.HAUNTED_FOREST_TREES_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
+
+        BiomeModifications.create(new Identifier(TheGraveyard.MOD_ID + "haunted_forest_structures"))
+                .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.HAUNTED_FOREST_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("ruined_portal")));
+                });
+
 
 
 
@@ -68,7 +73,7 @@ public class HauntedForestBiomes {
                 .generationSettings(generationSettings.build())
                 .build();
     }
-    */
+
 
     public static Biome createHauntedLakes() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
@@ -84,15 +89,17 @@ public class HauntedForestBiomes {
         addBasicFeatures(generationSettings);
         addHauntedLakesFeatures(generationSettings);
 
-
-        /*
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.HAUNTED_FOREST_TREES_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.SOUL_LIGHT_PLACED_FEATURE);
-         */
+
+        BiomeModifications.create(new Identifier(TheGraveyard.MOD_ID + "haunted_lakes_structures"))
+                .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.HAUNTED_LAKES_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("ruined_portal")));
+                });
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -129,17 +136,24 @@ public class HauntedForestBiomes {
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.CAT, 1, 1, 1));
 
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
-        //generationSettings.structureFeature(ConfiguredStructureFeatures.NETHER_FOSSIL);
 
         addBasicFeatures(generationSettings);
         addTaigaFeatures(generationSettings);
 
-        /*
+        BiomeModifications.create(new Identifier(TheGraveyard.MOD_ID + "eroded_haunted_forest_structures"))
+                .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ERODED_HAUNTED_FOREST_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("nether_fossil")));
+                })
+                .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ERODED_HAUNTED_FOREST_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("ruined_portal")));
+                });
+
+
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
-         */
+         
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -184,21 +198,17 @@ public class HauntedForestBiomes {
 
     }
 
+
     private static void addHauntedLakesFeatures(GenerationSettings.Builder generationSettings) {
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
         DefaultBiomeFeatures.addClayDisk(generationSettings);
         DefaultBiomeFeatures.addMossyRocks(generationSettings);
         DefaultBiomeFeatures.addLargeFerns(generationSettings);
+        DefaultBiomeFeatures.addGiantTaigaGrass(generationSettings);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
         DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.BROWN_MUSHROOM_SWAMP);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.RED_MUSHROOM_SWAMP);
         DefaultBiomeFeatures.addSwampVegetation(generationSettings);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.FLOWER_SWAMP);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_NORMAL);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_DEAD_BUSH);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_WATERLILY);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, VegetationPlacedFeatures.PATCH_GRASS_TAIGA);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SWAMP);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.SEAGRASS_SWAMP);
     }
 
 

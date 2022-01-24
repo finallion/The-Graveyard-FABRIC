@@ -11,6 +11,7 @@ import net.minecraft.world.biome.Biome;
 public class TGBiomes {
     public static final RegistryKey<Biome> ERODED_HAUNTED_FOREST_KEY = registerBiomeKeys("eroded_haunted_forest");
     public static final RegistryKey<Biome> HAUNTED_LAKES_KEY = registerBiomeKeys("haunted_lakes");
+    public static final RegistryKey<Biome> HAUNTED_FOREST_KEY = registerBiomeKeys("haunted_forest");
 
     private static RegistryKey<Biome> registerBiomeKeys(String name) {
         return RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyard.MOD_ID, name));
@@ -19,6 +20,7 @@ public class TGBiomes {
     public static void registerBiomes() {
         register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
         register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
+        register(HAUNTED_FOREST_KEY, HauntedForestBiomes.createHauntedForest());
     }
 
     private static Biome register(RegistryKey<Biome> key, Biome biome) {

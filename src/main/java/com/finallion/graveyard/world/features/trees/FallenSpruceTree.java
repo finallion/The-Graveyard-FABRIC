@@ -36,7 +36,8 @@ public class FallenSpruceTree extends BaseSpruceTree {
         if (!world.getBlockState(blockPos).isAir()) return false;
 
         for (int i = 0; i < length; i++) {
-            if (world.getBlockState(blockPos.offset(direction, i).down()).isSolidBlock(world, blockPos.offset(direction, i).down()) && canBeReplaced(world.getBlockState(blockPos.offset(direction, i)))) {
+            if ((world.getBlockState(blockPos.offset(direction, i).down()).isSolidBlock(world, blockPos.offset(direction, i).down()) || (world.getBlockState(blockPos.offset(direction, i).down()).getBlock() == Blocks.SOUL_SAND))
+                    && canBeReplaced(world.getBlockState(blockPos.offset(direction, i)))) {
                 world.setBlockState(blockPos.offset(direction, i), wood.with(Properties.AXIS, axis), 2);
                 if (random.nextBoolean() && world.getBlockState(blockPos.offset(direction, i).up()).isAir()) {
                     world.setBlockState(blockPos.offset(direction, i).up(), Blocks.MOSS_CARPET.getDefaultState(), 2);
