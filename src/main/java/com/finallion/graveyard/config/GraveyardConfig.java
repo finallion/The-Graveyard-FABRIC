@@ -42,6 +42,8 @@ public class GraveyardConfig implements Config {
     public final Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
+    public final Map<String, BiomeConfigEntry> biomeConfigEntries = new HashMap<>();
+    public final Map<String, BiomeFogConfigEntry> biomeFogConfigEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -65,6 +67,9 @@ public class GraveyardConfig implements Config {
     }
     public boolean hordeSpawn(Identifier id) {
         return getHorde(id).enabled;
+    }
+    public boolean biomeFogSpawn(Identifier id) {
+        return getFog(id).enabled;
     }
 
     // structure config
@@ -107,6 +112,28 @@ public class GraveyardConfig implements Config {
         throw new NullPointerException("Tried HordeConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // biome spawn config
+    public BiomeConfigEntry getBiome(Identifier id) {
+        for (Map.Entry<String, BiomeConfigEntry> entry : biomeConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+        throw new NullPointerException("Tried BiomeConfigEntry with id: " + id + ", but it was null!");
+    }
+
+
+    // fog spawn config
+    public BiomeFogConfigEntry getFog(Identifier id) {
+        for (Map.Entry<String, BiomeFogConfigEntry> entry : biomeFogConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+        throw new NullPointerException("Tried BiomeFogConfigEntry with id: " + id + ", but it was null!");
+    }
+
+
     @Override
     public void save() {
 
@@ -122,6 +149,14 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories()));
         mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
+
+        biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
+        biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());
+        biomeConfigEntries.putIfAbsent("eroded_haunted_forest", BiomeConfigEntry.of());
+
+        biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.25F, 63, 128));
+        biomeFogConfigEntries.putIfAbsent("haunted_lakes_fog", BiomeFogConfigEntry.of(0.2F, 63, 128));
+        biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.25F, 93, 160));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 

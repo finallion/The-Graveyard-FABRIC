@@ -88,7 +88,7 @@ public class TheGraveyard implements ModInitializer, TerraBlenderApi {
 
     @Override
     public void onTerraBlenderInitialized() {
-        BiomeProviders.register(new TGBiomeProvider(new Identifier(MOD_ID, "biome_provider"), 10));
+        BiomeProviders.register(new TGBiomeProvider(new Identifier(MOD_ID, "biome_provider"), 2));
     }
 
     public static ItemGroup GROUP = FabricItemGroupBuilder.create(

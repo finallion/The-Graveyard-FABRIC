@@ -1,5 +1,6 @@
 package com.finallion.graveyard.world.biomes;
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.TGBiomes;
 import com.finallion.graveyard.world.surfacerules.TGSurfaceRules;
 import com.mojang.datafixers.util.Pair;
@@ -28,9 +29,18 @@ public class TGBiomeProvider extends BiomeProvider {
     @Override
     public void addOverworldBiomes(Registry<Biome> registry, Consumer<Pair<TBClimate.ParameterPoint, RegistryKey<Biome>>> mapper) {
         this.addModifiedVanillaOverworldBiomes(mapper, builder -> {
-            builder.replaceBiome(BiomeKeys.WINDSWEPT_FOREST, TGBiomes.HAUNTED_FOREST_KEY);
-            builder.replaceBiome(BiomeKeys.MEADOW, TGBiomes.ERODED_HAUNTED_FOREST_KEY);
-            builder.replaceBiome(BiomeKeys.SWAMP, TGBiomes.HAUNTED_LAKES_KEY);
+
+            if (TheGraveyard.config.getBiome(new Identifier(TheGraveyard.MOD_ID,"haunted_forest")).canGenerate) {
+                builder.replaceBiome(BiomeKeys.WINDSWEPT_FOREST, TGBiomes.HAUNTED_FOREST_KEY);
+            }
+
+            if (TheGraveyard.config.getBiome(new Identifier(TheGraveyard.MOD_ID, "eroded_haunted_forest")).canGenerate) {
+                builder.replaceBiome(BiomeKeys.MEADOW, TGBiomes.ERODED_HAUNTED_FOREST_KEY);
+            }
+
+            if (TheGraveyard.config.getBiome(new Identifier(TheGraveyard.MOD_ID,"haunted_lakes")).canGenerate) {
+                builder.replaceBiome(BiomeKeys.SWAMP, TGBiomes.HAUNTED_LAKES_KEY);
+            }
 
             /*
             List<MultiNoiseUtil.NoiseHypercube> swampPoint = new ParameterUtils.ParameterPointListBuilder()
@@ -40,11 +50,8 @@ public class TGBiomeProvider extends BiomeProvider {
                     .erosion(ParameterUtils.Erosion.EROSION_5)
                     .weirdness(ParameterUtils.Weirdness.MID_SLICE_NORMAL_ASCENDING, ParameterUtils.Weirdness.MID_SLICE_NORMAL_DESCENDING, ParameterUtils.Weirdness.MID_SLICE_VARIANT_ASCENDING, ParameterUtils.Weirdness.MID_SLICE_VARIANT_DESCENDING)
                     .buildVanilla();
-
             swampPoint.forEach(point -> builder.replaceBiome(point, TGBiomes.HAUNTED_LAKES_KEY));
              */
-
-
         });
 
         /*

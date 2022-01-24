@@ -7,6 +7,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import org.lwjgl.system.CallbackI;
 
 public class TGBiomes {
     public static final RegistryKey<Biome> ERODED_HAUNTED_FOREST_KEY = registerBiomeKeys("eroded_haunted_forest");
@@ -18,9 +19,9 @@ public class TGBiomes {
     }
 
     public static void registerBiomes() {
+        register(HAUNTED_FOREST_KEY, HauntedForestBiomes.createHauntedForest());
         register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
         register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
-        register(HAUNTED_FOREST_KEY, HauntedForestBiomes.createHauntedForest());
     }
 
     private static Biome register(RegistryKey<Biome> key, Biome biome) {
@@ -28,28 +29,4 @@ public class TGBiomes {
     }
 
 
-    /*
-    public static void registerBiomes() {
-        Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.createHauntedForest());
-        Registry.register(BuiltinRegistries.BIOME, HAUNTED_FOREST_LAKE_KEY.getValue(), HauntedForestBiomes.createHauntedLakes());
-        Registry.register(BuiltinRegistries.BIOME, ERODED_HAUNTED_FOREST_KEY.getValue(), HauntedForestBiomes.createErodedHauntedForest());
-
-
-        /*
-
-        if (ConfigConsts.enableForestBiome) {
-            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceForest);
-        }
-
-        if (ConfigConsts.enableLakesBiome) {
-            OverworldBiomes.addContinentalBiome(HAUNTED_FOREST_LAKE_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceLakes);
-        }
-
-        if (ConfigConsts.enableErodedBiome) {
-            OverworldBiomes.addContinentalBiome(ERODED_HAUNTED_FOREST_KEY, OverworldClimate.TEMPERATE, ConfigConsts.chanceEroded);
-        }
-
-    }
-
-     */
 }
