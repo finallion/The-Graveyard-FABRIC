@@ -7,21 +7,23 @@ public class MobConfigEntry {
     public final int weight;
     public final int minGroup;
     public final int maxGroup;
-    public final List<String> allowedBiomesAndBiomeCategories;
+    public final List<String> allowedBiomeCategories;
+    public final List<String> blacklistedBiomes;
 
-    public MobConfigEntry(int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
-        this(true, weight, minGroup, maxGroup, allowedBiomesAndBiomeCategories);
+    public MobConfigEntry(int weight, int minGroup, int maxGroup, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
+        this(true, weight, minGroup, maxGroup, allowedBiomeCategories, blacklistedBiomes);
     }
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
+    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
         this.maxGroup = maxGroup;
-        this.allowedBiomesAndBiomeCategories = allowedBiomesAndBiomeCategories;
+        this.allowedBiomeCategories = allowedBiomeCategories;
+        this.blacklistedBiomes = blacklistedBiomes;
     }
 
-    public static MobConfigEntry of(int weight, int minGroup, int maxGroup, List<String> allowedBiomesAndBiomeCategories) {
-        return new MobConfigEntry(weight, minGroup, maxGroup, allowedBiomesAndBiomeCategories);
+    public static MobConfigEntry of(int weight, int minGroup, int maxGroup, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
+        return new MobConfigEntry(weight, minGroup, maxGroup, allowedBiomeCategories, blacklistedBiomes);
     }
 }

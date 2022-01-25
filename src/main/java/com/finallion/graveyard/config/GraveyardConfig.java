@@ -143,12 +143,12 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories()));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());

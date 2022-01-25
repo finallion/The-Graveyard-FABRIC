@@ -61,6 +61,7 @@ public class TGConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig());
     public static final ConfiguredFeature<?, ?> FALLEN_TREE_CONFIG = FALLEN_TREE_FEATURE.configure(new DefaultFeatureConfig());
 
+    // placed features
     public static PlacedFeature MOSS_CARPET_PLACED_FEATURE = MOSS_CARPET_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
     public static PlacedFeature COBWEB_PLACED_FEATURE = COBWEB_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(40));
     public static PlacedFeature BUSH_PLACED_FEATURE = BUSH_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
