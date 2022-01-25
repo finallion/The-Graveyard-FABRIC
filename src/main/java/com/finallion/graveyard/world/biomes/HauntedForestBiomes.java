@@ -26,6 +26,8 @@ public class HauntedForestBiomes {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 45, 2, 5));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 40, 1, 2));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 30, 2, 5));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.NIGHTMARE, 3, 1, 1));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.WOLF, 8, 3, 5));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 10, 3, 5));
@@ -79,6 +81,8 @@ public class HauntedForestBiomes {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 25, 2, 5));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 15, 1, 2));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 15, 2, 5));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.NIGHTMARE, 1, 1, 1));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.WOLF, 8, 3, 5));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 10, 3, 5));
@@ -128,6 +132,8 @@ public class HauntedForestBiomes {
     public static Biome createErodedHauntedForest() {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 10, 2, 5));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 10, 2, 5));
+        spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.NIGHTMARE, 1, 1, 1));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.REAPER, 1, 1, 1));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 10, 1, 2));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(EntityType.WITHER_SKELETON, 8, 2, 3));
@@ -150,6 +156,7 @@ public class HauntedForestBiomes {
 
 
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.FALLEN_TREE_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);

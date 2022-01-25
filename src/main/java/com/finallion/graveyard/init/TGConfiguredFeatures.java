@@ -43,6 +43,7 @@ public class TGConfiguredFeatures {
     private static final Feature<DefaultFeatureConfig> BUSH_FEATURE = new BushFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> GRAVESTONE_FEATURE = new GraveFeature(DefaultFeatureConfig.CODEC);
     private static final Feature<DefaultFeatureConfig> SOUL_LIGHT_FEATURE = new SoulLightFeature(DefaultFeatureConfig.CODEC);
+    private static final Feature<DefaultFeatureConfig> FALLEN_TREE_FEATURE = new FallenTreeFeature(DefaultFeatureConfig.CODEC);
 
     // configured features registry keys
     public static final RegistryKey<ConfiguredFeature<?, ?>> MOSS_CARPET_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "moss_carpet_feature"));
@@ -50,6 +51,7 @@ public class TGConfiguredFeatures {
     public static final RegistryKey<ConfiguredFeature<?, ?>> BUSH_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "bush_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> GRAVESTONE_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> SOUL_LIGHT_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "soul_light_feature"));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> FALLEN_TREE_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "fallen_tree_feature"));
 
     // configured features
     public static final ConfiguredFeature<?, ?> MOSS_CARPET_CONFIG = MOSS_CARPET_FEATURE.configure(new DefaultFeatureConfig());
@@ -57,12 +59,14 @@ public class TGConfiguredFeatures {
     public static final ConfiguredFeature<?, ?> BUSH_CONFIG = BUSH_FEATURE.configure(new DefaultFeatureConfig());
     public static final ConfiguredFeature<?, ?> GRAVESTONE_CONFIG = GRAVESTONE_FEATURE.configure(new DefaultFeatureConfig());
     public static final ConfiguredFeature<?, ?> SOUL_LIGHT_CONFIG = SOUL_LIGHT_FEATURE.configure(new DefaultFeatureConfig());
+    public static final ConfiguredFeature<?, ?> FALLEN_TREE_CONFIG = FALLEN_TREE_FEATURE.configure(new DefaultFeatureConfig());
 
     public static PlacedFeature MOSS_CARPET_PLACED_FEATURE = MOSS_CARPET_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
     public static PlacedFeature COBWEB_PLACED_FEATURE = COBWEB_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(40));
     public static PlacedFeature BUSH_PLACED_FEATURE = BUSH_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
     public static PlacedFeature GRAVESTONE_PLACED_FEATURE = GRAVESTONE_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(1));
     public static PlacedFeature SOUL_LIGHT_PLACED_FEATURE = SOUL_LIGHT_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
+    public static PlacedFeature FALLEN_TREE_PLACED_FEATURE = FALLEN_TREE_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
 
     // configured tree feature collections
     public static final ConfiguredFeature<?, ?> HAUNTED_FOREST_TREES = register("haunted_forest_trees", Feature.RANDOM_SELECTOR.configure(
@@ -126,6 +130,7 @@ public class TGConfiguredFeatures {
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "bush_feature"), BUSH_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"), GRAVESTONE_FEATURE);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "soul_light_feature"), SOUL_LIGHT_FEATURE);
+        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "fallen_tree_feature"), FALLEN_TREE_FEATURE);
 
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_01"), SMALL_SPRUCE_TREE_01);
         Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "small_spruce_tree_02"), SMALL_SPRUCE_TREE_02);
@@ -149,12 +154,14 @@ public class TGConfiguredFeatures {
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, BUSH_FEATURE_KEY.getValue(), BUSH_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, GRAVESTONE_FEATURE_KEY.getValue(), GRAVESTONE_CONFIG);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, SOUL_LIGHT_FEATURE_KEY.getValue(), SOUL_LIGHT_CONFIG);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, FALLEN_TREE_FEATURE_KEY.getValue(), FALLEN_TREE_CONFIG);
 
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "moss_carpet_placed_feature"), MOSS_CARPET_PLACED_FEATURE);
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "cobweb_placed_feature"), COBWEB_PLACED_FEATURE);
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "bush_placed_feature"), BUSH_PLACED_FEATURE);
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature"), GRAVESTONE_PLACED_FEATURE);
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "soul_light_placed_feature"), SOUL_LIGHT_PLACED_FEATURE);
+        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "fallen_tree_placed_feature"), FALLEN_TREE_PLACED_FEATURE);
 
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "eroded_haunted_forest_trees_placed_feature"), ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE);
         Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "haunted_forest_trees_placed_feature"), HAUNTED_FOREST_TREES_PLACED_FEATURE);

@@ -43,13 +43,13 @@ public class TGSurfaceRules {
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(93), 0),
                                 MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1, 1.15),
                                         MaterialRules.sequence(
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1, 0.25), COARSE_DIRT),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.25, 0.5), SOUL_SAND),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1, 0.15), COARSE_DIRT),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.15, 0.5), SOUL_SAND),
                                                 //MaterialRules.sequence(MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.ICE, -0.2, 0.2), SOUL_SOIL), SOUL_SAND)),
                                                 MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.5, 0.75), SOUL_SOIL),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.75, 0.8), SOUL_SAND),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.75, 0.9), SOUL_SAND),
                                                 //MaterialRules.sequence(MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.ICE, -0.2, 0.2), SOUL_SOIL), SOUL_SAND)),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.8, 1.15), COARSE_DIRT)
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.9, 1.15), COARSE_DIRT)
                                         ))))));
 
 
@@ -93,7 +93,7 @@ public class TGSurfaceRules {
                                                 above62,
                                                 MaterialRules.condition(MaterialRules.not(above63_0),
                                                         MaterialRules.condition(
-                                                                MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, 0.0D),
+                                                                MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, 1.0D),
                                                                 WATER
                                                         )
                                                 )

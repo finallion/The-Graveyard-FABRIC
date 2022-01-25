@@ -31,7 +31,7 @@ public class BushFeature extends Feature<DefaultFeatureConfig> {
             mutable.set(blockPos);
             mutable.move(random.nextInt(3) - random.nextInt(3), 0, random.nextInt(3) - random.nextInt(3));
             mutable.setY(i);
-            if (FeatureHelper.canBePlaced(world.getBlockState(mutable)) && world.getBlockState(mutable.up()).isAir()  && FeatureUtil.isCorrectBiome(world.getBiomeKey(mutable).get())) {
+            if (FeatureHelper.canBePlaced(world.getBlockState(mutable)) && world.getBlockState(mutable.up()).isAir()  && FeatureHelper.isCorrectBiome(world.getBiomeKey(mutable).get())) {
                 if (random.nextInt(7) == 0) {
                     world.setBlockState(mutable.up(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.PERSISTENT, true), 2);
                     break;

@@ -154,9 +154,9 @@ public class GraveyardConfig implements Config {
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("eroded_haunted_forest", BiomeConfigEntry.of());
 
-        biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.25F, 63, 128));
-        biomeFogConfigEntries.putIfAbsent("haunted_lakes_fog", BiomeFogConfigEntry.of(0.2F, 63, 128));
-        biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.25F, 93, 160));
+        biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 85, 148));
+        biomeFogConfigEntries.putIfAbsent("haunted_lakes_fog", BiomeFogConfigEntry.of(0.3F, 63, 128));
+        biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 93, 160));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 

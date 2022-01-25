@@ -31,7 +31,7 @@ public class SoulLightFeature extends Feature<DefaultFeatureConfig> {
         mutable.setY(63);
 
 
-        if (world.getBlockState(mutable).isOf(Blocks.LILY_PAD) && world.getBlockState(mutable.up()).isAir() && world.getBlockState(mutable.up(2)).isAir()) {
+        if (world.getBlockState(mutable).isOf(Blocks.LILY_PAD) && world.getBlockState(mutable.up()).isAir() && world.getBlockState(mutable.up(2)).isAir() && FeatureHelper.isCorrectBiome(world.getBiomeKey(mutable).get())) {
             world.setBlockState(mutable.move(0, random.nextInt(2) + 1, 0), Blocks.BLACK_CANDLE.getDefaultState()
                     .with(Properties.CANDLES, random.nextInt(3) + 2)
                     .with(Properties.LIT, true), 2);
