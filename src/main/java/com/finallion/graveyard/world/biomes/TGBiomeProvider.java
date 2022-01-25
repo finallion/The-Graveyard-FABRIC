@@ -42,6 +42,10 @@ public class TGBiomeProvider extends BiomeProvider {
                 builder.replaceBiome(BiomeKeys.SWAMP, TGBiomes.HAUNTED_LAKES_KEY);
             }
 
+            if (TheGraveyard.config.getBiome(new Identifier(TheGraveyard.MOD_ID,"ancient_dead_coral_reef")).canGenerate) {
+                builder.replaceBiome(BiomeKeys.BEACH, TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY);
+            }
+
             /*
             List<MultiNoiseUtil.NoiseHypercube> swampPoint = new ParameterUtils.ParameterPointListBuilder()
                     .temperature(ParameterUtils.Temperature.COOL, ParameterUtils.Temperature.NEUTRAL, ParameterUtils.Temperature.WARM)

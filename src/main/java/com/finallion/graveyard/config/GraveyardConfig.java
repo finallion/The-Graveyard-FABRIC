@@ -143,16 +143,17 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest")));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("eroded_haunted_forest", BiomeConfigEntry.of());
+        biomeConfigEntries.putIfAbsent("ancient_dead_coral_reef", BiomeConfigEntry.of());
 
         biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 85, 148));
         biomeFogConfigEntries.putIfAbsent("haunted_lakes_fog", BiomeFogConfigEntry.of(0.3F, 63, 128));
