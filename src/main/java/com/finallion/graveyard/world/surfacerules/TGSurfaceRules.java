@@ -21,11 +21,13 @@ public class TGSurfaceRules {
     private static final MaterialRules.MaterialRule GRASS_BLOCK = block(Blocks.GRASS_BLOCK);
     private static final MaterialRules.MaterialRule WATER = block(Blocks.WATER);
     private static final MaterialRules.MaterialRule CALCITE = block(Blocks.CALCITE);
+    private static final MaterialRules.MaterialRule TUFF = block(Blocks.TUFF);
     private static final MaterialRules.MaterialRule SAND = block(Blocks.SAND);
     private static final MaterialRules.MaterialRule SANDSTONE = block(Blocks.SANDSTONE);
 
     public static MaterialRules.MaterialRule makeRules() {
         // TODO: take material rules together for example STONE_DEPTH_FLOOR
+        // TODO: remove redundant boxing
         MaterialRules.MaterialRule noiseGrass = MaterialRules.sequence(
                 MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
@@ -99,20 +101,8 @@ public class TGSurfaceRules {
                         )
                 ));
 
-        MaterialRules.MaterialCondition above73_0 = MaterialRules.aboveY(YOffset.fixed(63), 0);
-        MaterialRules.MaterialRule waterErosion73Rule = MaterialRules.sequence(
-                MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
-                        MaterialRules.sequence(MaterialRules.condition(
-                                        MaterialRules.biome(TGBiomes.HAUNTED_LAKES_KEY),
-                                        MaterialRules.condition(above62, MaterialRules.condition(MaterialRules.not(above73_0),
-                                                        MaterialRules.condition(
-                                                                MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, 2.0D), WATER
-                                                        )
-                                                )
-                                        )
-                                )
-                        )
-                ));
+        MaterialRules.MaterialCondition above68_0 = MaterialRules.aboveY(YOffset.fixed(68), 0);
+
 
         MaterialRules.MaterialRule hauntedForestRule =
                 MaterialRules.sequence(
@@ -128,11 +118,18 @@ public class TGSurfaceRules {
         MaterialRules.MaterialRule ancientReefRule =
                 MaterialRules.sequence(
                         MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_SURFACE_DEPTH,
-                                MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(53), 2), MaterialRules.sequence(
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1D, 0.2D), CALCITE),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.2D, 0.5D), SANDSTONE),
-                                                SAND)))),
-                        MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), waterErosion73Rule));
+                                MaterialRules.sequence(
+                                        MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(53), 2),
+                                                MaterialRules.sequence(
+                                                        MaterialRules.condition(above63_0, MaterialRules.condition(
+                                                                MaterialRules.not(above68_0), MaterialRules.condition(
+                                                                        MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, -1.0D, -0.55), WATER))),
+                                                        MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1D, 0.2D), CALCITE),
+                                                        MaterialRules.condition(MaterialRules.steepSlope(), TUFF),
+                                                        MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.2D, 0.5D), SANDSTONE),
+                                                        SAND
+                                                )
+                                        ))));
 
 
         return MaterialRules.sequence(

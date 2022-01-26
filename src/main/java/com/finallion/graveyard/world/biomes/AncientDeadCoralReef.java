@@ -32,6 +32,7 @@ public class AncientDeadCoralReef {
         DefaultBiomeFeatures.addOceanMobs(spawnSettings, 3, 4, 15);
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnSettings.SpawnEntry(EntityType.SALMON, 15, 1, 5));
         spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnSettings.SpawnEntry(EntityType.PUFFERFISH, 15, 1, 3));
+        DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
         GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
@@ -44,10 +45,17 @@ public class AncientDeadCoralReef {
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, OceanPlacedFeatures.KELP_WARM);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ANCIENT_DEAD_CORAL_REEF_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ANCIENT_DEAD_CORAL_REEF_WATER_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.DEAD_CORAL_PATCH_PLACED_FEATURE);
 
         BiomeModifications.create(new Identifier(TheGraveyard.MOD_ID + "ancient_dead_coral_reef_structures"))
                 .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ctx -> {
                     ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("nether_fossil")));
+                }).add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("ocean_ruin_cold")));
+                }).add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("shipwreck")));
+                }).add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ctx -> {
+                    ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("shipwreck_beached")));
                 });
 
         return (new Biome.Builder())

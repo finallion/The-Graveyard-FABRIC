@@ -161,7 +161,7 @@ public class GraveyardConfig implements Config {
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
-        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 12000));
+        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000));
         Config.super.save();
     }
 
