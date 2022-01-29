@@ -1,13 +1,22 @@
-name: 1.18.1 Question
-description: Ask a question
+name: 1.18.1 Feature Request
+description: Request a new feature
+labels: [feature]
 body:
   - type: markdown
     attributes:
       value: |
-        Questions for Minecraft 1.18.1.
-        You might find it useful to look into the changelog on Curseforge first.
+        Questions for Minecraft 1.18.1. Older versions are not supported.
+        If any section does not apply, replace its contents with "N/A".
+        
+        Please search for existing questions before you make your own request. 
+        You might find it useful to look into the changelog on Curseforge provided with each release.
   - type: markdown
     attributes:
       value: "## What question do you have?"
   - type: textarea
-
+    attributes:
+      label: Overview
+      description: Ask a question
+    validations:
+      required: true
+  - type: textarea
