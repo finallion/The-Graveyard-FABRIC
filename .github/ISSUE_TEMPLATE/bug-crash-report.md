@@ -1,26 +1,35 @@
----
-name: Bug/Crash report
-about: File a bug or crash report.
-title: "[BUG/CRASH]"
-labels: bug
-assignees: finallion
+name: 1.18.1 Bug/Crash Report
+description: File a bug/crash report
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For bugs experienced with Minecraft 1.18.1. Older versions are not supported.
+        If any section does not apply, replace its content with "N/A".
 
----
-
-**Describe the bug**
-A clear and concise description of what the bug is.
-
-**To Reproduce**
-Steps to reproduce the behavior.
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Logs and config file**
-If applicable, add the logs to help understand your problem.
-The logs can be found in your minecraft directory /logs/latest.log
-If the problem may relate to the config file, add it too.
-The config file can be found in your minecraft directory /config.
-
-**Additional context**
-Add any other context about the problem here.
+        Please search for existing bug reports before making your own report.
+  - type: textarea
+    attributes:
+      label: What's the issue you encountered?
+      description: |
+        Describe the issue in detail and what you were doing beforehand.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How can the issue be reproduced?
+      description: Include a detailed step by step process for recreating your issue.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Logs
+      description: |
+        Logs can be found in your Minecraft directory under `/logs/latest.log`.
+  - type: input
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: |
+        Any other information relevant to your issue.
