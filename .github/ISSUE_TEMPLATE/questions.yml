@@ -1,6 +1,5 @@
 name: 1.18.1 Question
 description: Ask a question
-label: [question]
 body:
   - type: markdown
     attributes:
@@ -19,4 +18,3 @@ body:
       description: Ask a question
     validations:
       required: true
-  - type: textarea
