@@ -1,11 +1,11 @@
-name: 1.18.1 Bug Report
-description: File a bug report
+name: 1.18.1 Bug/Crash Report
+description: File a bug/crash report
 labels: [bug]
 body:
   - type: markdown
     attributes:
       value: |
-        For bugs experienced with Minecraft 1.18.1. Older versions are not supported.
+        For bugs/crashes experienced with Minecraft 1.18.1. Older versions are not supported.
         If any section does not apply, replace its content with "N/A".
   - type: textarea
     attributes:
