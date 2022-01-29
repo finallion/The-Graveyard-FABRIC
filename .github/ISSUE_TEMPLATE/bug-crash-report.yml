@@ -1,5 +1,6 @@
 name: 1.18.1 Bug/Crash Report
 description: File a bug/crash report
+assignees: Finallion
 labels: [bug]
 body:
   - type: markdown
@@ -25,8 +26,6 @@ body:
       label: Logs
       description: |
         Logs can be found in your Minecraft directory under `/logs/latest.log`.
-        If your issue caused Minecraft to crash, include the crash report by creating a [gist](https://gist.github.com/) and pasting the link here.
-        If your don't include logs in instances of crash related issues, we will ask you to provide one.
   - type: textarea
     attributes:
       label: Additional information
