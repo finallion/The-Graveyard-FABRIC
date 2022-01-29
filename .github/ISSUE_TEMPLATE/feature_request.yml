@@ -1,7 +1,7 @@
 name: 1.18.1 Feature Request
 description: Request a new feature
 assignees: Finallion
-labels: [feature]
+labels: [enhancement]
 body:
   - type: markdown
     attributes:
