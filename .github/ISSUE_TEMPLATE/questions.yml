@@ -1,6 +1,5 @@
-name: 1.18.1 Feature Request
-description: Request a new feature
-labels: [feature]
+name: 1.18.1 Question
+description: Ask a question
 body:
   - type: markdown
     attributes:
