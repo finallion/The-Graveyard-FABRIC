@@ -1,0 +1,14 @@
+name: 1.18.1 Question
+description: Ask a question
+labels: [feature]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Questions for Minecraft 1.18.1.
+        You might find it useful to look into the changelog on Curseforge first.
+  - type: markdown
+    attributes:
+      value: "## What question do you have?"
+  - type: textarea
+
