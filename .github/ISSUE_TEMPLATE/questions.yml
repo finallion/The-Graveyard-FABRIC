@@ -1,6 +1,5 @@
 name: 1.18.1 Question
 description: Ask a question
-labels: [feature]
 body:
   - type: markdown
     attributes:
