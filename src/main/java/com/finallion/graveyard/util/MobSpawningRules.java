@@ -63,12 +63,6 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").maxGroup);
     }
 
-
-
-    //private static boolean parseBiomes(List<String> biomes, BiomeSelectionContext biomeContext) {
-    //    return biomes.contains(biomeContext.getBiomeKey().getValue().getPath()) || biomes.contains(biomeContext.getBiome().getCategory().asString());
-    //}
-
     //TODO: use method from GraveyardStructure
     private static boolean parseBiomes(List<String> allowedBiomeCategory, List<String> blacklistedBiomes, BiomeSelectionContext biomeContext) {
         if (allowedBiomeCategory == null) {

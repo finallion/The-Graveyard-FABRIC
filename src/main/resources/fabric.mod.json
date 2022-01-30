@@ -37,7 +37,6 @@
     "fabric": "*",
     "minecraft": "1.18.x",
     "geckolib3": ">=3.0.20",
-    "terrablender": ">=1.1.0.73",
     "java": ">=17"
   }
 }

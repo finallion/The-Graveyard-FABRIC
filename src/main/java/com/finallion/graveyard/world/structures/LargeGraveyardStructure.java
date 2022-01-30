@@ -38,7 +38,7 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
     public LargeGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 10, 304812394,
                         Arrays.asList(Biome.Category.FOREST.getName(), Biome.Category.TAIGA.getName()),
-                        Arrays.asList("forest", "flower_forest", "birch_forest", "old_growth_birch_forest", "windswept_forest", "eroded_haunted_forest", "haunted_lakes")), // only allow in dark forest and taigas
+                        Arrays.asList("forest", "flower_forest", "birch_forest", "old_growth_birch_forest", "windswept_forest")), // only allow in dark forest and taigas
                 45, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
     }
 

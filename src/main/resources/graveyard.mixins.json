@@ -14,8 +14,7 @@
     "StructuresConfigAccessor"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
-    "WorldRendererMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
