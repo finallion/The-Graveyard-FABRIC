@@ -155,7 +155,7 @@ public class GraveyardConfig implements Config {
         biomeConfigEntries.putIfAbsent("eroded_haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("ancient_dead_coral_reef", BiomeConfigEntry.of());
 
-        biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 85, 148));
+        biomeFogConfigEntries.putIfAbsent("haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 63, 148));
         biomeFogConfigEntries.putIfAbsent("haunted_lakes_fog", BiomeFogConfigEntry.of(0.3F, 63, 128));
         biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 93, 160));
 

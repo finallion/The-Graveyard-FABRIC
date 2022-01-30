@@ -108,7 +108,18 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
         this.targetSelector.add(1, new TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
         this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
         this.targetSelector.add(4, new UniversalAngerGoal(this, false));
+    }
 
+    protected void mobTick() {
+        if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {
+            float f = this.getBrightnessAtEyes();
+            if (f > 0.5F && this.world.isSkyVisible(this.getBlockPos()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+                this.setTarget((LivingEntity)null);
+                this.teleportRandomly();
+            }
+        }
+
+        super.mobTick();
     }
 
 

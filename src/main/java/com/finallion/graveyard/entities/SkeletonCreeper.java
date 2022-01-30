@@ -1,10 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.init.TGBlocks;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -14,6 +11,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -51,6 +49,10 @@ public class SkeletonCreeper extends CreeperEntity {
         return this.closestPlayer != null;
     }
 
+    public EntityGroup getGroup() {
+        return EntityGroup.UNDEAD;
+    }
+
     protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
         Entity entity = source.getAttacker();
         if (entity instanceof CreeperEntity) {
@@ -64,6 +66,16 @@ public class SkeletonCreeper extends CreeperEntity {
         }
 
     }
+
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
 
     public void explode() {
         if (!this.world.isClient) {
@@ -113,6 +125,27 @@ public class SkeletonCreeper extends CreeperEntity {
         if (random.nextInt(7) == 0) {
             this.world.addParticle(ParticleTypes.ASH, this.getParticleX(2.0D), this.getRandomBodyY() + new Random().nextInt(1), this.getParticleZ(2.0), 2.0D, 7.0D, 2.0D);
 
+        }
+        if (this.isAlive()) {
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            if (bl) {
+                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.isDamageable()) {
+                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    bl = false;
+                }
+
+                if (bl) {
+                    this.setOnFireFor(8);
+                }
+            }
         }
         super.tickMovement();
     }

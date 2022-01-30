@@ -17,6 +17,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.TickDurationMonitor;
@@ -72,6 +73,15 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
     }
 
     @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
+    @Override
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
@@ -92,6 +102,28 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
                 canAttack = this.getTarget().squaredDistanceTo(this) <= ATTACK_RANGE;
             } else {
                 canAttack = false;
+            }
+        }
+
+        if (this.isAlive()) {
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            if (bl) {
+                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.isDamageable()) {
+                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    bl = false;
+                }
+
+                if (bl) {
+                    this.setOnFireFor(8);
+                }
             }
         }
 

@@ -15,6 +15,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -84,6 +85,40 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
         }
     }
 
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
+    @Override
+    public void tickMovement() {
+        if (this.isAlive()) {
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            if (bl) {
+                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.isDamageable()) {
+                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    bl = false;
+                }
+
+                if (bl) {
+                    this.setOnFireFor(8);
+                }
+            }
+        }
+        super.tickMovement();
+    }
 
     protected void initGoals() {
         super.initGoals();
@@ -97,6 +132,9 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
         this.targetSelector.add(3, new ActiveTargetGoal(this, PlayerEntity.class, true));
     }
 
+    public EntityGroup getGroup() {
+        return EntityGroup.UNDEAD;
+    }
 
     public void move(MovementType movementType, Vec3d movement) {
         super.move(movementType, movement);

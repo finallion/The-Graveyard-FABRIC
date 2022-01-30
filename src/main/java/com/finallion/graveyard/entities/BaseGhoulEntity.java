@@ -1,9 +1,6 @@
 package com.finallion.graveyard.entities;
 
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -16,6 +13,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -65,6 +63,17 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         byte variant = (byte) random.nextInt(8);
         this.dataTracker.startTracking(VARIANT, variant);
     }
+
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
+
 
     protected void initGoals() {
         super.initGoals();
@@ -129,6 +138,28 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
             if (this.getTarget() != null) {
                 canAttack = this.getTarget().squaredDistanceTo(this) <= ATTACK_RANGE;
                 canRage = this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE * 6;
+            }
+        }
+
+        if (this.isAlive()) {
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            if (bl) {
+                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.isDamageable()) {
+                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    bl = false;
+                }
+
+                if (bl) {
+                    this.setOnFireFor(8);
+                }
             }
         }
 
@@ -216,61 +247,5 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.0F, -5.0F);
     }
-
-
-    /*
-    static class GhoulMeleeAttackGoal extends MeleeAttackGoal {
-        private final BaseGhoulEntity ghoul;
-        private static final int ATTACK_DURATION = 7;
-        private int attackTimer = 0;
-
-        public GhoulMeleeAttackGoal(BaseGhoulEntity ghoulEntity, double speed, boolean pauseWhenIdle) {
-            super(ghoulEntity, speed, pauseWhenIdle);
-            this.ghoul = ghoulEntity;
-        }
-
-        @Override
-        public void tick() {
-            LivingEntity livingEntity = this.mob.getTarget();
-            //isInRange = false;
-            if (livingEntity != null) {
-                double squaredDistance = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-
-                // if target is in range, allow attack animation to actually happen
-                isInRange = squaredDistance < ATTACK_RANGE;
-            }
-            super.tick();
-        }
-
-        @Override
-        protected void attack(LivingEntity target, double squaredDistance) {
-            double d = ATTACK_RANGE;
-
-            if (squaredDistance <= d && attackTimer <= 0) {
-                ghoul.setState(ANIMATION_ATTACK);
-                attackTimer = ATTACK_DURATION;
-                this.mob.tryAttack(target);
-                attackTimer--;
-            }
-
-
-            if (attackTimer > 0) {
-                attackTimer--;
-
-                if (attackTimer == 0) {
-                    ghoul.setState(ANIMATION_RUNNING);
-                }
-            }
-
-        }
-
-        @Override
-        public void stop() {
-            super.stop();
-            attackTimer = 0;
-        }
-    }
-
-     */
 
 }

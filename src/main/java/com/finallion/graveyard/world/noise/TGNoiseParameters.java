@@ -29,6 +29,7 @@ public class TGNoiseParameters {
         BuiltinRegistries.add(BuiltinRegistries.NOISE_PARAMETERS, noise, new DoublePerlinNoiseSampler.NoiseParameters(firstOctave, firstAmplitude, amplitudes));
     }
 
+    // TODO: add MODID
     private static RegistryKey<DoublePerlinNoiseSampler.NoiseParameters> registerNoiseParameter(String id) {
         return RegistryKey.of(Registry.NOISE_WORLDGEN, new Identifier(id));
     }
