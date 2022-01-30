@@ -72,7 +72,7 @@ public class MobSpawningRules {
     //TODO: use method from GraveyardStructure
     private static boolean parseBiomes(List<String> allowedBiomeCategory, List<String> blacklistedBiomes, BiomeSelectionContext biomeContext) {
         if (allowedBiomeCategory == null) {
-            TheGraveyard.LOGGER.error("Error reading from the config file: Allowed biome category is null. Try to delete the file and restart the game.");
+            TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category is null. Try to delete the file and restart the game.");
             return false;
         }
 
