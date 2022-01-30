@@ -47,6 +47,7 @@ public class AncientDeadCoralReef {
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ANCIENT_DEAD_CORAL_REEF_WATER_PLACED_FEATURE);
         generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.DEAD_CORAL_PATCH_PLACED_FEATURE);
 
+        // add structures to the biome
         BiomeModifications.create(new Identifier(TheGraveyard.MOD_ID + "ancient_dead_coral_reef_structures"))
                 .add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ctx -> {
                     ctx.getGenerationSettings().addStructure(RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier("nether_fossil")));
