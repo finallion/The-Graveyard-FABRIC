@@ -11,7 +11,9 @@
     "TreeFeatureMixin",
     "CreeperEntityMixin",
     "NoiseChunkGeneratorMixin",
-    "StructuresConfigAccessor"
+    "StructuresConfigAccessor",
+    "VillagerEntityMixin",
+    "WanderingTraderEntityMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
