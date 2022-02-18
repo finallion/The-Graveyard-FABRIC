@@ -2,6 +2,7 @@ package com.finallion.graveyard.init;
 
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.blockentities.BrazierBlockEntity;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.finallion.graveyard.blockentities.UrnBlockEntity;
@@ -73,6 +74,7 @@ public class TGBlocks {
     public static final Identifier STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
 
     public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque());
+    public static final Block BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE));
     public static final Block SKULL_WITH_RIB_CAGE = new BoneDisplayBlock();
     public static final Block LEANING_SKELETON = new BoneDisplayBlock();
     public static final Block SKULL_PILE = new BoneDisplayBlock();
@@ -159,6 +161,7 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), DARK_IRON_BARS);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brazier"), BRAZIER);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_with_rib_cage"), SKULL_WITH_RIB_CAGE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_skeleton"), LEANING_SKELETON);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_pile"), SKULL_PILE);
@@ -270,6 +273,9 @@ public class TGBlocks {
 
     public static final BlockEntityType<SarcophagusBlockEntity> SARCOPHAGUS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_block_entity"), FabricBlockEntityTypeBuilder.create(SarcophagusBlockEntity::new,
             SARCOPHAGUS).build(null));
+
+    public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
+            BRAZIER).build(null));
 
 
 }

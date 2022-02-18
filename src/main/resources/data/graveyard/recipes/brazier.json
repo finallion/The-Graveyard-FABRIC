@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " Z ",
+    "#Y#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_ingot"
+    },
+    "Z": {
+      "item": "minecraft:coal"
+    },
+    "Y": {
+      "item": "minecraft:soul_soil"
+    }
+  },
+  "result": {
+    "item": "graveyard:dark_iron_bars",
+    "count": 16
+  }
+}

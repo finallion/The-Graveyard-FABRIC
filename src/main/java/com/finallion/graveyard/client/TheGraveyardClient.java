@@ -3,6 +3,7 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
+import com.finallion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
 import com.finallion.graveyard.entities.renders.*;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -21,12 +22,14 @@ import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.example.client.renderer.tile.BotariumTileRenderer;
 
 import java.util.function.Consumer;
 
@@ -44,6 +47,7 @@ public class TheGraveyardClient implements ClientModInitializer {
 
         BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.BRAZIER_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new BrazierBlockEntityRenderer());
 
         // coloring of tg_grass_block depending on biome
         ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
