@@ -18,6 +18,7 @@
     "minecraft:green_candle",
     "minecraft:red_candle",
     "minecraft:black_candle",
-    "graveyard:brazier"
+    "graveyard:fire_brazier",
+    "graveyard:soul_fire_brazier"
   ]
 }

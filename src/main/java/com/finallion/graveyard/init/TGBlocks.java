@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -73,8 +74,11 @@ public class TGBlocks {
     public static final Identifier STONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
 
-    public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque());
-    public static final Block BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE));
+    public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
+    public static final Block SOUL_FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.SOUL_FIRE_FLAME);
+    public static final Block FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.FLAME);
+    public static final Block PEDESTAL = new PedestalBlock(FabricBlockSettings.of(Material.STONE).strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE));
+    public static final Block CANDLE_HOLDER = new CandleHolderBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
     public static final Block SKULL_WITH_RIB_CAGE = new BoneDisplayBlock();
     public static final Block LEANING_SKELETON = new BoneDisplayBlock();
     public static final Block SKULL_PILE = new BoneDisplayBlock();
@@ -161,7 +165,10 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), DARK_IRON_BARS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brazier"), BRAZIER);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "soul_fire_brazier"), SOUL_FIRE_BRAZIER);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "fire_brazier"), FIRE_BRAZIER);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "candle_holder"), CANDLE_HOLDER);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "pedestal"), PEDESTAL);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_with_rib_cage"), SKULL_WITH_RIB_CAGE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_skeleton"), LEANING_SKELETON);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_pile"), SKULL_PILE);
@@ -275,7 +282,8 @@ public class TGBlocks {
             SARCOPHAGUS).build(null));
 
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
-            BRAZIER).build(null));
+            SOUL_FIRE_BRAZIER,
+            FIRE_BRAZIER).build(null));
 
 
 }

@@ -2,6 +2,6 @@
   "parent": "minecraft:block/block",
   "textures": {
     "1": "graveyard:block/brazier",
-    "particle": "graveyard:block/brazier"
+    "particle": "graveyard:block/dark_iron_bars"
   }
 }

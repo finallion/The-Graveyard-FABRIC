@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "graveyard:item/fire_brazier_item",
+    "particle": "graveyard:block/brazier"
+  }
+}

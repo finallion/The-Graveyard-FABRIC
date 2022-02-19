@@ -13,6 +13,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.CampfireCookingRecipe;
 import net.minecraft.sound.SoundCategory;
@@ -45,9 +46,11 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
     public static final BooleanProperty WATERLOGGED;
     public static final ToIntFunction<BlockState> STATE_TO_LUMINANCE;
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 15.0D, 16.0D, 15.0D);
+    private ParticleEffect fireType;
 
-    public BrazierBlock(Settings settings) {
+    public BrazierBlock(Settings settings, ParticleEffect fireType) {
         super(settings);
+        this.fireType = fireType;
         this.setDefaultState((BlockState)((BlockState)((BlockState)((BlockState)((BlockState)this.stateManager.getDefaultState()).with(LIT, false)).with(WATERLOGGED, false))));
     }
 
@@ -108,8 +111,8 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
                 world.playSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.2F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
             }
 
-            for (int i = 0; i < random.nextInt(12) + 3; ++i) {
-                world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, (double)pos.getX() + 0.25 + Math.abs(random.nextDouble() - 0.5D), (double)pos.getY() + 1.1D, (double)pos.getZ() + 0.25 + Math.abs(random.nextDouble() - 0.5D), 0, 0.01, 0);
+            for (int i = 0; i < 20; ++i) {
+                world.addParticle(fireType, (double)pos.getX() + 0.25 + Math.abs(random.nextDouble() - 0.5D), (double)pos.getY() + 1.1D, (double)pos.getZ() + 0.25 + Math.abs(random.nextDouble() - 0.5D), 0, 0.01, 0);
             }
 
         }

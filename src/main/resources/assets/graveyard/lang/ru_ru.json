@@ -67,7 +67,10 @@
   "block.graveyard.creeper_skeleton": "Костяной крипер",
 
   "block.graveyard.dark_iron_bars": "Тёмные железные прутья",
-  "block.graveyard.brazier": "Dark Iron Brazier",
+  "block.graveyard.soul_fire_brazier": "Soul Fire Brazier",
+  "block.graveyard.fire_brazier": "Fire Brazier",
+  "block.graveyard.candle_holder": "Candle Holder",
+  "block.graveyard.pedestal": "Pedestal",
   "block.graveyard.gravestone": "Полировонное базальтовое надгробие",
   "block.graveyard.cobblestone_gravestone": "Булыжниковое надгробие",
   "block.graveyard.mossy_cobblestone_gravestone": "Замшелое булыжниковое надгробие",
