@@ -60,6 +60,33 @@ public class AcolyteEntity extends IllagerEntity {
     }
 
     @Override
+    public void tickMovement() {
+        if (this.isAlive()) {
+            boolean bl = TheGraveyard.config.mobConfigEntries.get("acolyte").canBurnInSunlight;
+            if (bl) {
+                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+                if (!itemStack.isEmpty()) {
+                    if (itemStack.isDamageable()) {
+                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    bl = false;
+                }
+
+                if (bl) {
+                    this.setOnFireFor(8);
+                }
+            }
+        }
+
+        super.tickMovement();
+    }
+
+    @Override
     public boolean canLead() {
         return false;
     }

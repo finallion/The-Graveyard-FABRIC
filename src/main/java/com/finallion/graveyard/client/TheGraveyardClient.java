@@ -43,7 +43,14 @@ public class TheGraveyardClient implements ClientModInitializer {
 
         TGParticles.init();
 
-        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED, TGBlocks.DARK_IRON_BARS, TGBlocks.TG_GRASS_BLOCK);
+        BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED,
+                TGBlocks.DARK_IRON_BARS,
+                TGBlocks.TG_GRASS_BLOCK,
+                TGBlocks.SOUL_FIRE_BRAZIER,
+                TGBlocks.FIRE_BRAZIER,
+                TGBlocks.CANDLE_HOLDER,
+                TGBlocks.DARK_IRON_DOOR,
+                TGBlocks.DARK_IRON_TRAPDOOR);
 
         BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlockEntityRenderer::new);

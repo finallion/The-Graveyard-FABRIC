@@ -79,6 +79,9 @@ public class TGBlocks {
     public static final Block FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.FLAME);
     public static final Block PEDESTAL = new PedestalBlock(FabricBlockSettings.of(Material.STONE).strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE));
     public static final Block CANDLE_HOLDER = new CandleHolderBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
+    public static final Block DARK_IRON_TRAPDOOR = new TGTrapDoorBlock(FabricBlockSettings.of(Material.WOOD).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
+    public static final Block DARK_IRON_DOOR = new TGDoorBlock(FabricBlockSettings.of(Material.WOOD, MapColor.IRON_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
+    public static final Block DARK_IRON_BLOCK = new Block(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
     public static final Block SKULL_WITH_RIB_CAGE = new BoneDisplayBlock();
     public static final Block LEANING_SKELETON = new BoneDisplayBlock();
     public static final Block SKULL_PILE = new BoneDisplayBlock();
@@ -164,6 +167,9 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), TG_ROOTED_DIRT);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
 
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), DARK_IRON_TRAPDOOR);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), DARK_IRON_DOOR);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_block"), DARK_IRON_BLOCK);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), DARK_IRON_BARS);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "soul_fire_brazier"), SOUL_FIRE_BRAZIER);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "fire_brazier"), FIRE_BRAZIER);

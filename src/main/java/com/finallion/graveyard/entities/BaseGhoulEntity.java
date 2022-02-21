@@ -1,5 +1,8 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.TheGraveyard;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
@@ -15,11 +18,16 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -38,18 +46,22 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     private final AnimationBuilder RAGE_ANIMATION = new AnimationBuilder().addAnimation("rage", false);
     private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", true);
     private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
+    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
     protected static final byte ANIMATION_RAGE = 2;
     protected static final byte ANIMATION_DEATH = 3;
     protected static final byte ANIMATION_RUNNING = 4;
     protected static final byte ANIMATION_ATTACK = 5;
+    protected static final byte ANIMATION_SPAWN = 6;
     protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
     private static boolean canRage = false;
     private static boolean canAttack = false;
     private static final double ATTACK_RANGE = 4.5D;
     private static int timeSinceLastAttack = 0;
+    private boolean spawned = false;
+    private int spawnTimer;
 
     public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
         super(entityType, world);
@@ -58,6 +70,9 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
+
+        spawnTimer = 30;
+        setState((byte) ANIMATION_SPAWN);
 
         // selects one of eight skins for the ghoul
         byte variant = (byte) random.nextInt(8);
@@ -133,6 +148,11 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         stopAttackAnimation();
 
         timeSinceLastAttack--;
+        spawnTimer--;
+        if (world.isClient() && spawnTimer >= 0 && spawned) {
+            MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+        }
+
 
         if (!this.world.isClient()) {
             if (this.getTarget() != null) {
@@ -142,7 +162,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         }
 
         if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("ghoul").canBurnInSunlight;
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {
@@ -192,21 +212,30 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         float limbSwingAmount = event.getLimbSwingAmount();
         boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
 
+        if (getAnimationState() == 6) {
+            event.getController().setAnimation(SPAWN_ANIMATION);
+            spawned = true;
+
+            return PlayState.CONTINUE;
+        }
+
         if (isDead()) {
             event.getController().setAnimation(DEATH_ANIMATION);
             return PlayState.CONTINUE;
         }
 
-        if (event.isMoving() || isMoving) {
-            if (isWet()) {
-                event.getController().setAnimation(WALK_ANIMATION);
-            } else if (isAttacking() && timeSinceLastAttack < 0) {
-                event.getController().setAnimation(RUNNING_ANIMATION);
+        if (spawnTimer < 0) {
+            if (event.isMoving() || isMoving) {
+                if (isWet()) {
+                    event.getController().setAnimation(WALK_ANIMATION);
+                } else if (isAttacking() && timeSinceLastAttack < 0) {
+                    event.getController().setAnimation(RUNNING_ANIMATION);
+                } else if (timeSinceLastAttack < 0) {
+                    event.getController().setAnimation(WALK_ANIMATION);
+                }
             } else if (timeSinceLastAttack < 0) {
-                event.getController().setAnimation(WALK_ANIMATION);
+                event.getController().setAnimation(IDLE_ANIMATION);
             }
-        } else if (timeSinceLastAttack < 0) {
-            event.getController().setAnimation(IDLE_ANIMATION);
         }
         return PlayState.CONTINUE;
 
@@ -223,7 +252,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 3, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
         data.addAnimationController(new AnimationController(this, "controller2", 3, this::predicate2));
     }
 

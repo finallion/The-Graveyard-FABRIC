@@ -17,10 +17,10 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class CandleHolderBlock extends Block implements Waterloggable {
-    protected static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(3.0D, 2.0D, 0.0D, 12.0D, 16.0D, 10.0D);
-    protected static final VoxelShape SHAPE_SOUTH = Block.createCuboidShape(3.0D, 2.0D, 6.0D, 12.0D, 16.0D, 16.0D);
-    protected static final VoxelShape SHAPE_EAST = Block.createCuboidShape(6.0D, 2.0D, 3.0D, 16.0D, 16.0D, 12.0D);
-    protected static final VoxelShape SHAPE_WEST = Block.createCuboidShape(0.0D, 2.0D, 3.0D, 10.0D, 16.0D, 12.0D);
+    protected static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(4.0D, 2.0D, 0.0D, 12.0D, 16.0D, 11.0D);
+    protected static final VoxelShape SHAPE_SOUTH = Block.createCuboidShape(4.0D, 2.0D, 5.0D, 12.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SHAPE_EAST = Block.createCuboidShape(5.0D, 2.0D, 4.0D, 16.0D, 16.0D, 12.0D);
+    protected static final VoxelShape SHAPE_WEST = Block.createCuboidShape(0.0D, 2.0D, 4.0D, 11.0D, 16.0D, 12.0D);
     public static final DirectionProperty FACING;
     public static final BooleanProperty WATERLOGGED;
 

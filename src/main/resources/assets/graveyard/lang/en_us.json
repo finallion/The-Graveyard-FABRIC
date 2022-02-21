@@ -70,6 +70,9 @@
   "block.graveyard.soul_fire_brazier": "Soul Fire Brazier",
   "block.graveyard.fire_brazier": "Fire Brazier",
   "block.graveyard.pedestal": "Pedestal",
+  "block.graveyard.dark_iron_block": "Dark Iron Block",
+  "block.graveyard.dark_iron_trapdoor": "Dark Iron Trapdoor",
+  "block.graveyard.dark_iron_door": "Dark Iron Door",
   "block.graveyard.candle_holder": "Candle Holder",
   "block.graveyard.gravestone": "Polished Basalt Gravestone",
   "block.graveyard.cobblestone_gravestone": "Cobblestone Gravestone",
@@ -77,6 +80,8 @@
   "block.graveyard.deepslate_gravestone": "Deepslate Gravestone",
 
   "item.graveyard.bone_dagger": "Bone Dagger",
+  "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
+  "item.graveyard.corruption": "Corruption",
   "item.graveyard.sarcophagus": "Sarcophagus",
   "block.graveyard.sarcophagus": "Sarcophagus",
 

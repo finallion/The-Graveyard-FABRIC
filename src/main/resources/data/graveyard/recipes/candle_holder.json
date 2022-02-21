@@ -1,16 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " Z ",
+    "   ",
     " # ",
     " # "
   ],
   "key": {
     "#": {
-      "item": "minecraft:iron_ingot"
-    },
-    "Z": {
-      "item": "minecraft:coal"
+      "item": "graveyard:dark_iron_ingot"
     }
   },
   "result": {

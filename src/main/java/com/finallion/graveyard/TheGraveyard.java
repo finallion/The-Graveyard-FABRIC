@@ -55,7 +55,6 @@ public class TheGraveyard implements ModInitializer, TerraBlenderApi {
     public static final GraveyardConfig config = OmegaConfig.register(GraveyardConfig.class);
     public static final Logger LOGGER = LogManager.getLogger();
 
-    // burn in sunlight config
     // add wither rose immunity (parity to forge)
 
     @Override

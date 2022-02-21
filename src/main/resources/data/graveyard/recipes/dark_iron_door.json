@@ -1,20 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
-    "#Y#",
-    "###"
+    "##",
+    "##",
+    "##"
   ],
   "key": {
     "#": {
       "item": "graveyard:dark_iron_ingot"
-    },
-    "Y": {
-      "tag": "minecraft:logs"
     }
   },
   "result": {
-    "item": "graveyard:fire_brazier",
-    "count": 1
+    "item": "graveyard:dark_iron_door",
+    "count": 3
   }
 }

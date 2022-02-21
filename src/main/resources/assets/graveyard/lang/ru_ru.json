@@ -70,6 +70,9 @@
   "block.graveyard.soul_fire_brazier": "Soul Fire Brazier",
   "block.graveyard.fire_brazier": "Fire Brazier",
   "block.graveyard.candle_holder": "Candle Holder",
+  "block.graveyard.dark_iron_block": "Dark Iron Block",
+  "block.graveyard.dark_iron_trapdoor": "Dark Iron Trapdoor",
+  "block.graveyard.dark_iron_door": "Dark Iron Door",
   "block.graveyard.pedestal": "Pedestal",
   "block.graveyard.gravestone": "Полировонное базальтовое надгробие",
   "block.graveyard.cobblestone_gravestone": "Булыжниковое надгробие",
@@ -77,6 +80,8 @@
   "block.graveyard.deepslate_gravestone": "Глубинносланцевое надгробие",
 
   "item.graveyard.bone_dagger": "Костянной кинжал",
+  "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
+  "item.graveyard.corruption": "Corruption",
   "item.graveyard.sarcophagus": "Саркофаг",
   "block.graveyard.sarcophagus": "Саркофаг",
 

@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
@@ -116,9 +117,12 @@ public class SkeletonCreeper extends CreeperEntity {
 
     }
 
+    /*
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        return effect.getEffectType() == StatusEffects.WITHER ? false : super.canHaveStatusEffect(effect);
+    }
 
-
-
+     */
 
     @Override
     public void tickMovement() {
@@ -127,7 +131,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
         }
         if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight();
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").canBurnInSunlight;
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {

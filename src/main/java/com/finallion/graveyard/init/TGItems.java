@@ -27,7 +27,11 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), new BlockItem(TGBlocks.TG_ROOTED_DIRT, new FabricItemSettings()));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), new BlockItem(TGBlocks.TG_PODZOL, new FabricItemSettings()));
 
-
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corruption"), new Item(new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_block"), new BlockItem(TGBlocks.DARK_IRON_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_ingot"), new Item(new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), new BlockItem(TGBlocks.DARK_IRON_DOOR, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), new BlockItem(TGBlocks.DARK_IRON_TRAPDOOR, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), new BlockItem(TGBlocks.DARK_IRON_BARS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "soul_fire_brazier"), new BlockItem(TGBlocks.SOUL_FIRE_BRAZIER, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "fire_brazier"), new BlockItem(TGBlocks.FIRE_BRAZIER, new FabricItemSettings().group(TheGraveyard.GROUP)));

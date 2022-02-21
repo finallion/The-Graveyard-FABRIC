@@ -143,12 +143,12 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());
