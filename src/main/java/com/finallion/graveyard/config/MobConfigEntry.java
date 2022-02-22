@@ -8,24 +8,23 @@ public class MobConfigEntry {
     public final int minGroup;
     public final int maxGroup;
     public final boolean canBurnInSunlight;
-    public final List<String> allowedBiomeCategories;
+    public final boolean canBeWithered;
+    public final List<String> whitelistedBiomesAndCategories;
     public final List<String> blacklistedBiomes;
 
-    public MobConfigEntry(int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
-        this(true, weight, minGroup, maxGroup, canBurnInSunlight, allowedBiomeCategories, blacklistedBiomes);
-    }
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
+    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered, List<String> whitelistedBiomesAndCategories, List<String> blacklistedBiomes) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
         this.maxGroup = maxGroup;
         this.canBurnInSunlight = canBurnInSunlight;
-        this.allowedBiomeCategories = allowedBiomeCategories;
+        this.canBeWithered = canBeWithered;
+        this.whitelistedBiomesAndCategories = whitelistedBiomesAndCategories;
         this.blacklistedBiomes = blacklistedBiomes;
     }
 
-    public static MobConfigEntry of(int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
-        return new MobConfigEntry(weight, minGroup, maxGroup, canBurnInSunlight, allowedBiomeCategories, blacklistedBiomes);
+    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered, List<String> whitelistedBiomesAndCategories, List<String> blacklistedBiomes) {
+        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, whitelistedBiomesAndCategories, blacklistedBiomes);
     }
 }

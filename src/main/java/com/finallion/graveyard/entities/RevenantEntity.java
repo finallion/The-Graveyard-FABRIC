@@ -97,6 +97,18 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
         return attributeContainer;
     }
 
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        if (effect.getEffectType() == StatusEffects.WITHER) {
+            if (TheGraveyard.config.mobConfigEntries.get("revenant").canBeWithered) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.canHaveStatusEffect(effect);
+    }
+
 
     @Override
     public void tickMovement() {

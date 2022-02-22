@@ -123,6 +123,27 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
         super.mobTick();
     }
 
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        if (effect.getEffectType() == StatusEffects.WITHER) {
+            if (TheGraveyard.config.mobConfigEntries.get("nightmare").canBeWithered) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.canHaveStatusEffect(effect);
+    }
+
 
     public void tickMovement() {
         // hinders attack animation from playing when there is no target
@@ -142,7 +163,7 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
         }
 
         if (this.isAlive()) {
-            boolean bl = TheGraveyard.config.mobConfigEntries.get("nightmare").canBurnInSunlight;
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("nightmare").canBurnInSunlight;
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {

@@ -117,12 +117,20 @@ public class SkeletonCreeper extends CreeperEntity {
 
     }
 
-    /*
+
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return effect.getEffectType() == StatusEffects.WITHER ? false : super.canHaveStatusEffect(effect);
+        if (effect.getEffectType() == StatusEffects.WITHER) {
+            if (TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").canBeWithered) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.canHaveStatusEffect(effect);
     }
 
-     */
+
 
     @Override
     public void tickMovement() {

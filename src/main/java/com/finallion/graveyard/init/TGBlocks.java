@@ -111,18 +111,15 @@ public class TGBlocks {
     public static final Block GREEN_URN = new UrnBlock();
     public static final Block LIME_URN = new UrnBlock();
 
-    /*
-    public static final Block SARCOPHAGUS = new CoffinBlock();
-    public static final Block OAK_COFFIN = new CoffinBlock();
-    public static final Block SPRUCE_COFFIN = new CoffinBlock();
-    public static final Block BIRCH_COFFIN = new CoffinBlock();
-    public static final Block DARK_OAK_COFFIN = new CoffinBlock();
-    public static final Block JUNGLE_COFFIN = new CoffinBlock();
-    public static final Block ACACIA_COFFIN = new CoffinBlock();
-
-     */
-
-    public static final Block SARCOPHAGUS = new SarcophagusBlock();
+    public static final Block SARCOPHAGUS = new SarcophagusBlock(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(1.5F));
+    public static final Block OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block SPRUCE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block BIRCH_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block DARK_OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block JUNGLE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
+    public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F));
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();
@@ -229,6 +226,12 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
 
         /*
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), ROTTEN_SPRUCE_STAIRS);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_slab"), ROTTEN_SPRUCE_SLAB);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_log"), ROTTEN_SPRUCE_LOG);
+         */
+
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), SARCOPHAGUS);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), OAK_COFFIN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), SPRUCE_COFFIN);
@@ -236,16 +239,9 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "birch_coffin"), BIRCH_COFFIN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), JUNGLE_COFFIN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), ACACIA_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), ROTTEN_SPRUCE_STAIRS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_slab"), ROTTEN_SPRUCE_SLAB);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_log"), ROTTEN_SPRUCE_LOG);
-
-
-         */
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), SARCOPHAGUS);
-        //Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), SMALL_GRAVEYARD_SPRUCE_SAPLING);
     }
 
     public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
@@ -254,17 +250,6 @@ public class TGBlocks {
             MOSSY_COBBLESTONE_GRAVESTONE,
             DEEPSLATE_GRAVESTONE).build(null));
 
-    /*
-    public static final BlockEntityType<CoffinBlockEntity> COFFIN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "coffin_block_entity"), FabricBlockEntityTypeBuilder.create(CoffinBlockEntity::new,
-            OAK_COFFIN,
-            DARK_OAK_COFFIN,
-            SPRUCE_COFFIN,
-            BIRCH_COFFIN,
-            JUNGLE_COFFIN,
-            ACACIA_COFFIN,
-            SARCOPHAGUS).build(null));
-
-     */
 
     public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
             BLACK_URN,
@@ -285,7 +270,15 @@ public class TGBlocks {
             WHITE_URN).build(null));
 
     public static final BlockEntityType<SarcophagusBlockEntity> SARCOPHAGUS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_block_entity"), FabricBlockEntityTypeBuilder.create(SarcophagusBlockEntity::new,
-            SARCOPHAGUS).build(null));
+            SARCOPHAGUS,
+            OAK_COFFIN,
+            DARK_OAK_COFFIN,
+            ACACIA_COFFIN,
+            JUNGLE_COFFIN,
+            BIRCH_COFFIN,
+            CRIMSON_COFFIN,
+            WARPED_COFFIN,
+            SPRUCE_COFFIN).build(null));
 
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,

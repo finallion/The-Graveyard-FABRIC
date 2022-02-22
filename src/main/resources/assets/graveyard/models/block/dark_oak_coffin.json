@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/block",
-  "textures": {
-    "1": "graveyard:block/dark_oak_coffin",
-    "particle": "graveyard:block/dark_oak_coffin"
-  }
-}

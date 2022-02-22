@@ -97,6 +97,19 @@ public class ReaperEntity extends HostileEntity implements IAnimatable {
         return true;
     }
 
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        if (effect.getEffectType() == StatusEffects.WITHER) {
+            if (TheGraveyard.config.mobConfigEntries.get("reaper").canBeWithered) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.canHaveStatusEffect(effect);
+    }
+
+
     @Override
     public void tickMovement() {
         if (this.isAlive()) {

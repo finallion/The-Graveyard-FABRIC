@@ -30,7 +30,6 @@ public class GraveyardConfig implements Config {
              // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain, nether.
              // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
              // Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
-             // So for example to allow a structure to only spawn in one specific biome, whitelist the biome category and blacklist all biomes of that category except the chosen one.
              //
              // Graveyard Fog:
              // Turn the graveyard fog particles off and set the chance of spawning them (higher numbers = lower chance of spawning).
@@ -143,12 +142,12 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(25, 2, 5, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(25, 5, 8, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(10, 1, 1, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(25, 1, 4, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(0, 2, 3, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(0, 2, 3, true, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());

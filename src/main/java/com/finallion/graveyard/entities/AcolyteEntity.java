@@ -8,6 +8,8 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -59,10 +61,33 @@ public class AcolyteEntity extends IllagerEntity {
         super.mobTick();
     }
 
+
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return super.isAffectedByDaylight();
+    }
+
+    protected boolean burnsInDaylight() {
+        return true;
+    }
+
+    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
+        if (effect.getEffectType() == StatusEffects.WITHER) {
+            if (TheGraveyard.config.mobConfigEntries.get("acolyte").canBeWithered) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.canHaveStatusEffect(effect);
+    }
+
+
     @Override
     public void tickMovement() {
         if (this.isAlive()) {
-            boolean bl = TheGraveyard.config.mobConfigEntries.get("acolyte").canBurnInSunlight;
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("acolyte").canBurnInSunlight;
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {

@@ -61,8 +61,8 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
 
-    public SarcophagusBlock() {
-        super(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(1.5F), () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
+    public SarcophagusBlock(Settings settings) {
+        super(settings, () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT));
     }
 

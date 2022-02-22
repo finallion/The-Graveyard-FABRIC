@@ -36,10 +36,18 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
     public static final Identifier SARCOPHAGUS_FOOT_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot_lid");
     public static final Identifier SARCOPHAGUS_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head_lid");
     public static final Identifier SARCOPHAGUS_HEAD = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head");
+    public static final Identifier COFFIN_FOOT = new Identifier(TheGraveyard.MOD_ID, "block/coffin_foot");
+    public static final Identifier COFFIN_FOOT_LID = new Identifier(TheGraveyard.MOD_ID, "block/coffin_foot_lid");
+    public static final Identifier COFFIN_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/coffin_head_lid");
+    public static final Identifier COFFIN_HEAD = new Identifier(TheGraveyard.MOD_ID, "block/coffin_head");
     private final BakedModel sarcophagusModelHead;
     private final BakedModel sarcophagusModelFoot;
     private final BakedModel sarcophagusModelFootLid;
     private final BakedModel sarcophagusModelHeadLid;
+    private final BakedModel coffinModelHead;
+    private final BakedModel coffinModelFoot;
+    private final BakedModel coffinModelFootLid;
+    private final BakedModel coffinModelHeadLid;
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -47,6 +55,11 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         this.sarcophagusModelFoot = BakedModelManagerHelper.getModel(client.getBakedModelManager(), SARCOPHAGUS_FOOT);
         this.sarcophagusModelFootLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
         this.sarcophagusModelHeadLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
+
+        this.coffinModelHead = BakedModelManagerHelper.getModel(client.getBakedModelManager(), COFFIN_HEAD);
+        this.coffinModelFoot = BakedModelManagerHelper.getModel(client.getBakedModelManager(), COFFIN_FOOT);
+        this.coffinModelFootLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), COFFIN_FOOT_LID);
+        this.coffinModelHeadLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), COFFIN_HEAD_LID);
     }
 
 
@@ -55,22 +68,35 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         World world = entity.getWorld();
 
         BlockState blockState = entity.getCachedState();
+        boolean isCoffin = entity.getCachedState().getBlock().toString().contains("coffin");
         DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, world, entity.getPos(), (worldx, pos) -> {
             return false;
         });
-        float g = ((Float2FloatFunction)propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((ChestAnimationProgress)entity))).get(tickDelta);
+        float g = ((Float2FloatFunction) propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((ChestAnimationProgress) entity))).get(tickDelta);
         g = 1.0F - g;
         g = 1.0F - g * g * g;
-        int k = ((Int2IntFunction)propertySource.apply(new LightmapCoordinatesRetriever())).get(light);
+        int k = ((Int2IntFunction) propertySource.apply(new LightmapCoordinatesRetriever())).get(light);
 
         if (world != null) {
-            this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.sarcophagusModelHead : this.sarcophagusModelFoot, (Direction)blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-            this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.sarcophagusModelHeadLid : this.sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+            if (isCoffin) {
+                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.coffinModelHead : this.coffinModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
+                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.coffinModelHeadLid : this.coffinModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+            } else {
+                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.sarcophagusModelHead : this.sarcophagusModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
+                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? this.sarcophagusModelHeadLid : this.sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+            }
         } else {
-            this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
-            this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelFoot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
-            this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelHeadLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
-            this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
+            if (isCoffin) {
+                this.renderLid(entity, matrixStack, vertexConsumers, coffinModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, coffinModelFoot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
+                this.renderLid(entity, matrixStack, vertexConsumers, coffinModelHeadLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, coffinModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
+            } else {
+                this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelFoot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
+                this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelHeadLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
+            }
         }
     }
 
@@ -82,7 +108,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
-        float f = ((Direction)entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
+        float f = ((Direction) entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
         matrices.translate(0.5D, 0.5D, 0.5D);
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
 
@@ -100,7 +126,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
-        float f = ((Direction)entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
+        float f = ((Direction) entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
         matrices.translate(0.5D, 0.5D, 0.5D);
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
 
