@@ -60,10 +60,12 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
+    private boolean isCoffin;
 
-    public SarcophagusBlock(Settings settings) {
+    public SarcophagusBlock(Settings settings, boolean isCoffin) {
         super(settings, () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT));
+        this.isCoffin = isCoffin;
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -194,7 +196,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     @Nullable
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new SarcophagusBlockEntity(pos, state);
+        return new SarcophagusBlockEntity(pos, state, isCoffin);
     }
 
     public BlockRenderType getRenderType(BlockState state) {
@@ -260,8 +262,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     public BlockEntityType<? extends SarcophagusBlockEntity> getExpectedEntityType() {
         return (BlockEntityType)this.entityTypeRetriever.get();
     }
-
-
 
 
     static {

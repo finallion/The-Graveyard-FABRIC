@@ -92,16 +92,15 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "vase_block"), new BlockItem(TGBlocks.VASE_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), new SarcophagusItem(new FabricItemSettings().group(TheGraveyard.GROUP)));
-        /*
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), new BlockItem(TGBlocks.OAK_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), new BlockItem(TGBlocks.OAK_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), new BlockItem(TGBlocks.DARK_OAK_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), new BlockItem(TGBlocks.SPRUCE_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "birch_coffin"), new BlockItem(TGBlocks.BIRCH_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), new BlockItem(TGBlocks.JUNGLE_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), new BlockItem(TGBlocks.ACACIA_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), new BlockItem(TGBlocks.WARPED_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), new BlockItem(TGBlocks.CRIMSON_COFFIN, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
-
-         */
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper_spawn_egg"), new SpawnEggItem(TGEntities.SKELETON_CREEPER, 7960171, 15263976, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acolyte_spawn_egg"), new SpawnEggItem(TGEntities.ACOLYTE, 2688830, 5898240, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "ghoul_spawn_egg"), new SpawnEggItem(TGEntities.GHOUL, 6239802, 16487198, new FabricItemSettings().group(TheGraveyard.GROUP)));
@@ -111,15 +110,12 @@ public class TGItems {
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
 
-        //Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "small_graveyard_spruce_sapling"), new BlockItem(TGBlocks.SMALL_GRAVEYARD_SPRUCE_SAPLING, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         /*
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_PLANKS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_STAIRS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_slab"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_SLAB, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_log"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_LOG, new FabricItemSettings().group(TheGraveyard.GROUP)));
-
-
          */
     }
 

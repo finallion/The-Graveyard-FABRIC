@@ -1,6 +1,7 @@
 package com.finallion.graveyard.client;
 
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
@@ -16,6 +17,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
@@ -27,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.example.client.renderer.tile.BotariumTileRenderer;
@@ -86,6 +89,15 @@ public class TheGraveyardClient implements ClientModInitializer {
             out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD);
             out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT_LID);
             out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD_LID);
+
+            for (Block block : TGBlocks.coffins) {
+                String woodType = block.getTranslationKey().split("\\.")[2];
+                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
+                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
+                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
+                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
+            }
+
         });
 
     }

@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
-      "model": "graveyard:block/spruce_coffin"
+    "facing=north": {
+      "model": "graveyard:block/spruce_coffin_foot"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/spruce_coffin_foot"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/spruce_coffin_foot"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/spruce_coffin_foot"
     }
   }
 }
