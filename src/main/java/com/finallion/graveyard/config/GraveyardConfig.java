@@ -6,9 +6,7 @@ import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -43,6 +41,7 @@ public class GraveyardConfig implements Config {
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, BiomeConfigEntry> biomeConfigEntries = new HashMap<>();
     public final Map<String, BiomeFogConfigEntry> biomeFogConfigEntries = new HashMap<>();
+    public final Map<String, UrnConfigEntry> urnConfigEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -132,6 +131,16 @@ public class GraveyardConfig implements Config {
         throw new NullPointerException("Tried BiomeFogConfigEntry with id: " + id + ", but it was null!");
     }
 
+    // urn config
+    public UrnConfigEntry getBoolean(Identifier id) {
+        for (Map.Entry<String, UrnConfigEntry> entry : urnConfigEntries.entrySet()) {
+            if (entry.getKey().equals(id.getPath())) {
+                return entry.getValue();
+            }
+        }
+        throw new NullPointerException("Tried BooleanConfigEntry with id: " + id + ", but it was null!");
+    }
+
 
     @Override
     public void save() {
@@ -159,6 +168,8 @@ public class GraveyardConfig implements Config {
         biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 93, 160));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
+
+        urnConfigEntries.putIfAbsent("urn_can_be_large", UrnConfigEntry.of(true));
 
         hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000));
         Config.super.save();

@@ -1,5 +1,6 @@
 package com.finallion.graveyard.blockentities;
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blocks.UrnBlock;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
@@ -96,7 +97,12 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
     }
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory, this);
+        boolean large = TheGraveyard.config.urnConfigEntries.get("urn_can_be_large").doubleInventory;
+        if (large) {
+            return GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory, this);
+        }
+
+        return GenericContainerScreenHandler.createGeneric9x3(syncId, playerInventory, this);
     }
 
     public void onOpen(PlayerEntity player) {

@@ -47,6 +47,12 @@ public class TheGraveyardClient implements ClientModInitializer {
         TGParticles.init();
 
         BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED,
+                TGBlocks.SKULL_WITH_RIB_CAGE,
+                TGBlocks.WITHER_SKULL_WITH_RIB_CAGE,
+                TGBlocks.LEANING_SKELETON,
+                TGBlocks.LEANING_WITHER_SKELETON,
+                TGBlocks.LYING_SKELETON,
+                TGBlocks.LYING_WITHER_SKELETON,
                 TGBlocks.DARK_IRON_BARS,
                 TGBlocks.TG_GRASS_BLOCK,
                 TGBlocks.SOUL_FIRE_BRAZIER,
