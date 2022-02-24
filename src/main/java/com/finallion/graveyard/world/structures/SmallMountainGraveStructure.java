@@ -30,7 +30,7 @@ public class SmallMountainGraveStructure extends AbstractGraveyardStructure {
 
     public SmallMountainGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 8, 725689810,
-                        Arrays.asList(Biome.Category.MOUNTAIN.getName(), Biome.Category.EXTREME_HILLS.getName()),
+                        Arrays.asList("#" + Biome.Category.MOUNTAIN.getName(), "#" + Biome.Category.EXTREME_HILLS.getName()),
                         Collections.emptyList()),
                 4, 725689810, SmallMountainGraveGenerator.STARTING_POOL, "small_mountain_grave");
     }

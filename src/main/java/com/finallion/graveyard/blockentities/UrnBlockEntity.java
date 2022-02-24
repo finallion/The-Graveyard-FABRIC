@@ -97,7 +97,7 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
     }
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        boolean large = TheGraveyard.config.urnConfigEntries.get("urn_can_be_large").doubleInventory;
+        boolean large = TheGraveyard.config.booleanEntries.get("urnHasDoubleInventory");
         if (large) {
             return GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory, this);
         }

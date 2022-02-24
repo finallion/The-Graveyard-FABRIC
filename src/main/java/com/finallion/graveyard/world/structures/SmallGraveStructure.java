@@ -30,7 +30,7 @@ public class SmallGraveStructure extends AbstractGraveyardStructure {
 
     public SmallGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 8, 661903018,
-                 Arrays.asList(Biome.Category.TAIGA.getName(), Biome.Category.FOREST.getName(), Biome.Category.PLAINS.getName()),
+                 Arrays.asList("#" + Biome.Category.TAIGA.getName(), "#" + Biome.Category.FOREST.getName(), "#" + Biome.Category.PLAINS.getName()),
                  Collections.emptyList()),
                 4, 661903018, SmallGraveGenerator.STARTING_POOL, "small_grave");
     }

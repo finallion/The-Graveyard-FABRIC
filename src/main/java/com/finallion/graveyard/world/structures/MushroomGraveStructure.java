@@ -30,7 +30,7 @@ public class MushroomGraveStructure extends AbstractGraveyardStructure {
 
     public MushroomGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(24, 18, 379123039,
-                        Arrays.asList(Biome.Category.MUSHROOM.getName(), Biome.Category.JUNGLE.getName(), Biome.Category.SWAMP.getName()),
+                        Arrays.asList("#" + Biome.Category.MUSHROOM.getName(), "#" + Biome.Category.JUNGLE.getName(), "#" + Biome.Category.SWAMP.getName()),
                         Collections.emptyList()),
                 7, 379123039, MushroomGraveGenerator.STARTING_POOL, "mushroom_grave");
     }

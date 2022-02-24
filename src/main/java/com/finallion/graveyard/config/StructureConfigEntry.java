@@ -53,24 +53,24 @@ public class StructureConfigEntry {
     public final int separation;
     public final int spacing;
     public final int salt;
-    public final List<String> allowedBiomeCategories;
-    public final List<String> blacklistedBiomes;
+    public final List<String> whitelist;
+    public final List<String> blacklist;
 
-    public StructureConfigEntry(int spacing, int separation, int salt, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
-        this(true, spacing, separation, salt, allowedBiomeCategories, blacklistedBiomes);
+    public StructureConfigEntry(int spacing, int separation, int salt, List<String> whitelist, List<String> blacklist) {
+        this(true, spacing, separation, salt, whitelist, blacklist);
     }
 
-    private StructureConfigEntry(boolean enabled, int spacing, int separation, int salt, List<String> allowedBiomeCategories, List<String> blacklistedBiomes) {
+    private StructureConfigEntry(boolean enabled, int spacing, int separation, int salt, List<String> whitelist, List<String> blacklist) {
         this.enabled = enabled;
         this.spacing = spacing;
         this.separation = separation;
         this.salt = salt;
-        this.allowedBiomeCategories = allowedBiomeCategories;
-        this.blacklistedBiomes = blacklistedBiomes;
+        this.whitelist = whitelist;
+        this.blacklist = blacklist;
     }
 
-    public static StructureConfigEntry of(int spacing, int separation, int salt, List<String> allowedBiomeCategory, List<String> blacklistedBiomes) {
-        return new StructureConfigEntry(spacing, separation, salt, allowedBiomeCategory, blacklistedBiomes);
+    public static StructureConfigEntry of(int spacing, int separation, int salt, List<String> whitelist, List<String> blacklist) {
+        return new StructureConfigEntry(spacing, separation, salt, whitelist, blacklist);
     }
 
 }

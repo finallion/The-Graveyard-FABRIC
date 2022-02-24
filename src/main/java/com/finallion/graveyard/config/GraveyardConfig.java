@@ -17,7 +17,13 @@ public class GraveyardConfig implements Config {
              Welcome to The Graveyard Config!
              //
              // Structures:
-             // Disable structures to spawn, change their chance of spawning, change their separation and also change their salt.
+             // Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
+             // Configure spacing (Average distance between two structure placement attempts of this type in chunks).
+             // Configure salt (only if you know what you are doing!)
+             // Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             // Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             // Valid vanilla biome categories are: #taiga, #extreme_hills, #jungle, #mesa, #plains, #savanna, #icy, #beach, #forest, #desert, #swamp, #mushroom, #underground, #mountain.
+             // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
              //
              // Mob Spawning:
              // Disable, which and if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners), and set their spawning weight and group size.
@@ -25,8 +31,6 @@ public class GraveyardConfig implements Config {
              //
              // Biome whitelist and blacklist:
              // Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
-             // Valid vanilla biome categories are: taiga, extreme_hills, jungle, mesa, plains, savanna, icy, beach, forest, desert, swamp, mushroom, underground, mountain, nether.
-             // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
              // Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
              //
              // Graveyard Fog:
@@ -41,7 +45,7 @@ public class GraveyardConfig implements Config {
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, BiomeConfigEntry> biomeConfigEntries = new HashMap<>();
     public final Map<String, BiomeFogConfigEntry> biomeFogConfigEntries = new HashMap<>();
-    public final Map<String, UrnConfigEntry> urnConfigEntries = new HashMap<>();
+    public final Map<String, Boolean> booleanEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -131,19 +135,9 @@ public class GraveyardConfig implements Config {
         throw new NullPointerException("Tried BiomeFogConfigEntry with id: " + id + ", but it was null!");
     }
 
-    // urn config
-    public UrnConfigEntry getBoolean(Identifier id) {
-        for (Map.Entry<String, UrnConfigEntry> entry : urnConfigEntries.entrySet()) {
-            if (entry.getKey().equals(id.getPath())) {
-                return entry.getValue();
-            }
-        }
-        throw new NullPointerException("Tried BooleanConfigEntry with id: " + id + ", but it was null!");
-    }
-
-
     @Override
     public void save() {
+        booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
 
         for (StructureFeature<?> structure : getStructures()) {
             AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
@@ -151,12 +145,12 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("flower_forest", "lush_caves")));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());
@@ -168,8 +162,6 @@ public class GraveyardConfig implements Config {
         biomeFogConfigEntries.putIfAbsent("eroded_haunted_forest_fog", BiomeFogConfigEntry.of(0.35F, 93, 160));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
-
-        urnConfigEntries.putIfAbsent("urn_can_be_large", UrnConfigEntry.of(true));
 
         hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000));
         Config.super.save();
@@ -209,7 +201,7 @@ public class GraveyardConfig implements Config {
             if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether") || biome.getName().contains("mushroom")) {
                 continue;
             }
-            biomeNames.add(biome.toString().toLowerCase(Locale.ROOT));
+            biomeNames.add("#" + biome.getName());
         }
         return biomeNames;
 
