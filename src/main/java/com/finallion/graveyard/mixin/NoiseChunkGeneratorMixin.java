@@ -1,7 +1,9 @@
 package com.finallion.graveyard.mixin;
 
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.world.structures.AbstractGraveyardStructure;
 import com.finallion.graveyard.world.structures.LargeGraveyardStructure;
 import com.finallion.graveyard.world.structures.MediumGraveyardStructure;
 import com.finallion.graveyard.world.structures.SmallDesertGraveyardStructure;
@@ -35,16 +37,52 @@ public class NoiseChunkGeneratorMixin {
 
     private static Pool<SpawnSettings.SpawnEntry> getStructureSpawns(Biome biome, StructureAccessor accessor, SpawnGroup group, BlockPos pos){
         if (group == SpawnGroup.MONSTER) {
-            if (accessor.getStructureAt(pos, TGStructures.MEDIUM_GRAVEYARD_STRUCTURE).hasChildren()) {
-                return MediumGraveyardStructure.MONSTER_SPAWNS;
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_DESERT_GRAVE_STRUCTURE).hasChildren()) {
+                if (TheGraveyard.config.structureConfigEntries.get("small_desert_grave").canSpawnGraveyardMobs) {
+                    return AbstractGraveyardStructure.MONSTER_SPAWNS;
+                }
+                return SmallDesertGraveyardStructure.ILLAGER_SPAWNS;
             }
 
-            if (accessor.getStructureAt(pos, TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE).hasChildren()) {
-                return SmallDesertGraveyardStructure.MONSTER_SPAWNS;
+
+            if (accessor.getStructureAt(pos, TGStructures.LARGE_GRAVEYARD_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("large_graveyard").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
             }
 
-            if (accessor.getStructureAt(pos, TGStructures.LARGE_GRAVEYARD_STRUCTURE).hasChildren()) {
-                return LargeGraveyardStructure.MONSTER_SPAWNS;
+            if (accessor.getStructureAt(pos, TGStructures.MEDIUM_GRAVEYARD_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("medium_graveyard").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_GRAVEYARD_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("small_graveyard").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.MEMORIAL_TREE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("memorial_tree").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.HAUNTED_HOUSE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("haunted_house").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_GRAVE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("small_grave").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_SAVANNA_GRAVE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.SMALL_MOUNTAIN_GRAVE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
+            }
+
+            if (accessor.getStructureAt(pos, TGStructures.MUSHROOM_GRAVE_STRUCTURE).hasChildren() && TheGraveyard.config.structureConfigEntries.get("mushroom_grave").canSpawnGraveyardMobs) {
+                return AbstractGraveyardStructure.MONSTER_SPAWNS;
             }
         }
 

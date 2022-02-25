@@ -31,14 +31,14 @@ import java.util.Collections;
 import java.util.Optional;
 
 public class SmallDesertGraveyardStructure extends AbstractGraveyardStructure {
-    public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
+    public static final Pool<SpawnSettings.SpawnEntry> ILLAGER_SPAWNS = Pool.of(
             new SpawnSettings.SpawnEntry(EntityType.PILLAGER, 10, 1, 1),
             new SpawnSettings.SpawnEntry(EntityType.VINDICATOR, 1, 1, 1));
 
     public SmallDesertGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(32, 28, 598017285,
                         Arrays.asList("#" + Biome.Category.DESERT.getName()),
-                        Collections.emptyList()),
+                        Collections.emptyList(), Arrays.asList("#minecraft", "#graveyard"), false),
                 20, 598017285, SmallDesertGraveyardGenerator.STARTING_POOL, "small_desert_graveyard");
     }
 

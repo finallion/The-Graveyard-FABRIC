@@ -1,6 +1,7 @@
 package com.finallion.graveyard.world.structures;
 
 import com.finallion.graveyard.config.StructureConfigEntry;
+import com.finallion.graveyard.init.TGEntities;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.PoolStructurePiece;
@@ -10,10 +11,12 @@ import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.tag.FluidTags;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
@@ -28,6 +31,11 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
     private int seed;
     private final StructureConfigEntry config;
     private String structureName;
+
+    public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
+            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 35, 1, 1),
+            new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 45, 1, 3),
+            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 50, 1, 3));
 
 
     public AbstractGraveyardStructure(Codec<StructurePoolFeatureConfig> codec, StructureConfigEntry config, int size, int seed, StructurePool pool, String name) {

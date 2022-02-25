@@ -30,14 +30,11 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class MediumGraveyardStructure extends AbstractGraveyardStructure {
-    public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
-            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 10, 1, 1),
-            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 10, 1, 3));
 
     public MediumGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(18, 16, 1690192399,
                         Arrays.asList("#" + Biome.Category.FOREST.getName()),
-                        Arrays.asList("minecraft:dark_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "graveyard:haunted_lakes", "graveyard:haunted_forest")), // blacklist birch and dark forest
+                        Arrays.asList("minecraft:dark_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "graveyard:haunted_lakes", "graveyard:haunted_forest"), Arrays.asList("#minecraft", "#graveyard"), true), // blacklist birch and dark forest
                 30, 1690192399, MediumGraveyardGenerator.STARTING_POOL, "medium_graveyard");
     }
 

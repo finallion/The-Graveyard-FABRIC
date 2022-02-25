@@ -15,28 +15,29 @@ import java.util.*;
 public class GraveyardConfig implements Config {
     @Comment("""
              Welcome to The Graveyard Config!
-             //
-             // Structures:
-             // Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
-             // Configure spacing (Average distance between two structure placement attempts of this type in chunks).
-             // Configure salt (only if you know what you are doing!)
-             // Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             // Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             // Valid vanilla biome categories are: #taiga, #extreme_hills, #jungle, #mesa, #plains, #savanna, #icy, #beach, #forest, #desert, #swamp, #mushroom, #underground, #mountain.
-             // A full list of all the biomes can be found here https://minecraft.fandom.com/wiki/Biome#Biome_IDs.
-             //
-             // Mob Spawning:
-             // Disable, which and if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners), and set their spawning weight and group size.
-             // Disable, if hordes can spawn in the world and set their spawning chance and size.
-             //
-             // Biome whitelist and blacklist:
-             // Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
-             // Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
-             //
-             // Graveyard Fog:
-             // Turn the graveyard fog particles off and set the chance of spawning them (higher numbers = lower chance of spawning).
-             // Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
-             //
+             
+             Structures:
+             Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
+             Configure spacing (Average distance between two structure placement attempts of this type in chunks).
+             Configure salt (only if you know what you are doing!)
+             Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             Configure mod whitelist: use "#modid" to whitelist the biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #terralith, #byg, #bop).
+             Valid vanilla biome categories are: #taiga, #extreme_hills, #jungle, #mesa, #plains, #savanna, #icy, #beach, #forest, #desert, #swamp, #mushroom, #underground, #mountain.
+             A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
+             
+             Mob Spawning:
+             Disable, which and if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners), and set their spawning weight and group size.
+             Disable, if hordes can spawn in the world and set their spawning chance and size.
+             
+             Biome whitelist and blacklist:
+             Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
+             Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
+             
+             Graveyard Fog:
+             Turn the graveyard fog particles off and set the chance of spawning them (higher numbers = lower chance of spawning).
+             Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
+             
             """)
 
     public final Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();

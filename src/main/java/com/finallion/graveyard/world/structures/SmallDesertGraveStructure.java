@@ -31,7 +31,7 @@ public class SmallDesertGraveStructure extends AbstractGraveyardStructure {
     public SmallDesertGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(20, 16, 681236914,
                         Arrays.asList("#" + Biome.Category.DESERT.getName()),
-                        Collections.emptyList()),
+                        Collections.emptyList(), Arrays.asList("#minecraft", "#graveyard"), false),
                 4, 681236914, SmallDesertGraveGenerator.STARTING_POOL, "small_desert_grave");
     }
 

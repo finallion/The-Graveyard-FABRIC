@@ -31,7 +31,7 @@ public class SmallGraveyardStructure extends AbstractGraveyardStructure {
     public SmallGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(20, 18, 240451934,
                         Arrays.asList("#" + Biome.Category.PLAINS.getName()),
-                        Collections.emptyList()),
+                        Collections.emptyList(), Arrays.asList("#minecraft", "#graveyard"), false),
                 15, 240451934, SmallGraveyardGenerator.STARTING_POOL, "small_graveyard");
     }
 
