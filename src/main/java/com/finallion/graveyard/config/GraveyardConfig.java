@@ -26,17 +26,20 @@ public class GraveyardConfig implements Config {
              Valid vanilla biome categories are: #taiga, #extreme_hills, #jungle, #mesa, #plains, #savanna, #icy, #beach, #forest, #desert, #swamp, #mushroom, #underground, #mountain.
              A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
              
-             Mob Spawning:
-             Disable, which and if graveyard mobs spawn in the world (this does not affect the spawning in structures/of spawners), and set their spawning weight and group size.
-             Disable, if hordes can spawn in the world and set their spawning chance and size.
+             Mobs:
+             Configure spawning weight and group size of the spawn.
+             Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect.
+             Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
+             Configure mod whitelist: use "#modid" to whitelist the biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #terralith, #byg, #bop).
              
-             Biome whitelist and blacklist:
-             Set in which biomes or in which biome categories the graveyard mobs and structures can spawn.
-             Modded Biomes: You can find the biome name for modded biomes in game by pressing F3.
+             Biomes:
+             Configure fog density and fog height.
              
-             Graveyard Fog:
-             Turn the graveyard fog particles off and set the chance of spawning them (higher numbers = lower chance of spawning).
-             Graveyard fog particles spawn in graveyards and add an atmospheric and spooky element while exploring.
+             Additional:
+             Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
+             Configure if hordes of graveyard mobs can spawn and set their size and frequency.
+             Configure if urns have a double chest inventory.
              
             """)
 
@@ -146,12 +149,12 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves")));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard")));
 
         biomeConfigEntries.putIfAbsent("haunted_forest", BiomeConfigEntry.of());
         biomeConfigEntries.putIfAbsent("haunted_lakes", BiomeConfigEntry.of());

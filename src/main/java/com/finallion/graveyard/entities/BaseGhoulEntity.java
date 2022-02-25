@@ -220,17 +220,20 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return PlayState.CONTINUE;
     }
 
-
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
-
+    private <E extends IAnimatable> PlayState predicate3(AnimationEvent<E> event) {
         if (getAnimationState() == 6) {
             event.getController().setAnimation(SPAWN_ANIMATION);
             spawned = true;
 
             return PlayState.CONTINUE;
         }
+        return PlayState.CONTINUE;
+    }
+
+
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        float limbSwingAmount = event.getLimbSwingAmount();
+        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
 
         if (isDead()) {
             event.getController().setAnimation(DEATH_ANIMATION);
@@ -265,8 +268,9 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller", 3, this::predicate));
         data.addAnimationController(new AnimationController(this, "controller2", 3, this::predicate2));
+        data.addAnimationController(new AnimationController(this, "controller3", 0, this::predicate3));
     }
 
     @Override

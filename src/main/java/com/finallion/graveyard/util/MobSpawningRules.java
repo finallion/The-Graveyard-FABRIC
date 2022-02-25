@@ -29,7 +29,8 @@ import java.util.Locale;
 public class MobSpawningRules {
 
     public static void addSpawnEntries() {
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("ghoul").modWhitelist, context))
                  .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("ghoul").whitelist, TheGraveyard.config.mobConfigEntries.get("ghoul").blacklist, context))
                  .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("ghoul").enabled)),
                 SpawnGroup.MONSTER, TGEntities.GHOUL,
@@ -37,7 +38,8 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("ghoul").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("ghoul").maxGroup);
 
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("acolyte").modWhitelist, context))
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("acolyte").whitelist, TheGraveyard.config.mobConfigEntries.get("acolyte").blacklist, context))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("acolyte").enabled)),
                 SpawnGroup.MONSTER, TGEntities.ACOLYTE,
@@ -45,7 +47,8 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("acolyte").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("acolyte").maxGroup);
 
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("revenant").modWhitelist, context))
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("revenant").whitelist, TheGraveyard.config.mobConfigEntries.get("revenant").blacklist, context))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("revenant").enabled)),
                 SpawnGroup.MONSTER, TGEntities.REVENANT,
@@ -53,7 +56,8 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("revenant").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("revenant").maxGroup);
 
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("reaper").modWhitelist, context))
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("reaper").whitelist, TheGraveyard.config.mobConfigEntries.get("reaper").blacklist, context))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("reaper").enabled)),
                 SpawnGroup.MONSTER, TGEntities.REAPER,
@@ -61,7 +65,8 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("reaper").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("reaper").maxGroup);
 
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("nightmare").modWhitelist, context))
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("nightmare").whitelist, TheGraveyard.config.mobConfigEntries.get("nightmare").blacklist, context))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("nightmare").enabled)),
                 SpawnGroup.MONSTER, TGEntities.NIGHTMARE,
@@ -69,7 +74,8 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("nightmare").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("nightmare").maxGroup);
 
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld()
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").modWhitelist, context))
                         .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").whitelist, TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").blacklist, context))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").enabled)),
                 SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
@@ -125,6 +131,12 @@ public class MobSpawningRules {
         }
 
         return false;
+    }
+
+    private static boolean parseWhitelistedMods(List<String> whitelist, BiomeSelectionContext biomeContext) {
+        String modid = biomeContext.getBiomeKey().getValue().getNamespace();
+        return whitelist.contains("#" + modid);
+
     }
 
 }
