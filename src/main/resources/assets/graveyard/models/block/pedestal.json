@@ -3,7 +3,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "graveyard:block/pedestal",
-		"particle": "graveyard:block/pedestal"
+		"particle": "block/cobbled_deepslate"
 	},
 	"elements": [
 		{
@@ -54,5 +54,19 @@
 				"down": {"uv": [3.5, 6.5, 2, 8], "texture": "#0"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"thirdperson_lefthand": {
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"scale": [0.35, 0.35, 0.35]
+		},
+		"gui": {
+			"scale": [0.9, 0.9, 0.9]
+		}
+	}
 }

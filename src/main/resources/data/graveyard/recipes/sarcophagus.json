@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "###",
-    "# #",
+    "#Z#",
     "###"
   ],
   "key": {
     "#": {
-      "item": "minecraft:deepslate_tiles"
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "Z": {
+      "item": "graveyard:dark_iron_ingot"
     }
   },
   "result": {

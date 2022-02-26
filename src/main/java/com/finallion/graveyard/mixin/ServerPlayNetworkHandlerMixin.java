@@ -1,5 +1,6 @@
 package com.finallion.graveyard.mixin;
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blocks.GravestoneBlock;
 import net.minecraft.block.Block;
@@ -26,10 +27,6 @@ import java.util.List;
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
 
-    @Final
-    @Shadow
-    static final Logger LOGGER = LogManager.getLogger();
-
     @Shadow
     public ServerPlayerEntity player;
 
@@ -47,7 +44,7 @@ public class ServerPlayNetworkHandlerMixin {
                 GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity) serverWorld.getBlockEntity(blockPos);
 
                 if (!signBlockEntity.isEditable() || !this.player.getUuid().equals(signBlockEntity.getEditor())) {
-                    LOGGER.warn("Player {} just tried to change non-editable sign", this.player.getName().getString());
+                    TheGraveyard.LOGGER.warn("Player {} just tried to change non-editable sign", this.player.getName().getString());
                     return;
                 }
 

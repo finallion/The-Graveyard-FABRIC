@@ -31,7 +31,7 @@ public class SmallSavannaGraveStructure extends AbstractGraveyardStructure {
     public SmallSavannaGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 8, 709787761,
                         Arrays.asList("#" + Biome.Category.MESA.getName(), "#" + Biome.Category.SAVANNA.getName()),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#graveyard"), false),
+                        Collections.emptyList(), Arrays.asList("#minecraft"), false),
                 4, 709787761, SmallSavannaGraveGenerator.STARTING_POOL, "small_savanna_grave");
     }
 

@@ -16,8 +16,7 @@
     "WanderingTraderEntityMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
-    "WorldRendererMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

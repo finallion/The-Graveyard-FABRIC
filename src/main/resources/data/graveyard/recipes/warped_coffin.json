@@ -1,16 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "## ",
-    "## "
+    "###",
+    "#Z#",
+    "###"
   ],
   "key": {
     "#": {
+      "item": "minecraft:warped_planks"
+    },
+    "Z": {
       "item": "graveyard:dark_iron_ingot"
     }
   },
   "result": {
-    "item": "graveyard:dark_iron_trapdoor",
-    "count": 2
+    "item": "graveyard:warped_coffin"
   }
 }

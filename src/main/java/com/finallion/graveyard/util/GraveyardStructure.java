@@ -138,6 +138,12 @@ public final class GraveyardStructure {
     }
 
     private static boolean parseWhitelistedMods(List<String> whitelist, BiomeInjection.BiomeInjectionHelper biomeContext) {
+        if (whitelist == null) {
+            TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category/biome is null. Try to delete the file and restart the game.");
+            return false;
+        }
+
+
         String modid = biomeContext.getBiomeKey().getValue().getNamespace();
         return whitelist.contains("#" + modid);
 

@@ -30,7 +30,7 @@ public class MemorialTreeStructure extends AbstractGraveyardStructure {
     public MemorialTreeStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(14, 12, 529239621,
                         Arrays.asList("#" + Biome.Category.FOREST.getName()),
-                        Arrays.asList("minecraft:forest", "minecraft:flower_forest", "minecraft:dark_forest", "minecraft:windswept_forest", "graveyard:haunted_lakes", "graveyard:haunted_forest", "graveyard:eroded_haunted_forest"), Arrays.asList("#minecraft", "#graveyard"), false), // only allow in birch forests
+                        Arrays.asList("minecraft:forest", "minecraft:flower_forest", "minecraft:dark_forest", "minecraft:windswept_forest"), Arrays.asList("#minecraft"), false), // only allow in birch forests
                 10, 529239621, MemorialTreeGenerator.STARTING_POOL, "memorial_tree");
     }
 
