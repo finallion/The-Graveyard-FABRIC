@@ -9,6 +9,7 @@ import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 
 public class TGProcessors {
 
@@ -18,14 +19,9 @@ public class TGProcessors {
 
     public static StructureProcessorType<RemoveWaterloggedProcessor> REMOVE_WATERLOGGED = () -> RemoveWaterloggedProcessor.CODEC;
 
-    //public static final StructureProcessorType<RemoveWaterloggedProcessor> REMOVE_WATERLOGGED = StructureProcessorType.register("remove_waterlogged_processor_type", RemoveWaterloggedProcessor.CODEC);
-    public static final StructureProcessorList WATERLOGGED_LIST = TGProcessors.register("waterlogged_processor_list", ImmutableList.of(new RemoveWaterloggedProcessor()));
-
-    public static StructureProcessorList register(String id, ImmutableList<StructureProcessor> processorList) {
-        Identifier identifier = new Identifier(TheGraveyard.MOD_ID, id);
-        StructureProcessorList structureProcessorList = new StructureProcessorList(processorList);
-        return BuiltinRegistries.add(BuiltinRegistries.STRUCTURE_PROCESSOR_LIST, identifier, structureProcessorList);
-    }
+    public static final RegistryEntry<StructureProcessorList> WATERLOGGED_LIST = BuiltinRegistries.add(BuiltinRegistries.STRUCTURE_PROCESSOR_LIST,
+            new Identifier(TheGraveyard.MOD_ID, "waterlogged_processor_list"),
+            new StructureProcessorList(ImmutableList.of(new RemoveWaterloggedProcessor())));
 
     public static void registerProcessors() {
         Registry.register(Registry.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "remove_waterlogged_processor"), REMOVE_WATERLOGGED);

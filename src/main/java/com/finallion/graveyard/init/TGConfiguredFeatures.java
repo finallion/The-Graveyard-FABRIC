@@ -5,38 +5,42 @@ import com.finallion.graveyard.world.features.surfaceFeatures.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.CountConfig;
-import net.minecraft.world.gen.decorator.*;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.placementmodifier.*;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 
 import java.util.List;
 
 public class TGConfiguredFeatures {
 
-    private static final Feature<DefaultFeatureConfig> GRAVESTONE_FEATURE = new GraveFeature(DefaultFeatureConfig.CODEC);
-
-    // configured features registry keys
-    public static final RegistryKey<ConfiguredFeature<?, ?>> GRAVESTONE_FEATURE_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"));
-
+    // features
+    private static final Feature<DefaultFeatureConfig> GRAVESTONE_FEATURE = registerFeature("gravestone_feature", new GraveFeature(DefaultFeatureConfig.CODEC));
 
     // configured features
-    public static final ConfiguredFeature<?, ?> GRAVESTONE_CONFIG = GRAVESTONE_FEATURE.configure(new DefaultFeatureConfig());
+    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> GRAVESTONE_CONFIG_FEATURE = registerConfiguredFeature("gravestone_feature", GRAVESTONE_FEATURE, FeatureConfig.DEFAULT);
 
     // placed features
-    public static PlacedFeature GRAVESTONE_PLACED_FEATURE = GRAVESTONE_CONFIG.withPlacement(RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(1));
+    public static final RegistryEntry<PlacedFeature> GRAVESTONE_PLACED_FEATURE = registerPlacedFeature("gravestone_feature", GRAVESTONE_CONFIG_FEATURE, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(1));
 
-
-    public static void registerFeatures() {
-        Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_feature"), GRAVESTONE_FEATURE);
-    }
-
-    public static void registerConfiguredFeatures() {
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, GRAVESTONE_FEATURE_KEY.getValue(), GRAVESTONE_CONFIG);
-
-        Registry.register(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature"), GRAVESTONE_PLACED_FEATURE);
+    public static void init() {
 
     }
+
+    public static RegistryEntry<PlacedFeature> registerPlacedFeature(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
+        return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
+    }
+
+    public static <FC extends FeatureConfig, F extends Feature<FC>> RegistryEntry<ConfiguredFeature<FC, ?>> registerConfiguredFeature(String id, F feature, FC config) {
+        return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_FEATURE, id, new ConfiguredFeature(feature, config));
+    }
+
+    private static <C extends FeatureConfig, F extends Feature<C>> F registerFeature(String id, F feature) {
+        return Registry.register(Registry.FEATURE, new Identifier(TheGraveyard.MOD_ID, id), feature);
+    }
+
+
 }

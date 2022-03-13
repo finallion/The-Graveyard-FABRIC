@@ -2,32 +2,20 @@ package com.finallion.graveyard.world.structures;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
-import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.EntityType;
-import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.PostPlacementProcessor;
-import net.minecraft.structure.StructureGeneratorFactory;
-import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.Pool;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.JigsawFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public class MediumGraveyardStructure extends AbstractGraveyardStructure {
 
@@ -40,11 +28,13 @@ public class MediumGraveyardStructure extends AbstractGraveyardStructure {
 
     @Override
     public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGStructures.MEDIUM_GRAVEYARD_STRUCTURE_CONFIG;
+        return null;
+        //return TGConfiguredStructureFeatures.MEDIUM_GRAVEYARD_STRUCTURE_CONFIG.value();
     }
 
+
     public static class MediumGraveyardGenerator {
-        public static final StructurePool STARTING_POOL;
+        public static final RegistryEntry<StructurePool> STARTING_POOL;
 
         public MediumGraveyardGenerator() {
         }
@@ -59,5 +49,7 @@ public class MediumGraveyardStructure extends AbstractGraveyardStructure {
             ), StructurePool.Projection.RIGID));
         }
     }
+
+
 
 }

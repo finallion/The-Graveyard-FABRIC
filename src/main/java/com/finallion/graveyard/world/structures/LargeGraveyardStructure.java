@@ -2,33 +2,21 @@ package com.finallion.graveyard.world.structures;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
-import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGProcessors;
-import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.EntityType;
-import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.PostPlacementProcessor;
-import net.minecraft.structure.StructureGeneratorFactory;
-import net.minecraft.structure.StructurePiecesGenerator;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.Pool;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.JigsawFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public class LargeGraveyardStructure extends AbstractGraveyardStructure {
 
@@ -36,20 +24,20 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
         super(codec, new StructureConfigEntry(12, 10, 304812394,
                         Arrays.asList("#" + Biome.Category.FOREST.getName(), "#" + Biome.Category.TAIGA.getName()),
                         Arrays.asList("minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:windswept_forest", "graveyard_biomes:eroded_haunted_forest", "graveyard_biomes:haunted_lakes"), Arrays.asList("#minecraft", "#graveyard_biomes"), true), // only allow in dark forest and taigas
-                45, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
+                40, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
     }
 
     @Override
     public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGStructures.LARGE_GRAVEYARD_STRUCTURE_CONFIG;
+        return TGConfiguredStructureFeatures.LARGE_GRAVEYARD_STRUCTURE_CONFIG.value();
     }
 
     public static class LargeGraveyardGenerator {
-        public static final StructurePool STARTING_POOL;
-        public static final StructurePool BRANCH_POOL;
-        public static final StructurePool FEATURE_POOL;
-        public static final StructurePool CRYPT_POOL;
-        public static final StructurePool STREET_POOL;
+        public static final RegistryEntry<StructurePool> STARTING_POOL;
+        public static final RegistryEntry<StructurePool> BRANCH_POOL;
+        public static final RegistryEntry<StructurePool> FEATURE_POOL;
+        public static final RegistryEntry<StructurePool> CRYPT_POOL;
+        public static final RegistryEntry<StructurePool> STREET_POOL;
 
 
         public LargeGraveyardGenerator() {
@@ -59,8 +47,8 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
         }
 
         static {
-            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/start_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/graveyard_entrance"), 1)), StructurePool.Projection.RIGID));
-            BRANCH_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/branch_pool"), new Identifier("empty"), ImmutableList.of(
+            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/start_pool"), new Identifier("minecraft:empty"), ImmutableList.of(Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/graveyard_entrance"), 1)), StructurePool.Projection.RIGID));
+            BRANCH_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/branch_pool"), new Identifier("minecraft:empty"), ImmutableList.of(
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_large_grave_01"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_spider_den"), 6),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_lost_grave"), 10),

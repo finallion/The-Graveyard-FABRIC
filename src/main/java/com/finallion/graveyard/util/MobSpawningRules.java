@@ -5,28 +5,15 @@ import com.finallion.graveyard.init.TGEntities;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
-import net.fabricmc.fabric.impl.biome.NetherBiomeData;
-import net.fabricmc.fabric.impl.biome.OverworldBiomeData;
-import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
-import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.BuiltinBiomes;
-import net.minecraft.world.biome.OverworldBiomeCreator;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.tag.BiomeTags;
+
 
 import java.util.List;
 import java.util.Locale;
 
 public class MobSpawningRules {
+
 
     public static void addSpawnEntries() {
         BiomeModifications.addSpawn(BiomeSelectors.all()
@@ -86,7 +73,7 @@ public class MobSpawningRules {
 
     private static boolean parseBiomes(List<String> whitelist, List<String> blacklist, BiomeSelectionContext biomeContext) {
         String biomeIdentifier = biomeContext.getBiomeKey().getValue().toString();
-        String biomeCategory = biomeContext.getBiome().getCategory().getName();
+        String biomeCategory = biomeContext.getBiome().getCategory(biomeContext.getBiomeRegistryEntry()).getName();
 
         if (whitelist == null) {
             TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category/biome is null. Try to delete the file and restart the game.");

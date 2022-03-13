@@ -18,9 +18,9 @@ public class BiomeModification {
     public static final RegistryKey<Biome> ANCIENT_DEAD_CORAL_REEF_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("graveyard_biomes:ancient_dead_coral_reef"));
 
     public static void init() {
-        BiomeModifications.addFeature(BiomeSelectors.includeByKey(ERODED_HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature")));
-        BiomeModifications.addFeature(BiomeSelectors.includeByKey(HAUNTED_LAKES_KEY), GenerationStep.Feature.VEGETAL_DECORATION, RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature")));
-        BiomeModifications.addFeature(BiomeSelectors.includeByKey(HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, RegistryKey.of(Registry.PLACED_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, "gravestone_placed_feature")));
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(ERODED_HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE.getKey().get());
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(HAUNTED_LAKES_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE.getKey().get());
+        BiomeModifications.addFeature(BiomeSelectors.includeByKey(HAUNTED_FOREST_KEY), GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.GRAVESTONE_PLACED_FEATURE.getKey().get());
     }
 
 

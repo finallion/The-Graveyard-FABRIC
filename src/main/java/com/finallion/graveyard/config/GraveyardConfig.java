@@ -1,11 +1,14 @@
 package com.finallion.graveyard.config;
 
-import com.finallion.graveyard.init.TGStructures;
+import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
+import com.finallion.graveyard.init.TGStructureFeatures;
 import com.finallion.graveyard.world.structures.AbstractGraveyardStructure;
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -129,29 +132,20 @@ public class GraveyardConfig implements Config {
     // config gets called earlier than the structure registry
     private List<StructureFeature<?>> getStructures() {
         List<StructureFeature<?>> structures = new ArrayList<>();
-        structures.add(TGStructures.MEDIUM_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructures.SMALL_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructures.LARGE_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructures.MUSHROOM_GRAVE_STRUCTURE);
-        structures.add(TGStructures.HAUNTED_HOUSE_STRUCTURE);
-        structures.add(TGStructures.MEMORIAL_TREE_STRUCTURE);
-        structures.add(TGStructures.SMALL_DESERT_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructures.SMALL_GRAVE_STRUCTURE);
-        structures.add(TGStructures.SMALL_DESERT_GRAVE_STRUCTURE);
-        structures.add(TGStructures.SMALL_SAVANNA_GRAVE_STRUCTURE);
-        structures.add(TGStructures.SMALL_MOUNTAIN_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.MEDIUM_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructureFeatures.LARGE_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructureFeatures.MUSHROOM_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.HAUNTED_HOUSE_STRUCTURE);
+        structures.add(TGStructureFeatures.MEMORIAL_TREE_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_DESERT_GRAVEYARD_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_DESERT_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_SAVANNA_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.SMALL_MOUNTAIN_GRAVE_STRUCTURE);
         return structures;
     }
 
-    private List<String> getAllOverworldBiomes() {
-        Set<Biome> biomes = MultiNoiseBiomeSource.Preset.OVERWORLD.getBiomeSource(BuiltinRegistries.BIOME).getBiomes();
-        List<String> biomeNames = new ArrayList<>();
-        for (Biome biome : biomes) {
-            biomeNames.add(biome.toString());
-        }
-        return biomeNames;
-
-    }
 
     private List<String> getAllOverworldBiomeCategories() {
         Biome.Category[] biomeCategory = Biome.Category.values();

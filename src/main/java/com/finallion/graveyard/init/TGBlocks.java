@@ -9,7 +9,6 @@ import com.finallion.graveyard.blockentities.UrnBlockEntity;
 import com.finallion.graveyard.blocks.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.particle.ParticleTypes;
@@ -148,10 +147,10 @@ public class TGBlocks {
     public static final Block MOSSY_COBBLESTONE_GRAVESTONE = new GravestoneBlock(MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE);
     public static final Block DEEPSLATE_GRAVESTONE = new GravestoneBlock(DEEPSLATE_GRAVESTONE_TEXTURE);
 
-    public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-    public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-    public static final Block ROTTEN_SPRUCE_SLAB = new SlabBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-    public static final Block ROTTEN_SPRUCE_LOG = new PillarBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+    //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+    //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+    //public static final Block ROTTEN_SPRUCE_SLAB = new SlabBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+    //public static final Block ROTTEN_SPRUCE_LOG = new PillarBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
 
     public static void registerBlocks() {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
