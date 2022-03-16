@@ -163,11 +163,14 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
                 this.leftArmStomp.visible = true;
                 this.arms.visible = false;
                 this.leftArm.visible = false;
-                CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, false, this.handSwingProgress, h);
-            } else {
-                CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, false, this.handSwingProgress, h);
             }
+            CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, false, this.handSwingProgress, h);
         } else if (state == CorruptedIllager.State.UNDEAD_ATTACKING) {
+            if (illagerEntity.isModelDamaged()) {
+                this.shortLeftArm.visible = true;
+                this.leftArmStomp.visible = true;
+                this.leftArm.visible = false;
+            }
             CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, true, this.handSwingProgress, h);
         }
 

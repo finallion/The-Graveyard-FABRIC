@@ -76,7 +76,7 @@ public class CorruptedVindicator extends CorruptedIllager {
     @Override
     public CorruptedIllager.State getState() {
         if (this.isAttacking()) {
-            return CorruptedIllager.State.ATTACKING;
+            return State.UNDEAD_ATTACKING;
         } else {
             return State.UNDEAD;
         }

@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class CorruptedIllager extends GraveyardHordeEntity {
+public abstract class CorruptedIllager extends GraveyardHordeEntity {
     private AttributeContainer attributeContainer;
 
     public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world) {

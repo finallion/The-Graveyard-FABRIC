@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entities.horde;
 
+import com.finallion.graveyard.entities.CorruptedIllager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
@@ -131,8 +132,13 @@ public class GraveyardHordeEntity extends HostileEntity {
 
         public PatrolGoal(T entity, double leaderSpeed, double followSpeed) {
             this.entity = entity;
-            this.leaderSpeed = leaderSpeed;
-            this.followSpeed = followSpeed;
+            if (entity instanceof CorruptedIllager) {
+                this.leaderSpeed = leaderSpeed - 0.5;
+                this.followSpeed = followSpeed - 0.5;
+            } else {
+                this.leaderSpeed = leaderSpeed;
+                this.followSpeed = followSpeed;
+            }
             this.nextPatrolSearchTime = -1L;
             this.setControls(EnumSet.of(Control.MOVE));
         }

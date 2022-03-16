@@ -74,16 +74,17 @@ public class GraveyardHordeSpawner implements Spawner {
                                         int n = 0;
                                         // how many entities will spawn
                                         int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).size;
+                                        boolean illagerSpawn = random.nextBoolean();
 
                                         for (int p = 0; p < o; ++p) {
                                             ++n;
                                             mutable.setY(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
                                             if (p == 0) {
-                                                if (!this.spawnHordeEntity(world, mutable, random, true)) {
+                                                if (!this.spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
                                                     break;
                                                 }
                                             } else {
-                                                this.spawnHordeEntity(world, mutable, random, false);
+                                                this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
                                             }
 
                                             mutable.setX(mutable.getX() + random.nextInt(5) - random.nextInt(5));
@@ -103,21 +104,31 @@ public class GraveyardHordeSpawner implements Spawner {
         }
     }
 
-    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain) {
+    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain, boolean illagerSpawn) {
         BlockState blockState = world.getBlockState(pos);
+        BlockState downState = world.getBlockState(pos.down());
         if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT)) {
             return false;
-        } else if (blockState.getFluidState().isIn(FluidTags.WATER)) {
+        } else if (blockState.getFluidState().isIn(FluidTags.WATER) || downState.getFluidState().isIn(FluidTags.WATER)) {
             return false;
         } else if (!AnimatedGraveyardEntity.canSpawn(TGEntities.GHOUL, world, SpawnReason.PATROL, pos, random)) {
             return false;
         } else {
             GraveyardHordeEntity hordeEntity;
 
-            if (random.nextBoolean()) {
-                hordeEntity = TGEntities.GHOUL.create(world);
+            if (!illagerSpawn) {
+                if (random.nextBoolean()) {
+                    hordeEntity = TGEntities.GHOUL.create(world);
+                } else {
+                    hordeEntity = TGEntities.REVENANT.create(world);
+                }
             } else {
-                hordeEntity = TGEntities.REVENANT.create(world);
+                int rand = random.nextInt(5);
+                switch (rand) {
+                    case 0, 1 -> hordeEntity = TGEntities.CORRUPTED_PILLAGER.create(world);
+                    case 2, 3 -> hordeEntity = TGEntities.CORRUPTED_VINDICATOR.create(world);
+                    default -> hordeEntity = TGEntities.ACOLYTE.create(world);
+                }
             }
 
             if (hordeEntity != null) {

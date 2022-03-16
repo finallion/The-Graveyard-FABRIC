@@ -39,7 +39,7 @@ public class HauntedHouseStructure extends AbstractGraveyardStructure {
 
     @Override
     public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return null;
+        return TGConfiguredStructureFeatures.HAUNTED_HOUSE_STRUCTURE_CONFIG.value();
     }
 
 
