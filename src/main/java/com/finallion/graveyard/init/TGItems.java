@@ -107,6 +107,8 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "reaper_spawn_egg"), new SpawnEggItem(TGEntities.REAPER, 1381653, 7456477, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "revenant_spawn_egg"), new SpawnEggItem(TGEntities.REVENANT, 12965589, 9765908, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "nightmare_spawn_egg"), new SpawnEggItem(TGEntities.NIGHTMARE, 592137, 4718849, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_vindicator_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_VINDICATOR, 7567737, 2380632, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_pillager_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_PILLAGER, 7567737, 4924973, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
 

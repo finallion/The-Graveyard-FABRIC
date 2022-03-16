@@ -113,6 +113,10 @@
   "item.graveyard.revenant_spawn_egg": "Яйцо призыва выходца",
   "entity.graveyard.nightmare": "Кошмар",
   "item.graveyard.nightmare_spawn_egg": "Яйцо призыва кошмара",
+  "entity.graveyard.corrupted_pillager": "Corrupted Pillager",
+  "item.graveyard.corrupted_pillager_spawn_egg": "Corrupted Pillager Spawn Egg",
+  "entity.graveyard.corrupted_vindicator": "Corrupted Vindicator",
+  "item.graveyard.corrupted_vindicator_spawn_egg": "Corrupted Vindicator Spawn Egg",
 
   "biome.graveyard.haunted_forest": "Лес с привидениями",
   "biome.graveyard.haunted_lakes": "Озера с привидениями",

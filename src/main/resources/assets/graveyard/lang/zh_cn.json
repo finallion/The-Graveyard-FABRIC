@@ -141,6 +141,10 @@
   "item.graveyard.revenant_spawn_egg": "Revenant Spawn Egg",
   "entity.graveyard.nightmare": "Nightmare",
   "item.graveyard.nightmare_spawn_egg": "Nightmare Spawn Egg",
+  "entity.graveyard.corrupted_pillager": "Corrupted Pillager",
+  "item.graveyard.corrupted_pillager_spawn_egg": "Corrupted Pillager Spawn Egg",
+  "entity.graveyard.corrupted_vindicator": "Corrupted Vindicator",
+  "item.graveyard.corrupted_vindicator_spawn_egg": "Corrupted Vindicator Spawn Egg",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",

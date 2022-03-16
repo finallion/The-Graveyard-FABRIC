@@ -24,7 +24,21 @@ public class TGEntities {
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(AcolyteEntity::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.9F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AcolyteEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
+            .build();
+
+    public static final EntityType<CorruptedVindicator> CORRUPTED_VINDICATOR = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(CorruptedVindicator::new)
+            .dimensions(EntityDimensions.changing(0.6F, 1.9F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
+            .build();
+
+    public static final EntityType<CorruptedPillager> CORRUPTED_PILLAGER = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(CorruptedPillager::new)
+            .dimensions(EntityDimensions.changing(0.6F, 1.9F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
             .build();
 
     public static final EntityType<SkeletonCreeper> SKELETON_CREEPER = FabricEntityTypeBuilder.createMob()
@@ -66,6 +80,8 @@ public class TGEntities {
     public static void registerEntities() {
         register("skeleton_creeper", SKELETON_CREEPER);
         register("acolyte", ACOLYTE);
+        register("corrupted_vindicator", CORRUPTED_VINDICATOR);
+        register("corrupted_pillager", CORRUPTED_PILLAGER);
         register("ghoul", GHOUL);
         register("reaper", REAPER);
         register("revenant", REVENANT);

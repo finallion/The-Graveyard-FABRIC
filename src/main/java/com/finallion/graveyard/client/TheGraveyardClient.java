@@ -5,6 +5,7 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
+import com.finallion.graveyard.entities.models.CorruptedIllagerModel;
 import com.finallion.graveyard.entities.renders.*;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
@@ -17,6 +18,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
@@ -25,14 +27,13 @@ import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.example.client.renderer.tile.BotariumTileRenderer;
 
 import java.util.function.Consumer;
 
@@ -40,6 +41,7 @@ import java.util.function.Consumer;
 @Environment(EnvType.CLIENT)
 public class TheGraveyardClient implements ClientModInitializer {
     private static final RenderLayer CUTOUT_MIPPED = RenderLayer.getCutoutMipped();
+    public static final EntityModelLayer CORRUPTED_ILLAGER_MODEL_LAYER = new EntityModelLayer(new Identifier(TheGraveyard.MOD_ID, "corrupted_illager"), "main");
 
     @Override
     public void onInitializeClient() {
@@ -88,6 +90,10 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.INSTANCE.register(TGEntities.REAPER, ReaperRenderer::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.REVENANT, RevenantRenderer::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.NIGHTMARE, NightmareRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_PILLAGER, CorruptedPillagerRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
+
+        EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 
         // register block bench model
         ModelLoadingRegistry.INSTANCE.registerModelProvider((ResourceManager manager, Consumer<Identifier> out) -> {

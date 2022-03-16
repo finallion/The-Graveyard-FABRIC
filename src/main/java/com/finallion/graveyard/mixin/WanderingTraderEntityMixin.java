@@ -25,6 +25,6 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
     @Inject(method = "initGoals", at = @At(value = "TAIL"))
     private void initCustomGoal(CallbackInfo ci) {
         this.goalSelector.add(1, new FleeEntityGoal<>(this, GraveyardHordeEntity.class, 10.0F, 0.5D, 0.5D));
-        this.goalSelector.add(1, new FleeEntityGoal<>(this, AcolyteEntity.class, 10.0F, 0.5D, 0.5D));
+        //this.goalSelector.add(1, new FleeEntityGoal<>(this, AcolyteEntity.class, 10.0F, 0.5D, 0.5D));
     }
 }
