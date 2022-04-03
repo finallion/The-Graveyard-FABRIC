@@ -19,6 +19,9 @@ public class TGConfiguredStructureFeatureKeys {
     public static RegistryKey<ConfiguredStructureFeature<?, ?>> SMALL_MOUNTAIN_GRAVE = of("small_mountain_grave");
     public static RegistryKey<ConfiguredStructureFeature<?, ?>> MUSHROOM_GRAVE = of("mushroom_grave");
     public static RegistryKey<ConfiguredStructureFeature<?, ?>> MEMORIAL_TREE = of("memorial_tree");
+    public static RegistryKey<ConfiguredStructureFeature<?, ?>> ALTAR = of("altar");
+    public static RegistryKey<ConfiguredStructureFeature<?, ?>> GIANT_MUSHROOM = of("giant_mushroom");
+    public static RegistryKey<ConfiguredStructureFeature<?, ?>> CRYPT = of("crypt");
 
     private static RegistryKey<ConfiguredStructureFeature<?, ?>> of(String id) {
         return RegistryKey.of(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY, new Identifier(TheGraveyard.MOD_ID, id));

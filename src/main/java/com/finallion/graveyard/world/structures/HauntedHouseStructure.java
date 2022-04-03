@@ -24,6 +24,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 public class HauntedHouseStructure extends AbstractGraveyardStructure {
@@ -31,8 +32,9 @@ public class HauntedHouseStructure extends AbstractGraveyardStructure {
 
     public HauntedHouseStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(25, 20, 451235912,
-                        Arrays.asList("#" + Biome.Category.FOREST.getName(), "#" + Biome.Category.SWAMP.getName()),
-                        Arrays.asList("minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:windswept_forest", "graveyard_biomes:haunted_forest"), Arrays.asList("#minecraft", "#graveyard_biomes"),false), // only allow in swamp and dark forest
+                        Arrays.asList("minecraft:dark_forest", "#" + Biome.Category.SWAMP.getName(), "terralith:moonlight_valley", "terralith:cloud_forest", "graveyard_biomes:haunted_lakes"),
+                        Collections.emptyList(),
+                        Arrays.asList("#minecraft", "#graveyard_biomes", "#terralith"),false), // only allow in swamp and dark forest
                 30, 451235912, HauntedHouseGenerator.STARTING_POOL, "haunted_house");
     }
 

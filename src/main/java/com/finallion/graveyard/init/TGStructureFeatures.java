@@ -28,6 +28,9 @@ public class TGStructureFeatures {
     public static final StructureFeature<StructurePoolFeatureConfig> SMALL_DESERT_GRAVE_STRUCTURE = new SmallDesertGraveStructure(StructurePoolFeatureConfig.CODEC);
     public static final StructureFeature<StructurePoolFeatureConfig> SMALL_SAVANNA_GRAVE_STRUCTURE = new SmallSavannaGraveStructure(StructurePoolFeatureConfig.CODEC);
     public static final StructureFeature<StructurePoolFeatureConfig> SMALL_MOUNTAIN_GRAVE_STRUCTURE = new SmallMountainGraveStructure(StructurePoolFeatureConfig.CODEC);
+    public static final StructureFeature<StructurePoolFeatureConfig> ALTAR_STRUCTURE = new AltarStructure(StructurePoolFeatureConfig.CODEC);
+    public static final StructureFeature<StructurePoolFeatureConfig> GIANT_MUSHROOM_STRUCTURE = new GiantMushroomStructure(StructurePoolFeatureConfig.CODEC);
+    public static final StructureFeature<StructurePoolFeatureConfig> CRYPT_STRUCTURE = new CryptStructure(StructurePoolFeatureConfig.CODEC);
 
 
     public static void init() {
@@ -42,6 +45,14 @@ public class TGStructureFeatures {
         register(SMALL_DESERT_GRAVE_STRUCTURE, "small_desert_grave");
         register(SMALL_SAVANNA_GRAVE_STRUCTURE, "small_savanna_grave");
         register(SMALL_MOUNTAIN_GRAVE_STRUCTURE, "small_mountain_grave");
+        register(ALTAR_STRUCTURE, "altar");
+        register(GIANT_MUSHROOM_STRUCTURE, "giant_mushroom");
+        registerUnderground(CRYPT_STRUCTURE, "crypt");
+    }
+
+    private static void registerUnderground(StructureFeature<?> structure, String name) {
+        Registry.register(Registry.STRUCTURE_FEATURE, new Identifier(TheGraveyard.MOD_ID, name), structure);
+        StructureFeatureAccessor.getStructureToGenerationStep().put(structure, GenerationStep.Feature.UNDERGROUND_STRUCTURES);
     }
 
 

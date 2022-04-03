@@ -17,13 +17,15 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class LargeGraveyardStructure extends AbstractGraveyardStructure {
 
     public LargeGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(12, 10, 304812394,
-                        Arrays.asList("#" + Biome.Category.FOREST.getName(), "#" + Biome.Category.TAIGA.getName()),
-                        Arrays.asList("minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:windswept_forest", "graveyard_biomes:eroded_haunted_forest", "graveyard_biomes:haunted_lakes"), Arrays.asList("#minecraft", "#graveyard_biomes"), true), // only allow in dark forest and taigas
+                        Arrays.asList("#" + Biome.Category.TAIGA.getName(), "minecraft:dark_forest", "terralith:forested_highlands", "terralith:lush_valley", "terralith:shield", "terralith:shield_clearing", "terralith:wintry_forest", "graveyard_biomes:haunted_forest"),
+                        Collections.emptyList(),
+                        Arrays.asList("#minecraft", "#graveyard_biomes", "#terralith"), true), // only allow in dark forest and taigas
                 40, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
     }
 

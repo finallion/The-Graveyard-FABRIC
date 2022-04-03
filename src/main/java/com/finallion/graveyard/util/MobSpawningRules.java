@@ -76,7 +76,7 @@ public class MobSpawningRules {
         String biomeCategory = biomeContext.getBiome().getCategory(biomeContext.getBiomeRegistryEntry()).getName();
 
         if (whitelist == null) {
-            TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category/biome is null. Try to delete the file and restart the game.");
+            TheGraveyard.LOGGER.error("The Graveyard config file (\"the-graveyard-config.json5\") isn't up to date. Please delete the file and restart the game to create a new config file!");
             return false;
         }
 

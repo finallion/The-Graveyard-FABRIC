@@ -3,6 +3,7 @@ package com.finallion.graveyard.world.structures;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.util.BiomeSelectionUtil;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
@@ -110,8 +111,8 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         RegistryEntry<Biome> biome = context.chunkGenerator().getBiomeForNoiseGen(BiomeCoords.fromBlock(blockpos.getX()), BiomeCoords.fromBlock(blockpos.getY()), BiomeCoords.fromBlock(blockpos.getZ()));
 
         if (TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, name))
-                && parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).whitelist, TheGraveyard.config.structureConfigEntries.get(name).blacklist, biome)
-                && parseWhitelistedMods(TheGraveyard.config.structureConfigEntries.get(name).modWhitelist, biome)) {
+                && BiomeSelectionUtil.parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).whitelist, TheGraveyard.config.structureConfigEntries.get(name).blacklist, biome)
+                && BiomeSelectionUtil.parseWhitelistedMods(TheGraveyard.config.structureConfigEntries.get(name).modWhitelist, biome)) {
             return true;
         }
 
@@ -128,11 +129,11 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         // o    i    k
         // q    p    m
 
-        int i1 = generator.getHeightOnGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int j1 = generator.getHeightOnGround(chunkX, chunkZ + size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int k1 = generator.getHeightOnGround(chunkX + size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int o1 = generator.getHeightOnGround(chunkX, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
-        int p1 = generator.getHeightOnGround(chunkX - size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int i1 = generator.getHeightInGround(chunkX, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int j1 = generator.getHeightInGround(chunkX, chunkZ + size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int k1 = generator.getHeightInGround(chunkX + size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int o1 = generator.getHeightInGround(chunkX, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
+        int p1 = generator.getHeightInGround(chunkX - size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
         VerticalBlockSample sample1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView);
         VerticalBlockSample sample2 = generator.getColumnSample(chunkX, chunkZ + size, heightLimitView);
@@ -140,16 +141,28 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         VerticalBlockSample sample4 = generator.getColumnSample(chunkX, chunkZ - size, heightLimitView);
         VerticalBlockSample sample5 = generator.getColumnSample(chunkX - size, chunkZ, heightLimitView);
 
-        if (sample1.getState(i1 - 1).getFluidState().isIn(FluidTags.WATER) || sample2.getState(j1 - 1).getFluidState().isIn(FluidTags.WATER) || sample3.getState(k1 - 1).getFluidState().isIn(FluidTags.WATER) || sample4.getState(o1 - 1).getFluidState().isIn(FluidTags.WATER) || sample5.getState(p1 - 1).getFluidState().isIn(FluidTags.WATER)) {
+        // subtract -1 if getHeightOnGround
+        if (sample1.getState(i1).getFluidState().isIn(FluidTags.WATER) || sample2.getState(j1).getFluidState().isIn(FluidTags.WATER) || sample3.getState(k1).getFluidState().isIn(FluidTags.WATER) || sample4.getState(o1).getFluidState().isIn(FluidTags.WATER) || sample5.getState(p1).getFluidState().isIn(FluidTags.WATER)) {
             return false;
         }
-
 
         int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
         int minHeight = Math.min(minSides, i1);
 
         int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
         int maxHeight = Math.max(maxSides, i1);
+
+        /*
+        if (size == 40) {
+            System.out.println("Height 1: " + i1 + " State: " + sample1.getState(i1));
+            System.out.println("Height 2: " + j1 + " State: " + sample1.getState(j1));
+            System.out.println("Height 3: " + k1 + " State: " + sample1.getState(k1));
+            System.out.println("Height 4: " + o1 + " State: " + sample1.getState(o1));
+            System.out.println("Height 5: " + p1 + " State: " + sample1.getState(p1));
+            System.out.println("Abs: " + Math.abs(maxHeight - minHeight));
+        }
+
+         */
 
         return Math.abs(maxHeight - minHeight) <= 4;
 
@@ -168,63 +181,4 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
 
     }
 
-    private static boolean parseBiomes(List<String> whitelist, List<String> blacklist, RegistryEntry<Biome> biome) {
-        String modId = biome.getKey().get().getValue().getNamespace();
-        String biomeName = biome.getKey().get().getValue().toString();
-        String biomeCategory = BuiltinRegistries.BIOME.get(biome.getKey().get()).getCategory(biome).getName();
-
-        if (whitelist == null) {
-            TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category/biome is null. Try to delete the file and restart the game.");
-            return false;
-        }
-
-        // no blacklist and biome is allowed
-        if (whitelist.contains(biomeName) && blacklist.isEmpty()) {
-            return true;
-        }
-
-        // no blacklist and biomeCategory is allowed
-        if (whitelist.contains("#" + biomeCategory) && blacklist.isEmpty()) {
-            return true;
-        }
-
-        // blacklist exists and check if biome is on the blacklist
-        if (whitelist.contains(biomeName) && !blacklist.isEmpty()) {
-            if (blacklist.contains("#" + biomeCategory)) { // whitelist weighs higher than blacklist
-                //TheGraveyard.LOGGER.error("Blacklisted biome category #" + biomeCategory + " contains whitelisted biome " + biomeName + ".");
-                return true;
-            } else if (blacklist.contains(biomeName)) {  // blacklist weighs higher than whitelist
-                TheGraveyard.LOGGER.debug("Biome " +  biomeName + " is on whitelist and blacklist.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-
-        // blacklist exists and check if biomeCategory is on the blacklist
-        if (whitelist.contains("#" + biomeCategory) && !blacklist.isEmpty()) {
-            if (blacklist.contains("#" + biomeCategory)) { // blacklist weighs higher than whitelist
-                TheGraveyard.LOGGER.debug("Biome category #" + biomeCategory + " is on whitelist and blacklist.");
-                return false;
-            } else if (blacklist.contains(biomeName)) { // blacklist weighs higher than whitelist
-                //TheGraveyard.LOGGER.error("Biome category #" + biomeCategory + " is on whitelist and subsidiary biome " + biomeName + " is on blacklist.");
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean parseWhitelistedMods(List<String> modWhitelist, RegistryEntry<Biome> biome) {
-        if (modWhitelist == null) {
-            TheGraveyard.LOGGER.error("Error reading from the Graveyard config file: Allowed biome category/biome is null. Try to delete the file and restart the game.");
-            return false;
-        }
-
-        String modid = biome.getKey().get().getValue().getNamespace();
-        return modWhitelist.contains("#" + modid);
-    }
 }

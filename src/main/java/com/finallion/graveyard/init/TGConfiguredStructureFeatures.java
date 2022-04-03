@@ -68,11 +68,19 @@ public class TGConfiguredStructureFeatures {
             TGStructureFeatures.SMALL_MOUNTAIN_GRAVE_STRUCTURE.configure(
                     new StructurePoolFeatureConfig(SmallMountainGraveStructure.SmallMountainGraveGenerator.STARTING_POOL, 1), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("small_mountain_grave")));
 
+    public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> ALTAR_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.ALTAR,
+            TGStructureFeatures.ALTAR_STRUCTURE.configure(
+                    new StructurePoolFeatureConfig(AltarStructure.AltarGenerator.STARTING_POOL, 1), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("altar")));
 
-    public static void init() {
+    public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> GIANT_MUSHROOM_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.GIANT_MUSHROOM,
+            TGStructureFeatures.GIANT_MUSHROOM_STRUCTURE.configure(
+                    new StructurePoolFeatureConfig(GiantMushroomStructure.GiantMushroomGenerator.STARTING_POOL, 1), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("giant_mushroom")));
 
-    }
+    public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CRYPT_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.CRYPT,
+            TGStructureFeatures.CRYPT_STRUCTURE.configure(
+                    new StructurePoolFeatureConfig(CryptStructure.CryptGenerator.STARTING_POOL, 7), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("crypt")));
 
+    public static void init() {}
 
     private static <FC extends FeatureConfig, F extends StructureFeature<FC>> RegistryEntry<ConfiguredStructureFeature<?, ?>> register(RegistryKey<ConfiguredStructureFeature<?, ?>> key, ConfiguredStructureFeature<FC, F> configuredStructureFeature) {
         configured_structures.add(configuredStructureFeature);

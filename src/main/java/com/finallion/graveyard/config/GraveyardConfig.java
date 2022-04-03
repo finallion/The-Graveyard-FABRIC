@@ -3,6 +3,7 @@ package com.finallion.graveyard.config;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
 import com.finallion.graveyard.init.TGStructureFeatures;
 import com.finallion.graveyard.world.structures.AbstractGraveyardStructure;
+import com.finallion.graveyard.world.structures.AbstractUndergroundStructure;
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
@@ -73,7 +74,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NullPointerException("Tried StructureConfigEntry with id: " + id + ", but it was null!");
+        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
     }
 
     // moss particle config
@@ -83,7 +84,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NullPointerException("Tried ParticleConfigEntry with id: " + id + ", but it was null!");
+        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
     }
 
     // mob spawn config
@@ -93,7 +94,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NullPointerException("Tried MobConfigEntry with id: " + id + ", but it was null!");
+        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
     }
 
     // horde spawn config
@@ -103,7 +104,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NullPointerException("Tried HordeConfigEntry with id: " + id + ", but it was null!");
+        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
     }
 
     @Override
@@ -112,6 +113,12 @@ public class GraveyardConfig implements Config {
 
         for (StructureFeature<?> structure : getStructures()) {
             AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
+            StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
+            structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
+        }
+
+        for (StructureFeature<?> structure : getUndergroundStructures()) {
+            AbstractUndergroundStructure abstractStructure = (AbstractUndergroundStructure) structure;
             StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
@@ -145,6 +152,14 @@ public class GraveyardConfig implements Config {
         structures.add(TGStructureFeatures.SMALL_DESERT_GRAVE_STRUCTURE);
         structures.add(TGStructureFeatures.SMALL_SAVANNA_GRAVE_STRUCTURE);
         structures.add(TGStructureFeatures.SMALL_MOUNTAIN_GRAVE_STRUCTURE);
+        structures.add(TGStructureFeatures.ALTAR_STRUCTURE);
+        structures.add(TGStructureFeatures.GIANT_MUSHROOM_STRUCTURE);
+        return structures;
+    }
+
+    private List<StructureFeature<?>> getUndergroundStructures() {
+        List<StructureFeature<?>> structures = new ArrayList<>();
+        structures.add(TGStructureFeatures.CRYPT_STRUCTURE);
         return structures;
     }
 

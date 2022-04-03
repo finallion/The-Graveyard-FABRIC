@@ -93,6 +93,28 @@ public class TGStructureSets {
                         SpreadType.LINEAR,
                         TheGraveyard.config.structureConfigEntries.get("memorial_tree").salt));
 
+        StructureSets.register(TGStructureSetKeys.ALTARS, TGConfiguredStructureFeatures.ALTAR_STRUCTURE_CONFIG,
+                new RandomSpreadStructurePlacement(
+                        TheGraveyard.config.structureConfigEntries.get("altar").spacing,
+                        TheGraveyard.config.structureConfigEntries.get("altar").separation,
+                        SpreadType.LINEAR,
+                        TheGraveyard.config.structureConfigEntries.get("altar").salt));
+
+        StructureSets.register(TGStructureSetKeys.GIANT_MUSHROOMS, TGConfiguredStructureFeatures.GIANT_MUSHROOM_STRUCTURE_CONFIG,
+                new RandomSpreadStructurePlacement(
+                        TheGraveyard.config.structureConfigEntries.get("giant_mushroom").spacing,
+                        TheGraveyard.config.structureConfigEntries.get("giant_mushroom").separation,
+                        SpreadType.LINEAR,
+                        TheGraveyard.config.structureConfigEntries.get("giant_mushroom").salt));
+
+        StructureSets.register(TGStructureSetKeys.CRYPTS, TGConfiguredStructureFeatures.CRYPT_STRUCTURE_CONFIG,
+                new RandomSpreadStructurePlacement(
+                        TheGraveyard.config.structureConfigEntries.get("crypt").spacing,
+                        TheGraveyard.config.structureConfigEntries.get("crypt").separation,
+                        SpreadType.LINEAR,
+                        TheGraveyard.config.structureConfigEntries.get("crypt").salt));
+
+
     }
 
 }
