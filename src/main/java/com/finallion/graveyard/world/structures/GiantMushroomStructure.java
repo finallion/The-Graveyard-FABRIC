@@ -20,10 +20,10 @@ import java.util.Collections;
 public class GiantMushroomStructure extends AbstractGraveyardStructure {
 
     public GiantMushroomStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(14, 12, 365012356,
+        super(codec, new StructureConfigEntry(8, 6, 365012356,
                         Arrays.asList("#mushroom"),
                         Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false), // only allow in birch forests
-                25, 365012356, GiantMushroomGenerator.STARTING_POOL, "giant_mushroom");
+                7, 365012356, GiantMushroomGenerator.STARTING_POOL, "giant_mushroom");
     }
 
     @Override

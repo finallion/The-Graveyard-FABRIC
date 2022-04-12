@@ -23,7 +23,7 @@ public class AltarStructure extends AbstractGraveyardStructure {
         super(codec, new StructureConfigEntry(30, 24, 1093123913,
                         Arrays.asList("minecraft:snowy_plains"),
                         Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false), // only allow in birch forests
-                10, 1093123913, AltarGenerator.STARTING_POOL, "altar");
+                7, 1093123913, AltarGenerator.STARTING_POOL, "altar");
     }
 
     @Override

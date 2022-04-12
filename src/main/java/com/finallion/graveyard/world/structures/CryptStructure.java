@@ -33,7 +33,9 @@ public class CryptStructure extends AbstractUndergroundStructure {
 
 
     public static class CryptGenerator {
+        public static final RegistryEntry<StructurePool> CORRIDOR_POOL;
         public static final RegistryEntry<StructurePool> STARTING_POOL;
+        public static final RegistryEntry<StructurePool> TREASURE_POOL;
 
         public CryptGenerator() {
         }
@@ -42,10 +44,11 @@ public class CryptStructure extends AbstractUndergroundStructure {
         }
 
         static {
-            // TODO: SORT POOLS
-            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/corridor_pool"), new Identifier("minecraft:empty"), ImmutableList.of(
+            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/start_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/start_pool/start_room"), 1)), StructurePool.Projection.RIGID));
+            CORRIDOR_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/corridor_pool"), new Identifier("minecraft:empty"), ImmutableList.of(
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_01"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_02"), 10),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_03"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corner_01"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corner_02"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corridor_01"), 10),
@@ -57,8 +60,15 @@ public class CryptStructure extends AbstractUndergroundStructure {
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/stairs_01"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/stairs_02"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/stairs_03"), 10),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/library_01"), 10)
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/library_01"), 10),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/library_02"), 10),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/trap_01"), 10),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/trap_02"), 10),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/trap_03"), 10)
             ), StructurePool.Projection.RIGID));
+            TREASURE_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/treasure_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(
+                    StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/treasure_pool/treasure_01"), 1)), StructurePool.Projection.RIGID));
+
         }
     }
 
