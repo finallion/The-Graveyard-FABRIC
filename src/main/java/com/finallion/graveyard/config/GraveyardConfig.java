@@ -48,6 +48,7 @@ public class GraveyardConfig implements Config {
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
+    public final Map<String, Integer> integerEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -110,6 +111,7 @@ public class GraveyardConfig implements Config {
     @Override
     public void save() {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
+        integerEntries.putIfAbsent("maxTerrainHeightDifference", 6);
 
         for (StructureFeature<?> structure : getStructures()) {
             AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;

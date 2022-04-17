@@ -26,7 +26,7 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
                         Arrays.asList("#" + Biome.Category.TAIGA.getName(), "minecraft:dark_forest", "terralith:forested_highlands", "terralith:lush_valley", "terralith:shield", "terralith:shield_clearing", "terralith:wintry_forest", "graveyard_biomes:haunted_forest"),
                         Collections.emptyList(),
                         Arrays.asList("#minecraft", "#graveyard_biomes", "#terralith"), true), // only allow in dark forest and taigas
-                40, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
+                60, 304812394, LargeGraveyardGenerator.STARTING_POOL, "large_graveyard");
     }
 
     @Override

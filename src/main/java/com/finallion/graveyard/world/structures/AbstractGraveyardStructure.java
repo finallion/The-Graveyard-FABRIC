@@ -164,7 +164,7 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
 
          */
 
-        return Math.abs(maxHeight - minHeight) <= 4;
+        return Math.abs(maxHeight - minHeight) <= TheGraveyard.config.integerEntries.get("maxTerrainHeightDifference");
 
     }
 
