@@ -7,12 +7,12 @@
         "min": 1.0,
         "max": 1.0
       },
-      "bonus_rolls": 0.0,
+      "bonus_rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:item",
           "weight": 10,
-          "name": "minecraft:bone"
+          "name": "minecraft:name_tag"
         },
         {
           "type": "minecraft:item",
@@ -22,8 +22,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 4.0,
-                "max": 8.0
+                "min": 8.0,
+                "max": 10.0
               },
               "add": false
             }
@@ -38,8 +38,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 4.0
+                "min": 6.0,
+                "max": 8.0
               },
               "add": false
             }
@@ -54,7 +54,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
+                "min": 2.0,
                 "max": 4.0
               },
               "add": false
@@ -70,8 +70,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 4.0
+                "min": 6.0,
+                "max": 8.0
               },
               "add": false
             }
@@ -86,8 +86,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 8.0,
-                "max": 10.0
+                "min": 10.0,
+                "max": 14.0
               },
               "add": false
             }
@@ -102,7 +102,7 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
+                "min": 4.0,
                 "max": 8.0
               },
               "add": false
@@ -118,8 +118,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 3.0
+                "min": 3.0,
+                "max": 5.0
               },
               "add": false
             }
@@ -134,8 +134,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 3.0
+                "min": 2.0,
+                "max": 4.0
               },
               "add": false
             }
@@ -145,6 +145,17 @@
         {
           "type": "minecraft:item",
           "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 2.0
+              },
+              "add": false
+            }
+          ],
           "name": "graveyard:dark_iron_block"
         },
         {
@@ -152,10 +163,31 @@
           "weight": 10,
           "functions": [
             {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:diamond"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "functions": [
+            {
               "function": "minecraft:enchant_randomly"
             }
           ],
           "name": "minecraft:book"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 3,
+          "name": "minecraft:netherite_ingot"
         }
       ]
     },
@@ -170,77 +202,112 @@
         {
           "type": "minecraft:item",
           "weight": 10,
-          "name": "minecraft:bone"
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 30.0,
+              "treasure": true
+            }
+          ],
+          "name": "minecraft:book"
         },
         {
           "type": "minecraft:item",
-          "weight": 10,
+          "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
+              "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
                 "type": "minecraft:uniform",
-                "min": 4.0,
-                "max": 8.0
+                "min": 0.5,
+                "max": 0.8
               },
               "add": false
             }
           ],
-          "name": "minecraft:coal"
+          "name": "minecraft:diamond_leggings"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
+              "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
                 "type": "minecraft:uniform",
-                "min": 4.0,
-                "max": 8.0
+                "min": 0.5,
+                "max": 0.8
               },
               "add": false
             }
           ],
-          "name": "minecraft:raw_iron"
+          "name": "minecraft:diamond_helmet"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
+              "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
                 "type": "minecraft:uniform",
-                "min": 4.0,
-                "max": 8.0
+                "min": 0.5,
+                "max": 0.8
               },
               "add": false
             }
           ],
-          "name": "minecraft:raw_gold"
+          "name": "minecraft:diamond_chestplate"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
+              "function": "minecraft:enchant_randomly"
+            },
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
                 "type": "minecraft:uniform",
-                "min": 8.0,
-                "max": 12.0
+                "min": 0.5,
+                "max": 0.8
               },
               "add": false
             }
           ],
-          "name": "minecraft:raw_copper"
+          "name": "minecraft:diamond_boots"
         },
         {
           "type": "minecraft:item",
           "weight": 3,
           "functions": [
             {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 3.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:netherite_scrap"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "functions": [
+            {
               "function": "minecraft:enchant_randomly"
             },
             {
@@ -253,7 +320,27 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_pickaxe"
+          "name": "minecraft:diamond_pickaxe"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4.0,
+                "max": 8.0
+              },
+              "add": false
+            },
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{Potion:\"minecraft:strong_harming\"}"
+            }
+          ],
+          "name": "minecraft:tipped_arrow"
         }
       ]
     },
@@ -292,7 +379,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_shovel"
+          "name": "minecraft:diamond_shovel"
         },
         {
           "type": "minecraft:item",
@@ -311,7 +398,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_axe"
+          "name": "minecraft:diamond_axe"
         },
         {
           "type": "minecraft:item",
@@ -330,7 +417,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:iron_sword"
+          "name": "minecraft:diamond_sword"
         },
         {
           "type": "minecraft:item",
@@ -361,8 +448,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 2.0,
-                "max": 4.0
+                "min": 4.0,
+                "max": 6.0
               },
               "add": false
             }
@@ -371,12 +458,12 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 2,
           "name": "minecraft:golden_apple"
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 2,
           "name": "minecraft:enchanted_golden_apple"
         },
         {
@@ -387,8 +474,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 2.0,
-                "max": 4.0
+                "min": 3.0,
+                "max": 5.0
               },
               "add": false
             }
@@ -403,8 +490,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 2.0,
-                "max": 4.0
+                "min": 3.0,
+                "max": 5.0
               },
               "add": false
             }
@@ -419,8 +506,8 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 2.0,
-                "max": 4.0
+                "min": 3.0,
+                "max": 5.0
               },
               "add": false
             }
@@ -430,6 +517,33 @@
         {
           "type": "minecraft:item",
           "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3.0,
+                "max": 5.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:cyan_candle"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 3.0
+              },
+              "add": false
+            }
+          ],
           "name": "graveyard:vase_block"
         },
         {
@@ -440,13 +554,13 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 2.0,
-                "max": 4.0
+                "min": 3.0,
+                "max": 5.0
               },
               "add": false
             }
           ],
-          "name": "minecraft:wither_rose"
+          "name": "minecraft:blue_orchid"
         }
       ]
     },
@@ -542,13 +656,13 @@
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1.0,
-                "max": 4.0
+                "min": 4.0,
+                "max": 8.0
               },
               "add": false
             }
           ],
-          "name": "graveyard:corruption"
+          "name": "minecraft:experience_bottle"
         }
       ]
     },
