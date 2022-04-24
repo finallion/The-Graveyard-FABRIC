@@ -3,7 +3,7 @@
   "pools": [
     {
       "rolls": 1.0,
-      "bonus_rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "weight": 10,
@@ -27,6 +27,160 @@
             }
           ]
         },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:poison"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:slowness"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:strength"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:healing"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:harming"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:leaping"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:regeneration"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:fire_resistance"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:water_breathing"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:invisibility"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:weakness"
+            }
+          ]
+        },
+        {
+          "weight": 10,
+          "type": "minecraft:item",
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "minecraft:set_potion",
+              "id": "minecraft:swiftness"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 15,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2.0,
+                "max": 4.0
+              },
+              "add": false
+            }
+          ],
+          "name": "minecraft:glass_bottle"
+        }
+      ]
+    },
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
         {
           "type": "minecraft:item",
           "weight": 10,

@@ -12,15 +12,24 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.block.enums.ChestType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.block.ChestAnimationProgress;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.EvokerEntity;
+import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.*;
 import net.minecraft.util.*;
@@ -32,6 +41,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -54,22 +64,22 @@ THINGS TO CHECK IF THE MODEL CASTS UNWANTED SHADOWS:
 public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity> implements Waterloggable, BlockEntityProvider {
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty OPEN;
+    public static final BooleanProperty PLAYER_PLACED;
+    public static final BooleanProperty IS_COFFIN;
     public static final DirectionProperty FACING;
     protected static final VoxelShape DOUBLE_NORTH_SHAPE;
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
-    private boolean isCoffin;
 
     public SarcophagusBlock(Settings settings, boolean isCoffin) {
         super(settings, () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
-        this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT));
-        this.isCoffin = isCoffin;
+        this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED, OPEN, FACING, PART);
+        builder.add(WATERLOGGED, OPEN, FACING, PART, PLAYER_PLACED, IS_COFFIN);
     }
 
 
@@ -107,14 +117,18 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
             case EAST:
                 return DOUBLE_EAST_SHAPE;
         }
-
     }
 
 
+
+
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        Random random = new Random();
+
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
+            BlockPos original = pos;
             // if part is head, offset to the blockentity of the foot
             if (state.get(PART) == SarcophagusPart.HEAD) {
                 pos = pos.offset((Direction) state.get(FACING).getOpposite());
@@ -124,16 +138,44 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
             if (blockEntity instanceof SarcophagusBlockEntity) {
                 player.openHandledScreen((SarcophagusBlockEntity) blockEntity);
             }
+
+            spawnGhost(state, world, original, player, random);
+
+
             return ActionResult.CONSUME;
         }
+    }
+    public static void spawnGhost(BlockState state, World world, BlockPos pos, PlayerEntity player, Random random) {
+        if (!state.get(PLAYER_PLACED) && random.nextInt(5) == 0) {
+            BlockPos entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+            VindicatorEntity ghost = EntityType.VINDICATOR.create(world);
+            ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
+            world.spawnEntity(ghost);
+            world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
+            BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
+            BlockState otherPart = world.getBlockState(otherPartPos);
+            world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
 
+            spawnParticles(state, world, entityPos, random, player);
+        }
+    }
+
+    // TODO: MOVE TO ENTITY
+    public static void spawnParticles(BlockState state, WorldAccess world, BlockPos pos, Random random, PlayerEntity player) {
+        if (state.getBlock() instanceof SarcophagusBlock) {
+            for (int i = 0; i < 20; i++) {
+                world.addParticle(ParticleTypes.EXPLOSION, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0.0F, 0.0F, 0.0F);
+            }
+            world.playSound(player, pos, SoundEvents.BLOCK_SOUL_SAND_PLACE, SoundCategory.BLOCKS, 1.0F, -5.0F);
+        }
     }
 
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
         if (!world.isClient) {
             BlockPos blockPos = pos.offset((Direction) state.get(FACING));
-            world.setBlockState(blockPos, (BlockState) state.with(PART, SarcophagusPart.HEAD), 3);
+            world.setBlockState(pos, state.with(PLAYER_PLACED, true));
+            world.setBlockState(blockPos, (BlockState) state.with(PART, SarcophagusPart.HEAD).with(PLAYER_PLACED, true), 3);
             world.updateNeighbors(pos, Blocks.AIR);
             state.updateNeighbors(world, pos, 3);
         }
@@ -196,7 +238,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     @Nullable
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new SarcophagusBlockEntity(pos, state, isCoffin);
+        return new SarcophagusBlockEntity(pos, state);
     }
 
     public BlockRenderType getRenderType(BlockState state) {
@@ -264,10 +306,14 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     }
 
 
+
+
     static {
+        PLAYER_PLACED = Properties.LOCKED;
         OPEN = Properties.OPEN;
         WATERLOGGED = Properties.WATERLOGGED;
         FACING = Properties.HORIZONTAL_FACING;
+        IS_COFFIN = Properties.LIT;
         DOUBLE_NORTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_SOUTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_WEST_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);

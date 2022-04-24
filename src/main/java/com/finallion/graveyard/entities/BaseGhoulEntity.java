@@ -200,6 +200,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         super.tickMovement();
     }
 
+
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
         if (isAttacking() && canAttack && !(this.isDead() || this.getHealth() < 0.01)) {
             timeSinceLastAttack = 25;

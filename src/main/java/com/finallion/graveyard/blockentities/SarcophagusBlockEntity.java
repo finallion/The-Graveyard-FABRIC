@@ -19,6 +19,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
@@ -29,19 +30,13 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
     private final SarcophagusLidAnimator lidAnimator;
-    private boolean isCoffin;
-
-    public SarcophagusBlockEntity(BlockPos pos, BlockState state, boolean isCoffin) {
-        this(pos, state);
-        this.isCoffin = isCoffin;
-    }
 
     public SarcophagusBlockEntity(BlockPos pos, BlockState state) {
         super(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, pos, state);
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                if (isCoffin) {
+                if (state.get(Properties.LIT)) { // internal property is_coffin
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_OPEN);
                 } else {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
@@ -49,7 +44,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                if (isCoffin) {
+                if (state.get(Properties.LIT)) {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_CLOSE);
                 } else {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
@@ -102,7 +97,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
     }
 
     protected Text getContainerName() {
-        if (isCoffin) {
+        if (this.getCachedState().get(Properties.LIT)) {
             return new TranslatableText("container.coffin");
         }
         return new TranslatableText("container.sarcophagus");
@@ -172,6 +167,6 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
 
 
     public boolean isCoffin() {
-        return isCoffin;
+        return this.getCachedState().get(Properties.LIT);
     }
 }

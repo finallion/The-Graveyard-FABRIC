@@ -30,7 +30,7 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class AcolyteEntity extends CorruptedIllager {
+public class AcolyteEntity extends CorruptedIllager implements Burnable {
     private AttributeContainer attributeContainer;
 
     public AcolyteEntity(EntityType<? extends CorruptedIllager> entityType, World world) {
@@ -58,24 +58,7 @@ public class AcolyteEntity extends CorruptedIllager {
     public void tickMovement() {
         if (this.isAlive()) {
             boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("acolyte").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
+            canBurnInSunlight(bl);
         }
 
         super.tickMovement();
@@ -103,5 +86,27 @@ public class AcolyteEntity extends CorruptedIllager {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_VINDICATOR_DEATH, 1.0F, 1.0F);
+    }
+
+    @Override
+    public void canBurnInSunlight(boolean canBurn) {
+        if (canBurn) {
+            ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+            if (!itemStack.isEmpty()) {
+                if (itemStack.isDamageable()) {
+                    itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+                    if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
+                        this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
+                        this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                    }
+                }
+
+                canBurn = false;
+            }
+
+            if (canBurn) {
+                this.setOnFireFor(8);
+            }
+        }
     }
 }
