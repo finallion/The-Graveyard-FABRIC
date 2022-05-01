@@ -41,9 +41,6 @@ public class SkeletonCreeper extends CreeperEntity {
         return attributeContainer;
     }
 
-    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return isSpawnDark(world, pos, random);
-    }
 
     public boolean canStart() {
         this.closestPlayer = this.world.getClosestPlayer(SkeletonCreeper.CLOSE_PLAYER_PREDICATE, this);
@@ -65,16 +62,6 @@ public class SkeletonCreeper extends CreeperEntity {
         } else {
             super.dropEquipment(source, lootingMultiplier, allowDrops);
         }
-
-    }
-
-    @Override
-    protected boolean isAffectedByDaylight() {
-        return super.isAffectedByDaylight();
-    }
-
-    protected boolean burnsInDaylight() {
-        return true;
     }
 
 
@@ -114,22 +101,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
             this.world.spawnEntity(areaEffectCloudEntity);
         }
-
     }
-
-
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return super.canHaveStatusEffect(effect);
-    }
-
 
 
     @Override
@@ -137,27 +109,6 @@ public class SkeletonCreeper extends CreeperEntity {
         if (random.nextInt(7) == 0) {
             this.world.addParticle(ParticleTypes.ASH, this.getParticleX(2.0D), this.getRandomBodyY() + new Random().nextInt(1), this.getParticleZ(2.0), 2.0D, 7.0D, 2.0D);
 
-        }
-        if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
         }
         super.tickMovement();
     }

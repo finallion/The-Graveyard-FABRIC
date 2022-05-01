@@ -1,26 +1,19 @@
 package com.finallion.graveyard.entities.horde;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.entities.AnimatedGraveyardEntity;
-import com.finallion.graveyard.entities.BaseGhoulEntity;
+import com.finallion.graveyard.entities.HordeGraveyardEntity;
+import com.finallion.graveyard.entities.HostileGraveyardEntity;
 import com.finallion.graveyard.init.TGEntities;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.PatrolEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
@@ -111,10 +104,10 @@ public class GraveyardHordeSpawner implements Spawner {
             return false;
         } else if (blockState.getFluidState().isIn(FluidTags.WATER) || downState.getFluidState().isIn(FluidTags.WATER)) {
             return false;
-        } else if (!AnimatedGraveyardEntity.canSpawn(TGEntities.GHOUL, world, SpawnReason.PATROL, pos, random)) {
+        } else if (!HostileGraveyardEntity.canSpawnInDarkness(TGEntities.GHOUL, world, SpawnReason.PATROL, pos, random)) {
             return false;
         } else {
-            GraveyardHordeEntity hordeEntity;
+            HordeGraveyardEntity hordeEntity;
 
             if (!illagerSpawn) {
                 if (random.nextBoolean()) {

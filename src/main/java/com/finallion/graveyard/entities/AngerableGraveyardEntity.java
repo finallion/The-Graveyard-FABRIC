@@ -1,9 +1,7 @@
 package com.finallion.graveyard.entities;
 
-import com.finallion.graveyard.entities.horde.GraveyardHordeEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -16,19 +14,15 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.UUID;
 
-public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Angerable {
+public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity implements Angerable {
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
-    protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(AnimatedGraveyardEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Boolean> ANGRY;
     private static final TrackedData<Boolean> PROVOKED;
     private static final UniformIntProvider ANGER_TIME;
@@ -36,38 +30,23 @@ public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Ang
     private int ageWhenTargetSet;
     private int angerTime;
 
-
-    protected AnimatedGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
+    public AngerableGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
+        super(entityType, world, name);
     }
 
-    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return isSpawnDark(world, pos, random);
+    public void tickMovement() {
+        if (!this.world.isClient()) {
+            this.tickAngerLogic((ServerWorld)this.world, true);
+        }
+        super.tickMovement();
     }
 
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
+
         this.dataTracker.startTracking(ANGRY, false);
         this.dataTracker.startTracking(PROVOKED, false);
-        this.dataTracker.startTracking(ANIMATION_MOVE_STATE, (byte) 0);
-    }
-
-    public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION_MOVE_STATE);
-    }
-
-    public void setState(byte time) {
-        this.dataTracker.set(ANIMATION_MOVE_STATE, time);
-    }
-
-
-    public void tickMovement() {
-        if (!this.world.isClient) {
-            this.tickAngerLogic((ServerWorld)this.world, true);
-        }
-
-        super.tickMovement();
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
@@ -79,7 +58,6 @@ public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Ang
         super.readCustomDataFromNbt(nbt);
         this.readAngerFromNbt(this.world, nbt);
     }
-
 
     @Override
     public boolean hasAngerTime() {
@@ -125,9 +103,7 @@ public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Ang
                 entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
             }
         }
-
     }
-
 
     static {
         ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, EntityAttributeModifier.Operation.ADDITION);
@@ -135,5 +111,7 @@ public class AnimatedGraveyardEntity extends GraveyardHordeEntity implements Ang
         PROVOKED = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         ANGER_TIME = TimeHelper.betweenSeconds(20, 39);
     }
+
+
 
 }

@@ -50,7 +50,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class NightmareEntity extends HostileEntity implements IAnimatable, Angerable {
+public class NightmareEntity extends HostileGraveyardEntity implements IAnimatable, Angerable {
     private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
@@ -71,15 +71,10 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
     private UUID target;
     private int angerTime;
     private int ageWhenTargetSet;
-    private int lastAngrySoundAge = -2147483648;
 
     public NightmareEntity(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
+        super(entityType, world, "nightmare");
         this.stepHeight = 1.0F;
-    }
-
-    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return isSpawnDark(world, pos, random);
     }
 
     @Override
@@ -123,27 +118,6 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
         super.mobTick();
     }
 
-    @Override
-    protected boolean isAffectedByDaylight() {
-        return super.isAffectedByDaylight();
-    }
-
-    protected boolean burnsInDaylight() {
-        return true;
-    }
-
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get("nightmare").canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return super.canHaveStatusEffect(effect);
-    }
-
 
     public void tickMovement() {
         // hinders attack animation from playing when there is no target
@@ -161,29 +135,6 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
             }
             this.tickAngerLogic((ServerWorld)this.world, true);
         }
-
-        if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("nightmare").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
-        }
-
 
         super.tickMovement();
     }
@@ -390,9 +341,6 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
         return this.target;
     }
 
-    public boolean isProvoked() {
-        return (Boolean)this.dataTracker.get(PROVOKED);
-    }
 
     @Override
     public void setAngryAt(@Nullable UUID uuid) {
@@ -415,24 +363,6 @@ public class NightmareEntity extends HostileEntity implements IAnimatable, Anger
             this.dataTracker.set(ANGRY, true);
         }
 
-    }
-
-    public void playAngrySound() {
-        if (this.age >= this.lastAngrySoundAge + 400) {
-            this.lastAngrySoundAge = this.age;
-            if (!this.isSilent()) {
-                this.world.playSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENTITY_ENDERMAN_STARE, this.getSoundCategory(), 2.0F, -10.0F, false);
-            }
-        }
-
-    }
-
-    public void onTrackedDataSet(TrackedData<?> data) {
-        if (ANGRY.equals(data) && this.isProvoked() && this.world.isClient) {
-            this.playAngrySound();
-        }
-
-        super.onTrackedDataSet(data);
     }
 
     static {

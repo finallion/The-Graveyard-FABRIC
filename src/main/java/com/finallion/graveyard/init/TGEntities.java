@@ -24,56 +24,56 @@ public class TGEntities {
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(AcolyteEntity::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.9F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInLight)
             .build();
 
     public static final EntityType<CorruptedVindicator> CORRUPTED_VINDICATOR = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(CorruptedVindicator::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.9F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInLight)
             .build();
 
     public static final EntityType<CorruptedPillager> CORRUPTED_PILLAGER = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(CorruptedPillager::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.9F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, CorruptedIllager::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInLight)
             .build();
 
     public static final EntityType<SkeletonCreeper> SKELETON_CREEPER = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(SkeletonCreeper::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.7F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, SkeletonCreeper::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
-    public static final EntityType<BaseGhoulEntity> GHOUL = FabricEntityTypeBuilder.createMob()
+    public static final EntityType<GhoulEntity> GHOUL = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
-            .entityFactory(BaseGhoulEntity::new)
+            .entityFactory(GhoulEntity::new)
             .dimensions(EntityDimensions.changing(0.8F, 2.1F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
     public static final EntityType<RevenantEntity> REVENANT = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(RevenantEntity::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.9F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
     public static final EntityType<WraithEntity> WRAITH = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(WraithEntity::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.8F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
     public static final EntityType<NightmareEntity> NIGHTMARE = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(NightmareEntity::new)
             .dimensions(EntityDimensions.changing(0.6F, 2.6F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, NightmareEntity::canSpawn)
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
 

@@ -37,7 +37,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatable {
+public class RevenantEntity extends AngerableGraveyardEntity implements IAnimatable {
     private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
@@ -50,7 +50,7 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
     private static int timeSinceLastAttack = 0;
 
     public RevenantEntity(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
+        super(entityType, world, "revenant");
     }
 
     protected void initGoals() {
@@ -76,15 +76,6 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
     }
 
     @Override
-    protected boolean isAffectedByDaylight() {
-        return super.isAffectedByDaylight();
-    }
-
-    protected boolean burnsInDaylight() {
-        return true;
-    }
-
-    @Override
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
@@ -97,19 +88,6 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
         return attributeContainer;
     }
 
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get("revenant").canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return super.canHaveStatusEffect(effect);
-    }
-
-
     @Override
     public void tickMovement() {
         timeSinceLastAttack--;
@@ -120,29 +98,6 @@ public class RevenantEntity extends AnimatedGraveyardEntity implements IAnimatab
                 canAttack = false;
             }
         }
-
-        if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("revenant").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
-        }
-
         super.tickMovement();
     }
 

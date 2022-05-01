@@ -1,33 +1,27 @@
 package com.finallion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.Angerable;
+import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.util.TimeHelper;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -38,10 +32,11 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.Random;
+import java.util.UUID;
 
-public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimatable {
+public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable {
     private AttributeContainer attributeContainer;
+    protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
     private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", true);
@@ -56,7 +51,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     protected static final byte ANIMATION_RUNNING = 4;
     protected static final byte ANIMATION_ATTACK = 5;
     protected static final byte ANIMATION_SPAWN = 6;
-    protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(BaseGhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private AnimationFactory factory = new AnimationFactory(this);
     private static boolean canRage = false;
     private static boolean canAttack = false;
@@ -65,43 +60,32 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
     private boolean spawned = false;
     private int spawnTimer;
 
-    public BaseGhoulEntity(EntityType<? extends BaseGhoulEntity> entityType, World world) {
-        super(entityType, world);
+    //TODO: total rework of the class, this is a mess: replace attributes with DataTrackers, rework animation logic.
+    public GhoulEntity(EntityType<? extends GhoulEntity> entityType, World world) {
+        super(entityType, world, "ghoul");
     }
 
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
 
-        spawnTimer = 30;
-        setState((byte) ANIMATION_SPAWN);
-
         // selects one of eight skins for the ghoul
         byte variant = (byte) random.nextInt(8);
+
         this.dataTracker.startTracking(VARIANT, variant);
+        this.dataTracker.startTracking(ANIMATION_MOVE_STATE, (byte) 0);
+
+        spawnTimer = 30;
+        setState((byte) ANIMATION_SPAWN);
     }
 
-    @Override
-    protected boolean isAffectedByDaylight() {
-        return super.isAffectedByDaylight();
+    public int getAnimationState() {
+        return this.dataTracker.get(ANIMATION_MOVE_STATE);
     }
 
-    protected boolean burnsInDaylight() {
-        return true;
+    public void setState(byte time) {
+        this.dataTracker.set(ANIMATION_MOVE_STATE, time);
     }
-
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get("ghoul").canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return super.canHaveStatusEffect(effect);
-    }
-
 
     protected void initGoals() {
         super.initGoals();
@@ -129,15 +113,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
         return attributeContainer;
     }
 
-    public void writeCustomDataToNbt(NbtCompound tag) {
-        super.writeCustomDataToNbt(tag);
-        tag.putByte("ghoulVariant", getVariant());
-    }
-
-    public void readCustomDataFromNbt(NbtCompound tag) {
-        super.readCustomDataFromNbt(tag);
-        setVariant(tag.getByte("ghoulVariant"));
-    }
 
     public EntityGroup getGroup() {
         return EntityGroup.UNDEAD;
@@ -162,6 +137,7 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
         timeSinceLastAttack--;
         spawnTimer--;
+
         if (world.isClient() && spawnTimer >= 0 && spawned) {
             MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
         }
@@ -173,29 +149,6 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
                 canRage = this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE * 6;
             }
         }
-
-        if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("ghoul").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
-        }
-
 
         super.tickMovement();
     }
@@ -264,6 +217,16 @@ public class BaseGhoulEntity extends AnimatedGraveyardEntity implements IAnimata
 
     public void setVariant(byte variant) {
         dataTracker.set(VARIANT, variant);
+    }
+
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putByte("ghoulVariant", getVariant());
+    }
+
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        setVariant(nbt.getByte("ghoulVariant"));
     }
 
 

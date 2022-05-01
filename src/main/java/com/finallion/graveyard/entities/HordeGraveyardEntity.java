@@ -1,19 +1,14 @@
-package com.finallion.graveyard.entities.horde;
+package com.finallion.graveyard.entities;
 
-import com.finallion.graveyard.entities.CorruptedIllager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.IllagerEntity;
-import net.minecraft.entity.mob.PatrolEntity;
-import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.village.raid.Raid;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
@@ -25,19 +20,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class GraveyardHordeEntity extends HostileEntity {
+public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     private BlockPos patrolTarget;
     private boolean patrolling;
     private boolean patrolLeader;
 
-    protected GraveyardHordeEntity(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
+    protected HordeGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
+        super(entityType, world, name);
     }
 
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(2, new PatrolApproachGoal(this, 10.0F));
-        this.goalSelector.add(4, new GraveyardHordeEntity.PatrolGoal(this, 1.1D, 1.0D));
+        this.goalSelector.add(4, new HordeGraveyardEntity.PatrolGoal(this, 1.1D, 1.0D));
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
@@ -123,7 +118,7 @@ public class GraveyardHordeEntity extends HostileEntity {
         return this.patrolling;
     }
 
-    public static class PatrolGoal<T extends GraveyardHordeEntity> extends Goal {
+    public static class PatrolGoal<T extends HordeGraveyardEntity> extends Goal {
         private static final int field_30474 = 200;
         private final T entity;
         private final double leaderSpeed;
@@ -158,7 +153,7 @@ public class GraveyardHordeEntity extends HostileEntity {
             boolean bl = this.entity.isPatrolLeader();
             EntityNavigation entityNavigation = this.entity.getNavigation();
             if (entityNavigation.isIdle()) {
-                List<GraveyardHordeEntity> list = this.findPatrolTargets();
+                List<HordeGraveyardEntity> list = this.findPatrolTargets();
                 if (this.entity.isRaidCenterSet() && list.isEmpty()) {
                     this.entity.setPatrolling(false);
                 } else if (bl && this.entity.getPatrolTarget().isWithinDistance(this.entity.getPos(), 10.0D)) {
@@ -177,7 +172,7 @@ public class GraveyardHordeEntity extends HostileEntity {
                     } else if (bl) {
                         Iterator var9 = list.iterator();
                         while(var9.hasNext()) {
-                            GraveyardHordeEntity patrolEntity = (GraveyardHordeEntity)var9.next();
+                            HordeGraveyardEntity patrolEntity = (HordeGraveyardEntity)var9.next();
                             patrolEntity.setPatrolTarget(blockPos);
                         }
                     }
@@ -186,8 +181,8 @@ public class GraveyardHordeEntity extends HostileEntity {
 
         }
 
-        private List<GraveyardHordeEntity> findPatrolTargets() {
-            return this.entity.world.getEntitiesByClass(GraveyardHordeEntity.class, this.entity.getBoundingBox().expand(16.0D), (patrolEntity) -> {
+        private List<HordeGraveyardEntity> findPatrolTargets() {
+            return this.entity.world.getEntitiesByClass(HordeGraveyardEntity.class, this.entity.getBoundingBox().expand(16.0D), (patrolEntity) -> {
                 return patrolEntity.hasNoRaid() && !patrolEntity.isPartOf(this.entity);
             });
         }
@@ -200,11 +195,11 @@ public class GraveyardHordeEntity extends HostileEntity {
     }
 
     protected class PatrolApproachGoal extends Goal {
-        private final GraveyardHordeEntity hordeEntity;
+        private final HordeGraveyardEntity hordeEntity;
         private final float squaredDistance;
         public final TargetPredicate closeRaiderPredicate = TargetPredicate.createNonAttackable().setBaseMaxDistance(8.0D).ignoreVisibility().ignoreDistanceScalingFactor();
 
-        public PatrolApproachGoal(GraveyardHordeEntity hordeEntity, float distance) {
+        public PatrolApproachGoal(HordeGraveyardEntity hordeEntity, float distance) {
             this.hordeEntity = hordeEntity;
             this.squaredDistance = distance * distance;
             this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
@@ -218,11 +213,11 @@ public class GraveyardHordeEntity extends HostileEntity {
         public void start() {
             super.start();
             this.hordeEntity.getNavigation().stop();
-            List<GraveyardHordeEntity> list = this.hordeEntity.world.getTargets(GraveyardHordeEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().expand(8.0D, 8.0D, 8.0D));
+            List<HordeGraveyardEntity> list = this.hordeEntity.world.getTargets(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().expand(8.0D, 8.0D, 8.0D));
             Iterator var2 = list.iterator();
 
             while(var2.hasNext()) {
-                GraveyardHordeEntity hordeEntityEntity = (GraveyardHordeEntity)var2.next();
+                HordeGraveyardEntity hordeEntityEntity = (HordeGraveyardEntity)var2.next();
                 hordeEntityEntity.setTarget(this.hordeEntity.getTarget());
             }
 
@@ -232,11 +227,11 @@ public class GraveyardHordeEntity extends HostileEntity {
             super.stop();
             LivingEntity livingEntity = this.hordeEntity.getTarget();
             if (livingEntity != null) {
-                List<GraveyardHordeEntity> list = this.hordeEntity.world.getTargets(GraveyardHordeEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().expand(8.0D, 8.0D, 8.0D));
+                List<HordeGraveyardEntity> list = this.hordeEntity.world.getTargets(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().expand(8.0D, 8.0D, 8.0D));
                 Iterator var3 = list.iterator();
 
                 while(var3.hasNext()) {
-                    GraveyardHordeEntity hordeEntityEntity = (GraveyardHordeEntity)var3.next();
+                    HordeGraveyardEntity hordeEntityEntity = (HordeGraveyardEntity)var3.next();
                     hordeEntityEntity.setTarget(livingEntity);
                     hordeEntityEntity.setAttacking(true);
                 }

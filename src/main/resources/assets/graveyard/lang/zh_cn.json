@@ -145,6 +145,8 @@
   "item.graveyard.corrupted_pillager_spawn_egg": "Corrupted Pillager Spawn Egg",
   "entity.graveyard.corrupted_vindicator": "Corrupted Vindicator",
   "item.graveyard.corrupted_vindicator_spawn_egg": "Corrupted Vindicator Spawn Egg",
+  "entity.graveyard.wraith": "Wraith",
+  "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",

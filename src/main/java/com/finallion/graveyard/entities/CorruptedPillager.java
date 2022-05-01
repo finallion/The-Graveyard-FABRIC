@@ -17,49 +17,8 @@ public class CorruptedPillager extends CorruptedIllager {
     private AttributeContainer attributeContainer;
 
     public CorruptedPillager(EntityType<? extends CorruptedIllager> entityType, World world) {
-        super(entityType, world);
+        super(entityType, world, "corrupted_pillager");
     }
-
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return super.canHaveStatusEffect(effect);
-    }
-
-
-    @Override
-    public void tickMovement() {
-        if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").canBurnInSunlight;
-            if (bl) {
-                ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
-                if (!itemStack.isEmpty()) {
-                    if (itemStack.isDamageable()) {
-                        itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
-                        if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
-                            this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
-                            this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
-                        }
-                    }
-
-                    bl = false;
-                }
-
-                if (bl) {
-                    this.setOnFireFor(8);
-                }
-            }
-        }
-
-        super.tickMovement();
-    }
-
 
     @Override
     public AttributeContainer getAttributes() {
@@ -75,6 +34,12 @@ public class CorruptedPillager extends CorruptedIllager {
         } else {
             return State.UNDEAD;
         }
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+        super.onDeath(source);
+        this.playSound(SoundEvents.ENTITY_PILLAGER_DEATH, 1.0F, -4.0F);
     }
 
 }

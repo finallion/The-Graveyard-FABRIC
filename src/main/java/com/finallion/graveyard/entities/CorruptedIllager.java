@@ -1,8 +1,6 @@
 package com.finallion.graveyard.entities;
 
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.entities.horde.GraveyardHordeEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.ai.goal.*;
@@ -10,36 +8,26 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
-public abstract class CorruptedIllager extends GraveyardHordeEntity {
+public abstract class CorruptedIllager extends HordeGraveyardEntity {
     private AttributeContainer attributeContainer;
 
-    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world) {
-        super(entityType, world);
+    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
+        super(entityType, world, name);
     }
 
     protected void initGoals() {
@@ -55,11 +43,6 @@ public abstract class CorruptedIllager extends GraveyardHordeEntity {
         this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
     }
-
-    public static boolean canSpawn(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return canSpawnIgnoreLightLevel(type, world, spawnReason, pos, random);
-    }
-
 
     public EntityGroup getGroup() {
         return EntityGroup.ILLAGER;
@@ -79,15 +62,6 @@ public abstract class CorruptedIllager extends GraveyardHordeEntity {
         super.mobTick();
     }
 
-
-    @Override
-    protected boolean isAffectedByDaylight() {
-        return super.isAffectedByDaylight();
-    }
-
-    protected boolean burnsInDaylight() {
-        return true;
-    }
 
     @Override
     public boolean canLead() {
@@ -140,11 +114,6 @@ public abstract class CorruptedIllager extends GraveyardHordeEntity {
         this.playSound(SoundEvents.ENTITY_PILLAGER_HURT, 1.0F, -4.0F);
     }
 
-    @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_PILLAGER_DEATH, 1.0F, -4.0F);
-    }
 
     public boolean isModelDamaged() {
         return false;
