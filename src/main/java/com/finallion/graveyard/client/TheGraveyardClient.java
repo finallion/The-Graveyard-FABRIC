@@ -92,6 +92,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.INSTANCE.register(TGEntities.NIGHTMARE, NightmareRenderer::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_PILLAGER, CorruptedPillagerRenderer::new);
         EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
+        EntityRendererRegistry.INSTANCE.register(TGEntities.WRAITH, WraithRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 

@@ -62,6 +62,13 @@ public class TGEntities {
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
             .build();
 
+    public static final EntityType<WraithEntity> WRAITH = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(WraithEntity::new)
+            .dimensions(EntityDimensions.changing(0.6F, 1.8F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimatedGraveyardEntity::canSpawn)
+            .build();
+
     public static final EntityType<NightmareEntity> NIGHTMARE = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(NightmareEntity::new)
@@ -86,6 +93,7 @@ public class TGEntities {
         register("reaper", REAPER);
         register("revenant", REVENANT);
         register("nightmare", NIGHTMARE);
+        register("wraith", WRAITH);
     }
 
 
