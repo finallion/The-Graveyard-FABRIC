@@ -2,7 +2,9 @@ package com.finallion.graveyard.blocks;
 
 import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.finallion.graveyard.blockentities.enums.SarcophagusPart;
+import com.finallion.graveyard.entities.WraithEntity;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
@@ -148,27 +150,16 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     public static void spawnGhost(BlockState state, World world, BlockPos pos, PlayerEntity player, Random random) {
         if (!state.get(PLAYER_PLACED) && random.nextInt(5) == 0) {
             BlockPos entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
-            VindicatorEntity ghost = EntityType.VINDICATOR.create(world);
+            WraithEntity ghost = TGEntities.WRAITH.create(world);
             ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
             world.spawnEntity(ghost);
             world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
             world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
-
-            spawnParticles(state, world, entityPos, random, player);
         }
     }
 
-    // TODO: MOVE TO ENTITY
-    public static void spawnParticles(BlockState state, WorldAccess world, BlockPos pos, Random random, PlayerEntity player) {
-        if (state.getBlock() instanceof SarcophagusBlock) {
-            for (int i = 0; i < 20; i++) {
-                world.addParticle(ParticleTypes.EXPLOSION, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(), pos.getZ() + random.nextDouble(), 0.0F, 0.0F, 0.0F);
-            }
-            world.playSound(player, pos, SoundEvents.BLOCK_SOUL_SAND_PLACE, SoundCategory.BLOCKS, 1.0F, -5.0F);
-        }
-    }
 
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);

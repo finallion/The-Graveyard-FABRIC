@@ -1,6 +1,7 @@
 package com.finallion.graveyard.mixin;
 
 import com.finallion.graveyard.entities.HordeGraveyardEntity;
+import com.finallion.graveyard.entities.HostileGraveyardEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.FleeEntityGoal;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -20,7 +21,6 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
     @Inject(method = "initGoals", at = @At(value = "TAIL"))
     private void initCustomGoal(CallbackInfo ci) {
-        this.goalSelector.add(1, new FleeEntityGoal<>(this, HordeGraveyardEntity.class, 10.0F, 0.5D, 0.5D));
-        //this.goalSelector.add(1, new FleeEntityGoal<>(this, AcolyteEntity.class, 10.0F, 0.5D, 0.5D));
+        this.goalSelector.add(1, new FleeEntityGoal<>(this, HostileGraveyardEntity.class, 10.0F, 0.5D, 0.5D));
     }
 }

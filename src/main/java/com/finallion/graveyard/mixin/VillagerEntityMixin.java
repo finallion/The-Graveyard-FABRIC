@@ -1,6 +1,7 @@
 package com.finallion.graveyard.mixin;
 
 import com.finallion.graveyard.entities.HordeGraveyardEntity;
+import com.finallion.graveyard.entities.HostileGraveyardEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.FleeEntityGoal;
 import net.minecraft.entity.passive.MerchantEntity;
@@ -22,7 +23,6 @@ public abstract class VillagerEntityMixin extends PassiveEntity {
 
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;Lnet/minecraft/village/VillagerType;)V", at = @At(value = "TAIL"))
     private void inject(EntityType<? extends VillagerEntity> entityType, World world, VillagerType type, CallbackInfo ci) {
-        this.goalSelector.add(1, new FleeEntityGoal<>(this, HordeGraveyardEntity.class, 10.0F, 0.7D, 1.0D));
-        //this.goalSelector.add(1, new FleeEntityGoal<>(this, AcolyteEntity.class, 10.0F, 0.7D, 1.0D));
+        this.goalSelector.add(1, new FleeEntityGoal<>(this, HostileGraveyardEntity.class, 10.0F, 0.7D, 1.0D));
     }
 }

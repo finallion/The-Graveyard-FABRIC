@@ -220,7 +220,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         }
 
         if (spawnTimer < 0) {
-            if (isCharging()) {
+            if (isCharging() || isAttacking()) {
                 controller.setAnimation(ATTACK_ANIMATION);
             } else if (isMoving) {
                 controller.setAnimation(MOVE_ANIMATION);
@@ -248,7 +248,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         if(attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
                     .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D)
                     .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
                     .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.2).build());
         }
@@ -390,8 +390,8 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         }
 
         public boolean canStart() {
-            if (WraithEntity.this.getTarget() != null && !WraithEntity.this.getMoveControl().isMoving() && WraithEntity.this.random.nextInt(toGoalTicks(7)) == 0) {
-                return WraithEntity.this.squaredDistanceTo(WraithEntity.this.getTarget()) > 4.0D;
+            if (WraithEntity.this.getTarget() != null && !WraithEntity.this.getMoveControl().isMoving() && WraithEntity.this.random.nextInt(toGoalTicks(3)) == 0) {
+                return WraithEntity.this.squaredDistanceTo(WraithEntity.this.getTarget()) > 2.0D;
             } else {
                 return false;
             }
@@ -404,8 +404,8 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         public void start() {
             LivingEntity livingEntity = WraithEntity.this.getTarget();
             if (livingEntity != null) {
-                Vec3d vec3d = livingEntity.getEyePos();
-                WraithEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 0.6D);
+                BlockPos pos = livingEntity.getBlockPos();
+                WraithEntity.this.moveControl.moveTo(pos.getX(), pos.getY() + 0.5D, pos.getZ(), 0.6D);
             }
 
             WraithEntity.this.setCharging(true);
@@ -427,7 +427,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
                     WraithEntity.this.setCharging(false);
                 } else {
                     double d = WraithEntity.this.squaredDistanceTo(livingEntity);
-                    if (d < 9.0D) {
+                    if (d < 6.0D) {
                         Vec3d vec3d = livingEntity.getEyePos();
                         WraithEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 0.6D);
                     }
