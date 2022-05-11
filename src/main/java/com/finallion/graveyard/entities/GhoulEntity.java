@@ -155,6 +155,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
 
 
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
+        // new AnimationBuilder().addAnimation(first_anim, false (this is mandatory)).addAnimation(second_anim, false)
         if (isAttacking() && canAttack && !(this.isDead() || this.getHealth() < 0.01)) {
             timeSinceLastAttack = 25;
             canAttack = false;

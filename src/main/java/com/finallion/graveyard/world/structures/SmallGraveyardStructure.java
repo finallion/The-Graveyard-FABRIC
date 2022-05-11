@@ -43,7 +43,7 @@ public class SmallGraveyardStructure extends AbstractGraveyardStructure {
 
         static {
             STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "small_graveyard"), new Identifier("empty"), ImmutableList.of(
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":small_graveyard/small_graveyard_01"), 1),
+                    //Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":small_graveyard/small_graveyard_01"), 1),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":small_graveyard/small_graveyard_02"), 1),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":small_graveyard/small_graveyard_03"), 1),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":small_graveyard/small_graveyard_04"), 1),

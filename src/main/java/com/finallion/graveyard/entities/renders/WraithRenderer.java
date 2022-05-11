@@ -4,6 +4,8 @@ import com.finallion.graveyard.entities.NightmareEntity;
 import com.finallion.graveyard.entities.WraithEntity;
 import com.finallion.graveyard.entities.models.NightmareModel;
 import com.finallion.graveyard.entities.models.WraithModel;
+import com.finallion.graveyard.entities.renders.features.ReaperEyesFeatureRenderer;
+import com.finallion.graveyard.entities.renders.features.WraithEyesFeatureRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -16,6 +18,7 @@ public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
 
     public WraithRenderer(EntityRendererFactory.Context context) {
         super(context, new WraithModel());
+        this.addLayer(new WraithEyesFeatureRenderer(this));
         this.shadowRadius = 0.3F;
     }
 
