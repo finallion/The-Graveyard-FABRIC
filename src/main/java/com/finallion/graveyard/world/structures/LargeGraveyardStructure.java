@@ -69,7 +69,8 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_01"), 15),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_02"), 15),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_03"), 15),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_04"), 15)
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_04"), 15),
+                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/branch_pool/branch_nature_05"), 15)
             ), StructurePool.Projection.RIGID));
             FEATURE_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/feature_pool"), new Identifier("empty"), ImmutableList.of(
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/feature_pool/wither_skeleton_mill"), 1),
@@ -85,7 +86,7 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
             STREET_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "large_walled_graveyard/street_pool"), new Identifier("empty"), ImmutableList.of(
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_01"), 5),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_02"), 5),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_03"), 5),
+                    //Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_03"), 5),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_04"), 5),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_05"), 4),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":large_graveyard/street_pool/street_06"), 4),
