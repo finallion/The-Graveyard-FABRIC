@@ -328,7 +328,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         if (attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
                     .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D)
+                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
                     .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
                     .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35).build());
         }

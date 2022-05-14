@@ -66,8 +66,8 @@ public abstract class AbstractUndergroundStructure extends StructureFeature<Stru
     }
 
     public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context, StructureConfigEntry config, String name) {
-        int minHeight = -40; // default: -57
-        int maxHeight = 24; // default: 24
+        int minHeight = -40; // default: -40
+        int maxHeight = -10; // default: -10
 
         ChunkPos chunkPos = context.chunkPos();
         Random random = new Random();

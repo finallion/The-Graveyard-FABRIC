@@ -3,6 +3,7 @@ package com.finallion.graveyard.world.structures;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
+import com.finallion.graveyard.init.TGProcessors;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -35,7 +36,7 @@ public class CryptStructure extends AbstractUndergroundStructure {
     public static class CryptGenerator {
         public static final RegistryEntry<StructurePool> CORRIDOR_POOL;
         public static final RegistryEntry<StructurePool> STARTING_POOL;
-        public static final RegistryEntry<StructurePool> TREASURE_POOL;
+        //public static final RegistryEntry<StructurePool> TREASURE_POOL;
 
         public CryptGenerator() {
         }
@@ -44,12 +45,12 @@ public class CryptStructure extends AbstractUndergroundStructure {
         }
 
         static {
-            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/start_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/start_pool/start_room"), 1)), StructurePool.Projection.RIGID));
+            STARTING_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/start_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(StructurePoolElement.ofProcessedSingle(TheGraveyard.MOD_ID + ":crypt/start_pool/start_room", TGProcessors.WATERLOGGED_LIST), 1)), StructurePool.Projection.RIGID));
             CORRIDOR_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/corridor_pool"), new Identifier("minecraft:empty"), ImmutableList.of(
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_01"), 10),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_02"), 10),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_03"), 10),
-                    Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_04"), 10),
+                    Pair.of(StructurePoolElement.ofProcessedSingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_01", TGProcessors.WATERLOGGED_LIST), 10),
+                    Pair.of(StructurePoolElement.ofProcessedSingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_02", TGProcessors.WATERLOGGED_LIST), 10),
+                    Pair.of(StructurePoolElement.ofProcessedSingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_03", TGProcessors.WATERLOGGED_LIST), 10),
+                    Pair.of(StructurePoolElement.ofProcessedSingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/room_04", TGProcessors.WATERLOGGED_LIST), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corner_01"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corner_02"), 10),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/corner_03"), 10),
@@ -82,8 +83,8 @@ public class CryptStructure extends AbstractUndergroundStructure {
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/end_05"), 8),
                     Pair.of(StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/corridor_pool/end_06"), 8)
             ), StructurePool.Projection.RIGID));
-            TREASURE_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/treasure_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(
-                    StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/treasure_pool/treasure_01"), 1)), StructurePool.Projection.RIGID));
+            //TREASURE_POOL = StructurePools.register(new StructurePool(new Identifier(TheGraveyard.MOD_ID, "crypt/treasure_pool"), new Identifier("empty"), ImmutableList.of(Pair.of(
+            //        StructurePoolElement.ofLegacySingle(TheGraveyard.MOD_ID + ":crypt/treasure_pool/treasure_01"), 1)), StructurePool.Projection.RIGID));
 
         }
     }

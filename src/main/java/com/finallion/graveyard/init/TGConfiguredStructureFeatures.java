@@ -74,7 +74,7 @@ public class TGConfiguredStructureFeatures {
 
     public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> GIANT_MUSHROOM_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.GIANT_MUSHROOM,
             TGStructureFeatures.GIANT_MUSHROOM_STRUCTURE.configure(
-                    new StructurePoolFeatureConfig(GiantMushroomStructure.GiantMushroomGenerator.STARTING_POOL, 1), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("giant_mushroom")));
+                    new StructurePoolFeatureConfig(GiantMushroomStructure.GiantMushroomGenerator.STARTING_POOL, 2), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("giant_mushroom")));
 
     public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CRYPT_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.CRYPT,
             TGStructureFeatures.CRYPT_STRUCTURE.configure(
