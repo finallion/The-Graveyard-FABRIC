@@ -37,9 +37,20 @@ public class CorruptedPillager extends CorruptedIllager {
     }
 
     @Override
+    public void playAmbientSound() {
+        this.playSound(SoundEvents.ENTITY_ZOMBIE_VILLAGER_AMBIENT, 1.0F, 0.0F);
+    }
+
+    @Override
+    protected void playHurtSound(DamageSource source) {
+        this.playSound(SoundEvents.ENTITY_ZOMBIE_VILLAGER_HURT, 1.0F, 0.0F);
+    }
+
+
+    @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_PILLAGER_DEATH, 1.0F, -4.0F);
+        this.playSound(SoundEvents.ENTITY_ZOMBIE_VILLAGER_DEATH, 1.0F, 0.0F);
     }
 
 }

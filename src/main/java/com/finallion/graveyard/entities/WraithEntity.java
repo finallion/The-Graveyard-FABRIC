@@ -212,7 +212,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         }
 
         if (world.isClient() && spawnTimer >= 0) {
-            playDeathSound();
+            world.playSound(null, this.getBlockPos(), SoundEvents.BLOCK_SOUL_SAND_BREAK, SoundCategory.BLOCKS,2.5F, -10.0F);
         }
 
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
@@ -384,6 +384,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
             this.playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 2.5F, -10.0F);
         }
     }
+
 
     @Override
     public boolean collidesWith(Entity other) {

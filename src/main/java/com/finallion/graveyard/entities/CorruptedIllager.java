@@ -104,16 +104,6 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         }
     }
 
-    @Override
-    public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_PILLAGER_AMBIENT, 1.0F, -4.0F);
-    }
-
-    @Override
-    protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_PILLAGER_HURT, 1.0F, -4.0F);
-    }
-
 
     public boolean isModelDamaged() {
         return false;

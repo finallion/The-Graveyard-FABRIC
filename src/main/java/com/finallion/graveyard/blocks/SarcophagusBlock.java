@@ -148,8 +148,14 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         }
     }
     public static void spawnGhost(BlockState state, World world, BlockPos pos, PlayerEntity player, Random random) {
-        if (!state.get(PLAYER_PLACED) && random.nextInt(4) == 0) {
-            BlockPos entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+        if (!state.get(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 64) {
+            BlockPos entityPos = pos;
+            for (int i = 0; i < 10; i++) { // 10 spawn attempts to find air, else just spawn
+                entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+                if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.up()).isAir()) {
+                    break;
+                }
+            }
             WraithEntity ghost = TGEntities.WRAITH.create(world);
             ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
             world.spawnEntity(ghost);
