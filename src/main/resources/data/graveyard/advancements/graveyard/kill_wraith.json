@@ -1,0 +1,39 @@
+{
+  "parent": "graveyard:graveyard/crypt",
+  "display": {
+    "icon": {
+      "item": "minecraft:spectral_arrow"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_wraith.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_wraith.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "wraith": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "graveyard:wraith"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "wraith"
+    ]
+  ]
+}

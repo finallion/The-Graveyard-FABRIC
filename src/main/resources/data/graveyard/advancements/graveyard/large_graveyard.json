@@ -1,0 +1,33 @@
+{
+  "parent": "graveyard:graveyard/medium_graveyard",
+  "display": {
+    "icon": {
+      "item": "graveyard:deepslate_gravestone"
+    },
+    "title": {
+      "translate": "advancements.graveyard.large_graveyard.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.large_graveyard.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "large_graveyard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:large_graveyard"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "large_graveyard"
+    ]
+  ]
+}

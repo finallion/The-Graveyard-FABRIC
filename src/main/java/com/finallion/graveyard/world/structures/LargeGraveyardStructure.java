@@ -22,7 +22,7 @@ import java.util.Collections;
 public class LargeGraveyardStructure extends AbstractGraveyardStructure {
 
     public LargeGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(12, 10, 304812394,
+        super(codec, new StructureConfigEntry(16, 15, 304812394,
                         Arrays.asList("#" + Biome.Category.TAIGA.getName(), "minecraft:dark_forest", "terralith:forested_highlands", "terralith:lush_valley", "terralith:shield", "terralith:shield_clearing", "terralith:wintry_forest", "graveyard_biomes:haunted_forest"),
                         Collections.emptyList(),
                         Arrays.asList("#minecraft", "#graveyard_biomes", "#terralith"), true), // only allow in dark forest and taigas

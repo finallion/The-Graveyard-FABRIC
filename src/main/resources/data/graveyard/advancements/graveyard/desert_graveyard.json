@@ -1,0 +1,33 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:sand"
+    },
+    "title": {
+      "translate": "advancements.graveyard.desert_graveyard.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.desert_graveyard.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "small_desert_graveyard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:small_desert_graveyard"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "small_desert_graveyard"
+    ]
+  ]
+}

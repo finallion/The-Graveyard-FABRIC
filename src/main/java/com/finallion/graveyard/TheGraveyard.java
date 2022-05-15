@@ -37,6 +37,7 @@ public class TheGraveyard implements ModInitializer {
             ServerTickEvents.END_WORLD_TICK.register(new TGSpawner.OnWorldTick());
         }
 
+        TGAdvancements.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGEntities.registerEntities();

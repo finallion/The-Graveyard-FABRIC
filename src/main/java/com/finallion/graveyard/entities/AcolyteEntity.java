@@ -1,6 +1,8 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.item.DaggerItem;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.ai.goal.*;
@@ -20,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -64,5 +67,16 @@ public class AcolyteEntity extends CorruptedIllager {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_VINDICATOR_DEATH, 1.0F, 1.0F);
+    }
+
+    @Override
+    protected void onKilledBy(@Nullable LivingEntity adversary) {
+        if (adversary instanceof ServerPlayerEntity player) {
+            if (player.getMainHandStack().getItem() instanceof DaggerItem) {
+                TGAdvancements.KILLED_BY_BONE_DAGGER.trigger(player);
+            }
+        }
+
+        super.onKilledBy(adversary);
     }
 }

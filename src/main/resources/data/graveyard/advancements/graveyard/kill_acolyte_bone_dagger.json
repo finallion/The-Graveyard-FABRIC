@@ -1,0 +1,31 @@
+{
+  "parent": "graveyard:graveyard/haunted_house",
+  "display": {
+    "icon": {
+      "item": "graveyard:bone_dagger"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_acolyte_bone_dagger.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_acolyte_bone_dagger.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "criteria": {
+    "killed_by_bone_dagger": {
+      "trigger": "graveyard:killed_by_bone_dagger"
+    }
+  },
+  "requirements": [
+    [
+      "killed_by_bone_dagger"
+    ]
+  ]
+}

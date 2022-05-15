@@ -1,0 +1,60 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "title": {
+      "translate": "advancements.graveyard.root.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.root.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/soul_sand.png"
+  },
+  "criteria": {
+    "grave_01": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:small_grave"
+        }
+      }
+    },
+    "grave_02": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:small_mountain_grave"
+        }
+      }
+    },
+    "grave_03": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:small_desert_grave"
+        }
+      }
+    },
+    "grave_04": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:small_savanna_grave"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "grave_01",
+      "grave_02",
+      "grave_03",
+      "grave_04"
+    ]
+  ]
+}

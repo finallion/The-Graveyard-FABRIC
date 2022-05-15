@@ -1,0 +1,33 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:cobweb"
+    },
+    "title": {
+      "translate": "advancements.graveyard.haunted_house.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.haunted_house.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "haunted_house": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "graveyard:haunted_house"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "haunted_house"
+    ]
+  ]
+}
