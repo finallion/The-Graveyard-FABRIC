@@ -38,7 +38,8 @@ public class GraveyardHordeSpawner implements Spawner {
             if (this.ticksUntilNextSpawn > 0) {
                 return 0;
             } else {
-                this.ticksUntilNextSpawn += TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).ticksUntilNextSpawn + random.nextInt(1200);
+                int randomizer = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).additionalRandomizedTicks;
+                this.ticksUntilNextSpawn += TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).ticksUntilNextSpawn + random.nextInt(randomizer <= 0 ? 1200 : randomizer);
                 if (world.isNight()) {
                     if (random.nextInt(5) != 0) {
                         return 0;

@@ -3,6 +3,7 @@ package com.finallion.graveyard.blocks;
 import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.finallion.graveyard.blockentities.enums.SarcophagusPart;
 import com.finallion.graveyard.entities.WraithEntity;
+import com.finallion.graveyard.init.TGAdvancements;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
@@ -29,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -162,6 +164,9 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
             world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
+            if (player instanceof ServerPlayerEntity) {
+                TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayerEntity) player);
+            }
             world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
         }
     }

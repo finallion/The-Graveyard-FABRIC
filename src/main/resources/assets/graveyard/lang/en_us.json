@@ -129,7 +129,7 @@
 
 
   "advancements.graveyard.crypt.title": "Into Darkness",
-  "advancements.graveyard.crypt.description": "Find an underground crypt",
+  "advancements.graveyard.crypt.description": "Find an underground crypt.",
   "advancements.graveyard.haunted_house.title": "Invitation to the Tea Party",
   "advancements.graveyard.haunted_house.description": "Accept the invitation to the house in the woods.",
   "advancements.graveyard.medium_graveyard.title": "Disturbing the Dead I",
@@ -146,6 +146,25 @@
   "advancements.graveyard.kill_acolyte_bone_dagger.description": "Kill an acolyte with a bone dagger.",
   "advancements.graveyard.desert_graveyard.title": "Dust, Sand and Bones",
   "advancements.graveyard.desert_graveyard.description": "Find a desert graveyard.",
+  "advancements.graveyard.dim_light.title": "Who turned the lights off?",
+  "advancements.graveyard.dim_light.description": "Witness a wraith extinguish a light source.",
+  "advancements.graveyard.kill_while_blinded.title": "Peekaboo, I (still) see you!",
+  "advancements.graveyard.kill_while_blinded.description": "Kill a nightmare while under the blindness effect.",
+  "advancements.graveyard.kill_graveyard_mob.title": "Stay dead",
+  "advancements.graveyard.kill_graveyard_mob.description": "Kill a graveyard mob.",
+  "advancements.graveyard.craft_coffin.title": "Well prepared",
+  "advancements.graveyard.craft_coffin.description": "Obtain a coffin.",
+  "advancements.graveyard.corruption.title": "Source of Evil",
+  "advancements.graveyard.corruption.description": "Obtain corruption from graves or graveyard mobs.",
+  "advancements.graveyard.dark_iron.title": "Iron, but dark",
+  "advancements.graveyard.dark_iron.description": "Obtain a dark iron ingot.",
+  "advancements.graveyard.find_skeleton.title": "Pseudo Archaeologist",
+  "advancements.graveyard.find_skeleton.description": "Obtain a decorative skeleton.",
+  "advancements.graveyard.visit_at_night.title": "Dreamcatcher",
+  "advancements.graveyard.visit_at_night.description": "Sleep on a graveyard.",
+  "advancements.graveyard.kill_horde.title": "Walking Dead",
+  "advancements.graveyard.kill_horde.description": "Decimate a graveyard horde, spawning at night.",
+
 
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"

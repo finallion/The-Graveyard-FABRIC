@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/kill_graveyard_mob",
+  "display": {
+    "icon": {
+      "item": "minecraft:zombie_head"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_horde.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_horde.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "kill_horde": {
+      "trigger": "graveyard:kill_horde"
+    }
+  },
+  "requirements": [
+    [
+      "kill_horde"
+    ]
+  ]
+}

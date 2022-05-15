@@ -1,0 +1,37 @@
+{
+  "parent": "graveyard:graveyard/corruption",
+  "display": {
+    "icon": {
+      "item": "graveyard:dark_iron_ingot"
+    },
+    "title": {
+      "translate": "advancements.graveyard.dark_iron.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.dark_iron.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dark_iron": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:dark_iron_ingot"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dark_iron"
+    ]
+  ]
+}

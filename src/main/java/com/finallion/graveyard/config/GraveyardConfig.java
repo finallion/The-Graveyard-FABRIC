@@ -131,13 +131,13 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
         mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,10, 2, 3, true, false, Arrays.asList("graveyard_biomes:eroded_haunted_forest"), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
-        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000));
+        hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000, 1200));
         Config.super.save();
     }
 

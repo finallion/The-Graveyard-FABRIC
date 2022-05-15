@@ -1,12 +1,15 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGAdvancements;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
@@ -117,6 +120,18 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     protected boolean isRaidCenterSet() {
         return this.patrolling;
     }
+
+    @Override
+    protected void onKilledBy(@Nullable LivingEntity adversary) {
+        if (adversary instanceof ServerPlayerEntity player) {
+            if (this.patrolLeader) {
+                TGAdvancements.KILL_HORDE.trigger(player);
+            }
+        }
+
+        super.onKilledBy(adversary);
+    }
+
 
     public static class PatrolGoal<T extends HordeGraveyardEntity> extends Goal {
         private static final int field_30474 = 200;

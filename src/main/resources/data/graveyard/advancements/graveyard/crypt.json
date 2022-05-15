@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/root",
   "display": {
     "icon": {
-      "item": "graveyard:corruption"
+      "item": "minecraft:amethyst_cluster"
     },
     "title": {
       "translate": "advancements.graveyard.crypt.title"

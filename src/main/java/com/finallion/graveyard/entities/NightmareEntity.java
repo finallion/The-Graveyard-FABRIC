@@ -1,6 +1,8 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.item.DaggerItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
@@ -24,6 +26,7 @@ import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.FluidTags;
@@ -363,6 +366,17 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
             this.dataTracker.set(ANGRY, true);
         }
 
+    }
+
+    @Override
+    protected void onKilledBy(@Nullable LivingEntity adversary) {
+        if (adversary instanceof ServerPlayerEntity player) {
+            if (player.hasStatusEffect(StatusEffects.BLINDNESS)) {
+                TGAdvancements.KILL_WHILE_BLINDED.trigger(player);
+            }
+        }
+
+        super.onKilledBy(adversary);
     }
 
     static {

@@ -2,6 +2,7 @@ package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blocks.BrazierBlock;
+import com.finallion.graveyard.init.TGAdvancements;
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.AboveGroundTargeting;
@@ -37,6 +38,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -468,6 +470,7 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
                             WraithEntity.this.world.playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             WraithEntity.this.world.setBlockState(blockPos, (BlockState) blockState.with(Properties.LIT, false));
                             WraithEntity.this.addExtinguishCounter();
+                            triggerAdvancement(WraithEntity.this, bl);
                             return;
                         }
                     }
@@ -494,6 +497,15 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
                     }
                 }
 
+            }
+        }
+    }
+
+    private static void triggerAdvancement(WraithEntity wraith, boolean bool) {
+        if (bool) {
+            PlayerEntity player = wraith.world.getClosestPlayer(wraith, 10.0D);
+            if (player instanceof ServerPlayerEntity) {
+                TGAdvancements.DIM_LIGHT.trigger((ServerPlayerEntity) player);
             }
         }
     }

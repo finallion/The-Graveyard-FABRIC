@@ -1,0 +1,37 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "graveyard:corruption"
+    },
+    "title": {
+      "translate": "advancements.graveyard.corruption.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.corruption.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "corruption": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:corruption"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "corruption"
+    ]
+  ]
+}

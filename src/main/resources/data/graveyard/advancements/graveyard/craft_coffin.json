@@ -1,0 +1,45 @@
+{
+  "parent": "graveyard:graveyard/dark_iron",
+  "display": {
+    "icon": {
+      "item": "graveyard:oak_coffin"
+    },
+    "title": {
+      "translate": "advancements.graveyard.craft_coffin.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.craft_coffin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "coffin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:oak_coffin",
+              "graveyard:dark_oak_coffin",
+              "graveyard:spruce_coffin",
+              "graveyard:acacia_coffin",
+              "graveyard:birch_coffin",
+              "graveyard:jungle_coffin",
+              "graveyard:crimson_coffin",
+              "graveyard:warped_coffin",
+              "graveyard:sarcophagus"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "coffin"
+    ]
+  ]
+}

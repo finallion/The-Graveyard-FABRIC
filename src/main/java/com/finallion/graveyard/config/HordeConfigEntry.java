@@ -4,20 +4,22 @@ import java.util.List;
 
 public class HordeConfigEntry {
     public final boolean enabled;
-    public final int size;
+    public final int mobSpawnAttempts;
     public final int ticksUntilNextSpawn;
+    public final int additionalRandomizedTicks;
 
-    public HordeConfigEntry(int size, int ticksUntilNextSpawn) {
-        this(true, size, ticksUntilNextSpawn);
+    public HordeConfigEntry(int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {
+        this(true, mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks);
     }
 
-    private HordeConfigEntry(boolean enabled, int size, int ticksUntilNextSpawn) {
+    private HordeConfigEntry(boolean enabled, int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {
         this.enabled = enabled;
-        this.size = size;
+        this.mobSpawnAttempts = mobSpawnAttempts;
         this.ticksUntilNextSpawn = ticksUntilNextSpawn;
+        this.additionalRandomizedTicks = additionalRandomizedTicks;
     }
 
-    public static HordeConfigEntry of(int size, int ticksUntilNextSpawn) {
-        return new HordeConfigEntry(size, ticksUntilNextSpawn);
+    public static HordeConfigEntry of(int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {
+        return new HordeConfigEntry(mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks);
     }
 }

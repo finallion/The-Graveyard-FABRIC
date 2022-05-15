@@ -2,13 +2,13 @@
   "parent": "graveyard:graveyard/crypt",
   "display": {
     "icon": {
-      "item": "minecraft:gold_ingot"
+      "item": "minecraft:soul_lantern"
     },
     "title": {
-      "translate": "advancements.graveyard.kill_wraith.title"
+      "translate": "advancements.graveyard.dim_light.title"
     },
     "description": {
-      "translate": "advancements.graveyard.kill_wraith.description"
+      "translate": "advancements.graveyard.dim_light.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "wraith": {
-      "trigger": "graveyard:spawn_wraith"
+    "dim_light": {
+      "trigger": "graveyard:dim_light"
     }
   },
   "requirements": [
     [
-      "wraith"
+      "dim_light"
     ]
   ]
 }

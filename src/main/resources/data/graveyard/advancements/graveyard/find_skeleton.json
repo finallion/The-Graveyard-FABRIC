@@ -1,0 +1,47 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "graveyard:leaning_skeleton"
+    },
+    "title": {
+      "translate": "advancements.graveyard.find_skeleton.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.find_skeleton.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "skeleton": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:skull_with_rib_cage",
+              "graveyard:skeleton_hand",
+              "graveyard:leaning_skeleton",
+              "graveyard:skull_pile",
+              "graveyard:lying_skeleton",
+              "graveyard:creeper_skeleton",
+              "graveyard:wither_skull_with_rib_cage",
+              "graveyard:wither_skeleton_hand",
+              "graveyard:leaning_wither_skeleton",
+              "graveyard:lying_wither_skeleton",
+              "graveyard:wither_skull_pile"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "skeleton"
+    ]
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:stone_sword"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_graveyard_mob.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_graveyard_mob.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ghoul": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "graveyard:ghoul"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "skeleton_creeper": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "graveyard:skeleton_creeper"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "revenant": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "graveyard:revenant"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "reaper": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "graveyard:reaper"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ghoul",
+      "skeleton_creeper",
+      "revenant",
+      "reaper"
+    ]
+  ]
+}

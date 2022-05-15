@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "minecraft:ender_eye"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_while_blinded.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_while_blinded.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "kill_while_blinded": {
+      "trigger": "graveyard:kill_while_blinded"
+    }
+  },
+  "requirements": [
+    [
+      "kill_while_blinded"
+    ]
+  ]
+}
