@@ -86,7 +86,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         builder.add(WATERLOGGED, OPEN, FACING, PART, PLAYER_PLACED, IS_COFFIN);
     }
 
-
     @Nullable
     public static Direction getDirection(BlockView world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -122,8 +121,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
                 return DOUBLE_EAST_SHAPE;
         }
     }
-
-
 
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {

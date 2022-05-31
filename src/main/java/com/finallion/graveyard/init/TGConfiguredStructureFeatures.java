@@ -78,7 +78,7 @@ public class TGConfiguredStructureFeatures {
 
     public static final RegistryEntry<ConfiguredStructureFeature<?, ?>> CRYPT_STRUCTURE_CONFIG = register(TGConfiguredStructureFeatureKeys.CRYPT,
             TGStructureFeatures.CRYPT_STRUCTURE.configure(
-                    new StructurePoolFeatureConfig(CryptStructure.CryptGenerator.STARTING_POOL, 7), TGTags.IS_OVERWORLD, true, addMobSpawnsToStructure("crypt")));
+                    new StructurePoolFeatureConfig(CryptStructure.CryptGenerator.STARTING_POOL, 7), TGTags.IS_OVERWORLD, false, addMobSpawnsToStructure("crypt")));
 
     public static void init() {}
 

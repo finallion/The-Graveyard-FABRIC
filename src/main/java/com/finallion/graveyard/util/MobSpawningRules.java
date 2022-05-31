@@ -69,6 +69,33 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").weight,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").minGroup,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").maxGroup);
+
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("wraith").modWhitelist, context))
+                        .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("wraith").whitelist, TheGraveyard.config.mobConfigEntries.get("wraith").blacklist, context))
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("wraith").enabled)),
+                SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
+                TheGraveyard.config.mobConfigEntries.get("wraith").weight,
+                TheGraveyard.config.mobConfigEntries.get("wraith").minGroup,
+                TheGraveyard.config.mobConfigEntries.get("wraith").maxGroup);
+
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").modWhitelist, context))
+                        .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").blacklist, context))
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").enabled)),
+                SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").weight,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").minGroup,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").maxGroup);
+
+        BiomeModifications.addSpawn(BiomeSelectors.all()
+                        .and(context -> parseWhitelistedMods(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").modWhitelist, context))
+                        .and(context -> parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").blacklist, context))
+                        .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").enabled)),
+                SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").weight,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").minGroup,
+                TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").maxGroup);
     }
 
     private static boolean parseBiomes(List<String> whitelist, List<String> blacklist, BiomeSelectionContext biomeContext) {

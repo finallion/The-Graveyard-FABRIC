@@ -67,7 +67,7 @@ public class GraveyardHordeSpawner implements Spawner {
                                     } else {
                                         int n = 0;
                                         // how many entities will spawn
-                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).size;
+                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
                                         boolean illagerSpawn = random.nextBoolean();
 
                                         for (int p = 0; p < o; ++p) {

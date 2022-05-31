@@ -106,7 +106,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         this.goalSelector.add(8, new LookAroundGoal(this));
         this.targetSelector.add(1, new TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
         this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
-        this.targetSelector.add(4, new UniversalAngerGoal(this, false));
+        this.targetSelector.add(4, new UniversalAngerGoal<>(this, false));
     }
 
     protected void mobTick() {
