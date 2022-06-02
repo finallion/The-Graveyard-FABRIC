@@ -20,7 +20,7 @@ public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
         super(ctx, new CorruptedIllagerModel<>(ctx.getPart(TheGraveyardClient.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
         this.addFeature(new AcolyteEyes(this));
         this.model.getHat().visible = true;
-        this.addFeature(new HeldItemFeatureRenderer<>(this) {
+        this.addFeature(new HeldItemFeatureRenderer<>(this, ctx.getHeldItemRenderer()) {
             public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AcolyteEntity acolyte, float f, float g, float h, float j, float k, float l) {
                 if (acolyte.isAttacking()) {
                     super.render(matrixStack, vertexConsumerProvider, i, acolyte, f, g, h, j, k, l);

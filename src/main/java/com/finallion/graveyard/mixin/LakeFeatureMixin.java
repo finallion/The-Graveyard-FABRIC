@@ -1,6 +1,6 @@
 package com.finallion.graveyard.mixin;
 
-
+/*
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.ChunkSectionPos;
@@ -35,3 +35,5 @@ public class LakeFeatureMixin {
         }
     }
 }
+
+ */

@@ -9,17 +9,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public class NightmareModel extends AnimatedGeoModel<NightmareEntity> {
 
     @Override
-    public Identifier getModelLocation(NightmareEntity object) {
+    public Identifier getModelResource(NightmareEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "geo/nightmare.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(NightmareEntity object) {
+    public Identifier getTextureResource(NightmareEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "textures/entity/nightmare.png");
     }
 
     @Override
-    public Identifier getAnimationFileLocation(NightmareEntity animatable) {
+    public Identifier getAnimationResource(NightmareEntity animatable) {
         return new Identifier(TheGraveyard.MOD_ID, "animations/nightmare/nightmare.animation.json");
     }
 }

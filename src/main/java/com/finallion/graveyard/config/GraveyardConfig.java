@@ -1,9 +1,6 @@
 package com.finallion.graveyard.config;
 
-import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
-import com.finallion.graveyard.init.TGStructureFeatures;
-import com.finallion.graveyard.world.structures.AbstractGraveyardStructure;
-import com.finallion.graveyard.world.structures.AbstractUndergroundStructure;
+
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
@@ -11,8 +8,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
+
 
 import java.util.*;
 
@@ -113,6 +109,7 @@ public class GraveyardConfig implements Config {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
         integerEntries.putIfAbsent("maxTerrainHeightDifference", 6);
 
+        /*
         for (StructureFeature<?> structure : getStructures()) {
             AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
             StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
@@ -125,6 +122,8 @@ public class GraveyardConfig implements Config {
             structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
         }
 
+
+
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
         mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
         mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
@@ -135,6 +134,8 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
 
+
+         */
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
         hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000, 1200));
@@ -142,6 +143,7 @@ public class GraveyardConfig implements Config {
     }
 
     // config gets called earlier than the structure registry
+    /*
     private List<StructureFeature<?>> getStructures() {
         List<StructureFeature<?>> structures = new ArrayList<>();
         structures.add(TGStructureFeatures.MEDIUM_GRAVEYARD_STRUCTURE);
@@ -166,6 +168,9 @@ public class GraveyardConfig implements Config {
         return structures;
     }
 
+     */
+
+    /*
 
     private List<String> getAllOverworldBiomeCategories() {
         Biome.Category[] biomeCategory = Biome.Category.values();
@@ -179,6 +184,8 @@ public class GraveyardConfig implements Config {
         return biomeNames;
 
     }
+
+     */
 
 }
 

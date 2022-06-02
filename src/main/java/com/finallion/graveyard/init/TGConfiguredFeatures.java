@@ -1,5 +1,6 @@
 package com.finallion.graveyard.init;
 
+/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.world.features.surfaceFeatures.*;
 import net.minecraft.util.Identifier;
@@ -35,7 +36,7 @@ public class TGConfiguredFeatures {
     }
 
     public static <FC extends FeatureConfig, F extends Feature<FC>> RegistryEntry<ConfiguredFeature<FC, ?>> registerConfiguredFeature(String id, F feature, FC config) {
-        return BuiltinRegistries.method_40360(BuiltinRegistries.CONFIGURED_FEATURE, id, new ConfiguredFeature(feature, config));
+        return BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_FEATURE, id, new ConfiguredFeature(feature, config));
     }
 
     private static <C extends FeatureConfig, F extends Feature<C>> F registerFeature(String id, F feature) {
@@ -44,3 +45,5 @@ public class TGConfiguredFeatures {
 
 
 }
+
+ */

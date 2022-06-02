@@ -10,17 +10,17 @@ public class BaseGhoulModel extends AnimatedGeoModel<GhoulEntity> {
     private Identifier texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
 
     @Override
-    public Identifier getModelLocation(GhoulEntity object) {
+    public Identifier getModelResource(GhoulEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "geo/ghoul.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(GhoulEntity object) {
+    public Identifier getTextureResource(GhoulEntity object) {
         return texture;
     }
 
     @Override
-    public Identifier getAnimationFileLocation(GhoulEntity animatable) {
+    public Identifier getAnimationResource(GhoulEntity animatable) {
         return new Identifier(TheGraveyard.MOD_ID, "animations/ghoul/ghoul.animation.json");
     }
 

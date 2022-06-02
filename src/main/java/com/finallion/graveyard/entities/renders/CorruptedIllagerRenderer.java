@@ -15,7 +15,7 @@ import net.minecraft.entity.mob.IllagerEntity;
 public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> extends MobEntityRenderer<T, CorruptedIllagerModel<T>> {
     protected CorruptedIllagerRenderer(EntityRendererFactory.Context ctx, CorruptedIllagerModel<T> model, float shadowRadius) {
         super(ctx, model, shadowRadius);
-        this.addFeature(new HeadFeatureRenderer(this, ctx.getModelLoader()));
+        this.addFeature(new HeadFeatureRenderer(this, ctx.getModelLoader(), ctx.getHeldItemRenderer()));
     }
 
     protected void scale(T illagerEntity, MatrixStack matrixStack, float f) {

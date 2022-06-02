@@ -3,7 +3,6 @@ package com.finallion.graveyard.world.structures;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.util.BiomeSelectionUtil;
 import com.mojang.serialization.Codec;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.PostPlacementProcessor;
@@ -26,15 +25,14 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeCoords;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+/*
 public abstract class AbstractUndergroundStructure extends StructureFeature<StructurePoolFeatureConfig> {
     private final StructureConfigEntry config;
     private String structureName;
@@ -108,3 +106,5 @@ public abstract class AbstractUndergroundStructure extends StructureFeature<Stru
     }
 
 }
+
+ */

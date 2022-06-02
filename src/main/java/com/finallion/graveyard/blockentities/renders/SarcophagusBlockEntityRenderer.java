@@ -15,8 +15,8 @@ import net.fabricmc.fabric.api.client.model.BakedModelManagerHelper;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LidOpenable;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Random;
 
 @Environment(EnvType.CLIENT)
-public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimationProgress> implements BlockEntityRenderer<SarcophagusBlockEntity> {
+public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable> implements BlockEntityRenderer<SarcophagusBlockEntity> {
     public static final Identifier SARCOPHAGUS_FOOT = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot");
     public static final Identifier SARCOPHAGUS_FOOT_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot_lid");
     public static final Identifier SARCOPHAGUS_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head_lid");
@@ -45,42 +45,6 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
     private final BakedModel sarcophagusModelFoot;
     private final BakedModel sarcophagusModelFootLid;
     private final BakedModel sarcophagusModelHeadLid;
-    //TODO: load models in constructor instead on tick
-    /*
-    private final BakedModel oakCoffinModelHead;
-    private final BakedModel oakCoffinModelFoot;
-    private final BakedModel oakCoffinModelFootLid;
-    private final BakedModel oakCoffinModelHeadLid;
-    private final BakedModel darkOakCoffinModelHead;
-    private final BakedModel darkOakCoffinModelFoot;
-    private final BakedModel darkOakCoffinModelFootLid;
-    private final BakedModel darkOakCoffinModelHeadLid;
-    private final BakedModel birchCoffinModelHead;
-    private final BakedModel birchCoffinModelFoot;
-    private final BakedModel birchCoffinModelFootLid;
-    private final BakedModel birchCoffinModelHeadLid;
-    private final BakedModel jungleCoffinModelHead;
-    private final BakedModel jungleCoffinModelFoot;
-    private final BakedModel jungleCoffinModelFootLid;
-    private final BakedModel jungleCoffinModelHeadLid;
-    private final BakedModel acaciaCoffinModelHead;
-    private final BakedModel acaciaCoffinModelFoot;
-    private final BakedModel acaciaCoffinModelFootLid;
-    private final BakedModel acaciaCoffinModelHeadLid;
-    private final BakedModel spruceCoffinModelHead;
-    private final BakedModel spruceCoffinModelFoot;
-    private final BakedModel spruceCoffinModelFootLid;
-    private final BakedModel spruceCoffinModelHeadLid;
-    private final BakedModel crimsonCoffinModelHead;
-    private final BakedModel crimsonCoffinModelFoot;
-    private final BakedModel crimsonCoffinModelFootLid;
-    private final BakedModel crimsonCoffinModelHeadLid;
-    private final BakedModel warpedCoffinModelHead;
-    private final BakedModel warpedCoffinModelFoot;
-    private final BakedModel warpedCoffinModelFootLid;
-    private final BakedModel warpedCoffinModelHeadLid;
-     */
-
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -89,7 +53,6 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         this.sarcophagusModelFootLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
         this.sarcophagusModelHeadLid = BakedModelManagerHelper.getModel(client.getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
     }
-
 
     @Override
     public void render(SarcophagusBlockEntity entity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay) {
@@ -102,7 +65,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, world, entity.getPos(), (worldx, pos) -> {
             return false;
         });
-        float g = ((Float2FloatFunction) propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((ChestAnimationProgress) entity))).get(tickDelta);
+        float g = ((Float2FloatFunction) propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((LidOpenable) entity))).get(tickDelta);
         g = 1.0F - g;
         g = 1.0F - g * g * g;
         int k = ((Int2IntFunction) propertySource.apply(new LightmapCoordinatesRetriever())).get(light);
@@ -148,7 +111,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
-        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, new Random(), 0, overlay);
+        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, world.random, 0, overlay);
 
 
         matrices.pop();
@@ -171,7 +134,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & ChestAnimati
         // ANIMATION END
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
-        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, new Random(), 0, overlay);
+        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, world.random, 0, overlay);
 
 
         matrices.pop();

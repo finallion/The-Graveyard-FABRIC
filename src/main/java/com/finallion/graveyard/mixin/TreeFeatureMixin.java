@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
+/*
 @Mixin(TreeFeature.class)
 public class TreeFeatureMixin {
     // helper blocks could be swapped to the vanilla ones during generation, but trees generate later than structures
@@ -31,3 +32,5 @@ public class TreeFeatureMixin {
     }
 
 }
+
+ */

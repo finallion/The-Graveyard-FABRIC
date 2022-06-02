@@ -6,12 +6,7 @@
   "mixins": [
     "ChunkRegionAccessor",
     "CreeperEntityMixin",
-    "LakeFeatureMixin",
-    "LocateCommandMixin",
     "PlantBlockMixin",
-    "ServerPlayNetworkHandlerMixin",
-    "StructureFeatureAccessor",
-    "TreeFeatureMixin",
     "VillagerEntityMixin",
     "WanderingTraderEntityMixin"
   ],

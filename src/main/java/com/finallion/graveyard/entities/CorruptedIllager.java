@@ -18,6 +18,7 @@ import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -88,8 +89,9 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
         EntityData entityData2 = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
         ((MobNavigation)this.getNavigation()).setCanPathThroughDoors(true);
-        this.initEquipment(difficulty);
-        this.updateEnchantments(difficulty);
+        Random random = world.getRandom();
+        this.initEquipment(random, difficulty);
+        this.updateEnchantments(random, difficulty);
         return entityData2;
     }
 

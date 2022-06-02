@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TGSpawner {
             if (loaded) {
                 return;
             }
-            addToSpawners(DimensionType.OVERWORLD_REGISTRY_KEY.getValue(), new GraveyardHordeSpawner());
+            addToSpawners(World.OVERWORLD.getValue(), new GraveyardHordeSpawner());
             loaded = true;
         }
     }

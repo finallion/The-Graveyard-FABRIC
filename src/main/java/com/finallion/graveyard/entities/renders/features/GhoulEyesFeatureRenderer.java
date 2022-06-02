@@ -38,7 +38,7 @@ public class GhoulEyesFeatureRenderer extends GeoLayerRenderer<GhoulEntity> {
         VertexConsumer vertexConsumer = bufferIn.getBuffer(TEXTURE);
 
         renderer.render(
-                getEntityModel().getModel(getEntityModel().getModelLocation(entitylivingbaseIn)),
+                getEntityModel().getModel(getEntityModel().getModelResource(entitylivingbaseIn)),
                 entitylivingbaseIn,
                 partialTicks,
                 TEXTURE,

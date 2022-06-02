@@ -10,9 +10,11 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.BiomeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
@@ -61,13 +63,12 @@ public class GraveyardHordeSpawner implements Spawner {
                                     return 0;
                                 } else {
                                     RegistryEntry<Biome> registryEntry = world.getBiome(mutable);
-                                    Biome.Category category = Biome.getCategory(registryEntry);
-                                    if (category == Biome.Category.MUSHROOM) {
+                                    if (registryEntry.isIn(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
                                         return 0;
                                     } else {
                                         int n = 0;
                                         // how many entities will spawn
-                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).size;
+                                        int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
                                         boolean illagerSpawn = random.nextBoolean();
 
                                         for (int p = 0; p < o; ++p) {
@@ -98,7 +99,7 @@ public class GraveyardHordeSpawner implements Spawner {
         }
     }
 
-    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain, boolean illagerSpawn) {
+    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random, boolean captain, boolean illagerSpawn) {
         BlockState blockState = world.getBlockState(pos);
         BlockState downState = world.getBlockState(pos.down());
         if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT)) {

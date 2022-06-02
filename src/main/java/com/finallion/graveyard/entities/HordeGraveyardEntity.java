@@ -203,7 +203,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         }
 
         private boolean wander() {
-            Random random = this.entity.getRandom();
+            Random random = new Random();
             BlockPos blockPos = this.entity.world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, this.entity.getBlockPos().add(-8 + random.nextInt(16), 0, -8 + random.nextInt(16)));
             return this.entity.getNavigation().startMovingTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), this.leaderSpeed);
         }

@@ -1,18 +1,16 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.mixin.StructureFeatureAccessor;
 import com.finallion.graveyard.world.structures.*;
-import com.finallion.graveyard.world.structures.configs.TGStructureConfig;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
 
 import java.util.HashSet;
 import java.util.Set;
 
+/*
 public class TGStructureFeatures {
     public static Set<StructureFeature<?>> structures = new HashSet<>();
 
@@ -63,3 +61,5 @@ public class TGStructureFeatures {
     }
 
 }
+
+ */

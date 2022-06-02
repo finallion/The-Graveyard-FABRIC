@@ -8,10 +8,10 @@ import net.minecraft.block.MossBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.Random;
 
 public class TGMossBlock extends MossBlock {
 

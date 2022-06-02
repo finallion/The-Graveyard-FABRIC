@@ -42,8 +42,8 @@ public class GravestoneBlockEntity extends BlockEntity {
         this.editable = true;
         this.textsBeingEdited = null;
         this.glowingText = false;
-        this.texts = new Text[]{LiteralText.EMPTY, LiteralText.EMPTY, LiteralText.EMPTY, LiteralText.EMPTY};
-        this.filteredTexts = new Text[]{LiteralText.EMPTY, LiteralText.EMPTY, LiteralText.EMPTY, LiteralText.EMPTY};
+        this.texts = new Text[]{Text.empty(), Text.empty(), Text.empty(), Text.empty()};
+        this.filteredTexts = new Text[]{Text.empty(), Text.empty(), Text.empty(), Text.empty()};
         this.editable = true;
         this.textColor = DyeColor.BLACK;
     }
@@ -110,7 +110,7 @@ public class GravestoneBlockEntity extends BlockEntity {
         } catch (Exception var3) {
         }
 
-        return LiteralText.EMPTY;
+        return Text.empty();
     }
 
 
@@ -209,7 +209,7 @@ public class GravestoneBlockEntity extends BlockEntity {
 
     public ServerCommandSource getCommandSource(@Nullable ServerPlayerEntity player) {
         String string = player == null ? "Sign" : player.getName().getString();
-        Text text = player == null ? new LiteralText("Sign") : player.getDisplayName();
+        Text text = player == null ? Text.literal("Sign") : player.getDisplayName();
         return new ServerCommandSource(CommandOutput.DUMMY, Vec3d.ofCenter(this.pos), Vec2f.ZERO, (ServerWorld)this.world, 2, string, (Text)text, this.world.getServer(), player);
     }
 

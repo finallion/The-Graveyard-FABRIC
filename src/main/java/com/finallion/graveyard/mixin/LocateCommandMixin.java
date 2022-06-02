@@ -1,5 +1,6 @@
 package com.finallion.graveyard.mixin;
 
+/*
 import net.minecraft.server.command.LocateCommand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -12,3 +13,5 @@ public class LocateCommandMixin {
         return 3000;
     }
 }
+
+ */

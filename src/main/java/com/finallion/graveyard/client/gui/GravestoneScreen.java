@@ -10,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.*;
@@ -19,8 +18,8 @@ import net.minecraft.client.util.SelectionManager;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.Text;
 import net.minecraft.util.SignType;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Matrix4f;
@@ -41,7 +40,7 @@ public class GravestoneScreen extends Screen {
     });
 
     public GravestoneScreen(GravestoneBlockEntity sign, boolean filtered) {
-        super(new TranslatableText("gravestone.edit"));
+        super(Text.translatable("gravestone.edit"));
         this.sign = sign;
     }
 
@@ -55,7 +54,7 @@ public class GravestoneScreen extends Screen {
             return this.text[this.currentRow];
         }, (text) -> {
             this.text[this.currentRow] = text;
-            this.sign.setTextOnRow(this.currentRow, new LiteralText(text));
+            this.sign.setTextOnRow(this.currentRow, Text.literal(text));
         }, SelectionManager.makeClipboardGetter(this.client), SelectionManager.makeClipboardSetter(this.client), (text) -> {
             return this.client.textRenderer.getWidth(text) <= 90;
         });
@@ -209,7 +208,7 @@ public class GravestoneScreen extends Screen {
                     bufferBuilder.vertex(matrix4f, (float) y, (float) l, 0.0F).color(0, 0, 255, 255).next();
                     bufferBuilder.vertex(matrix4f, (float) x, (float) l, 0.0F).color(0, 0, 255, 255).next();
                     bufferBuilder.end();
-                    BufferRenderer.draw(bufferBuilder);
+                    BufferRenderer.drawWithShader(bufferBuilder.end());
                     RenderSystem.disableColorLogicOp();
                     RenderSystem.enableTexture();
                 }

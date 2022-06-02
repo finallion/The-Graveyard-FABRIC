@@ -1,5 +1,6 @@
 package com.finallion.graveyard.world.structures;
 
+/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -20,7 +21,7 @@ import java.util.Collections;
 
 public class CryptStructure extends AbstractUndergroundStructure {
 
-    public CryptStructure(Codec<StructurePoolFeatureConfig> codec) {
+    public CryptStructure(Codec<StructurePool> codec) {
         super(new StructureConfigEntry(14, 12, 893183913,
                         Arrays.asList("#underground"),
                         Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
@@ -86,3 +87,5 @@ public class CryptStructure extends AbstractUndergroundStructure {
     }
 
 }
+
+ */

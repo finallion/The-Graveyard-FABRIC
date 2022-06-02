@@ -1,5 +1,6 @@
 package com.finallion.graveyard.mixin;
 
+/*
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,3 +15,5 @@ public interface StructureFeatureAccessor {
         throw new UnsupportedOperationException();
     }
 }
+
+ */

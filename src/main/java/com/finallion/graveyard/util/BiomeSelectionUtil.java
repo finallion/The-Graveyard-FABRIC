@@ -1,5 +1,6 @@
 package com.finallion.graveyard.util;
 
+/*
 import com.finallion.graveyard.TheGraveyard;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryEntry;
@@ -72,3 +73,5 @@ public class BiomeSelectionUtil {
         return modWhitelist.contains("#" + modid);
     }
 }
+
+ */

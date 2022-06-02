@@ -7,13 +7,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.feature.FeatureConfig;
-import net.minecraft.world.gen.feature.OceanRuinFeature;
-import net.minecraft.world.gen.feature.OceanRuinFeatureConfig;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/*
 public class TGStructureConfig implements FeatureConfig {
 
     public static final Codec<TGStructureConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -24,9 +21,7 @@ public class TGStructureConfig implements FeatureConfig {
             Identifier.CODEC.listOf().fieldOf("whitelist").orElse(new ArrayList<>()).forGetter(config -> config.whitelist),
             Identifier.CODEC.listOf().fieldOf("blacklist").orElse(new ArrayList<>()).forGetter(config -> config.blacklist),
             Identifier.CODEC.listOf().fieldOf("mod_whitelist").orElse(new ArrayList<>()).forGetter(config -> config.modWhitelist)
-            ).apply(instance, TGStructureConfig::new)
-
-    );
+            ).apply(instance, TGStructureConfig::new));
 
 
     public final RegistryEntry<StructurePool> startPool;
@@ -51,3 +46,5 @@ public class TGStructureConfig implements FeatureConfig {
     }
 
 }
+
+ */

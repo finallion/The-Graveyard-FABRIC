@@ -1,5 +1,6 @@
 package com.finallion.graveyard.mixin;
 
+/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blocks.GravestoneBlock;
@@ -66,3 +67,5 @@ public class ServerPlayNetworkHandlerMixin {
 
 
 }
+
+ */

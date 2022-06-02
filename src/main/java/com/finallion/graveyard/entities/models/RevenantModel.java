@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public class RevenantModel extends AnimatedGeoModel<RevenantEntity> {
 
     @Override
-    public Identifier getModelLocation(RevenantEntity object) {
+    public Identifier getModelResource(RevenantEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "geo/revenant.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(RevenantEntity object) {
+    public Identifier getTextureResource(RevenantEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "textures/entity/revenant.png");
     }
 
     @Override
-    public Identifier getAnimationFileLocation(RevenantEntity animatable) {
+    public Identifier getAnimationResource(RevenantEntity animatable) {
         return new Identifier(TheGraveyard.MOD_ID, "animations/revenant/revenant.animation.json");
     }
 }

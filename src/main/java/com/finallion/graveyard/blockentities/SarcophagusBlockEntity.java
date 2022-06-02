@@ -4,9 +4,9 @@ import com.finallion.graveyard.blockentities.animation.SarcophagusLidAnimator;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.LidOpenable;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.block.entity.ViewerCountManager;
-import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -21,12 +21,11 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class SarcophagusBlockEntity extends LootableContainerBlockEntity implements ChestAnimationProgress {
+public class SarcophagusBlockEntity extends LootableContainerBlockEntity implements LidOpenable {
     private DefaultedList<ItemStack> inventory;
     private final ViewerCountManager stateManager;
     private final SarcophagusLidAnimator lidAnimator;
@@ -98,9 +97,9 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
 
     protected Text getContainerName() {
         if (this.getCachedState().get(Properties.LIT)) {
-            return new TranslatableText("container.coffin");
+            return Text.translatable("container.coffin");
         }
-        return new TranslatableText("container.sarcophagus");
+        return Text.translatable("container.sarcophagus");
     }
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {

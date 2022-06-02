@@ -12,12 +12,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.enums.BedPart;
-import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.block.ChestAnimationProgress;
-import net.minecraft.entity.EntityType;
+import net.minecraft.block.entity.LidOpenable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
@@ -265,7 +260,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     ANIMATION STUFF
      */
 
-    public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(ChestAnimationProgress progress) {
+    public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidOpenable progress) {
         return new DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction>() {
             public Float2FloatFunction getFromBoth(SarcophagusBlockEntity chestBlockEntity, SarcophagusBlockEntity chestBlockEntity2) {
                 return (tickDelta) -> {
@@ -279,7 +274,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
             }
 
             public Float2FloatFunction getFallback() {
-                ChestAnimationProgress var10000 = progress;
+                LidOpenable var10000 = progress;
                 Objects.requireNonNull(var10000);
                 return var10000::getAnimationProgress;
             }

@@ -26,7 +26,7 @@ public class RevenantEyesFeatureRenderer extends GeoLayerRenderer<RevenantEntity
     public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, RevenantEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         VertexConsumer vertexConsumer = bufferIn.getBuffer(TEXTURE);
         renderer.render(
-                getEntityModel().getModel(getEntityModel().getModelLocation(entitylivingbaseIn)),
+                getEntityModel().getModel(getEntityModel().getModelResource(entitylivingbaseIn)),
                 entitylivingbaseIn,
                 partialTicks,
                 TEXTURE,

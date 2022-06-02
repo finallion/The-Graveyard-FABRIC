@@ -9,8 +9,6 @@ import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.chunk.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.gen.chunk.placement.SpreadType;
-import net.minecraft.world.gen.chunk.placement.StructurePlacement;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 public class TGStructureSets {
 
@@ -22,6 +20,7 @@ public class TGStructureSets {
                         TheGraveyard.config.structureConfigEntries.get("haunted_house").separation,
                         SpreadType.LINEAR,
                         TheGraveyard.config.structureConfigEntries.get("haunted_house").salt));
+        /*
 
         StructureSets.register(TGStructureSetKeys.LARGE_GRAVEYARDS, TGConfiguredStructureFeatures.LARGE_GRAVEYARD_STRUCTURE_CONFIG,
                 new RandomSpreadStructurePlacement(
@@ -115,6 +114,8 @@ public class TGStructureSets {
                         TheGraveyard.config.structureConfigEntries.get("crypt").salt));
 
 
+
+         */
     }
 
 }

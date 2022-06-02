@@ -12,6 +12,7 @@ import net.minecraft.tag.BiomeTags;
 import java.util.List;
 import java.util.Locale;
 
+/*
 public class MobSpawningRules {
 
 
@@ -132,3 +133,5 @@ public class MobSpawningRules {
     }
 
 }
+
+ */

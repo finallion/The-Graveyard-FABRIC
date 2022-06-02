@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class BrazierModel extends AnimatedGeoModel<BrazierBlockEntity> {
     @Override
-    public Identifier getAnimationFileLocation(BrazierBlockEntity entity) {
+    public Identifier getAnimationResource(BrazierBlockEntity entity) {
         return new Identifier(TheGraveyard.MOD_ID,"animations/brazier.animation.json");
     }
 
     @Override
-    public Identifier getModelLocation(BrazierBlockEntity animatable) {
+    public Identifier getModelResource(BrazierBlockEntity animatable) {
         return new Identifier(TheGraveyard.MOD_ID, "geo/brazier.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(BrazierBlockEntity entity) {
+    public Identifier getTextureResource(BrazierBlockEntity entity) {
         return new Identifier(TheGraveyard.MOD_ID, "textures/block/brazier.png");
     }
 }

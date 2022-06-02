@@ -3,7 +3,6 @@ package com.finallion.graveyard.world.structures;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.util.BiomeSelectionUtil;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
@@ -31,12 +30,14 @@ import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.structure.StructureType;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class AbstractGraveyardStructure extends StructureFeature<StructurePoolFeatureConfig> {
+/*
+public abstract class AbstractGraveyardStructure extends StructureType {
     private int seed;
     private final StructureConfigEntry config;
     private String structureName;
@@ -49,8 +50,8 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
 
     public static final Pool<SpawnSettings.SpawnEntry> EMPTY = Pool.of();
 
-    public AbstractGraveyardStructure(Codec<StructurePoolFeatureConfig> codec, StructureConfigEntry config, int size, int seed, RegistryEntry<StructurePool> pool, String name) {
-        super(StructurePoolFeatureConfig.CODEC, (context -> AbstractGraveyardStructure.createPiecesGenerator(context, config, size, name)), PostPlacementProcessor.EMPTY);
+    public AbstractGraveyardStructure(Codec<FeatureConfig> codec, StructureConfigEntry config, int size, int seed, RegistryEntry<StructurePool> pool, String name) {
+        super(Config.CODEC, (context -> AbstractGraveyardStructure.createPiecesGenerator(context, config, size, name)), PostPlacementProcessor.EMPTY);
         this.config = config;
         this.seed = seed;
         this.structureName = name;
@@ -68,7 +69,7 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
     }
 
 
-    private static boolean canGenerate(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context, StructureConfigEntry config, int size, String name) {
+    private static boolean canGenerate(Context context, StructureConfigEntry config, int size, String name) {
         BlockPos centerOfChunk = context.chunkPos().getCenterAtY(0);
 
         if (!isCorrectBiome(context, config, name)) {
@@ -86,14 +87,14 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         return true;
     }
 
-    public static Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> createPiecesGenerator(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context, StructureConfigEntry config, int size, String name) {
+    public Optional<StructurePosition> createPiecesGenerator(Context context, StructureConfigEntry config, int size, String name) {
         BlockPos blockpos = context.chunkPos().getCenterAtY(0);
 
         if (!AbstractGraveyardStructure.canGenerate(context, config, size, name)) {
             return Optional.empty();
         }
 
-        Optional<StructurePiecesGenerator<StructurePoolFeatureConfig>> structurePiecesGenerator =
+        Optional<StructurePosition> structurePiecesGenerator =
                 StructurePoolBasedGenerator.generate(
                         context,
                         PoolStructurePiece::new,
@@ -105,7 +106,7 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         return structurePiecesGenerator;
     }
 
-    protected static boolean isCorrectBiome(StructureGeneratorFactory.Context<StructurePoolFeatureConfig> context, StructureConfigEntry config, String name) {
+    protected static boolean isCorrectBiome(Context context, StructureConfigEntry config, String name) {
         BlockPos blockpos = context.chunkPos().getCenterAtY(0);
 
         RegistryEntry<Biome> biome = context.chunkGenerator().getBiomeForNoiseGen(BiomeCoords.fromBlock(blockpos.getX()), BiomeCoords.fromBlock(blockpos.getY()), BiomeCoords.fromBlock(blockpos.getZ()));
@@ -152,18 +153,6 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
         int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
         int maxHeight = Math.max(maxSides, i1);
 
-        /*
-        if (size == 40) {
-            System.out.println("Height 1: " + i1 + " State: " + sample1.getState(i1));
-            System.out.println("Height 2: " + j1 + " State: " + sample1.getState(j1));
-            System.out.println("Height 3: " + k1 + " State: " + sample1.getState(k1));
-            System.out.println("Height 4: " + o1 + " State: " + sample1.getState(o1));
-            System.out.println("Height 5: " + p1 + " State: " + sample1.getState(p1));
-            System.out.println("Abs: " + Math.abs(maxHeight - minHeight));
-        }
-
-         */
-
         return Math.abs(maxHeight - minHeight) <= TheGraveyard.config.integerEntries.get("maxTerrainHeightDifference");
 
     }
@@ -182,3 +171,4 @@ public abstract class AbstractGraveyardStructure extends StructureFeature<Struct
     }
 
 }
+*/

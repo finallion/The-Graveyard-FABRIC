@@ -8,17 +8,17 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public class ReaperModel extends AnimatedGeoModel<ReaperEntity> {
 
     @Override
-    public Identifier getModelLocation(ReaperEntity object) {
+    public Identifier getModelResource(ReaperEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "geo/reaper.geo.json");
     }
 
     @Override
-    public Identifier getTextureLocation(ReaperEntity object) {
+    public Identifier getTextureResource(ReaperEntity object) {
         return new Identifier(TheGraveyard.MOD_ID, "textures/entity/reaper.png");
     }
 
     @Override
-    public Identifier getAnimationFileLocation(ReaperEntity animatable) {
+    public Identifier getAnimationResource(ReaperEntity animatable) {
         return new Identifier(TheGraveyard.MOD_ID, "animations/reaper/reaper.animation.json");
     }
 

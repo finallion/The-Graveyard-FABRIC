@@ -15,10 +15,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
@@ -63,9 +63,9 @@ public class TheGraveyardClient implements ClientModInitializer {
                 TGBlocks.DARK_IRON_DOOR,
                 TGBlocks.DARK_IRON_TRAPDOOR);
 
-        BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.INSTANCE.register(TGBlocks.BRAZIER_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new BrazierBlockEntityRenderer());
+        BlockEntityRendererRegistry.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(TGBlocks.BRAZIER_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new BrazierBlockEntityRenderer());
 
         // coloring of tg_grass_block depending on biome
         ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
@@ -84,15 +84,15 @@ public class TheGraveyardClient implements ClientModInitializer {
 
 
         // entities
-        EntityRendererRegistry.INSTANCE.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.ACOLYTE, AcolyteRender::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.GHOUL, GhoulRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.REAPER, ReaperRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.REVENANT, RevenantRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.NIGHTMARE, NightmareRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_PILLAGER, CorruptedPillagerRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(TGEntities.WRAITH, WraithRenderer::new);
+        EntityRendererRegistry.register(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
+        EntityRendererRegistry.register(TGEntities.ACOLYTE, AcolyteRender::new);
+        EntityRendererRegistry.register(TGEntities.GHOUL, GhoulRenderer::new);
+        EntityRendererRegistry.register(TGEntities.REAPER, ReaperRenderer::new);
+        EntityRendererRegistry.register(TGEntities.REVENANT, RevenantRenderer::new);
+        EntityRendererRegistry.register(TGEntities.NIGHTMARE, NightmareRenderer::new);
+        EntityRendererRegistry.register(TGEntities.CORRUPTED_PILLAGER, CorruptedPillagerRenderer::new);
+        EntityRendererRegistry.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
+        EntityRendererRegistry.register(TGEntities.WRAITH, WraithRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 

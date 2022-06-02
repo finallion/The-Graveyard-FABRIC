@@ -1,5 +1,6 @@
 package com.finallion.graveyard.world.structures;
 
+/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -48,3 +49,5 @@ public class MemorialTreeStructure extends AbstractGraveyardStructure {
     }
 
 }
+
+ */
