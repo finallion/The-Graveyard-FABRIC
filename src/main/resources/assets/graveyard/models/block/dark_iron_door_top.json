@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/door_top",
-  "textures": {
-    "top": "graveyard:block/dark_iron_door_top",
-    "bottom": "graveyard:block/dark_iron_door_bottom"
-  }
-}

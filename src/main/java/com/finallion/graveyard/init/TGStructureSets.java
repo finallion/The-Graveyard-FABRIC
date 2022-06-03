@@ -20,7 +20,6 @@ public class TGStructureSets {
                         TheGraveyard.config.structureConfigEntries.get("haunted_house").separation,
                         SpreadType.LINEAR,
                         TheGraveyard.config.structureConfigEntries.get("haunted_house").salt));
-        /*
 
         StructureSets.register(TGStructureSetKeys.LARGE_GRAVEYARDS, TGConfiguredStructureFeatures.LARGE_GRAVEYARD_STRUCTURE_CONFIG,
                 new RandomSpreadStructurePlacement(
@@ -28,6 +27,7 @@ public class TGStructureSets {
                         TheGraveyard.config.structureConfigEntries.get("large_graveyard").separation,
                         SpreadType.LINEAR,
                         TheGraveyard.config.structureConfigEntries.get("large_graveyard").salt));
+        /*
 
         StructureSets.register(TGStructureSetKeys.MEDIUM_GRAVEYARDS, TGConfiguredStructureFeatures.MEDIUM_GRAVEYARD_STRUCTURE_CONFIG,
                 new RandomSpreadStructurePlacement(

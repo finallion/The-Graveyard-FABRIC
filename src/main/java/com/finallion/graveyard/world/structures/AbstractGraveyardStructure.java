@@ -43,12 +43,6 @@ public abstract class AbstractGraveyardStructure extends StructureType {
     private String structureName;
     private int size;
 
-    public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
-            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 35, 1, 1),
-            new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 45, 1, 3),
-            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 50, 1, 3));
-
-    public static final Pool<SpawnSettings.SpawnEntry> EMPTY = Pool.of();
 
     public AbstractGraveyardStructure(Codec<FeatureConfig> codec, StructureConfigEntry config, int size, int seed, RegistryEntry<StructurePool> pool, String name) {
         super(Config.CODEC, (context -> AbstractGraveyardStructure.createPiecesGenerator(context, config, size, name)), PostPlacementProcessor.EMPTY);

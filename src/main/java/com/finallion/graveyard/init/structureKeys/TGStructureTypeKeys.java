@@ -24,7 +24,7 @@ public class TGStructureTypeKeys {
     public static RegistryKey<StructureType> CRYPT = of("crypt");
 
     private static RegistryKey<StructureType> of(String id) {
-        return RegistryKey.of(Registry.STRUCTURE_KEY, new Identifier(id));
+        return RegistryKey.of(Registry.STRUCTURE_KEY, new Identifier(TheGraveyard.MOD_ID, id));
     }
 
 }

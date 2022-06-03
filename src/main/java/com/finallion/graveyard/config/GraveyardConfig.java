@@ -1,13 +1,18 @@
 package com.finallion.graveyard.config;
 
 
+import com.finallion.graveyard.util.BiomeModification;
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.OverworldBiomeCreator;
 
 
 import java.util.*;
@@ -48,7 +53,7 @@ public class GraveyardConfig implements Config {
 
     @Override
     public String getName() {
-        return "the-graveyard-config";
+        return "the-graveyard-1.19-config";
     }
 
     @Override
@@ -107,85 +112,84 @@ public class GraveyardConfig implements Config {
     @Override
     public void save() {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
-        integerEntries.putIfAbsent("maxTerrainHeightDifference", 6);
 
-        /*
-        for (StructureFeature<?> structure : getStructures()) {
-            AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
-            StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
-            structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
-        }
-
-        for (StructureFeature<?> structure : getUndergroundStructures()) {
-            AbstractUndergroundStructure abstractStructure = (AbstractUndergroundStructure) structure;
-            StructureConfigEntry entry = abstractStructure.getStructureConfigEntry();
-            structureConfigEntries.putIfAbsent(abstractStructure.getStructureName(), entry);
-        }
-
-
-
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,10, 2, 3, true, false, Arrays.asList("graveyard_biomes:eroded_haunted_forest"), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, getAllOverworldBiomeCategories(), Arrays.asList("minecraft:flower_forest", "minecraft:lush_caves"), Arrays.asList("#minecraft", "#graveyard_biomes")));
-
-
-         */
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
         hordeConfigEntries.putIfAbsent("horde_spawn", HordeConfigEntry.of(40, 24000, 1200));
+
+        structureConfigEntries.putIfAbsent("haunted_house", StructureConfigEntry.of(20, 18, 451235912,
+                Arrays.asList(
+                        "minecraft:dark_forest",
+                        "minecraft:swamp",
+                        "minecraft:mangrove_swamp",
+                        "minecraft:old_growth_pine_taiga",
+                        "minecraft:old_growth_spruce_taiga",
+                        "minecraft:mangrove_swamp",
+                        "terralith:moonlight_valley",
+                        "terralith:cloud_forest",
+                        "graveyard_biomes:haunted_lakes"),
+                Collections.emptyList(),30,3,false));
+
+        structureConfigEntries.putIfAbsent("large_graveyard", StructureConfigEntry.of(16, 15, 304812394,
+                Arrays.asList(
+                        "minecraft:taiga",
+                        "minecraft:snowy_taiga",
+                        "minecraft:snowy_plains",
+                        "minecraft:plains",
+                        "minecraft:sunflower_plains",
+                        "terralith:forested_highlands",
+                        "terralith:lush_valley",
+                        "terralith:shield",
+                        "terralith:shield_clearing",
+                        "terralith:wintry_forest",
+                        "graveyard_biomes:haunted_forest"),
+                Collections.emptyList(), 75,5,true));
+
+
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,5, 2, 3, true, false, Arrays.asList("graveyard_biomes:eroded_haunted_forest"), Collections.emptyList(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
+        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));
         Config.super.save();
     }
 
-    // config gets called earlier than the structure registry
-    /*
-    private List<StructureFeature<?>> getStructures() {
-        List<StructureFeature<?>> structures = new ArrayList<>();
-        structures.add(TGStructureFeatures.MEDIUM_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructureFeatures.LARGE_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructureFeatures.MUSHROOM_GRAVE_STRUCTURE);
-        structures.add(TGStructureFeatures.HAUNTED_HOUSE_STRUCTURE);
-        structures.add(TGStructureFeatures.MEMORIAL_TREE_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_DESERT_GRAVEYARD_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_GRAVE_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_DESERT_GRAVE_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_SAVANNA_GRAVE_STRUCTURE);
-        structures.add(TGStructureFeatures.SMALL_MOUNTAIN_GRAVE_STRUCTURE);
-        structures.add(TGStructureFeatures.ALTAR_STRUCTURE);
-        structures.add(TGStructureFeatures.GIANT_MUSHROOM_STRUCTURE);
-        return structures;
-    }
+    private List<String> getMobBlacklist() {
+        Set<RegistryKey<Biome>> biomes = new HashSet<>();
+        biomes.add(BiomeKeys.END_BARRENS);
+        biomes.add(BiomeKeys.SMALL_END_ISLANDS);
+        biomes.add(BiomeKeys.END_MIDLANDS);
+        biomes.add(BiomeKeys.END_HIGHLANDS);
+        biomes.add(BiomeKeys.THE_END);
+        biomes.add(BiomeKeys.BASALT_DELTAS);
+        biomes.add(BiomeKeys.CRIMSON_FOREST);
+        biomes.add(BiomeKeys.WARPED_FOREST);
+        biomes.add(BiomeKeys.NETHER_WASTES);
+        biomes.add(BiomeKeys.DEEP_DARK);
+        biomes.add(BiomeKeys.MUSHROOM_FIELDS);
+        biomes.add(BiomeKeys.DEEP_FROZEN_OCEAN);
+        biomes.add(BiomeKeys.FROZEN_OCEAN);
+        biomes.add(BiomeKeys.DEEP_COLD_OCEAN);
+        biomes.add(BiomeKeys.COLD_OCEAN);
+        biomes.add(BiomeKeys.DEEP_OCEAN);
+        biomes.add(BiomeKeys.OCEAN);
+        biomes.add(BiomeKeys.DEEP_LUKEWARM_OCEAN);
+        biomes.add(BiomeKeys.LUKEWARM_OCEAN);
+        biomes.add(BiomeKeys.WARM_OCEAN);
+        biomes.add(BiomeKeys.FROZEN_RIVER);
+        biomes.add(BiomeKeys.RIVER);
+        biomes.add(BiomeKeys.FLOWER_FOREST);
+        biomes.add(BiomeKeys.THE_VOID);
+        biomes.add(BiomeKeys.SOUL_SAND_VALLEY);
 
-    private List<StructureFeature<?>> getUndergroundStructures() {
-        List<StructureFeature<?>> structures = new ArrayList<>();
-        structures.add(TGStructureFeatures.CRYPT_STRUCTURE);
-        return structures;
-    }
 
-     */
-
-    /*
-
-    private List<String> getAllOverworldBiomeCategories() {
-        Biome.Category[] biomeCategory = Biome.Category.values();
-        List<String> biomeNames = new ArrayList<>();
-        for (Biome.Category biome : biomeCategory) {
-            if (biome.getName().contains("river") || biome.getName().contains("ocean") || biome.getName().contains("none") || biome.getName().contains("the_end") || biome.getName().contains("nether") || biome.getName().contains("mushroom")) {
-                continue;
-            }
-            biomeNames.add("#" + biome.getName());
-        }
-        return biomeNames;
+        return new ArrayList<>(biomes.stream().map(value -> value.getValue().toString()).toList());
 
     }
-
-     */
 
 }
 

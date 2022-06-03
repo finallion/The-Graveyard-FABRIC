@@ -1,6 +1,6 @@
 package com.finallion.graveyard.world.structures;
 
-/*
+
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGProcessors;
@@ -14,14 +14,13 @@ import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
 
 import java.util.Arrays;
 import java.util.Collections;
 
-public class LargeGraveyardStructure extends AbstractGraveyardStructure {
-
+public class LargeGraveyardStructure {
+    /*
     public LargeGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
         super(codec, new StructureConfigEntry(16, 15, 304812394,
                         Arrays.asList("#" + Biome.Category.TAIGA.getName(), "minecraft:dark_forest", "terralith:forested_highlands", "terralith:lush_valley", "terralith:shield", "terralith:shield_clearing", "terralith:wintry_forest", "graveyard_biomes:haunted_forest"),
@@ -34,6 +33,7 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
     public ConfiguredStructureFeature<?, ?> getStructureFeature() {
         return TGConfiguredStructureFeatures.LARGE_GRAVEYARD_STRUCTURE_CONFIG.value();
     }
+    */
 
     public static class LargeGraveyardGenerator {
         public static final RegistryEntry<StructurePool> STARTING_POOL;
@@ -108,7 +108,5 @@ public class LargeGraveyardStructure extends AbstractGraveyardStructure {
             ), StructurePool.Projection.RIGID));
         }
     }
-
 }
 
- */

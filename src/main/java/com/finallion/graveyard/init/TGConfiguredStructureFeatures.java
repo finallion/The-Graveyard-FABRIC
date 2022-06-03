@@ -4,56 +4,70 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.structureKeys.TGStructureTypeKeys;
 import com.finallion.graveyard.util.TGTags;
 import com.finallion.graveyard.world.structures.*;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.tag.TagKey;
-import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureTerrainAdaptation;
 import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.heightprovider.ConstantHeightProvider;
 import net.minecraft.world.gen.structure.StructureType;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class TGConfiguredStructureFeatures {
 
-    // public static final RegistryEntry<StructureType> PILLAGER_OUTPOST PILLAGER_OUTPOST = register(
-    // StructureTypeKeys.PILLAGER_OUTPOST,
-    // new JigsawStructure(createConfig(BiomeTags.PILLAGER_OUTPOST_HAS_STRUCTURE,
-    // Map.of(SpawnGroup.MONSTER,
-    // new StructureSpawns(BoundingBox.STRUCTURE,
-    // Pool.of(new SpawnEntry[]{new SpawnEntry(EntityType.PILLAGER, 1, 1, 1)}))),
-    // Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_THIN),
-    // PillagerOutpostGenerator.STRUCTURE_POOLS, 7,
-    // ConstantHeightProvider.create(YOffset.fixed(0)), true, Type.WORLD_SURFACE_WG));
-
-
     public static final RegistryEntry<StructureType> HAUNTED_HOUSE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.HAUNTED_HOUSE,
-            new TGJigsawStructure(createConfig(TGTags.IS_OVERWORLD, Map.of(), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
+            new TGJigsawStructure(createConfig(TGTags.IS_OVERWORLD, addMobSpawnsToStructure("haunted_house"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
                     HauntedHouseStructure.HauntedHouseGenerator.STARTING_POOL, 2,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG));
+                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
+                    TheGraveyard.config.structureConfigEntries.get("haunted_house").terrainCheckRadius,
+                    TheGraveyard.config.structureConfigEntries.get("haunted_house").maxTerrainHeightDifference,
+                    TheGraveyard.config.structureConfigEntries.get("haunted_house").biomeWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("haunted_house").modIdWhitelist,
+                    "haunted_house"
+            )
+    );
+
+    public static final RegistryEntry<StructureType> LARGE_GRAVEYARD_STRUCTURE_CONFIG = register(TGStructureTypeKeys.LARGE_GRAVEYARD,
+            new TGJigsawStructure(createConfig(TGTags.IS_OVERWORLD, addMobSpawnsToStructure("large_graveyard"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
+                    LargeGraveyardStructure.LargeGraveyardGenerator.STARTING_POOL, 3,
+                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
+                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").terrainCheckRadius,
+                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").maxTerrainHeightDifference,
+                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").biomeWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").modIdWhitelist,
+                    "large_graveyard"
+            )
+    );
+
 
 
     private static StructureType.Config createConfig(TagKey<Biome> biomeTag, Map<SpawnGroup, StructureSpawns> spawns, GenerationStep.Feature featureStep, StructureTerrainAdaptation terrainAdaptation) {
         return new StructureType.Config(BuiltinRegistries.BIOME.getOrCreateEntryList(biomeTag), spawns, featureStep, terrainAdaptation);
     }
 
-
     private static RegistryEntry<StructureType> register(RegistryKey<StructureType> key, StructureType configuredStructureFeature) {
         return BuiltinRegistries.add(BuiltinRegistries.STRUCTURE, key, configuredStructureFeature);
     }
     public static void init() {}
+
+    private static Map<SpawnGroup, StructureSpawns> addMobSpawnsToStructure(String name) {
+        if (TheGraveyard.config.structureConfigEntries.get(name).canSpawnGraveyardMobs) {
+            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.MONSTER_SPAWNS));
+        }
+
+        if (name.equals("small_desert_graveyard")) {
+            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.ILLAGER_SPAWNS));
+        }
+
+        return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.EMPTY));
+    }
 }
 
     /*
@@ -124,17 +138,6 @@ public class TGConfiguredStructureFeatures {
         return BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE, key, configuredStructureFeature);
     }
 
-    private static Map<SpawnGroup, StructureSpawns> addMobSpawnsToStructure(String name) {
-        if (TheGraveyard.config.structureConfigEntries.get(name).canSpawnGraveyardMobs) {
-            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, AbstractGraveyardStructure.MONSTER_SPAWNS));
-        }
-
-        if (name.equals("small_desert_graveyard")) {
-            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, SmallDesertGraveyardStructure.ILLAGER_SPAWNS));
-        }
-
-        return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, AbstractGraveyardStructure.EMPTY));
-    }
 
 
 

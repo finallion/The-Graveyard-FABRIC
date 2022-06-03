@@ -11,7 +11,10 @@ import net.minecraft.structure.pool.StructurePool.Projection;
 import net.minecraft.structure.processor.StructureProcessorLists;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.gen.heightprovider.HeightProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 public class HauntedHouseStructure {

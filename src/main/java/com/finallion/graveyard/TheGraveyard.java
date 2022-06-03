@@ -5,6 +5,7 @@ import com.finallion.graveyard.init.*;
 
 
 import com.finallion.graveyard.util.BiomeModification;;
+import com.finallion.graveyard.util.MobSpawningRules;
 import com.finallion.graveyard.util.TGTags;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
@@ -49,11 +50,11 @@ public class TheGraveyard implements ModInitializer {
         TGStructureSets.init();
         TGConfiguredStructureFeatures.init();
 
-        //MobSpawningRules.addSpawnEntries();
+        MobSpawningRules.addSpawnEntries();
 
-        //if (FabricLoader.getInstance().isModLoaded("graveyard_biomes")) {
-        //    BiomeModification.init();
-        //}
+        if (FabricLoader.getInstance().isModLoaded("graveyard_biomes")) {
+            BiomeModification.init();
+        }
 
     }
 
