@@ -13,6 +13,8 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -102,11 +104,33 @@ public class TGJigsawStructure extends StructureType {
 
 
     public Optional<StructurePosition> getStructurePosition(Context context) {
-        BlockPos blockpos = context.chunkPos().getCenterAtY(0);
-
-        if (!TGJigsawStructure.canGenerate(context, terrainCheckSize, structureName, blockpos)) {
+        if (!TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, structureName))) {
             return Optional.empty();
         }
+
+        BlockPos blockpos = context.chunkPos().getCenterAtY(0);
+
+        if (structureName.equals("crypt")) {
+            int minHeight = -40; // default: -40
+            int maxHeight = -10; // default: -10
+
+            ChunkPos chunkPos = context.chunkPos();
+            Random random = context.random();
+
+            int x = random.nextInt(chunkPos.getEndX() - chunkPos.getStartX()) + chunkPos.getStartX();
+            int z = random.nextInt(chunkPos.getEndZ() - chunkPos.getStartZ()) + chunkPos.getStartZ();
+            int y = random.nextInt(maxHeight - minHeight) + minHeight;
+            blockpos = new BlockPos(x, y, z);
+
+            if (!TGJigsawStructure.canGenerateUnderground(context, structureName)) {
+                return Optional.empty();
+            }
+        } else {
+            if (!TGJigsawStructure.canGenerate(context, terrainCheckSize, structureName, blockpos, maxHeightDifference)) {
+                return Optional.empty();
+            }
+        }
+
 
         return StructurePoolBasedGenerator.generate(
                 context,
@@ -118,12 +142,24 @@ public class TGJigsawStructure extends StructureType {
                 this.maxDistanceFromCenter);
     }
 
-    private static boolean canGenerate(Context context, int size, String name, BlockPos centerOfChunk) {
+    private static boolean canGenerateUnderground(Context context, String name) {
         if (!isCorrectBiome(context, name)) {
             return false;
         }
 
-        if (!isTerrainFlat(context, centerOfChunk, size)) {
+        return true;
+    }
+
+    private static boolean canGenerate(Context context, int size, String name, BlockPos centerOfChunk, int maxHeightDifference) {
+        if (!isCorrectBiome(context, name)) {
+            return false;
+        }
+
+        if (!isTerrainFlat(context, centerOfChunk, size / 2, maxHeightDifference)) {
+            return false;
+        }
+
+        if (!isTerrainFlat(context, centerOfChunk, size, maxHeightDifference)) {
             return false;
         }
 
@@ -138,15 +174,14 @@ public class TGJigsawStructure extends StructureType {
                 BiomeCoords.fromBlock(blockpos.getY()),
                 BiomeCoords.fromBlock(blockpos.getZ()), context.noiseConfig().getMultiNoiseSampler());
 
-        if (TheGraveyard.config.enabled(new Identifier(TheGraveyard.MOD_ID, name))
-                && BiomeSelectionUtil.parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).biomeWhitelist, TheGraveyard.config.structureConfigEntries.get(name).modIdWhitelist, biome)) {
+        if (BiomeSelectionUtil.parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).biomeWhitelist, TheGraveyard.config.structureConfigEntries.get(name).modIdWhitelist, biome)) {
             return true;
         }
 
         return false;
     }
 
-    protected static boolean isTerrainFlat(Context context, BlockPos centerChunk, int size) {
+    protected static boolean isTerrainFlat(Context context, BlockPos centerChunk, int size, int maxHeightDifference) {
         ChunkGenerator generator = context.chunkGenerator();
         HeightLimitView heightLimitView = context.world();
         int chunkX = centerChunk.getX();
@@ -177,6 +212,8 @@ public class TGJigsawStructure extends StructureType {
         int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
         int maxHeight = Math.max(maxSides, i1);
 
+
+
         /*
         System.out.println("Testing at..." + chunkX + " " + chunkZ + ": " + i1);
         System.out.println("Testing at..." + chunkX + " " + (chunkZ + size) + ": " + j1);
@@ -184,12 +221,12 @@ public class TGJigsawStructure extends StructureType {
         System.out.println("Testing at..." + chunkX + " " + (chunkZ - size) + ": " + o1);
         System.out.println("Testing at..." + (chunkX - size) + " " + chunkZ + ": " + p1);
         System.out.println("Max: " + Math.abs(maxHeight - minHeight));
-        System.out.println("Config: " + TheGraveyard.config.integerEntries.get("maxTerrainHeightDifference"));
+        System.out.println("Config: " + maxHeightDifference);
 
          */
 
 
-        return Math.abs(maxHeight - minHeight) <= TheGraveyard.config.integerEntries.get("maxTerrainHeightDifference");
+        return Math.abs(maxHeight - minHeight) <= maxHeightDifference;
 
     }
 

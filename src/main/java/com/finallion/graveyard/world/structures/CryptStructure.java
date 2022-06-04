@@ -1,6 +1,5 @@
 package com.finallion.graveyard.world.structures;
 
-/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -13,26 +12,12 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
 
 import java.util.Arrays;
 import java.util.Collections;
 
-public class CryptStructure extends AbstractUndergroundStructure {
-
-    public CryptStructure(Codec<StructurePool> codec) {
-        super(new StructureConfigEntry(14, 12, 893183913,
-                        Arrays.asList("#underground"),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
-                "crypt");
-    }
-
-    @Override
-    public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGConfiguredStructureFeatures.CRYPT_STRUCTURE_CONFIG.value();
-    }
-
+public class CryptStructure {
 
     public static class CryptGenerator {
         public static final RegistryEntry<StructurePool> CORRIDOR_POOL;
@@ -87,5 +72,3 @@ public class CryptStructure extends AbstractUndergroundStructure {
     }
 
 }
-
- */

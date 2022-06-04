@@ -1,6 +1,5 @@
 package com.finallion.graveyard.world.structures;
 
-/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -12,26 +11,12 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
+
 
 import java.util.Arrays;
 import java.util.Collections;
 
-public class MushroomGraveStructure extends AbstractGraveyardStructure {
-
-    public MushroomGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(24, 18, 379123039,
-                        Arrays.asList("#" + Biome.Category.MUSHROOM.getName(), "#" + Biome.Category.JUNGLE.getName(), "#" + Biome.Category.SWAMP.getName()),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
-                7, 379123039, MushroomGraveGenerator.STARTING_POOL, "mushroom_grave");
-    }
-
-    @Override
-    public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGConfiguredStructureFeatures.MUSHROOM_GRAVE_STRUCTURE_CONFIG.value();
-    }
+public class MushroomGraveStructure {
 
     public static class MushroomGraveGenerator {
         public static final RegistryEntry<StructurePool> STARTING_POOL;
@@ -52,5 +37,3 @@ public class MushroomGraveStructure extends AbstractGraveyardStructure {
     }
 
 }
-
- */

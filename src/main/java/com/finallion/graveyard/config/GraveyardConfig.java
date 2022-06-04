@@ -49,7 +49,6 @@ public class GraveyardConfig implements Config {
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
-    public final Map<String, Integer> integerEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -112,6 +111,7 @@ public class GraveyardConfig implements Config {
     @Override
     public void save() {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
+        booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
@@ -136,14 +136,141 @@ public class GraveyardConfig implements Config {
                         "minecraft:snowy_taiga",
                         "minecraft:snowy_plains",
                         "minecraft:plains",
-                        "minecraft:sunflower_plains",
                         "terralith:forested_highlands",
                         "terralith:lush_valley",
                         "terralith:shield",
                         "terralith:shield_clearing",
                         "terralith:wintry_forest",
                         "graveyard_biomes:haunted_forest"),
-                Collections.emptyList(), 75,5,true));
+                Collections.emptyList(), 60,5,true));
+
+        structureConfigEntries.putIfAbsent("altar", StructureConfigEntry.of(30, 24, 1093123913,
+                Arrays.asList(
+                        "minecraft:snowy_plains",
+                        "minecraft:ice_spikes"),
+                Collections.emptyList(), 7,3,false));
+
+        structureConfigEntries.putIfAbsent("crypt", StructureConfigEntry.of(24, 22, 893183913,
+                Arrays.asList(
+                        "minecraft:dripstone_caves",
+                        "minecraft:lush_caves",
+                        "terralith:cave/andesite_caves",
+                        "terralith:cave/crystal_caves",
+                        "terralith:cave/deep_caves",
+                        "terralith:cave/desert_caves",
+                        "terralith:cave/diorite_caves",
+                        "terralith:cave/frostfire_caves",
+                        "terralith:cave/fungal_caves",
+                        "terralith:cave/granite_caves",
+                        "terralith:cave/ice_caves",
+                        "terralith:cave/infested_caves",
+                        "terralith:cave/mantle_caves",
+                        "terralith:cave/thermal_caves",
+                        "terralith:cave/tuff_caves"),
+                Collections.emptyList(), 1,3,false));
+
+        structureConfigEntries.putIfAbsent("giant_mushroom", StructureConfigEntry.of(20, 18, 365012356,
+                Arrays.asList(
+                        "minecraft:mushroom_fields"),
+                Collections.emptyList(), 10,3,false));
+
+        structureConfigEntries.putIfAbsent("medium_graveyard", StructureConfigEntry.of(18, 16, 1690192399,
+                Arrays.asList(
+                        "minecraft:forest",
+                        "minecraft:flower_forest",
+                        "minecraft:windswept_forest",
+                        "terralith:brushland",
+                        "terralith:blooming_valley",
+                        "terralith:temperate_highlands",
+                        "graveyard_biomes:eroded_haunted_forest"),
+                Collections.emptyList(), 30,3,true));
+
+        structureConfigEntries.putIfAbsent("memorial_tree", StructureConfigEntry.of(14, 12, 529239621,
+                Arrays.asList(
+                        "minecraft:old_growth_birch_forest",
+                        "minecraft:birch_forest",
+                        "terralith:birch_taiga"),
+                Collections.emptyList(), 10,3,false));
+
+        structureConfigEntries.putIfAbsent("mushroom_grave", StructureConfigEntry.of(24, 18, 379123039,
+                Arrays.asList(
+                        "minecraft:mushroom_fields",
+                        "minecraft:jungle",
+                        "minecraft:sparse_jungle",
+                        "minecraft:bamboo_jungle",
+                        "minecraft:swamp",
+                        "minecraft:mangrove_swamp"),
+                Collections.emptyList(), 7,3,false));
+
+        structureConfigEntries.putIfAbsent("small_desert_graveyard", StructureConfigEntry.of(32, 28, 598017285,
+                Arrays.asList(
+                        "minecraft:desert",
+                        "terralith:desert_canyon",
+                        "terralith:desert_oasis",
+                        "terralith:desert_spires",
+                        "terralith:ancient_sands"),
+                Collections.emptyList(), 20,3,false));
+
+        structureConfigEntries.putIfAbsent("small_graveyard", StructureConfigEntry.of(20, 18, 598017285,
+                Arrays.asList(
+                        "minecraft:sunflower_plains",
+                        "minecraft:plains",
+                        "minecraft:meadow",
+                        "terralith:blooming_plateau",
+                        "terralith:blooming_valley"),
+                Collections.emptyList(), 15,3,false));
+
+        structureConfigEntries.putIfAbsent("small_desert_grave", StructureConfigEntry.of(20, 16, 681236914,
+                Arrays.asList(
+                        "minecraft:desert",
+                        "terralith:desert_canyon",
+                        "terralith:desert_oasis",
+                        "terralith:desert_spires",
+                        "terralith:ancient_sands"),
+                Collections.emptyList(), 4,3,false));
+
+        structureConfigEntries.putIfAbsent("small_grave", StructureConfigEntry.of(12, 8, 240451934,
+                Arrays.asList(
+                        "minecraft:forest",
+                        "minecraft:sunflower_plains",
+                        "minecraft:plains",
+                        "minecraft:meadow",
+                        "minecraft:windswept_forest",
+                        "minecraft:old_growth_birch_forest",
+                        "minecraft:taiga",
+                        "minecraft:flower_forest",
+                        "minecraft:birch_forest",
+                        "terralith:blooming_plateau",
+                        "terralith:blooming_valley"),
+                Collections.emptyList(), 4,3,false));
+
+        structureConfigEntries.putIfAbsent("small_mountain_grave", StructureConfigEntry.of(12, 8, 725689810,
+                Arrays.asList(
+                        "minecraft:grove",
+                        "minecraft:snowy_slopes",
+                        "minecraft:frozen_peaks",
+                        "minecraft:jagged_peaks",
+                        "minecraft:stony_peaks",
+                        "terralith:painted_mountains",
+                        "terralith:rocky_mountains",
+                        "terralith:haze_mountain",
+                        "terralith:mountain_steppe"),
+                Collections.emptyList(), 4,3,false));
+
+        structureConfigEntries.putIfAbsent("small_savanna_grave", StructureConfigEntry.of(12, 8, 709787761,
+                Arrays.asList(
+                        "minecraft:badlands",
+                        "minecraft:eroded_badlands",
+                        "minecraft:wooded_badlands",
+                        "minecraft:savanna",
+                        "minecraft:savanna_plateau",
+                        "minecraft:windswept_savanna",
+                        "terralith:savanna_badlands",
+                        "terralith:savanna_slopes",
+                        "terralith:fractured_savanna"),
+                Collections.emptyList(), 4,3,false));
+
+
 
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Collections.emptyList(), getMobBlacklist(), Arrays.asList("#minecraft", "#terralith", "#graveyard_biomes")));

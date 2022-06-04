@@ -1,6 +1,6 @@
 package com.finallion.graveyard.world.structures;
 
-/*
+
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -12,26 +12,9 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
-import java.util.Arrays;
-import java.util.Collections;
 
-public class SmallSavannaGraveStructure extends AbstractGraveyardStructure {
-
-    public SmallSavannaGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(12, 8, 709787761,
-                        Arrays.asList("#" + Biome.Category.MESA.getName(), "#" + Biome.Category.SAVANNA.getName()),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
-                4, 709787761, SmallSavannaGraveGenerator.STARTING_POOL, "small_savanna_grave");
-    }
-
-    @Override
-    public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGConfiguredStructureFeatures.SMALL_SAVANNA_GRAVE_STRUCTURE_CONFIG.value();
-    }
+public class SmallSavannaGraveStructure {
 
     public static class SmallSavannaGraveGenerator {
         public static final RegistryEntry<StructurePool> STARTING_POOL;
@@ -58,4 +41,3 @@ public class SmallSavannaGraveStructure extends AbstractGraveyardStructure {
 
 }
 
- */

@@ -17,12 +17,20 @@
   },
   "criteria": {
     "small_desert_graveyard": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "location": {
-          "feature": "graveyard:small_desert_graveyard"
-        }
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:small_desert_graveyard"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     }
   },
   "requirements": [

@@ -17,36 +17,68 @@
   },
   "criteria": {
     "grave_01": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "location": {
-          "feature": "graveyard:small_grave"
-        }
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:small_grave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     },
     "grave_02": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "location": {
-          "feature": "graveyard:small_mountain_grave"
-        }
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:small_desert_grave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     },
     "grave_03": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "location": {
-          "feature": "graveyard:small_desert_grave"
-        }
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:small_savanna_grave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     },
     "grave_04": {
-      "trigger": "minecraft:location",
       "conditions": {
-        "location": {
-          "feature": "graveyard:small_savanna_grave"
-        }
-      }
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:small_mountain_grave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     }
   },
   "requirements": [

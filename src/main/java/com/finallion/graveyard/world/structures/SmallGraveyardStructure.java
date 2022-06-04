@@ -1,6 +1,6 @@
 package com.finallion.graveyard.world.structures;
 
-/*
+
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -13,25 +13,10 @@ import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
-
 import java.util.Arrays;
 import java.util.Collections;
 
-public class SmallGraveyardStructure extends AbstractGraveyardStructure {
-
-    public SmallGraveyardStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(20, 18, 240451934,
-                        Arrays.asList("#" + Biome.Category.PLAINS.getName()),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
-                15, 240451934, SmallGraveyardGenerator.STARTING_POOL, "small_graveyard");
-    }
-
-    @Override
-    public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGConfiguredStructureFeatures.SMALL_GRAVEYARD_STRUCTURE_CONFIG.value();
-    }
+public class SmallGraveyardStructure {
 
     public static class SmallGraveyardGenerator {
         public static final RegistryEntry<StructurePool> STARTING_POOL;
@@ -59,4 +44,4 @@ public class SmallGraveyardStructure extends AbstractGraveyardStructure {
 
 }
 
- */
+

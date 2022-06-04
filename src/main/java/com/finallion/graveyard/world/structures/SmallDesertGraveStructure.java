@@ -1,6 +1,5 @@
 package com.finallion.graveyard.world.structures;
 
-/*
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.config.StructureConfigEntry;
 import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
@@ -12,26 +11,11 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.structure.pool.StructurePools;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructurePoolFeatureConfig;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-public class SmallDesertGraveStructure extends AbstractGraveyardStructure {
-
-    public SmallDesertGraveStructure(Codec<StructurePoolFeatureConfig> codec) {
-        super(codec, new StructureConfigEntry(20, 16, 681236914,
-                        Arrays.asList("#" + Biome.Category.DESERT.getName()),
-                        Collections.emptyList(), Arrays.asList("#minecraft", "#terralith"), false),
-                4, 681236914, SmallDesertGraveGenerator.STARTING_POOL, "small_desert_grave");
-    }
-
-    @Override
-    public ConfiguredStructureFeature<?, ?> getStructureFeature() {
-        return TGConfiguredStructureFeatures.SMALL_DESERT_GRAVE_STRUCTURE_CONFIG.value();
-    }
+public class SmallDesertGraveStructure {
 
     public static class SmallDesertGraveGenerator {
         public static final RegistryEntry<StructurePool> STARTING_POOL;
@@ -63,4 +47,3 @@ public class SmallDesertGraveStructure extends AbstractGraveyardStructure {
 
 }
 
- */
