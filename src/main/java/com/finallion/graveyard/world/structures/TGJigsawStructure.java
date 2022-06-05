@@ -193,26 +193,55 @@ public class TGJigsawStructure extends StructureType {
         int k1 = generator.getHeightInGround(chunkX + size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
         int o1 = generator.getHeightInGround(chunkX, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
         int p1 = generator.getHeightInGround(chunkX - size, chunkZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
+        //int l1 = generator.getHeightInGround(chunkX + size, chunkZ + size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
+        //int m1 = generator.getHeightInGround(chunkX - size, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
+        //int n1 = generator.getHeightInGround(chunkX + size, chunkZ - size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
+        //int q1 = generator.getHeightInGround(chunkX - size, chunkZ + size, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView, noiseConfig);
 
         VerticalBlockSample sample1 = generator.getColumnSample(chunkX, chunkZ, heightLimitView, noiseConfig);
         VerticalBlockSample sample2 = generator.getColumnSample(chunkX, chunkZ + size, heightLimitView, noiseConfig);
         VerticalBlockSample sample3 = generator.getColumnSample(chunkX + size, chunkZ, heightLimitView, noiseConfig);
         VerticalBlockSample sample4 = generator.getColumnSample(chunkX, chunkZ - size, heightLimitView, noiseConfig);
         VerticalBlockSample sample5 = generator.getColumnSample(chunkX - size, chunkZ, heightLimitView, noiseConfig);
+        //VerticalBlockSample sample6 = generator.getColumnSample(chunkX + size, chunkZ + size, heightLimitView, noiseConfig);
+        //VerticalBlockSample sample7 = generator.getColumnSample(chunkX - size, chunkZ - size, heightLimitView, noiseConfig);
+        //VerticalBlockSample sample8 = generator.getColumnSample(chunkX + size, chunkZ - size, heightLimitView, noiseConfig);
+        //VerticalBlockSample sample9 = generator.getColumnSample(chunkX - size, chunkZ + size, heightLimitView, noiseConfig);
 
         // subtract -1 if getHeightOnGround
         if (sample1.getState(i1).getFluidState().isIn(FluidTags.WATER) || sample2.getState(j1).getFluidState().isIn(FluidTags.WATER) || sample3.getState(k1).getFluidState().isIn(FluidTags.WATER) || sample4.getState(o1).getFluidState().isIn(FluidTags.WATER) || sample5.getState(p1).getFluidState().isIn(FluidTags.WATER)) {
             return false;
         }
 
+        /*
+        if (sample1.getState(i1).getFluidState().isIn(FluidTags.WATER) ||
+                sample2.getState(j1).getFluidState().isIn(FluidTags.WATER) ||
+                sample3.getState(k1).getFluidState().isIn(FluidTags.WATER) ||
+                sample4.getState(o1).getFluidState().isIn(FluidTags.WATER) ||
+                sample5.getState(p1).getFluidState().isIn(FluidTags.WATER) ||
+                sample6.getState(l1).getFluidState().isIn(FluidTags.WATER) ||
+                sample7.getState(m1).getFluidState().isIn(FluidTags.WATER) ||
+                sample8.getState(n1).getFluidState().isIn(FluidTags.WATER) ||
+                sample9.getState(q1).getFluidState().isIn(FluidTags.WATER)) {
+            return false;
+        }
+
+
+        int minCorners = Math.min(Math.min(n1, m1), Math.min(q1, l1));
+        int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
+        int minHeight = Math.min(Math.min(minCorners, minSides), i1);
+
+        int maxCorners = Math.max(Math.max(n1, m1), Math.max(q1, l1));
+        int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
+        int maxHeight = Math.max(Math.max(maxCorners, maxSides), i1);
+
+         */
 
         int minSides = Math.min(Math.min(j1, p1), Math.min(o1, k1));
         int minHeight = Math.min(minSides, i1);
 
         int maxSides = Math.max(Math.max(j1, p1), Math.max(o1, k1));
         int maxHeight = Math.max(maxSides, i1);
-
-
 
         /*
         System.out.println("Testing at..." + chunkX + " " + chunkZ + ": " + i1);
@@ -222,9 +251,7 @@ public class TGJigsawStructure extends StructureType {
         System.out.println("Testing at..." + (chunkX - size) + " " + chunkZ + ": " + p1);
         System.out.println("Max: " + Math.abs(maxHeight - minHeight));
         System.out.println("Config: " + maxHeightDifference);
-
          */
-
 
         return Math.abs(maxHeight - minHeight) <= maxHeightDifference;
 

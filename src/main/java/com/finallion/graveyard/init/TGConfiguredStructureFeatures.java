@@ -18,10 +18,13 @@ import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.heightprovider.ConstantHeightProvider;
 import net.minecraft.world.gen.structure.StructureType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class TGConfiguredStructureFeatures {
+    public static List<StructureType> structures = new ArrayList<>();
 
     public static final RegistryEntry<StructureType> HAUNTED_HOUSE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.HAUNTED_HOUSE,
             new TGJigsawStructure(createConfig(TGTags.IS_OVERWORLD, addMobSpawnsToStructure("haunted_house"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
@@ -198,6 +201,7 @@ public class TGConfiguredStructureFeatures {
     }
 
     private static RegistryEntry<StructureType> register(RegistryKey<StructureType> key, StructureType configuredStructureFeature) {
+        structures.add(configuredStructureFeature);
         return BuiltinRegistries.add(BuiltinRegistries.STRUCTURE, key, configuredStructureFeature);
     }
     public static void init() {}
