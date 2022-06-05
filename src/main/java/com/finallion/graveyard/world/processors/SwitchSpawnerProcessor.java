@@ -10,14 +10,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.MobSpawnerLogic;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +26,7 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
 
     @Nullable
     @Override
-    public Structure.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pivot, Structure.StructureBlockInfo structureBlockInfo, Structure.StructureBlockInfo structureBlockInfo2, StructurePlacementData data) {
+    public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlacementData data) {
         if (structureBlockInfo2.state.getBlock() instanceof SpawnerBlock && TheGraveyard.config.booleanEntries.get("disableWitherSkeletonSpawner")) {
             BlockPos worldPos = structureBlockInfo2.pos;
             BlockEntity blockEntity = world.getBlockEntity(worldPos);

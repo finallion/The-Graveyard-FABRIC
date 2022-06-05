@@ -25,13 +25,15 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.heightprovider.HeightProvider;
 import net.minecraft.world.gen.noise.NoiseConfig;
+import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.gen.structure.Structure.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TGJigsawStructure extends StructureType {
+public class TGJigsawStructure extends Structure {
     public static final int MAX_SIZE = 128;
 
     public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
@@ -47,7 +49,7 @@ public class TGJigsawStructure extends StructureType {
     //StructureConfigEntry config
     public static final Codec<TGJigsawStructure> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    StructureType.Config.CODEC.forGetter(feature -> feature.config),
+                    Config.CODEC.forGetter(feature -> feature.config),
                     StructurePool.REGISTRY_CODEC.fieldOf("start_pool").forGetter(config -> config.startPool),
                     Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(config -> config.startJigsawName),
                     Codec.intRange(0, 7).fieldOf("size").forGetter(config -> config.size),
@@ -75,7 +77,7 @@ public class TGJigsawStructure extends StructureType {
     public final List<String> whitelist;
     public final List<String> modWhitelist;
     public final String structureName;
-    protected final StructureType.Config config;
+    protected final Config config;
 
     public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, Optional<Identifier> startJigsawName, int size, HeightProvider startHeight, Boolean useExpansionHack, Optional<Heightmap.Type> projectStartToHeightmap, int maxDistanceFromCenter, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> modWhitelist, String structureName) {
         super(config);
@@ -257,7 +259,8 @@ public class TGJigsawStructure extends StructureType {
 
     }
 
-    public net.minecraft.structure.StructureType<?> getType() {
+    public StructureType<?> getType() {
         return TGStructureType.TG_JIGSAW;
     }
+
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.feature.LakeFeature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public class LakeFeatureMixin {
 
         StructureAccessor structureAccessor = ((ChunkRegionAccessor)context.getWorld()).getStructureAccessor();
 
-        for (StructureType structure : TGConfiguredStructureFeatures.structures) {
+        for (Structure structure : TGConfiguredStructureFeatures.structures) {
             StructureStart structureStart = structureAccessor.getStructureStart(chunkPos, structure, structureHolder);
 
             if (structureStart != null && structureStart.hasChildren()) {

@@ -50,6 +50,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
@@ -206,15 +208,13 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
     }
 
+
+
     @Override
     public void tickMovement() {
         spawnTimer--;
         if (world.isClient() && spawnTimer >= 0 && spawned) {
             addParticles();
-        }
-
-        if (world.isClient() && spawnTimer >= 0) {
-            world.playSound(null, this.getBlockPos(), SoundEvents.BLOCK_SOUL_SAND_BREAK, SoundCategory.BLOCKS,2.5F, -10.0F);
         }
 
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
@@ -234,6 +234,12 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         super.tickMovement();
     }
 
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE,2.0F, -5.0F);
+        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    }
 
     public EntityGroup getGroup() {
         return EntityGroup.UNDEAD;
