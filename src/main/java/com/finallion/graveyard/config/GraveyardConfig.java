@@ -111,7 +111,8 @@ public class GraveyardConfig implements Config {
     @Override
     public void save() {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
-        integerEntries.putIfAbsent("maxTerrainHeightDifference", 6);
+        booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
+        integerEntries.putIfAbsent("maxTerrainHeightDifference", 5);
 
         for (StructureFeature<?> structure : getStructures()) {
             AbstractGraveyardStructure abstractStructure = (AbstractGraveyardStructure) structure;
