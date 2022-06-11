@@ -24,23 +24,25 @@ public class GraveyardConfig implements Config {
              Structures:
              Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
              Configure spacing (Average distance between two structure placement attempts of this type in chunks).
-             Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             Configure mod whitelist: use "#modid" to whitelist the biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #graveyard_biomes, #terralith, #byg, #bop).
-             Valid vanilla biome categories are: #taiga, #extreme_hills, #jungle, #mesa, #plains, #savanna, #icy, #beach, #forest, #desert, #swamp, #mushroom, #underground, #mountain.
+             Configure whitelist: use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
+             Configure mod whitelist: use "#modid" to whitelist all biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #graveyard_biomes, #terralith, #byg, #bop).
              A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
+             Configure terrain check radius: set how far from structure placement a block is checked in all cardinal directions. Only necessary for the large graveyard.
+             Configure max terrain height: set how far apart the different heights from the terrain check can be. Increase this value to allow more structures to spawn, but to also increase chance of weird placement.
+             Configure if graveyard mobs can spawn naturally in structures.
              
              Mobs:
              Configure spawning weight and group size of the spawn.
              Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect.
-             Configure whitelist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             Configure blacklist: use "#biomeCategory" for biome categories and "minecraft:biome" for biomes (mod identifier + ":" + biome name).
-             Configure mod whitelist: use "#modid" to whitelist the biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #graveyard_biomes, #terralith, #byg, #bop).
+             Configure whitelist: use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
+             Configure blacklist: use "minecraft:biome" to blacklist biomes (mod identifier + ":" + biome name).
+             Configure mod whitelist: use "#modid" to whitelist all biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #graveyard_biomes, #terralith, #byg, #bop).
              
              Additional:
              Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
              Configure if hordes of graveyard mobs can spawn and set their size and frequency.
              Configure if urns have a double chest inventory.
+             Configure if the wither skeleton spawner in the large graveyard will be replaced by a skeleton spawner.
              
             """)
 

@@ -21,7 +21,7 @@ public class BiomeSelectionUtil {
         String biomeName = biome.getKey().get().getValue().toString();
         String modId = biome.getKey().get().getValue().getNamespace();
 
-        // mod is whitelisted, weighs higher than biome white list
+        // mod is whitelisted, weights higher than biome whitelist
         if (modIdWhitelist.contains("#" + modId)) {
             return true;
         }
