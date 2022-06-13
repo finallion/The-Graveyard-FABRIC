@@ -1,4 +1,4 @@
-name: 1.18.1 Bug/Crash Report
+name: 1.19 Bug/Crash Report
 description: File a bug/crash report
 assignees: Finallion
 labels: [bug]
@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        For bugs/crashes experienced with Minecraft 1.18.1. Older versions are not supported.
+        For bugs/crashes experienced with Minecraft 1.19. Older versions are not supported.
         If any section does not apply, replace its content with "N/A".
   - type: textarea
     attributes:

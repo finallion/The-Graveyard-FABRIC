@@ -1,10 +1,10 @@
-name: 1.18.1 Question
+name: 1.19 Question
 description: Ask a question
 body:
   - type: markdown
     attributes:
       value: |
-        Questions for Minecraft 1.18.1. Older versions are not supported.
+        Questions for Minecraft 1.19. Older versions are not supported.
         If any section does not apply, replace its contents with "N/A".
         
         Please search for existing questions before you make your own request. 
