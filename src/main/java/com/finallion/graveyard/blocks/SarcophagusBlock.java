@@ -226,7 +226,8 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         }
     }
 
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof SarcophagusBlockEntity) {
             ((SarcophagusBlockEntity) blockEntity).onScheduledTick();
