@@ -64,7 +64,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty OPEN;
     public static final BooleanProperty PLAYER_PLACED;
-    public static final BooleanProperty IS_COFFIN;
+    public static final BooleanProperty IS_COFFIN = BooleanProperty.of("is_coffin");
     public static final DirectionProperty FACING;
     protected static final VoxelShape DOUBLE_NORTH_SHAPE;
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
@@ -311,7 +311,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         OPEN = Properties.OPEN;
         WATERLOGGED = Properties.WATERLOGGED;
         FACING = Properties.HORIZONTAL_FACING;
-        IS_COFFIN = Properties.LIT;
         DOUBLE_NORTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_SOUTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_WEST_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);

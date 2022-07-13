@@ -41,28 +41,22 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
     public static final Identifier SARCOPHAGUS_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head_lid");
     public static final Identifier SARCOPHAGUS_HEAD = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head");
 
-
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
     }
 
     @Override
     public void render(SarcophagusBlockEntity entity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        World world = entity.getWorld();
-
         BlockState blockState = entity.getCachedState();
         String name = entity.getCachedState().getBlock().getTranslationKey();
         boolean isCoffin = entity.isCoffin();
 
-        DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, world, entity.getPos(), (worldx, pos) -> {
+        DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getWorld(), entity.getPos(), (worldx, pos) -> {
             return false;
         });
         float g = ((Float2FloatFunction) propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((LidOpenable) entity))).get(tickDelta);
         g = 1.0F - g;
         g = 1.0F - g * g * g;
-        int k = ((Int2IntFunction) propertySource.apply(new LightmapCoordinatesRetriever())).get(light);
-
-        //ItemStack stack = blockState.getBlock().asItem().getDefaultStack();
-        //BakedModel test = MinecraftClient.getInstance().getItemRenderer().getModel(stack, null, null, 0);
+        int k = ((Int2IntFunction)propertySource.apply(new LightmapCoordinatesRetriever())).applyAsInt(light);
 
         BakedModel footLid = getModel(name, isCoffin, 0);
         BakedModel headLid = getModel(name, isCoffin, 1);
@@ -73,17 +67,13 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         BakedModel sarcophagusModelFootLid = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
         BakedModel sarcophagusModelHeadLid = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
 
-        //this.renderPart(entity, matrixStack, vertexConsumers, test, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-        //MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumers, k, OverlayTexture.DEFAULT_UV, test);
-
-
-        if (world != null) {
+        if (entity.getWorld() != null) {
             if (isCoffin) {
-                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? head : foot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? headLid : footLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? head : foot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false);
+                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? headLid : footLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false, g);
             } else {
-                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHead : sarcophagusModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHeadLid : sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
+                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHead : sarcophagusModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false);
+                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHeadLid : sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false, g);
             }
         } else {
             if (isCoffin) {
@@ -98,13 +88,10 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
                 this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
             }
         }
-
     }
 
 
     private void renderPart(SarcophagusBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot) {
-        World world = entity.getWorld();
-
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
@@ -114,14 +101,12 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
         BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, world.random, 0, overlay);
+        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, true, entity.getWorld().random, 0, overlay);
 
         matrices.pop();
     }
 
     private void renderLid(SarcophagusBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot, float openFactor) {
-        World world = entity.getWorld();
-
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
@@ -136,8 +121,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
         BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(world, model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, world.random, 0, overlay);
-
+        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, true, entity.getWorld().random, 0, overlay);
 
         matrices.pop();
     }
@@ -166,7 +150,6 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         }
 
     }
-
 
 }
 

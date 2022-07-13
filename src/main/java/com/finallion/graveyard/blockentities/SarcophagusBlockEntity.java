@@ -1,6 +1,7 @@
 package com.finallion.graveyard.blockentities;
 
 import com.finallion.graveyard.blockentities.animation.SarcophagusLidAnimator;
+import com.finallion.graveyard.blocks.SarcophagusBlock;
 import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -35,7 +36,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                if (state.get(Properties.LIT)) { // internal property is_coffin
+                if (state.get(SarcophagusBlock.IS_COFFIN)) { // internal property is_coffin
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_OPEN);
                 } else {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
@@ -43,7 +44,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                if (state.get(Properties.LIT)) {
+                if (state.get(SarcophagusBlock.IS_COFFIN)) {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_CLOSE);
                 } else {
                     SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
@@ -96,7 +97,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
     }
 
     protected Text getContainerName() {
-        if (this.getCachedState().get(Properties.LIT)) {
+        if (this.getCachedState().get(SarcophagusBlock.IS_COFFIN)) {
             return Text.translatable("container.coffin");
         }
         return Text.translatable("container.sarcophagus");
@@ -166,6 +167,6 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
 
 
     public boolean isCoffin() {
-        return this.getCachedState().get(Properties.LIT);
+        return this.getCachedState().get(SarcophagusBlock.IS_COFFIN);
     }
 }

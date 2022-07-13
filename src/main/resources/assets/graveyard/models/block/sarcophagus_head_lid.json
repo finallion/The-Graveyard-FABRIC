@@ -1,6 +1,5 @@
 {
 	"credit": "Made with Blockbench",
-	"ambientocclusion": false,
 	"texture_size": [128, 128],
 	"textures": {
 		"0": "graveyard:block/sarcophagus",
