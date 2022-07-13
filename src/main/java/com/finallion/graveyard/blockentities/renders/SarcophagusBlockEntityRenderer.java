@@ -75,7 +75,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
                 this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHead : sarcophagusModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false);
                 this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHeadLid : sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false, g);
             }
-        } else {
+        }
+        /*else {
             if (isCoffin) {
                 this.renderLid(entity, matrixStack, vertexConsumers, footLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
                 this.renderPart(entity, matrixStack, vertexConsumers, foot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
@@ -88,6 +89,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
                 this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
             }
         }
+
+         */
     }
 
 
