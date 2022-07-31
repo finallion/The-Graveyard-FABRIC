@@ -76,6 +76,13 @@ public class TGEntities {
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
+    public static final EntityType<LichEntity> LICH = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(LichEntity::new)
+            .dimensions(EntityDimensions.changing(2.0F, 4.0F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
+            .build();
+
 
     private static void register(String name, EntityType<?> type) {
         entities.add(type);
@@ -94,6 +101,7 @@ public class TGEntities {
         register("revenant", REVENANT);
         register("nightmare", NIGHTMARE);
         register("wraith", WRAITH);
+        register("lich", LICH);
     }
 
 

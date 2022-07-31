@@ -6,6 +6,7 @@ import com.finallion.graveyard.blockentities.enums.SarcophagusPart;
 import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.finallion.graveyard.blocks.SarcophagusBlock;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGItems;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -26,6 +27,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -35,11 +37,15 @@ import net.minecraft.world.World;
 import java.util.*;
 
 @Environment(EnvType.CLIENT)
+//TODO: SPLIT IN TWO CLASSES: COFFIN AND SARCOPHAGUS
+// 1.19 required to change this class. Placing the block would stop particle spawning of other blocks in the world. Don't have any idea why.
+// So instead of rendering the block, this renders the item, split into two to allow for the lid animation
 public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable> implements BlockEntityRenderer<SarcophagusBlockEntity> {
     public static final Identifier SARCOPHAGUS_FOOT = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot");
     public static final Identifier SARCOPHAGUS_FOOT_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot_lid");
     public static final Identifier SARCOPHAGUS_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head_lid");
     public static final Identifier SARCOPHAGUS_HEAD = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head");
+
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
     }
@@ -47,54 +53,194 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
     @Override
     public void render(SarcophagusBlockEntity entity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         BlockState blockState = entity.getCachedState();
-        String name = entity.getCachedState().getBlock().getTranslationKey();
-        boolean isCoffin = entity.isCoffin();
-
         DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getWorld(), entity.getPos(), (worldx, pos) -> {
             return false;
         });
         float g = ((Float2FloatFunction) propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever((LidOpenable) entity))).get(tickDelta);
         g = 1.0F - g;
         g = 1.0F - g * g * g;
-        int k = ((Int2IntFunction)propertySource.apply(new LightmapCoordinatesRetriever())).applyAsInt(light);
 
-        BakedModel footLid = getModel(name, isCoffin, 0);
-        BakedModel headLid = getModel(name, isCoffin, 1);
-        BakedModel head = getModel(name, isCoffin, 2);
-        BakedModel foot = getModel(name, isCoffin, 3);
-        BakedModel sarcophagusModelHead = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD);
-        BakedModel sarcophagusModelFoot = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT);
-        BakedModel sarcophagusModelFootLid = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
-        BakedModel sarcophagusModelHeadLid = BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
+        ItemStack stack = entity.getCachedState().getBlock().asItem().getDefaultStack();
+        boolean isCoffin = entity.isCoffin();
 
-        if (entity.getWorld() != null) {
+        if (entity.getWorld() != null && entity.getCachedState().get(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
             if (isCoffin) {
-                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? head : foot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false);
-                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? headLid : footLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false, g);
+                renderCoffinLid(entity, stack, matrixStack, vertexConsumers, light, g);
+                renderCoffinBase(entity, stack, matrixStack, vertexConsumers, light);
             } else {
-                this.renderPart(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHead : sarcophagusModelFoot, (Direction) blockState.get(SarcophagusBlock.FACING), vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false);
-                this.renderLid(entity, matrixStack, vertexConsumers, blockState.get(SarcophagusBlock.PART) == SarcophagusPart.HEAD ? sarcophagusModelHeadLid : sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayer.getCutoutMipped()), k, overlay, false, g);
+                renderLid(entity, stack, matrixStack, vertexConsumers, light, g);
+                renderBase(entity, stack, matrixStack, vertexConsumers, light);
             }
         }
-        /*else {
-            if (isCoffin) {
-                this.renderLid(entity, matrixStack, vertexConsumers, footLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
-                this.renderPart(entity, matrixStack, vertexConsumers, foot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
-                this.renderLid(entity, matrixStack, vertexConsumers, headLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
-                this.renderPart(entity, matrixStack, vertexConsumers, head, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-            } else {
-                this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelFootLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true, g);
-                this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelFoot, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, true);
-                this.renderLid(entity, matrixStack, vertexConsumers, sarcophagusModelHeadLid, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false, g);
-                this.renderPart(entity, matrixStack, vertexConsumers, sarcophagusModelHead, Direction.SOUTH, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(entity.getCachedState())), k, overlay, false);
-            }
+    }
+    private void renderCoffinBase(SarcophagusBlockEntity entity, ItemStack stack, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light) {
+        BakedModel base = getCoffinModel(entity);
+
+        matrixStack.push();
+        //matrixStack.scale(4.5828F, 4.5F, 4.269F);
+        Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        float f = direction.asRotation();
+
+        if (direction == Direction.EAST) {
+            matrixStack.scale(4.269F, 4.5F, 4.5826F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0, 0, 0.23435);
+        } else if (direction == Direction.WEST) {
+            matrixStack.scale(4.269F, 4.5F, 4.5826F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.2185F, 0, 0);
+        } else if (direction == Direction.SOUTH) {
+            matrixStack.scale(4.5826F, 4.5F, 4.269F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.2185F, 0, 0.23435);
+        } else {
+            matrixStack.scale(4.5826F, 4.5F, 4.269F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
         }
 
-         */
+
+
+        matrixStack.translate(-0.10925, 0.0625F, 0.0155);
+
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, base);
+
+        matrixStack.pop();
+
+    }
+    private void renderCoffinLid(SarcophagusBlockEntity entity, ItemStack stack, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, float g) {
+        BakedModel lid = getCoffinLidModel(entity);
+
+        matrixStack.push();
+        //matrixStack.scale(4.5828F, 4.5F, 4.269F);
+        Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        float f = direction.asRotation();
+
+        //matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        if (direction == Direction.EAST) {
+            matrixStack.scale(4.269F, 4.5F, 4.5826F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0, 0, 0.23435);
+        } else if (direction == Direction.WEST) {
+            matrixStack.scale(4.269F, 4.5F, 4.5826F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.2185F, 0, 0);
+        } else if (direction == Direction.SOUTH) {
+            matrixStack.scale(4.5826F, 4.5F, 4.269F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.2185F, 0, 0.23435);
+        } else {
+            matrixStack.scale(4.5826F, 4.5F, 4.269F);
+            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        }
+        matrixStack.translate(-0.10925, 0.0625F, 0.0155);
+
+        // ANIMATION START
+        matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 70)); // lid rotation
+        // ANIMATION END
+
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, lid);
+
+        matrixStack.pop();
     }
 
+    private void renderBase(SarcophagusBlockEntity entity, ItemStack stack, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light) {
+        BakedModel base = MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SARCOPHAGUS_BASE.getDefaultStack(), null, null, 0);
 
-    private void renderPart(SarcophagusBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot) {
+        matrixStack.push();
+        matrixStack.scale(5.0F, 5.0F, 5.0F);
+        Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        float f = direction.asRotation();
+
+        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        if (direction == Direction.EAST) {
+            matrixStack.translate(0, 0, 0.2F);
+        } else if (direction == Direction.WEST) {
+            matrixStack.translate(0.2F, 0, 0);
+        } else if (direction == Direction.SOUTH) {
+            matrixStack.translate(0.2F, 0, 0.2F);
+        }
+
+        matrixStack.translate(-0.1F, 0.0375F, 0.05615F);
+
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, base);
+
+        matrixStack.pop();
+    }
+
+    private void renderLid(SarcophagusBlockEntity entity, ItemStack stack, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, float g) {
+        BakedModel lid = MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SARCOPHAGUS_LID.getDefaultStack(), null, null, 0);
+
+        matrixStack.push();
+        matrixStack.scale(5.0F, 5.0F, 5.0F);
+        Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        float f = direction.asRotation();
+
+        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        if (direction == Direction.EAST) {
+            matrixStack.translate(0, 0, 0.2F);
+        } else if (direction == Direction.WEST) {
+            matrixStack.translate(0.2F, 0, 0);
+        } else if (direction == Direction.SOUTH) {
+            matrixStack.translate(0.2F, 0, 0.2F);
+        }
+
+        matrixStack.translate(-0.1F, 0.0375F, 0.05615F);
+
+        // ANIMATION START
+        matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 70)); // lid rotation
+        // ANIMATION END
+
+
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, lid);
+
+        matrixStack.pop();
+    }
+
+    // TODO: cleaner way
+    private BakedModel getCoffinModel(SarcophagusBlockEntity entity) {
+        String wood = entity.getCachedState().toString().split("_coffin")[0];
+        if (wood.contains("dark_oak")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.DARK_OAK_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("oak")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.OAK_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("acacia")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.ACACIA_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("jungle")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.JUNGLE_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("warped")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.WARPED_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("crimson")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.CRIMSON_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("spruce")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SPRUCE_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.BIRCH_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        }
+    }
+
+    private BakedModel getCoffinLidModel(SarcophagusBlockEntity entity) {
+        String wood = entity.getCachedState().toString().split("_coffin")[0];
+        if (wood.contains("dark_oak")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.DARK_OAK_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("oak")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.OAK_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("acacia")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.ACACIA_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("jungle")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.JUNGLE_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("warped")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.WARPED_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("crimson")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.CRIMSON_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("spruce")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SPRUCE_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.BIRCH_COFFIN_LID.getDefaultStack(), null, null, 0);
+        }
+    }
+
+    /*
+    private void renderPart(SarcophagusBlockEntity entity, MatrixStack matrices, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot) {
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
@@ -104,12 +250,12 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
         BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, true, entity.getWorld().random, 0, overlay);
+        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, entity.getWorld().random, 0, overlay);
 
         matrices.pop();
     }
 
-    private void renderLid(SarcophagusBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot, float openFactor) {
+    private void renderLid(SarcophagusBlockEntity entity, MatrixStack matrices, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot, float openFactor) {
         matrices.push();
         matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
 
@@ -124,35 +270,50 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
         matrices.translate(-0.5D, -0.5D, -0.5D);
         BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, true, entity.getWorld().random, 0, overlay);
+        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, entity.getWorld().random, 0, overlay);
 
         matrices.pop();
     }
 
     private BakedModel getModel(String name, boolean isCoffin, int part) {
-        MinecraftClient client = MinecraftClient.getInstance();
-
         if (isCoffin) {
             String woodType = name.split("\\.")[2];
             switch (part) {
                 default -> {
-                    return BakedModelManagerHelper.getModel(client.getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
                 }
                 case 1 -> {
-                    return BakedModelManagerHelper.getModel(client.getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
                 }
                 case 2 -> {
-                    return BakedModelManagerHelper.getModel(client.getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
                 }
                 case 3 -> {
-                    return BakedModelManagerHelper.getModel(client.getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
                 }
             }
         } else {
-            return BakedModelManagerHelper.getModel(client.getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/oak_coffin_head"));
+            switch (part) {
+                default -> {
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
+                }
+                case 1 -> {
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
+                }
+                case 2 -> {
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD);
+                }
+                case 3 -> {
+                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT);
+                }
+            }
+
         }
 
     }
 
+     */
+
 }
+
 

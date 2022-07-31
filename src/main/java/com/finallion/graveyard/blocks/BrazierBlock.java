@@ -16,6 +16,7 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.CampfireCookingRecipe;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -103,7 +104,6 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
     }
-
 
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if ((Boolean)state.get(LIT)) {

@@ -81,7 +81,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         builder.add(WATERLOGGED, OPEN, FACING, PART, PLAYER_PLACED, IS_COFFIN);
     }
 
-
     @Nullable
     public static Direction getDirection(BlockView world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
@@ -117,9 +116,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
                 return DOUBLE_EAST_SHAPE;
         }
     }
-
-
-
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         Random random = new Random();
@@ -257,9 +253,8 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         return state.get(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
     }
 
-    /*
-    ANIMATION STUFF
-     */
+    // ANIMATION STUFF
+
 
     public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidOpenable progress) {
         return new DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction>() {
@@ -287,7 +282,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         return world.isClient ? checkType(type, this.getExpectedEntityType(), SarcophagusBlockEntity::clientTick) : null;
     }
 
-
     @Override
     public DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> getBlockEntitySource(BlockState state, World world, BlockPos pos, boolean ignoreBlocked) {
         BiPredicate biPredicate;
@@ -302,8 +296,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     public BlockEntityType<? extends SarcophagusBlockEntity> getExpectedEntityType() {
         return (BlockEntityType)this.entityTypeRetriever.get();
     }
-
-
 
 
     static {

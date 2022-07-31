@@ -12,6 +12,25 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class TGItems {
+    public static final Item SARCOPHAGUS_LID = new Item(new FabricItemSettings());
+    public static final Item SARCOPHAGUS_BASE = new Item(new FabricItemSettings());
+    public static final Item DARK_OAK_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item DARK_OAK_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item OAK_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item OAK_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item BIRCH_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item BIRCH_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item JUNGLE_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item JUNGLE_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item ACACIA_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item ACACIA_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item SPRUCE_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item SPRUCE_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item WARPED_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item WARPED_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item CRIMSON_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item CRIMSON_COFFIN_BASE = new Item(new FabricItemSettings());
+
 
     public static void registerItems() {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings()));
@@ -110,10 +129,29 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_vindicator_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_VINDICATOR, 7567737, 2380632, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_pillager_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_PILLAGER, 7567737, 4924973, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wraith_spawn_egg"), new SpawnEggItem(TGEntities.WRAITH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), new SpawnEggItem(TGEntities.LICH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
 
 
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_lid"), SARCOPHAGUS_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_base"), SARCOPHAGUS_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin_lid"), DARK_OAK_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin_base"), DARK_OAK_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "oak_coffin_lid"), OAK_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "oak_coffin_base"), OAK_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "birch_coffin_lid"), BIRCH_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "birch_coffin_base"), BIRCH_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin_lid"), JUNGLE_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin_base"), JUNGLE_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin_lid"), ACACIA_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin_base"), ACACIA_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin_lid"), SPRUCE_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin_base"), SPRUCE_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "warped_coffin_lid"), WARPED_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "warped_coffin_base"), WARPED_COFFIN_BASE);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin_lid"), CRIMSON_COFFIN_LID);
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin_base"), CRIMSON_COFFIN_BASE);
         /*
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_PLANKS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_STAIRS, new FabricItemSettings().group(TheGraveyard.GROUP)));
