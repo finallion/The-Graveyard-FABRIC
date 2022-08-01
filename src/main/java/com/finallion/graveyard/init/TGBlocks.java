@@ -51,8 +51,8 @@ public class TGBlocks {
     public static final Identifier CHISELED_QUARTZ_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier CHISELED_RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier CHISELED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CRACKED_BLACKSTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CRACKED_STONE_BRICKS_TEXTURE = new Identifier("minecraft", "block/deepslate");
+    public static final Identifier CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
+    public static final Identifier CRACKED_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier DARK_PRISMARINE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier DIORITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
     public static final Identifier GILDED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
@@ -122,6 +122,7 @@ public class TGBlocks {
     public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
     public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
     public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
+    public static final Block MANGROVE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();
@@ -146,6 +147,14 @@ public class TGBlocks {
     public static final Block COBBLESTONE_GRAVESTONE = new GravestoneBlock(COBBLESTONE_GRAVESTONE_TEXTURE);
     public static final Block MOSSY_COBBLESTONE_GRAVESTONE = new GravestoneBlock(MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE);
     public static final Block DEEPSLATE_GRAVESTONE = new GravestoneBlock(DEEPSLATE_GRAVESTONE_TEXTURE);
+    public static final Block BLACKSTONE_GRAVESTONE = new GravestoneBlock(BLACKSTONE_GRAVESTONE_TEXTURE);
+    public static final Block CRACKED_BLACKSTONE_GRAVESTONE = new GravestoneBlock(CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE);
+    public static final Block STONE_BRICKS_GRAVESTONE = new GravestoneBlock(STONE_BRICKS_GRAVESTONE_TEXTURE);
+    public static final Block MOSSY_STONE_BRICKS_GRAVESTONE = new GravestoneBlock(MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE);
+    public static final Block BRICKS_GRAVESTONE = new GravestoneBlock(BRICKS_GRAVESTONE_TEXTURE);
+
+    public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE));
+    public static final Block MYSTERIOUS_BONE = new MysteriousBoneBlock(FabricBlockSettings.of(Material.STONE));
 
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -226,6 +235,11 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cobblestone_gravestone"), COBBLESTONE_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "blackstone_gravestone"), BLACKSTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cracked_blackstone_gravestone"), CRACKED_BLACKSTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "stone_bricks_gravestone"), STONE_BRICKS_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_stone_bricks_gravestone"), MOSSY_STONE_BRICKS_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bricks_gravestone"), BRICKS_GRAVESTONE);
 
         /*
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
@@ -243,6 +257,10 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), ACACIA_COFFIN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
+
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mysterious_bone"), MYSTERIOUS_BONE);
 
         coffins.add(OAK_COFFIN);
         coffins.add(SPRUCE_COFFIN);
@@ -252,13 +270,19 @@ public class TGBlocks {
         coffins.add(ACACIA_COFFIN);
         coffins.add(CRIMSON_COFFIN);
         coffins.add(WARPED_COFFIN);
+        coffins.add(MANGROVE_COFFIN);
     }
 
     public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
             GRAVESTONE,
             COBBLESTONE_GRAVESTONE,
             MOSSY_COBBLESTONE_GRAVESTONE,
-            DEEPSLATE_GRAVESTONE).build(null));
+            DEEPSLATE_GRAVESTONE,
+            BLACKSTONE_GRAVESTONE,
+            CRACKED_BLACKSTONE_GRAVESTONE,
+            MOSSY_STONE_BRICKS_GRAVESTONE,
+            STONE_BRICKS_GRAVESTONE,
+            BRICKS_GRAVESTONE).build(null));
 
 
     public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
@@ -288,7 +312,8 @@ public class TGBlocks {
             BIRCH_COFFIN,
             CRIMSON_COFFIN,
             WARPED_COFFIN,
-            SPRUCE_COFFIN).build(null));
+            SPRUCE_COFFIN,
+            MANGROVE_COFFIN).build(null));
 
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,

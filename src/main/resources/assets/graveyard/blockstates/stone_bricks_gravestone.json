@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "graveyard:block/stone_bricks_gravestone"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/stone_bricks_gravestone"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/stone_bricks_gravestone"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/stone_bricks_gravestone"
+    }
+  }
+}

@@ -78,6 +78,11 @@
   "block.graveyard.cobblestone_gravestone": "Булыжниковое надгробие",
   "block.graveyard.mossy_cobblestone_gravestone": "Замшелое булыжниковое надгробие",
   "block.graveyard.deepslate_gravestone": "Глубинносланцевое надгробие",
+  "block.graveyard.blackstone_gravestone": "Blackstone Gravestone",
+  "block.graveyard.cracked_blackstone_gravestone": "Cracked Polished Blackstone Gravestone",
+  "block.graveyard.stone_bricks_gravestone": "Stone Bricks Gravestone",
+  "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
+  "block.graveyard.bricks_gravestone": "Bricks Gravestone",
 
   "item.graveyard.bone_dagger": "Костянной кинжал",
   "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
@@ -100,6 +105,8 @@
   "block.graveyard.warped_coffin": "Warped Coffin",
   "item.graveyard.crimson_coffin": "Crimson Coffin",
   "block.graveyard.crimson_coffin": "Crimson Coffin",
+  "item.graveyard.mangrove_coffin": "Mangrove Coffin",
+  "block.graveyard.mangrove_coffin": "Mangrove Coffin",
 
   "entity.graveyard.skeleton_creeper": "Костяной крипер",
   "item.graveyard.skeleton_creeper_spawn_egg": "Яйцо призыва костяного крипера",

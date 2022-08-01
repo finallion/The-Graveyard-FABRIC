@@ -1,0 +1,25 @@
+{
+  "block.altar.ambient": {
+    "sounds": [
+      "graveyard:block/altar/ambient1",
+      "graveyard:block/altar/ambient2",
+      "graveyard:block/altar/ambient3",
+      "graveyard:block/altar/ambient4"
+    ],
+    "subtitle": "subtitle.block.graveyard.altar.ambient"
+  },
+  "block.bone.placed": {
+    "sounds": [
+      "graveyard:block/bone/placed",
+      "graveyard:block/bone/placed"
+    ],
+    "subtitle": "subtitle.block.graveyard.bone.placed"
+  },
+  "block.bone.ambient": {
+    "sounds": [
+      "graveyard:block/bone/whisper1",
+      "graveyard:block/bone/whisper2"
+    ],
+    "subtitle": "subtitle.block.graveyard.bone.ambient"
+  }
+}

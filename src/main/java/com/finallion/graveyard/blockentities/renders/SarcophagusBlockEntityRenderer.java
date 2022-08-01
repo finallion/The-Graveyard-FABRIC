@@ -41,11 +41,6 @@ import java.util.*;
 // 1.19 required to change this class. Placing the block would stop particle spawning of other blocks in the world. Don't have any idea why.
 // So instead of rendering the block, this renders the item, split into two to allow for the lid animation
 public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable> implements BlockEntityRenderer<SarcophagusBlockEntity> {
-    public static final Identifier SARCOPHAGUS_FOOT = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot");
-    public static final Identifier SARCOPHAGUS_FOOT_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_foot_lid");
-    public static final Identifier SARCOPHAGUS_HEAD_LID = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head_lid");
-    public static final Identifier SARCOPHAGUS_HEAD = new Identifier(TheGraveyard.MOD_ID, "block/sarcophagus_head");
-
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
     }
@@ -239,80 +234,6 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         }
     }
 
-    /*
-    private void renderPart(SarcophagusBlockEntity entity, MatrixStack matrices, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot) {
-        matrices.push();
-        matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
-
-        float f = ((Direction) entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
-        matrices.translate(0.5D, 0.5D, 0.5D);
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-
-        matrices.translate(-0.5D, -0.5D, -0.5D);
-        BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, entity.getWorld().random, 0, overlay);
-
-        matrices.pop();
-    }
-
-    private void renderLid(SarcophagusBlockEntity entity, MatrixStack matrices, BakedModel model, Direction direction, VertexConsumer vertexConsumer, int light, int overlay, boolean isFoot, float openFactor) {
-        matrices.push();
-        matrices.translate(0.0D, 0.0D, isFoot ? -1.0D : 0.0D);
-
-        float f = ((Direction) entity.getCachedState().get(SarcophagusBlock.FACING)).getOpposite().asRotation();
-        matrices.translate(0.5D, 0.5D, 0.5D);
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-
-        // ANIMATION START
-        matrices.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(openFactor * 70)); // lid rotation
-        matrices.translate(isFoot ? -(openFactor * 0.25) : openFactor * 0.25, openFactor * 0.25, 0.0F); // lid offset to the ground and away from body
-        // ANIMATION END
-
-        matrices.translate(-0.5D, -0.5D, -0.5D);
-        BlockModelRenderer renderer = MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer();
-        renderer.render(entity.getWorld(), model, entity.getCachedState(), entity.getPos(), matrices, vertexConsumer, false, entity.getWorld().random, 0, overlay);
-
-        matrices.pop();
-    }
-
-    private BakedModel getModel(String name, boolean isCoffin, int part) {
-        if (isCoffin) {
-            String woodType = name.split("\\.")[2];
-            switch (part) {
-                default -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
-                }
-                case 1 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
-                }
-                case 2 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
-                }
-                case 3 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
-                }
-            }
-        } else {
-            switch (part) {
-                default -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT_LID);
-                }
-                case 1 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD_LID);
-                }
-                case 2 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_HEAD);
-                }
-                case 3 -> {
-                    return BakedModelManagerHelper.getModel(MinecraftClient.getInstance().getBakedModelManager(), SARCOPHAGUS_FOOT);
-                }
-            }
-
-        }
-
-    }
-
-     */
 
 }
 

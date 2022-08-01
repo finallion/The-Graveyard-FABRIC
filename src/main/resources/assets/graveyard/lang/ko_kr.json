@@ -79,6 +79,11 @@
   "block.graveyard.cobblestone_gravestone": "조약돌 묘비",
   "block.graveyard.mossy_cobblestone_gravestone": "이끼 낀 조약돌 묘비",
   "block.graveyard.deepslate_gravestone": "심층암 묘비",
+  "block.graveyard.blackstone_gravestone": "Blackstone Gravestone",
+  "block.graveyard.cracked_blackstone_gravestone": "Cracked Polished Blackstone Gravestone",
+  "block.graveyard.stone_bricks_gravestone": "Stone Bricks Gravestone",
+  "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
+  "block.graveyard.bricks_gravestone": "Bricks Gravestone",
 
   "item.graveyard.bone_dagger": "본 대거",
   "item.graveyard.dark_iron_ingot": "검은 철 주괴",
@@ -101,6 +106,8 @@
   "block.graveyard.warped_coffin": "뒤틀린 자루 관",
   "item.graveyard.crimson_coffin": "진홍빛 자루 관",
   "block.graveyard.crimson_coffin": "진홍빛 자루 관",
+  "item.graveyard.mangrove_coffin": "맹그로브 관",
+  "block.graveyard.mangrove_coffin": "맹그로브 관",
 
 
   "entity.graveyard.skeleton_creeper": "스켈레톤 크리퍼",

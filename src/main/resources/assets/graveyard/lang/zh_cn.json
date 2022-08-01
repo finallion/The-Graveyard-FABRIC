@@ -105,6 +105,11 @@
   "block.graveyard.cobblestone_gravestone": "圆石墓碑",
   "block.graveyard.mossy_cobblestone_gravestone": "苔藓圆石墓碑",
   "block.graveyard.deepslate_gravestone": "深板岩墓碑",
+  "block.graveyard.blackstone_gravestone": "Blackstone Gravestone",
+  "block.graveyard.cracked_blackstone_gravestone": "Cracked Polished Blackstone Gravestone",
+  "block.graveyard.stone_bricks_gravestone": "Stone Bricks Gravestone",
+  "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
+  "block.graveyard.bricks_gravestone": "Bricks Gravestone",
 
   "item.graveyard.bone_dagger": "骨头匕首",
   "item.graveyard.dark_iron_ingot": "暗铁锭",
@@ -127,6 +132,9 @@
   "block.graveyard.warped_coffin": "诡异木棺材",
   "item.graveyard.crimson_coffin": "绯红木棺材",
   "block.graveyard.crimson_coffin": "绯红木棺材",
+  "item.graveyard.mangrove_coffin": "紅樹棺材",
+  "block.graveyard.mangrove_coffin": "紅樹棺材",
+
 
   "entity.graveyard.skeleton_creeper": "骷髅苦力怕",
   "entity.graveyard.acolyte": "守灵人",

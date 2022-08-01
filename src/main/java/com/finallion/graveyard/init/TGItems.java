@@ -3,6 +3,7 @@ package com.finallion.graveyard.init;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.item.DaggerItem;
 import com.finallion.graveyard.item.SarcophagusItem;
+import com.finallion.graveyard.item.VialOfBlood;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -30,7 +31,7 @@ public class TGItems {
     public static final Item WARPED_COFFIN_BASE = new Item(new FabricItemSettings());
     public static final Item CRIMSON_COFFIN_LID = new Item(new FabricItemSettings());
     public static final Item CRIMSON_COFFIN_BASE = new Item(new FabricItemSettings());
-
+    public static final Item VIAL_OF_BLOOD = new VialOfBlood();
 
     public static void registerItems() {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings()));
@@ -152,6 +153,11 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "warped_coffin_base"), WARPED_COFFIN_BASE);
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin_lid"), CRIMSON_COFFIN_LID);
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin_base"), CRIMSON_COFFIN_BASE);
+
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar"), new BlockItem(TGBlocks.ALTAR, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "mysterious_bone"), new BlockItem(TGBlocks.MYSTERIOUS_BONE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "vial_of_blood"), VIAL_OF_BLOOD);
+
         /*
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_PLANKS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_STAIRS, new FabricItemSettings().group(TheGraveyard.GROUP)));

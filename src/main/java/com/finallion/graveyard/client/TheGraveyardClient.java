@@ -9,7 +9,9 @@ import com.finallion.graveyard.entities.models.CorruptedIllagerModel;
 import com.finallion.graveyard.entities.renders.*;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.init.TGItems;
 import com.finallion.graveyard.init.TGParticles;
+import com.finallion.graveyard.item.VialOfBlood;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,9 +27,13 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -97,22 +103,9 @@ public class TheGraveyardClient implements ClientModInitializer {
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 
-        // register block bench model
-        ModelLoadingRegistry.INSTANCE.registerModelProvider((ResourceManager manager, Consumer<Identifier> out) -> {
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT_LID);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD_LID);
 
-            for (Block block : TGBlocks.coffins) {
-                String woodType = block.getTranslationKey().split("\\.")[2];
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
-            }
-
+        ModelPredicateProviderRegistry.register(TGItems.VIAL_OF_BLOOD, new Identifier("blood_level"), (stack, world, entity, seed) -> {
+            return entity != null && entity.getActiveItem() == stack ? VialOfBlood.getBlood() : 0.0F;
         });
-
     }
 }

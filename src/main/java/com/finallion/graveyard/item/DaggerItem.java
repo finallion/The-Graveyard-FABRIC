@@ -2,14 +2,13 @@ package com.finallion.graveyard.item;
 
 
 import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.init.TGItems;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
@@ -32,4 +31,24 @@ public class DaggerItem extends SwordItem {
       }
    }
 
+   @Override
+   public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+      if (target.isDead() && target instanceof VillagerEntity && attacker instanceof ServerPlayerEntity) {
+         Item item = attacker.getOffHandStack().getItem();
+         if (item instanceof VialOfBlood blood) {
+            blood.fill();
+         } else if (item instanceof GlassBottleItem) {
+            stack.decrement(1);
+            if (!((PlayerEntity)attacker).getAbilities().creativeMode) {
+               ItemStack itemStack = new ItemStack(TGItems.VIAL_OF_BLOOD);
+               PlayerEntity playerEntity = (PlayerEntity)attacker;
+               if (!playerEntity.getInventory().insertStack(itemStack)) {
+                  playerEntity.dropItem(itemStack, false);
+               }
+            }
+         }
+      }
+
+      return super.postHit(stack, target, attacker);
+   }
 }

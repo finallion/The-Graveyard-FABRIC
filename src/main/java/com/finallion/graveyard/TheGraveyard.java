@@ -38,15 +38,14 @@ public class TheGraveyard implements ModInitializer {
         }
 
         TGAdvancements.init();
+        TGSounds.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGEntities.registerEntities();
         TGProcessors.registerProcessors();
 
         TGStructureType.init();
-        //TGConfiguredFeatures.init();
         TGTags.init();
-        //TGStructureFeatures.init();
         TGStructureSets.init();
         TGConfiguredStructureFeatures.init();
 
