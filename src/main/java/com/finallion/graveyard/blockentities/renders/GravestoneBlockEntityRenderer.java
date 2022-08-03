@@ -167,10 +167,20 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         RenderLayer layer2 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cobblestone.png"));
         RenderLayer layer3 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/mossy_cobblestone.png"));
         RenderLayer layer4 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/deepslate.png"));
+        RenderLayer layer5 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/blackstone.png"));
+        RenderLayer layer6 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cracked_blackstone.png"));
+        RenderLayer layer7 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/stone_bricks.png"));
+        RenderLayer layer8 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/mossy_stone_bricks.png"));
+        RenderLayer layer9 = RenderLayer.getEntitySolid(new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/bricks.png"));
         LAYERS.put(TGBlocks.GRAVESTONE, layer1);
         LAYERS.put(TGBlocks.COBBLESTONE_GRAVESTONE, layer2);
         LAYERS.put(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE, layer3);
         LAYERS.put(TGBlocks.DEEPSLATE_GRAVESTONE, layer4);
+        LAYERS.put(TGBlocks.BLACKSTONE_GRAVESTONE, layer5);
+        LAYERS.put(TGBlocks.CRACKED_BLACKSTONE_GRAVESTONE, layer6);
+        LAYERS.put(TGBlocks.STONE_BRICKS_GRAVESTONE, layer7);
+        LAYERS.put(TGBlocks.MOSSY_STONE_BRICKS_GRAVESTONE, layer8);
+        LAYERS.put(TGBlocks.BRICKS_GRAVESTONE, layer9);
 
     }
 

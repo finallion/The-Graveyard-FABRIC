@@ -1,54 +1,54 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "graveyard:item/glass_bottle"
+        "layer0": "minecraft:item/glass_bottle"
     },
     "overrides": [
         {
             "predicate": {
-                "blood_level": 1
+                "charged": 0.1
             },
             "model": "graveyard:item/vial_of_blood_01"
         },
         {
             "predicate": {
-                "blood_level": 2
+                "charged": 0.2
             },
             "model": "graveyard:item/vial_of_blood_02"
         },
         {
             "predicate": {
-                "blood_level": 3
+                "charged": 0.3
             },
             "model": "graveyard:item/vial_of_blood_03"
         },
         {
             "predicate": {
-                "blood_level": 4
+                "charged": 0.4
             },
             "model": "graveyard:item/vial_of_blood_04"
         },
         {
             "predicate": {
-                "blood_level": 5
+                "charged": 0.5
             },
             "model": "graveyard:item/vial_of_blood_05"
         },
         {
             "predicate": {
-                "blood_level": 6
+                "charged": 0.6
             },
             "model": "graveyard:item/vial_of_blood_06"
         },
         {
             "predicate": {
-                "blood_level": 7
+                "charged": 0.7
             },
             "model": "graveyard:item/vial_of_blood_07"
         },
         {
             "predicate": {
-                "blood_level": 8
+                "charged": 0.8
             },
             "model": "graveyard:item/vial_of_blood_08"
         }

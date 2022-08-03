@@ -20,7 +20,7 @@ public class MysteriousBoneBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_PLACED, SoundCategory.BLOCKS, 3.0F,1.0F, true);
+        world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_PLACED, SoundCategory.BLOCKS, 10.0F,1.5F, true);
         super.onPlaced(world, pos, state, placer, itemStack);
     }
 }

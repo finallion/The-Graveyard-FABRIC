@@ -72,30 +72,23 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         BakedModel base = getCoffinModel(entity);
 
         matrixStack.push();
-        //matrixStack.scale(4.5828F, 4.5F, 4.269F);
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        matrixStack.scale(4.0F, 4.0F, 4.0F);
         float f = direction.asRotation();
+        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
 
         if (direction == Direction.EAST) {
-            matrixStack.scale(4.269F, 4.5F, 4.5826F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0, 0, 0.23435);
+            matrixStack.translate(0F, 0F, 0.25F);
         } else if (direction == Direction.WEST) {
-            matrixStack.scale(4.269F, 4.5F, 4.5826F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0.2185F, 0, 0);
+            matrixStack.translate(0.25F, 0F, 0F);
         } else if (direction == Direction.SOUTH) {
-            matrixStack.scale(4.5826F, 4.5F, 4.269F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0.2185F, 0, 0.23435);
-        } else {
-            matrixStack.scale(4.5826F, 4.5F, 4.269F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.25F, 0F, 0.25F);
         }
 
 
-
-        matrixStack.translate(-0.10925, 0.0625F, 0.0155);
+        matrixStack.translate(-0.125F, 0.0625F, 0.0155F);
+        // x lower (without -) -> moves west
+        // z higher -> moves north
 
         MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, false, matrixStack, vertexConsumer, light, OverlayTexture.DEFAULT_UV, base);
 
@@ -106,28 +99,22 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         BakedModel lid = getCoffinLidModel(entity);
 
         matrixStack.push();
-        //matrixStack.scale(4.5828F, 4.5F, 4.269F);
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
+        matrixStack.scale(4.0F, 4.0F, 4.0F);
         float f = direction.asRotation();
+        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
 
-        //matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
         if (direction == Direction.EAST) {
-            matrixStack.scale(4.269F, 4.5F, 4.5826F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0, 0, 0.23435);
+            matrixStack.translate(0F, 0F, 0.25F);
         } else if (direction == Direction.WEST) {
-            matrixStack.scale(4.269F, 4.5F, 4.5826F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0.2185F, 0, 0);
+            matrixStack.translate(0.25F, 0F, 0F);
         } else if (direction == Direction.SOUTH) {
-            matrixStack.scale(4.5826F, 4.5F, 4.269F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
-            matrixStack.translate(0.2185F, 0, 0.23435);
-        } else {
-            matrixStack.scale(4.5826F, 4.5F, 4.269F);
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+            matrixStack.translate(0.25F, 0F, 0.25F);
         }
-        matrixStack.translate(-0.10925, 0.0625F, 0.0155);
+
+        matrixStack.translate(-0.125F, 0.0625F, 0.0155F);
+        // x lower (without -) -> moves west
+        // z higher -> moves north
 
         // ANIMATION START
         matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 70)); // lid rotation
@@ -208,6 +195,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.CRIMSON_COFFIN_BASE.getDefaultStack(), null, null, 0);
         } else if (wood.contains("spruce")) {
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SPRUCE_COFFIN_BASE.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("mangrove")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.MANGROVE_COFFIN_BASE.getDefaultStack(), null, null, 0);
         } else {
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.BIRCH_COFFIN_BASE.getDefaultStack(), null, null, 0);
         }
@@ -229,6 +218,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.CRIMSON_COFFIN_LID.getDefaultStack(), null, null, 0);
         } else if (wood.contains("spruce")) {
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.SPRUCE_COFFIN_LID.getDefaultStack(), null, null, 0);
+        } else if (wood.contains("mangrove")) {
+            return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.MANGROVE_COFFIN_LID.getDefaultStack(), null, null, 0);
         } else {
             return MinecraftClient.getInstance().getItemRenderer().getModel(TGItems.BIRCH_COFFIN_LID.getDefaultStack(), null, null, 0);
         }
