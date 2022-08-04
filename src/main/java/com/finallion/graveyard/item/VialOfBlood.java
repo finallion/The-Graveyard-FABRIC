@@ -3,15 +3,20 @@ package com.finallion.graveyard.item;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blocks.AltarBlock;
 import com.finallion.graveyard.blocks.MysteriousBoneBlock;
+import com.finallion.graveyard.entities.LichEntity;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGSounds;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CandleBlock;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.SheepEntity;
@@ -20,6 +25,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -29,10 +35,12 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class VialOfBlood extends Item {
@@ -76,7 +84,7 @@ public class VialOfBlood extends Item {
                     ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
                     ItemUsage.exchangeStack(stack, playerEntity, bottle);
 
-                    playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 100));
+                    playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 430));
 
                     BlockPos corner = context.getBlockPos().add(-8, 0, -8);
 
@@ -99,6 +107,23 @@ public class VialOfBlood extends Item {
                             }
                         }
                     }
+
+                    LichEntity lich = (LichEntity) TGEntities.LICH.create(world);
+                    BlockPos blockPos = context.getBlockPos().up();
+                    lich.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, result.getUp().getOpposite().asRotation(), 0.0F);
+                    lich.onSummoned();
+                    /*
+                    Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
+
+                    while(var13.hasNext()) {
+                        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)var13.next();
+                        Criteria.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
+                    }
+
+                     */
+
+                    world.spawnEntity(lich);
+                    lich.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 5));
 
                     return ActionResult.CONSUME;
                 }

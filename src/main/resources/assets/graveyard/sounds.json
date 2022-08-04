@@ -27,5 +27,11 @@
       "graveyard:item/vial/splash"
     ],
     "subtitle": "subtitle.item.graveyard.vial.splash"
+  },
+  "entity.lich.spawn": {
+    "sounds": [
+      "graveyard:entity/lich/spawn"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.spawn"
   }
 }
