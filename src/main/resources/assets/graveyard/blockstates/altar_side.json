@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "faces=1": {
+      "model": "graveyard:block/altar_top_middle"
+    },
+    "faces=2": {
+      "model": "graveyard:block/altar_top_left"
+    },
+    "faces=3": {
+      "model": "graveyard:block/altar_top_right"
+    },
+    "faces=4": {
+      "model": "graveyard:block/altar_middle_left"
+    },
+    "faces=5": {
+      "model": "graveyard:block/altar_middle_right"
+    },
+    "faces=6": {
+      "model": "graveyard:block/altar_bottom_middle"
+    },
+    "faces=7": {
+      "model": "graveyard:block/altar_bottom_left"
+    },
+    "faces=8": {
+      "model": "graveyard:block/altar_bottom_right"
+    }
+  }
+}

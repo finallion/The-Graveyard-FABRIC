@@ -37,6 +37,7 @@ public class TGBlocks {
     public static final Block TG_ROOTED_DIRT = new TGStoneBlock(() -> Blocks.ROOTED_DIRT, FabricBlockSettings.copyOf(Blocks.ROOTED_DIRT).drops(Blocks.ROOTED_DIRT.getLootTableId()));
     public static final Block TG_PODZOL = new TGStoneBlock(() -> Blocks.PODZOL, FabricBlockSettings.copyOf(Blocks.PODZOL).drops(Blocks.PODZOL.getLootTableId()));
 
+    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE));
 
     public static final Identifier POLISHED_BASALT_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/polished_basalt_side");
     public static final Identifier COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/cobblestone");
@@ -174,6 +175,8 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), TG_MOSS_BLOCK);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), TG_ROOTED_DIRT);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
+
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), DARK_IRON_TRAPDOOR);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), DARK_IRON_DOOR);

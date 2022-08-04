@@ -21,5 +21,11 @@
       "graveyard:block/bone/whisper2"
     ],
     "subtitle": "subtitle.block.graveyard.bone.ambient"
+  },
+  "item.vial.splash": {
+    "sounds": [
+      "graveyard:item/vial/splash"
+    ],
+    "subtitle": "subtitle.item.graveyard.vial.splash"
   }
 }

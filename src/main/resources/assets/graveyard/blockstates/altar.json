@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "minecraft:block/crying_obsidian"
+    "bloody=false": {
+      "model": "graveyard:block/altar"
+    },
+    "bloody=true": {
+      "model": "graveyard:block/bloody_altar"
     }
   }
 }
