@@ -111,7 +111,7 @@ public class VialOfBlood extends Item {
                     LichEntity lich = (LichEntity) TGEntities.LICH.create(world);
                     BlockPos blockPos = context.getBlockPos().up();
                     lich.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, result.getUp().getOpposite().asRotation(), 0.0F);
-                    lich.onSummoned();
+                    lich.onSummoned(result.getUp().getOpposite(), context.getBlockPos());
                     /*
                     Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
 

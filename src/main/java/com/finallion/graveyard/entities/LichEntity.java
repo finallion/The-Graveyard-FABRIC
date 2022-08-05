@@ -1,12 +1,12 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.init.TGSounds;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
-import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -14,9 +14,14 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -35,13 +40,17 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     private static final TrackedData<Integer> INVUL_TIMER;
+    private static final TrackedData<Integer> PHASE;
     protected static final TrackedData<Integer> ANIMATION;
     private static final int SPAWN_INVUL_TIMER = 420;
+    private static final int DEFAULT_INVUL_TIMER = 200;
     private final ServerBossBar bossBar;
+    private final float HEALTH_PHASE_02 = 200.0F;
 
+    // fog effect from boss bar
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
-        this.bossBar = (ServerBossBar)(new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true);
+        this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true);
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -68,12 +77,19 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
+                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 200.0D)
                     .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
                     .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
                     .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
-                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
+                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D).build());
         }
         return attributeContainer;
+    }
+
+    @Override
+    public void tickMovement() {
+        randomDisplayTick(this.getWorld(), this.getBlockPos(), this.getRandom());
+        super.tickMovement();
     }
 
     protected void mobTick() {
@@ -81,9 +97,17 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         if (this.getInvulnerableTimer() > 0) {
             i = this.getInvulnerableTimer() - 1;
 
-            this.bossBar.setPercent(1.0F - (float)i / 220.0F);
+            int timer;
+            if (getPhase() == 1) {
+                timer = SPAWN_INVUL_TIMER;
+            } else {
+                timer = DEFAULT_INVUL_TIMER;
+            }
+
+            this.bossBar.setPercent(1.0F - (float) i / timer);
             this.setInvulTimer(i);
         } else {
+
             super.mobTick();
 
             //if (this.age % 20 == 0) {
@@ -98,6 +122,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         super.initDataTracker();
         this.dataTracker.startTracking(INVUL_TIMER, 0);
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+        this.dataTracker.startTracking(PHASE, 1);
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
@@ -119,11 +144,19 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.bossBar.setName(this.getDisplayName());
     }
 
-    public void onSummoned() {
-        this.setInvulTimer(SPAWN_INVUL_TIMER);
+    public void onSummoned(Direction direction, BlockPos altarPos) {
         this.setAnimationState(ANIMATION_SPAWN);
-        this.bossBar.setPercent(0.0F);
+        applyInvulAndResetBossBar(SPAWN_INVUL_TIMER);
         playSpawnSound();
+    }
+
+    private void applyInvulAndResetBossBar(int invul) {
+        this.setInvulTimer(invul);
+        this.bossBar.setPercent(0.0F);
+    }
+
+    private void setHealth(int amount) {
+        this.setHealth(amount);
     }
 
     private void playSpawnSound() {
@@ -131,7 +164,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     }
 
     public int getInvulnerableTimer() {
-        return (Integer)this.dataTracker.get(INVUL_TIMER);
+        return (Integer) this.dataTracker.get(INVUL_TIMER);
     }
 
     public void setInvulTimer(int ticks) {
@@ -144,6 +177,14 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     public void setAnimationState(int state) {
         this.dataTracker.set(ANIMATION, state);
+    }
+
+    public int getPhase() {
+        return (Integer) this.dataTracker.get(PHASE);
+    }
+
+    public void setPhase(int phase) {
+        this.dataTracker.set(PHASE, phase);
     }
 
 
@@ -177,10 +218,57 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.bossBar.removePlayer(player);
     }
 
+    public boolean damage(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        } else {
+            if (this.getInvulnerableTimer() > 0 && source != DamageSource.OUT_OF_WORLD) {
+                return false;
+            } else {
+
+                if (amount > this.getHealth() && getPhase() < 3) {
+                    respawn();
+                    return false;
+                }
+
+                return super.damage(source, amount);
+            }
+        }
+    }
+
+    private void respawn() {
+        this.setPhase(getPhase() + 1);
+        this.clearStatusEffects();
+        applyInvulAndResetBossBar(DEFAULT_INVUL_TIMER);
+        setHealth(HEALTH_PHASE_02);
+        //this.world.sendEntityStatus(this, (byte)35);
+    }
+
+    public void randomDisplayTick(World world, BlockPos pos, Random random) {
+        int i = pos.getX();
+        int j = pos.getY();
+        int k = pos.getZ();
+        double d = (double)i + random.nextInt(3) - random.nextInt(3);
+        double e = (double)j + 4.2D;
+        double f = (double)k + random.nextInt(3) - random.nextInt(3);
+        world.addParticle(ParticleTypes.ASH, d, e, f, 0.0D, 0.0D, 0.0D);
+        BlockPos.Mutable mutable = new BlockPos.Mutable();
+
+        if (random.nextInt(5) == 0) {
+            mutable.set(i + MathHelper.nextInt(random, -10, 10), j + random.nextInt(10), k + MathHelper.nextInt(random, -10, 10));
+            BlockState blockState = world.getBlockState(mutable);
+            if (!blockState.isFullCube(world, mutable)) {
+                world.addParticle(ParticleTypes.SMOKE, (double)mutable.getX() + random.nextDouble(), (double)mutable.getY() + random.nextDouble(), (double)mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            }
+        }
+    }
+
+
 
     static {
-        INVUL_TIMER = DataTracker.registerData(WitherEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        PHASE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
     }
 
 }

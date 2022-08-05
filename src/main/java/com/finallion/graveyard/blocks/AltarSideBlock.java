@@ -1,5 +1,6 @@
 package com.finallion.graveyard.blocks;
 
+import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,7 +30,11 @@ public class AltarSideBlock extends Block {
         super.randomDisplayTick(state, world, pos, random);
 
         if (random.nextInt(10) == 0) {
-            world.addParticle(ParticleTypes.SOUL, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.1D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            world.addParticle(TGParticles.GRAVEYARD_SOUL_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.3D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.01D, 0.0D);
+        }
+
+        if (random.nextInt(10) == 0) {
+            world.addParticle(TGParticles.GRAVEYARD_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.3D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
         }
 
     }

@@ -2,6 +2,7 @@ package com.finallion.graveyard.blocks;
 
 
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
 import com.google.common.base.Predicates;
 import net.minecraft.block.*;
@@ -56,7 +57,7 @@ public class AltarBlock extends Block {
         }
 
         if (random.nextInt(10) == 0) {
-            world.addParticle(ParticleTypes.SOUL, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.1D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            world.addParticle(TGParticles.GRAVEYARD_SOUL_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.3D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.01D, 0.0D);
         }
 
     }
