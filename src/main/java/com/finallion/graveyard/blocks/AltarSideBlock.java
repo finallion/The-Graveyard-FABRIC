@@ -33,8 +33,12 @@ public class AltarSideBlock extends Block {
             world.addParticle(TGParticles.GRAVEYARD_SOUL_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.3D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.01D, 0.0D);
         }
 
-        if (random.nextInt(10) == 0) {
-            world.addParticle(TGParticles.GRAVEYARD_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.3D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+        if (random.nextInt(100) == 0) {
+            world.addParticle(TGParticles.GRAVEYARD_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+        }
+
+        if (random.nextInt(100) == 0) {
+            world.addParticle(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
         }
 
     }

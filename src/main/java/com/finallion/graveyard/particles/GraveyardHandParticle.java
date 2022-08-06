@@ -16,6 +16,7 @@ public class GraveyardHandParticle extends AbstractSlowingParticle {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.maxAge = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 100;
         this.velocityY = this.velocityY * 0.005999999776482582D + velocityY;
+        this.y = 1.0F;
         this.spriteProvider = spriteProvider;
         this.scale(world.getRandom().nextFloat() + 1.25F);
         this.setSpriteForAge(spriteProvider);
@@ -34,21 +35,6 @@ public class GraveyardHandParticle extends AbstractSlowingParticle {
         this.setSpriteForAge(this.spriteProvider);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static class SculkSoulFactory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteProvider;
-
-        public SculkSoulFactory(SpriteProvider spriteProvider) {
-            this.spriteProvider = spriteProvider;
-        }
-
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
-            GraveyardHandParticle soulParticle = new GraveyardHandParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            soulParticle.setAlpha(1.0F);
-            soulParticle.sculk = true;
-            return soulParticle;
-        }
-    }
 
     @Environment(EnvType.CLIENT)
     public static class Factory implements ParticleFactory<DefaultParticleType> {

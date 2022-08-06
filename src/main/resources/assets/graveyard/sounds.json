@@ -33,5 +33,11 @@
       "graveyard:entity/lich/spawn"
     ],
     "subtitle": "subtitle.entity.graveyard.lich.spawn"
+  },
+  "entity.lich.melee": {
+    "sounds": [
+      "graveyard:entity/lich/melee"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.melee"
   }
 }

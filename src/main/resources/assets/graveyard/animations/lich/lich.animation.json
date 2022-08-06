@@ -481,7 +481,11 @@
 				}
 			}
 		},
-		"knockback": {
+		"idle": {
+			"loop": true,
+			"animation_length": 4
+		},
+		"attack": {
 			"loop": true,
 			"animation_length": 1.95833,
 			"bones": {
