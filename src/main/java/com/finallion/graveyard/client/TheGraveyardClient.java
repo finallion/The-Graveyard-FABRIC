@@ -16,34 +16,24 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 
 @Environment(EnvType.CLIENT)
@@ -53,7 +43,6 @@ public class TheGraveyardClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         TGParticles.init();
 
         BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED,
@@ -102,6 +91,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
         EntityRendererRegistry.register(TGEntities.WRAITH, WraithRenderer::new);
         EntityRendererRegistry.register(TGEntities.LICH, LichRenderer::new);
+        EntityRendererRegistry.register(TGEntities.FALLING_CORPSE, FallingCorpseRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 

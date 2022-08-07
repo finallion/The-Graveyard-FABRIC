@@ -22,14 +22,14 @@ public class TGSounds {
     public static final Identifier LICH_MELEE_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.melee");
     public static final Identifier LICH_PHASE_02_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase02");
     public static final Identifier LICH_PHASE_03_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase03");
-    public static final Identifier LICH_CAST_01_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.cast01");
+    public static final Identifier LICH_CORPSE_SPELL_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.corpse_spell");
     public static final Identifier LICH_CAST_02_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.cast02");
     public static SoundEvent LICH_SPAWN = new SoundEvent(LICH_SPAWN_ID);
     public static SoundEvent LICH_SUMMON = new SoundEvent(LICH_SUMMON_ID);
     public static SoundEvent LICH_MELEE = new SoundEvent(LICH_MELEE_ID);
     public static SoundEvent LICH_PHASE_02 = new SoundEvent(LICH_PHASE_02_ID);
     public static SoundEvent LICH_PHASE_03 = new SoundEvent(LICH_PHASE_03_ID);
-    public static SoundEvent LICH_CAST_01 = new SoundEvent(LICH_CAST_01_ID);
+    public static SoundEvent LICH_CORPSE_SPELL = new SoundEvent(LICH_CORPSE_SPELL_ID);
     public static SoundEvent LICH_CAST_02 = new SoundEvent(LICH_CAST_02_ID);
 
     public static void init() {
@@ -43,8 +43,9 @@ public class TGSounds {
         Registry.register(Registry.SOUND_EVENT, LICH_MELEE_ID, LICH_MELEE);
         Registry.register(Registry.SOUND_EVENT, LICH_PHASE_02_ID, LICH_PHASE_02);
         Registry.register(Registry.SOUND_EVENT, LICH_PHASE_03_ID, LICH_PHASE_03);
-        Registry.register(Registry.SOUND_EVENT, LICH_CAST_01_ID, LICH_CAST_01);
+        Registry.register(Registry.SOUND_EVENT, LICH_CORPSE_SPELL_ID, LICH_CORPSE_SPELL);
         Registry.register(Registry.SOUND_EVENT, LICH_CAST_02_ID, LICH_CAST_02);
 
     }
+
 }

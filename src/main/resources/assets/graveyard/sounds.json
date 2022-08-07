@@ -39,5 +39,11 @@
       "graveyard:entity/lich/melee"
     ],
     "subtitle": "subtitle.entity.graveyard.lich.melee"
+  },
+  "entity.lich.corpse_spell": {
+    "sounds": [
+      "graveyard:entity/lich/corpse_spell"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.corpse_spell"
   }
 }

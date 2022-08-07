@@ -1,9 +1,11 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -15,11 +17,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
@@ -27,7 +25,6 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -44,31 +41,55 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class LichEntity extends HostileEntity implements IAnimatable {
     private final ServerBossBar bossBar;
     private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
+    protected static final TargetPredicate HEAD_TARGET_PREDICATE;
+    private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
     // animation
     private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
     private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
+    private final AnimationBuilder CORPSE_SPELL_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", true);
+    private final AnimationBuilder START_PHASE_2_ANIMATION = new AnimationBuilder().addAnimation("phase_two", false);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
+    protected static final int ANIMATION_CORPSE_SPELL = 3;
+    protected static final int ANIMATION_START_PHASE_2 = 4;
     // data tracker
     private static final TrackedData<Integer> INVUL_TIMER;
+    private static final TrackedData<Integer> PHASE_INVUL_TIMER;
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
     private static final TrackedData<Integer> PHASE;
     protected static final TrackedData<Integer> ANIMATION;
+    protected static final TrackedData<Boolean> CAN_CORPSE_SPELL_START;
     // constants
     private static final int SPAWN_INVUL_TIMER = 420;
     private static final int DEFAULT_INVUL_TIMER = 200;
+    private final float HEALTH_PHASE_01 = 400.0F;
     private final float HEALTH_PHASE_02 = 200.0F;
     private final int ATTACK_ANIMATION_DURATION = 40;
+    private final int START_PHASE_TWO_ANIMATION_DURATION = 120;
+    private final int START_PHASE_TWO_PARTICLES = 50;
+    private final int CORPSE_SPELL_COOLDOWN = 800;
+    // variables
+    private int spellDuration = 300;
+    private int corpseSpellCooldownTicker = 250;
+    private int startPhaseTwoAnimTimer = 120;
 
     // fog effect from boss bar
+    // rotate fallen corpses
+    // add falling parts of skeletons
+    // falling bone particles
+    // make unpushable
+    // teeth only one texture layer
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true);
@@ -86,15 +107,33 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     // attack handler
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
         // takes one tick to get to this method (from mobtick)
-        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && getInvulnerableTimer() <= 0) {
+        // do not attack when: the spawn invul is active, the phase is incorrect or the invul timer was set from a spell
+        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack()) {
             setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2); // disables to call the animation immediately after (seems to be called multiple times per tick, per frame tick?)
             event.getController().setAnimation(ATTACK_ANIMATION);
             setAnimationState(ANIMATION_IDLE); // switch to idle
             return PlayState.CONTINUE;
         }
 
-        if (getAttackAnimTimer() <= 0) {
-            return PlayState.STOP; // stops attack animation from looping
+        if (getAnimationState() == ANIMATION_CORPSE_SPELL && getPhase() == 1) {
+            event.getController().setAnimation(CORPSE_SPELL_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+
+        if (getAnimationState() == ANIMATION_START_PHASE_2 && getPhase() == 2 && startPhaseTwoAnimTimer == START_PHASE_TWO_ANIMATION_DURATION) {
+            event.getController().setAnimation(START_PHASE_2_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        // stops attack animation from looping
+        if (getAttackAnimTimer() <= 0 || getPhase() > 1) {
+            return PlayState.STOP;
+        }
+
+        // stops spell animation from looping
+        if (getPhaseInvulnerableTimer() <= 0 && getPhase() > 1) {
+            return PlayState.STOP;
         }
 
         return PlayState.CONTINUE;
@@ -114,6 +153,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0D, false, 1.5D));
+        this.goalSelector.add(2, new SummonFallenCorpsesGoal(this));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.add(1, new RevengeGoal(this, new Class[0]));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
@@ -123,7 +163,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     public AttributeContainer getAttributes() {
         if (attributeContainer == null) {
             attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 250.0D)
+                    .add(EntityAttributes.GENERIC_MAX_HEALTH, HEALTH_PHASE_01)
                     .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
                     .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
                     .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
@@ -139,6 +179,38 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     }
 
     protected void mobTick() {
+        if (getCorpseSpellCooldownTicker() > 0) {
+            setCorpseSpellCooldownTicker(getCorpseSpellCooldownTicker() - 1);
+        }
+
+        /* TRANSITION PHASE ONE to TWO */
+        if (getPhase() == 2) {
+            int phaseTwoTimer = getStartPhaseTwoAnimTimer();
+            setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION);
+            setAnimationState(ANIMATION_START_PHASE_2);
+            if (phaseTwoTimer > 0) {
+                if (phaseTwoTimer == START_PHASE_TWO_ANIMATION_DURATION) {
+                    // playSound
+                }
+
+                if (phaseTwoTimer == START_PHASE_TWO_PARTICLES) {
+                    // particles
+                }
+                setStartPhaseTwoAnimTimer(phaseTwoTimer - 1);
+            }
+
+            // if the transition animation phase has played advance phase
+            if (phaseTwoTimer == 1) {
+                setPhase(getPhase() + 1);
+            }
+        }
+        /* END TRANSITION PHASE ONE to TWO  */
+
+        if (this.getPhaseInvulnerableTimer() > 0) {
+            int timer = getPhaseInvulnerableTimer() - 1;
+            this.setPhaseInvulTimer(timer);
+        }
+
         int i;
         if (this.getInvulnerableTimer() > 0) {
             i = this.getInvulnerableTimer() - 1;
@@ -157,6 +229,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             if (this.getAttackAnimTimer() > 0) {
                 int animTimer = this.getAttackAnimTimer() - 1;
                 this.setAttackAnimTimer(animTimer);
+            } else if (getCorpseSpellCooldownTicker() <= 0) {
+                setCorpseSpellStart(true);
             }
 
 
@@ -166,7 +240,15 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             //    this.heal(1.0F);
             //}
 
-            this.bossBar.setPercent(this.getHealth() / this.getMaxHealth());
+            this.bossBar.setPercent(this.getHealth() / this.getMaxHealthPerPhase());
+        }
+    }
+
+    private float getMaxHealthPerPhase() {
+        if (getPhase() == 1) {
+            return HEALTH_PHASE_01;
+        } else {
+            return HEALTH_PHASE_02;
         }
     }
 
@@ -174,19 +256,23 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(INVUL_TIMER, 0);
+        this.dataTracker.startTracking(PHASE_INVUL_TIMER, 0);
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
         this.dataTracker.startTracking(ATTACK_ANIM_TIMER, ATTACK_ANIMATION_DURATION);
         this.dataTracker.startTracking(PHASE, 1);
+        this.dataTracker.startTracking(CAN_CORPSE_SPELL_START, false);
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putInt("Invul", this.getInvulnerableTimer());
+        nbt.putInt("PhaseInvul", this.getPhaseInvulnerableTimer());
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setInvulTimer(nbt.getInt("Invul"));
+        this.setPhaseInvulTimer(nbt.getInt("PhaseInvul"));
         if (this.hasCustomName()) {
             this.bossBar.setName(this.getDisplayName());
         }
@@ -219,6 +305,18 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_MELEE, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
+    private void playCorpseSpellSound() {
+        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CORPSE_SPELL, SoundCategory.HOSTILE, 10.0F, 1.0F);
+    }
+
+
+    public boolean canCorpseSpellStart() {
+        return this.dataTracker.get(CAN_CORPSE_SPELL_START);
+    }
+
+    public void setCorpseSpellStart(boolean bool) {
+        this.dataTracker.set(CAN_CORPSE_SPELL_START, bool);
+    }
 
     public int getInvulnerableTimer() {
         return (Integer) this.dataTracker.get(INVUL_TIMER);
@@ -226,6 +324,14 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     public void setInvulTimer(int ticks) {
         this.dataTracker.set(INVUL_TIMER, ticks);
+    }
+
+    public int getPhaseInvulnerableTimer() {
+        return (Integer) this.dataTracker.get(PHASE_INVUL_TIMER);
+    }
+
+    public void setPhaseInvulTimer(int ticks) {
+        this.dataTracker.set(PHASE_INVUL_TIMER, ticks);
     }
 
     public int getAnimationState() {
@@ -244,6 +350,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.dataTracker.set(PHASE, phase);
     }
 
+    public int getStartPhaseTwoAnimTimer() {
+        return startPhaseTwoAnimTimer;
+    }
+
+    public void setStartPhaseTwoAnimTimer(int startPhaseTwoAnimTimer) {
+        this.startPhaseTwoAnimTimer = startPhaseTwoAnimTimer;
+    }
 
     public int getAttackAnimTimer() {
         return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
@@ -288,11 +401,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if (this.getInvulnerableTimer() > 0 && source != DamageSource.OUT_OF_WORLD) {
+            if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && source != DamageSource.OUT_OF_WORLD) {
                 return false;
             } else {
 
-                if (amount > this.getHealth() && getPhase() < 3 && source != DamageSource.OUT_OF_WORLD) {
+                if (amount > this.getHealth() && getPhase() < 5 && source != DamageSource.OUT_OF_WORLD) {
                     respawn();
                     return false;
                 }
@@ -304,9 +417,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     private void respawn() {
         this.setPhase(getPhase() + 1);
+        setAnimationState(ANIMATION_IDLE);
         this.clearStatusEffects();
         applyInvulAndResetBossBar(DEFAULT_INVUL_TIMER);
         setHealth(HEALTH_PHASE_02);
+        setAttackAnimTimer(0);
         //this.world.sendEntityStatus(this, (byte)35);
     }
 
@@ -330,16 +445,119 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     }
 
 
+    public boolean canMeeleAttack() {
+        return getPhase() == 1 && getPhaseInvulnerableTimer() <= 0 && getInvulnerableTimer() <= 0 && this.getHealth() > 35.0F;
+    }
+
+    public int getCorpseSpellCooldownTicker() {
+        return corpseSpellCooldownTicker;
+    }
+
+    public void setCorpseSpellCooldownTicker(int corpseSpellCooldownTicker) {
+        this.corpseSpellCooldownTicker = corpseSpellCooldownTicker;
+    }
+
+    /*
+    @Override
+    public boolean isPushable() {
+        return getPhase() == 1;
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        if (getPhase() == 1) {
+            return true;
+        }
+        return super.isImmobile();
+    }
+
+     */
+
     static {
         INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        PHASE_INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ATTACK_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         PHASE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        CAN_CORPSE_SPELL_START = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        CAN_ATTACK_PREDICATE = Entity::isPlayer;
+        HEAD_TARGET_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(20.0D).setPredicate(CAN_ATTACK_PREDICATE);
+    }
+
+    public class SummonFallenCorpsesGoal extends Goal {
+        protected final LichEntity lich;
+        private final int FALL_HEIGHT = 15;
+        private final int SQUARE_SIZE = 10;
+        private final int CORPSE_SPAWN_RARITY = 5;
+        private final int CORPSE_SPAWN_RARITY_PLAYER = 12;
+        private final int SPELL_DURATION = 300;
+
+        public SummonFallenCorpsesGoal(LichEntity lich) {
+            this.lich = lich;
+        }
+
+        @Override
+        public boolean canStart() {
+            return lich.getPhase() == 1 && canCorpseSpellStart();
+        }
+
+        public boolean shouldContinue() {
+            return spellDuration > 0 && this.lich.getPhase() == 1;
+        }
+
+        public void tick() {
+            if (canCorpseSpellStart() && getCorpseSpellCooldownTicker() == 0) {
+                // make invulnerable during spell, prevents lich melee attack
+                this.lich.setPhaseInvulTimer(SPELL_DURATION);
+                this.lich.setCorpseSpellStart(false);
+                this.lich.setCorpseSpellCooldownTicker(CORPSE_SPELL_COOLDOWN);
+                playCorpseSpellSound();
+            }
+
+
+            if (getPhaseInvulnerableTimer() <= 0) {
+                setAnimationState(ANIMATION_MELEE);
+                stop();
+            } else {
+                setAnimationState(ANIMATION_CORPSE_SPELL);
+
+                BlockPos pos = this.lich.getBlockPos();
+                List<PlayerEntity> list = this.lich.world.getPlayers(HEAD_TARGET_PREDICATE, this.lich, lich.getBoundingBox().expand(30.0D));
+                List<BlockPos> positions = new ArrayList<>();
+                for (int i = -SQUARE_SIZE; i < SQUARE_SIZE; i++) {
+                    for (int ii = -SQUARE_SIZE; ii < SQUARE_SIZE; ii++) {
+                        positions.add(pos.add(i, FALL_HEIGHT, ii));
+                    }
+                }
+
+                if (random.nextInt(CORPSE_SPAWN_RARITY) == 0) {
+                    FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(world);
+                    BlockPos blockPos = positions.get(random.nextInt(positions.size()));
+                    corpse.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, Direction.random(this.lich.getRandom()).asRotation(), 0.0F);
+                    world.spawnEntity(corpse);
+                }
+
+                if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
+                    FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(world);
+                    PlayerEntity target = list.get(random.nextInt(list.size()));
+                    if (target != null) {
+                        BlockPos blockPos = target.getBlockPos().add(0, FALL_HEIGHT, 0);
+                        corpse.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 90, 0.0F);
+                        world.spawnEntity(corpse);
+                    }
+                }
+            }
+
+        }
+
+
+
+
     }
 
 
     public class MeleeAttackGoal extends Goal {
-        protected final PathAwareEntity mob;
+        protected final LichEntity mob;
         private final double speed;
         private final double knockback;
         private final boolean pauseWhenMobIdle;
@@ -353,7 +571,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         private final int DAMAGE_START_IN_ANIM = 16;
         boolean canFinishAttack = false;
 
-        public MeleeAttackGoal(PathAwareEntity mob, double speed, boolean pauseWhenMobIdle, double knockback) {
+        public MeleeAttackGoal(LichEntity mob, double speed, boolean pauseWhenMobIdle, double knockback) {
             this.mob = mob;
             this.speed = speed;
             this.knockback = knockback;
@@ -363,24 +581,28 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         public boolean canStart() {
-            long l = this.mob.world.getTime();
-            if (l - this.lastUpdateTime < 20L) {
-                return false;
-            } else {
-                this.lastUpdateTime = l;
-                LivingEntity livingEntity = this.mob.getTarget();
-                if (livingEntity == null) {
-                    return false;
-                } else if (!livingEntity.isAlive()) {
+            if (canMeeleAttack()) {
+                long l = this.mob.world.getTime();
+                if (l - this.lastUpdateTime < 20L) {
                     return false;
                 } else {
-                    this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
-                    if (this.path != null) {
-                        return true;
+                    this.lastUpdateTime = l;
+                    LivingEntity livingEntity = this.mob.getTarget();
+                    if (livingEntity == null) {
+                        return false;
+                    } else if (!livingEntity.isAlive()) {
+                        return false;
                     } else {
-                        return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+                        this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
+                        if (this.path != null) {
+                            return true;
+                        } else {
+                            return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+                        }
                     }
                 }
+            } else {
+                return false;
             }
         }
 
@@ -452,40 +674,42 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         protected void attack(LivingEntity target, double squaredDistance) {
             double distance = this.getSquaredMaxAttackDistance(target);
-            if (squaredDistance <= distance && this.cooldown <= 0) {
-                this.resetCooldown();
-                setAnimationState(ANIMATION_MELEE);
-                // set timer to start animation, after timer runs out, possibility to set again
-                if (getAttackAnimTimer() == 0) {
-                    setAttackAnimTimer(ATTACK_ANIMATION_DURATION);
-                }
-
-                // sound on start anim
-                if (getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
-                    playAttackSound();
-                }
-
-                canFinishAttack = true;
-            }
-
-            // outside of previous method because animation can play, but player will be out of reach in meantime -> still damage
-            if (this.cooldown <= 0 && canFinishAttack) {
-                // x ticks after start of anim -> damage and knockback
-                if (getAttackAnimTimer() == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
-                    // warden sonic boom logic
-                    Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
-                    Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
-                    Vec3d vec3d3 = vec3d2.normalize();
-
-                    for(int i = 1; i < MathHelper.floor(vec3d2.length()) + 7; ++i) {
-                        Vec3d vec3d4 = vec3d.add(vec3d3.multiply((double)i));
-                        ((ServerWorld)mob.getWorld()).spawnParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            if (canMeeleAttack()) {
+                if (squaredDistance <= distance && this.cooldown <= 0) {
+                    this.resetCooldown();
+                    setAnimationState(ANIMATION_MELEE);
+                    // set timer to start animation, after timer runs out, possibility to set again
+                    if (getAttackAnimTimer() == 0) {
+                        setAttackAnimTimer(ATTACK_ANIMATION_DURATION);
                     }
 
-                    double d = 1.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    double e = 2.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);
-                    canFinishAttack = false;
+                    // sound on start anim
+                    if (getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+                        playAttackSound();
+                    }
+
+                    canFinishAttack = true;
+                }
+
+                // outside of previous method because animation can play, but player will be out of reach in meantime -> still damage
+                if (this.cooldown <= 0 && canFinishAttack) {
+                    // x ticks after start of anim -> damage and knockback
+                    if (getAttackAnimTimer() == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
+                        // warden sonic boom logic
+                        Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
+                        Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
+                        Vec3d vec3d3 = vec3d2.normalize();
+
+                        for (int i = 1; i < MathHelper.floor(vec3d2.length()) + 7; ++i) {
+                            Vec3d vec3d4 = vec3d.add(vec3d3.multiply((double) i));
+                            ((ServerWorld) mob.getWorld()).spawnParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                        }
+
+                        double d = 1.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
+                        double e = 2.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
+                        target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * d, vec3d3.getZ() * e);
+                        canFinishAttack = false;
+                    }
                 }
             }
 

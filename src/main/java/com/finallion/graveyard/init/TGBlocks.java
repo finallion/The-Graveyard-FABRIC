@@ -2,10 +2,7 @@ package com.finallion.graveyard.init;
 
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.blockentities.BrazierBlockEntity;
-import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
-import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
-import com.finallion.graveyard.blockentities.UrnBlockEntity;
+import com.finallion.graveyard.blockentities.*;
 import com.finallion.graveyard.blocks.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -265,6 +262,7 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mysterious_bone"), MYSTERIOUS_BONE);
 
+
         coffins.add(OAK_COFFIN);
         coffins.add(SPRUCE_COFFIN);
         coffins.add(DARK_OAK_COFFIN);
@@ -321,6 +319,5 @@ public class TGBlocks {
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,
             FIRE_BRAZIER).build(null));
-
 
 }

@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
@@ -46,6 +48,13 @@ public class TGEntities {
             .entityFactory(SkeletonCreeper::new)
             .dimensions(EntityDimensions.changing(0.6F, 1.7F))
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
+            .build();
+
+    public static final EntityType<FallingCorpse> FALLING_CORPSE = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(FallingCorpse::new)
+            .dimensions(EntityDimensions.changing(0.4F, 0.5F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MobEntity::canMobSpawn)
             .build();
 
     public static final EntityType<GhoulEntity> GHOUL = FabricEntityTypeBuilder.createMob()
@@ -102,6 +111,7 @@ public class TGEntities {
         register("nightmare", NIGHTMARE);
         register("wraith", WRAITH);
         register("lich", LICH);
+        register("falling_corpse", FALLING_CORPSE);
     }
 
 
