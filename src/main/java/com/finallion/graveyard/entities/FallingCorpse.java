@@ -1,5 +1,6 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGParticles;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -32,7 +33,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     private static final TrackedData<Boolean> HAS_COLLIDED;
     private final float DAMAGE = 8.0F;
     private int landingCounter = 40;
-    private int levitationCounter = 20;
+    private int levitationCounter = 15;
 
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -96,8 +97,6 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
                 BlockState state = this.world.getBlockState(pos);
                 if (!state.isAir()) {
-
-                        //DefaultParticleType type = random.nextBoolean() ? TGParticles.GRAVEYARD_HAND_PARTICLE : TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE;
                     this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
 
                     break;

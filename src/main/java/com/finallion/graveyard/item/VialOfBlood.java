@@ -74,7 +74,8 @@ public class VialOfBlood extends Item {
         PlayerEntity playerEntity = context.getPlayer();
         World world = context.getWorld();
         Random random = context.getWorld().random;
-        if (blockState.isOf(TGBlocks.ALTAR) && playerEntity!= null) {
+        float blood = VialOfBlood.getBlood(stack);
+        if (blockState.isOf(TGBlocks.ALTAR) && playerEntity!= null && blood >= 0.8F) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, context.getBlockPos());
 
             if (!blockState.get(AltarBlock.BLOODY) && result != null) {
