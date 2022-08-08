@@ -54,7 +54,7 @@ public class TGEntities {
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(FallingCorpse::new)
             .dimensions(EntityDimensions.changing(0.4F, 0.5F))
-            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MobEntity::canMobSpawn)
+            .spawnRestriction(SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MobEntity::canMobSpawn)
             .build();
 
     public static final EntityType<GhoulEntity> GHOUL = FabricEntityTypeBuilder.createMob()

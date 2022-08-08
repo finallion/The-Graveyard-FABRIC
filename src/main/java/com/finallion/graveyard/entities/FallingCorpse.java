@@ -1,8 +1,11 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
+import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,6 +18,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -34,10 +38,20 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     private final float DAMAGE = 8.0F;
     private int landingCounter = 40;
     private int levitationCounter = 15;
+    private float rotation;
 
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         experiencePoints = 0;
+        setRotation(getRandom().nextInt(361));
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -58,6 +72,9 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     }
 
     public boolean damage(DamageSource source, float amount) {
+        if (source == DamageSource.OUT_OF_WORLD) {
+            return true;
+        }
         return false;
     }
 
@@ -97,8 +114,8 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
                 BlockState state = this.world.getBlockState(pos);
                 if (!state.isAir()) {
-                    this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
-
+                    //this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
+                    MathUtil.createParticleCircle(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, ParticleTypes.SCULK_CHARGE_POP, this.getRandom());
                     break;
                 }
             }

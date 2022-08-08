@@ -3,6 +3,7 @@ package com.finallion.graveyard.entities;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
+import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
@@ -17,9 +18,12 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -87,9 +91,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private final int CORPSE_SPELL_COOLDOWN = 800;
     // variables
     private int spellDuration = 300;
-    private int corpseSpellCooldownTicker = 800;
+    private int corpseSpellCooldownTicker = 100;
 
-    // fog effect from boss bar
     // rotate fallen corpses
     // add falling parts of skeletons
     // falling bone particles
@@ -102,7 +105,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     // teleport to altar pos
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
-        this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true);
+        this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -160,9 +163,9 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         // takes one tick to get to this method (from mobtick)
         // do not attack when: the spawn invul timer is active, the phase is incorrect or the invul timer was set from a spell
-        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack()) {
+        if (getAnimationState() == ANIMATION_PHASE_2_ATTACK && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canHunt()) {
             setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2); // disables to call the animation immediately after (seems to be called multiple times per tick, per frame tick?)
-            event.getController().setAnimation(ATTACK_ANIMATION);
+            event.getController().setAnimation(PHASE_2_ATTACK_ANIMATION);
             return PlayState.CONTINUE;
         }
 
@@ -220,14 +223,15 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         return attributeContainer;
     }
 
+
     @Override
     public void tickMovement() {
         randomDisplayTick(this.getWorld(), this.getBlockPos(), this.getRandom());
         int phaseTwoTimer = getStartPhaseTwoAnimTimer();
 
         if (phaseTwoTimer < START_PHASE_TWO_PARTICLES && phaseTwoTimer > (START_PHASE_TWO_PARTICLES / 2)) {
-            for (int i = 0; i < 100; i++) {
-                this.world.addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + random.nextDouble() + random.nextInt(3) - random.nextInt(3), this.getY() + random.nextDouble(), this.getZ() + random.nextDouble() + random.nextInt(3) - random.nextInt(3), 0.0D, 0.4D, 0.0D);
+            for (int i = 0; i < 25; i++) {
+                MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY() + random.nextDouble(), this.getZ(), 0.0D, 0.3D, 0.0D, 2, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom());
             }
         }
 
@@ -591,6 +595,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 stop();
             } else {
                 setAnimationState(ANIMATION_CORPSE_SPELL);
+                ServerWorld serverWorld = (ServerWorld)LichEntity.this.world;
 
                 BlockPos pos = this.lich.getBlockPos();
                 List<PlayerEntity> list = this.lich.world.getPlayers(HEAD_TARGET_PREDICATE, this.lich, lich.getBoundingBox().expand(30.0D));
@@ -604,26 +609,27 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 if (random.nextInt(CORPSE_SPAWN_RARITY) == 0) {
                     FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(world);
                     BlockPos blockPos = positions.get(random.nextInt(positions.size()));
-                    corpse.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, Direction.random(this.lich.getRandom()).asRotation(), 0.0F);
-                    world.spawnEntity(corpse);
+                    corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
+                    System.out.println(corpse.getYaw() + " " + corpse.getPitch());
+                    serverWorld.spawnEntity(corpse);
                 }
 
+                /*
                 if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
                     FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(world);
                     PlayerEntity target = list.get(random.nextInt(list.size()));
                     if (target != null) {
                         BlockPos blockPos = target.getBlockPos().add(0, FALL_HEIGHT, 0);
-                        corpse.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 90, 0.0F);
+                        corpse.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
+                        corpse.setYaw(180);
                         world.spawnEntity(corpse);
                     }
                 }
+
+                 */
             }
-
         }
-
-
     }
-
 
     public class MeleeAttackGoal extends Goal {
         protected final LichEntity mob;
