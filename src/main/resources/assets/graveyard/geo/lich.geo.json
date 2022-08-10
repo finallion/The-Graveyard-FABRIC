@@ -110,7 +110,7 @@
 				{
 					"name": "lower",
 					"parent": "right_arm",
-					"pivot": [-10, 54, 0],
+					"pivot": [-13, 31, -1],
 					"cubes": [
 						{"origin": [-20, -28, -24], "size": [3, 2, 2], "pivot": [3, -5, 0], "rotation": [-128, 0, 0], "uv": [16, 105]},
 						{"origin": [-17, 7, -25], "size": [6, 18, 6], "pivot": [3, -5, 0], "rotation": [-37.5, 0, 0], "uv": [24, 54]}
@@ -134,7 +134,7 @@
 				{
 					"name": "lower2",
 					"parent": "left_arm",
-					"pivot": [10, 54, 0],
+					"pivot": [13, 31, 1],
 					"cubes": [
 						{"origin": [17, -28, -25], "size": [3, 2, 2], "pivot": [3, -5, 0], "rotation": [-128, 0, 0], "uv": [16, 105]},
 						{"origin": [11, 7, -25], "size": [6, 18, 6], "pivot": [27, -4, 0], "rotation": [-37.5, 0, 0], "uv": [0, 38], "mirror": true}

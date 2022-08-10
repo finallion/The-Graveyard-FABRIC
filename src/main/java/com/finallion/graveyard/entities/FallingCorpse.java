@@ -1,11 +1,8 @@
 package com.finallion.graveyard.entities;
 
-import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -18,7 +15,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -115,7 +111,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
                 BlockState state = this.world.getBlockState(pos);
                 if (!state.isAir()) {
                     //this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
-                    MathUtil.createParticleCircle(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, ParticleTypes.SCULK_CHARGE_POP, this.getRandom());
+                    MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, ParticleTypes.SCULK_CHARGE_POP, this.getRandom());
                     break;
                 }
             }
