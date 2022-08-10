@@ -88,7 +88,7 @@ public class TGEntities {
     public static final EntityType<LichEntity> LICH = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
             .entityFactory(LichEntity::new)
-            .dimensions(EntityDimensions.changing(2.0F, 4.0F))
+            .dimensions(EntityDimensions.fixed(0.9F, 4.0F))
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
