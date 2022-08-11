@@ -82,6 +82,7 @@ public class VialOfBlood extends Item {
                 playerEntity.world.playSound(null, playerEntity.getBlockPos(), TGSounds.VIAL_SPLASH, SoundCategory.BLOCKS, 5.0F, 1.0F);
                 world.setBlockState(context.getBlockPos(), blockState.with(AltarBlock.BLOODY, true));
                 if (!world.isClient()) {
+                    // TODO Not in creative
                     ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
                     ItemUsage.exchangeStack(stack, playerEntity, bottle);
 

@@ -45,5 +45,57 @@
       "graveyard:entity/lich/corpse_spell"
     ],
     "subtitle": "subtitle.entity.graveyard.lich.corpse_spell"
+  },
+  "entity.lich.phase_three": {
+    "sounds": [
+      "graveyard:entity/lich/phase_three"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.phase_three"
+  },
+  "entity.lich.phase_two": {
+    "sounds": [
+      "graveyard:entity/lich/phase_two"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.phase_two"
+  },
+  "entity.lich.phase_three_attack": {
+    "sounds": [
+      "graveyard:entity/lich/phase_three_attack1",
+      "graveyard:entity/lich/phase_three_attack2"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.phase_three_attack"
+  },
+  "entity.lich.death": {
+    "sounds": [
+      "graveyard:entity/lich/death"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.death"
+  },
+  "entity.lich.hunt": {
+    "sounds": [
+      "graveyard:entity/lich/hunt"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.hunt"
+  },
+  "entity.lich.idle": {
+    "sounds": [
+      "graveyard:entity/lich/idle"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.idle"
+  },
+  "entity.lich.scare": {
+    "sounds": [
+      "graveyard:entity/lich/scare"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.scare"
+  },
+  "entity.lich.hurt": {
+    "sounds": [
+      "graveyard:entity/lich/hurt1",
+      "graveyard:entity/lich/hurt2",
+      "graveyard:entity/lich/hurt3",
+      "graveyard:entity/lich/hurt4"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.hurt"
   }
 }

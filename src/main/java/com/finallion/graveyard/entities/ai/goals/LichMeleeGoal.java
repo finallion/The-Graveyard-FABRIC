@@ -31,6 +31,7 @@ public class LichMeleeGoal extends Goal {
     private long lastUpdateTime;
     private final int DAMAGE_START_IN_ANIM = 16;
     private int animationTicker = 40;
+    private int scareSoundAge = 40;
     boolean canFinishAttack = false;
 
     public LichMeleeGoal(LichEntity mob, double speed, boolean pauseWhenMobIdle) {
@@ -45,7 +46,6 @@ public class LichMeleeGoal extends Goal {
         // for some reason if you time your attack good enough, and position yourself close enough to the mob, the mob will deadlock and do nothing while you're standing still
         // this is because l - this.lastUpdateTime < 20L is true and will only reset if you move away and close in again
         if (l - this.lastUpdateTime < 20L) {
-            System.out.println("CAN START false due to lastUpdateTime l:" + l + " lastUpdatime: " + lastUpdateTime);
             this.lastUpdateTime -= 20; // ignore this by making sure it wont deadlock. Probably best to remove lastUpdateTime. Should be covert by cooldown.
             return canStart();
         } else {
@@ -128,6 +128,7 @@ public class LichMeleeGoal extends Goal {
 
             this.cooldown = Math.max(this.cooldown - 1, 0);
             this.animationTicker--;
+            this.scareSoundAge--;
             this.attack(livingEntity, d);
         }
     }
@@ -156,7 +157,6 @@ public class LichMeleeGoal extends Goal {
                     canFinishAttack = true;
                 }
 
-                System.out.println(animationTicker);
                 if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
                     // warden sonic boom logic
                     Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
@@ -177,9 +177,14 @@ public class LichMeleeGoal extends Goal {
             }
             // HUNT ATTACK
         } else if ((phase == 3 && this.mob.canHuntStart()) || phase == 5) {
+            // if lich enters "light-sphere" while player has blindness, play sound
+            if (phase == 3 && squaredDistance <= d + 7.0D && scareSoundAge <= 0) {
+                this.mob.playScareSound();
+                scareSoundAge = 40;
+            }
+
             if (squaredDistance <= d && this.cooldown <= 0) {
                 this.resetCooldown(20);
-                // TODO: SOUND
                 this.mob.tryAttack(target);
             }
         }
