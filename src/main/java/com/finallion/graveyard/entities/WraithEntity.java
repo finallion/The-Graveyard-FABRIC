@@ -16,6 +16,7 @@ import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -65,7 +66,6 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 public class WraithEntity extends HostileGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, EntityAttributeModifier.Operation.ADDITION);
@@ -324,19 +324,13 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         }
         return PlayState.CONTINUE;
     }
-
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
-                    .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35).build());
-        }
-        return attributeContainer;
+    
+    public static DefaultAttributeContainer.Builder createWraithAttributes() {
+    	return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35);
     }
-
 
     public byte getAnimation() {
         return dataTracker.get(ANIMATION);
