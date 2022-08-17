@@ -15,10 +15,7 @@ import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -331,17 +328,16 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         return PlayState.CONTINUE;
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
-                    .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35).build());
-        }
-        return attributeContainer;
+
+
+    public static DefaultAttributeContainer.Builder createWraithAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35);
     }
+
 
 
     public byte getAnimation() {

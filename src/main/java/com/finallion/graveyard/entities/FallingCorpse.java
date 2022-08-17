@@ -4,6 +4,7 @@ import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -25,7 +26,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class FallingCorpse extends HostileEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder FALLING_ANIMATION = new AnimationBuilder().addAnimation("falling", true);
     private final AnimationBuilder LANDING_ANIMATION = new AnimationBuilder().addAnimation("landing", false).addAnimation("despawn", false);
@@ -92,15 +92,9 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
         animationData.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0D)
-                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D)
-                    .build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createFallingCorpseAttributes() {
+        return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0D).add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 
     @Override

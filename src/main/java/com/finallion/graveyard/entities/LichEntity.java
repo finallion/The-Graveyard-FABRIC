@@ -11,10 +11,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
 import net.minecraft.entity.damage.DamageSource;
@@ -58,7 +55,6 @@ import java.util.function.Predicate;
 
 public class LichEntity extends HostileEntity implements IAnimatable {
     private final ServerBossBar bossBar;
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     protected static final TargetPredicate HEAD_TARGET_PREDICATE;
     private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
@@ -262,17 +258,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, HEALTH_PHASE_01)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
-                    .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
-                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D).build());
-        }
-        return attributeContainer;
+    public static DefaultAttributeContainer.Builder createLichAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 400.0F)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 
 

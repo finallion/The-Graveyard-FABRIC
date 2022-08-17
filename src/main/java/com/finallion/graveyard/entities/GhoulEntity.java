@@ -3,10 +3,7 @@ package com.finallion.graveyard.entities;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -35,7 +32,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import java.util.UUID;
 
 public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
     protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
@@ -100,17 +96,14 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
-                    .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
-                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createGhoulAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
     }
 
 

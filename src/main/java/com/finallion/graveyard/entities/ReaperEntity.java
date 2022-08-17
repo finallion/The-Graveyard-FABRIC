@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -39,7 +40,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import java.util.EnumSet;
 
 public class ReaperEntity extends HostileGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
@@ -181,14 +181,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements IAnimatable 
         this.setVexFlag(1, charging);
     }
 
-
-    @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D).build());
-        }
-        return attributeContainer;
+    public static DefaultAttributeContainer.Builder createReaperAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D);
     }
+
 
     public byte getAnimation() {
         return dataTracker.get(ANIMATION);

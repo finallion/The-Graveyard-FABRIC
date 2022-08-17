@@ -24,7 +24,9 @@ public class GraveyardConfig implements Config {
              Structures:
              Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
              Configure spacing (Average distance between two structure placement attempts of this type in chunks).
-             Configure whitelist: use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
+             Configure whitelist: 
+             1) use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
+             2) use "c:biomeTag" to whitelist the structure for any biome in this tag (c + ":" + tag name). A list of all valid tags can be found here: https://github.com/FabricMC/fabric/tree/1.19.1/fabric-convention-tags-v1/src/generated/resources/data/c/tags/worldgen/biome
              Configure mod whitelist: use "#modid" to whitelist all biomes of the specified mod for structures to spawn in (examples: #minecraft, #graveyard, #graveyard_biomes, #terralith, #byg, #bop).
              A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
              Configure terrain check radius: set how far from structure placement a block is checked in all cardinal directions. Only necessary for the large graveyard.

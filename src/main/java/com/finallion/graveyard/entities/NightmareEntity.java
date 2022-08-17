@@ -9,10 +9,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -54,7 +51,6 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class NightmareEntity extends HostileGraveyardEntity implements IAnimatable, Angerable {
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
@@ -191,12 +187,13 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         return PlayState.CONTINUE;
 
     }
-    @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.19D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D).build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createNightmareAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.19D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D);
     }
 
     @Override

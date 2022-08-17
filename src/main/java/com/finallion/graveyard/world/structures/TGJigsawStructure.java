@@ -6,6 +6,8 @@ import com.finallion.graveyard.init.TGStructureType;
 import com.finallion.graveyard.util.BiomeSelectionUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.fabric.api.biome.v1.BiomeModification;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.entity.EntityType;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;

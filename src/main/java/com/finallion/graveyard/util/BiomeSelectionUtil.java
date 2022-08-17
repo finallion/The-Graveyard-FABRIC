@@ -2,8 +2,12 @@ package com.finallion.graveyard.util;
 
 
 import com.finallion.graveyard.TheGraveyard;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
@@ -24,6 +28,16 @@ public class BiomeSelectionUtil {
         // mod is whitelisted, weights higher than biome whitelist
         if (modIdWhitelist.contains("#" + modId)) {
             return true;
+        }
+
+        for (String biomeInList : biomeWhitelist) {
+            // tag
+            if (biomeInList.startsWith("c:")) {
+                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier("c", biomeInList.substring(2)));
+                if (BuiltinRegistries.BIOME.getOrCreateEntryList(tag).contains(biome)) {
+                    return true;
+                }
+            }
         }
 
         // biome is whitelisted

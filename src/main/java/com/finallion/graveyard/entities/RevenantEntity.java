@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -38,7 +39,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class RevenantEntity extends AngerableGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
     private AnimationFactory factory = new AnimationFactory(this);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
@@ -75,18 +75,15 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
         return ATTACK_RANGE;
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
-                    .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D)
-                    .build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createRevenantAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D);
     }
+
 
     @Override
     public void tickMovement() {

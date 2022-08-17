@@ -12,4 +12,5 @@ public class TGTags {
 
     public static TagKey<Biome> IS_OVERWORLD = TagKey.of(Registry.BIOME_KEY,
             new Identifier(TheGraveyard.MOD_ID, "is_overworld"));
+
 }
