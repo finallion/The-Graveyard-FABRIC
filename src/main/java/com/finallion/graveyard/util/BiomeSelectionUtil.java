@@ -26,23 +26,20 @@ public class BiomeSelectionUtil {
         String modId = biome.getKey().get().getValue().getNamespace();
 
         // mod is whitelisted, weights higher than biome whitelist
-        if (modIdWhitelist.contains("#" + modId)) {
-            return true;
-        }
+        //if (modIdWhitelist.contains("#" + modId)) {
+        //    return true;
+        //}
 
         for (String biomeInList : biomeWhitelist) {
-            // tag
+            // tag whitelist
             if (biomeInList.startsWith("c:")) {
                 TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier("c", biomeInList.substring(2)));
                 if (BuiltinRegistries.BIOME.getOrCreateEntryList(tag).contains(biome)) {
                     return true;
                 }
+            } else if (biomeWhitelist.contains(biomeName)) { // biome is whitelisted
+                return true;
             }
-        }
-
-        // biome is whitelisted
-        if (biomeWhitelist.contains(biomeName)) {
-            return true;
         }
 
         return false;
@@ -59,8 +56,18 @@ public class BiomeSelectionUtil {
         String modId = biome.getKey().get().getValue().getNamespace();
 
         // mod is whitelisted and not on the blacklist
-        if (modIdWhitelist.contains("#" + modId) && !biomeBlacklist.contains(biomeName)) {
-            return true;
+        //if (modIdWhitelist.contains("#" + modId) && !biomeBlacklist.contains(biomeName)) {
+        //    return true;
+        //}
+
+        for (String biomeInList : biomeWhitelist) {
+            // tag whitelist
+            if (biomeInList.startsWith("c:")) {
+                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier("c", biomeInList.substring(2)));
+                if (BuiltinRegistries.BIOME.getEntryList(tag).orElseThrow().contains(biome) && !biomeBlacklist.contains(biomeName)) {
+                    return true;
+                }
+            }
         }
 
         // biome is whitelisted and not on the blacklist

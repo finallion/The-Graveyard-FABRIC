@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class CreeperExplosionAccessor {
 
     // helper class to access the private explode method of the creeper entity
-    // needed if more creeper like mobs getStructure added
+    // needed if more creeper like-mobs getadded
 
     public static void explode(CreeperEntity creeperEntity, CallbackInfo info) {
         if (creeperEntity instanceof SkeletonCreeper) {

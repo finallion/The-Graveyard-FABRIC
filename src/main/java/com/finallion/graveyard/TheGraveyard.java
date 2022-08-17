@@ -58,6 +58,7 @@ public class TheGraveyard implements ModInitializer {
         }
 
         FabricDefaultAttributeRegistry.register(TGEntities.LICH, LichEntity.createLichAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.FALLING_CORPSE, FallingCorpse.createFallingCorpseAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.REAPER, ReaperEntity.createReaperAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.ACOLYTE, CorruptedIllager.createCorruptedIllagerAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedIllager.createCorruptedIllagerAttributes());

@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 
-public class GraveyardEntitySpawnPacker {
+public class GraveyardEntitySpawnPacket {
     public static final Identifier ID = new Identifier(TheGraveyard.MOD_ID, "spawn_entity");
 
     public static Packet<?> createPacket(Entity entity) {

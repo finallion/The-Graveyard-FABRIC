@@ -1,7 +1,7 @@
 package com.finallion.graveyard.entities.projectiles;
 
 import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.network.GraveyardEntitySpawnPacker;
+import com.finallion.graveyard.network.GraveyardEntitySpawnPacket;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -11,8 +11,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
@@ -22,7 +20,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
@@ -39,7 +36,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     @Override
     public Packet<?> createSpawnPacket() {
-        return GraveyardEntitySpawnPacker.createPacket(this);
+        return GraveyardEntitySpawnPacket.createPacket(this);
     }
 
     protected float getDrag() {

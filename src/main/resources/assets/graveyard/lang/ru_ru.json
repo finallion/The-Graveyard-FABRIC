@@ -108,6 +108,12 @@
   "item.graveyard.mangrove_coffin": "Mangrove Coffin",
   "block.graveyard.mangrove_coffin": "Mangrove Coffin",
 
+  "item.graveyard.vial_of_blood": "Vial of Blood",
+  "item.graveyard.mysterious_bone": "Mysterious Bone Fragment",
+  "item.graveyard.altar": "Altar",
+  "item.graveyard.altar_side": "Altar Decoration",
+
+
   "entity.graveyard.skeleton_creeper": "Костяной крипер",
   "item.graveyard.skeleton_creeper_spawn_egg": "Яйцо призыва костяного крипера",
   "entity.graveyard.acolyte": "Тёмный жрец",
@@ -126,6 +132,7 @@
   "item.graveyard.corrupted_vindicator_spawn_egg": "Corrupted Vindicator Spawn Egg",
   "entity.graveyard.wraith": "Wraith",
   "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
+  "entity.graveyard.lich": "Lich",
 
   "biome.graveyard.haunted_forest": "Лес с привидениями",
   "biome.graveyard.haunted_lakes": "Озера с привидениями",

@@ -109,6 +109,10 @@
   "item.graveyard.mangrove_coffin": "Mangrove Coffin",
   "block.graveyard.mangrove_coffin": "Mangrove Coffin",
 
+  "item.graveyard.vial_of_blood": "Vial of Blood",
+  "item.graveyard.mysterious_bone": "Mysterious Bone Fragment",
+  "item.graveyard.altar": "Altar",
+  "item.graveyard.altar_side": "Altar Decoration",
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",
@@ -128,6 +132,7 @@
   "item.graveyard.corrupted_vindicator_spawn_egg": "Corrupted Vindicator Spawn Egg",
   "entity.graveyard.wraith": "Wraith",
   "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
+  "entity.graveyard.lich": "Lich",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",

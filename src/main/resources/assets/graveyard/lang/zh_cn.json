@@ -135,6 +135,10 @@
   "item.graveyard.mangrove_coffin": "紅樹棺材",
   "block.graveyard.mangrove_coffin": "紅樹棺材",
 
+  "item.graveyard.vial_of_blood": "Vial of Blood",
+  "item.graveyard.mysterious_bone": "Mysterious Bone Fragment",
+  "item.graveyard.altar": "Altar",
+  "item.graveyard.altar_side": "Altar Decoration",
 
   "entity.graveyard.skeleton_creeper": "骷髅苦力怕",
   "entity.graveyard.acolyte": "守灵人",
@@ -155,6 +159,7 @@
   "item.graveyard.corrupted_vindicator_spawn_egg": "腐化卫道士刷怪蛋",
   "entity.graveyard.wraith": "幽魂",
   "item.graveyard.wraith_spawn_egg": "幽魂刷怪蛋",
+  "entity.graveyard.lich": "Lich",
 
   "biome.graveyard.haunted_forest": "闹鬼森林",
   "biome.graveyard.haunted_lakes": "亡灵湖泊",

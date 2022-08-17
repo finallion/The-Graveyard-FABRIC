@@ -109,6 +109,11 @@
   "item.graveyard.mangrove_coffin": "맹그로브 관",
   "block.graveyard.mangrove_coffin": "맹그로브 관",
 
+  "item.graveyard.vial_of_blood": "Vial of Blood",
+  "item.graveyard.mysterious_bone": "Mysterious Bone Fragment",
+  "item.graveyard.altar": "Altar",
+  "item.graveyard.altar_side": "Altar Decoration",
+
 
   "entity.graveyard.skeleton_creeper": "스켈레톤 크리퍼",
   "item.graveyard.skeleton_creeper_spawn_egg": "스켈레톤 크리퍼 생성 알",
@@ -128,6 +133,7 @@
   "item.graveyard.corrupted_vindicator_spawn_egg": "타락한 변명자 생성 알",
   "entity.graveyard.wraith": "레이스",
   "item.graveyard.wraith_spawn_egg": "레이스 생성 알",
+  "entity.graveyard.lich": "Lich",
 
   "biome.graveyard.haunted_forest": "유령의 숲",
   "biome.graveyard.haunted_lakes": "유령의 호수",
