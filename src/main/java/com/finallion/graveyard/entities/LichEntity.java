@@ -1,7 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.entities.ai.goals.LichMeleeGoal;
-import com.finallion.graveyard.entities.ai.goals.ShootSkullGoal;
+import com.finallion.graveyard.entities.projectiles.SkullEntity;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
@@ -25,6 +25,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.SmallFireballEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
@@ -75,6 +76,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private final AnimationBuilder START_PHASE_3_ANIMATION = new AnimationBuilder().addAnimation("phase_three", false);
     private final AnimationBuilder PHASE_3_ATTACK_ANIMATION = new AnimationBuilder().addAnimation("crawl", true);
     private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
+    private final AnimationBuilder SHOOT_SKULL_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -82,6 +84,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected static final int ANIMATION_START_PHASE_2 = 4;
     protected static final int ANIMATION_PHASE_2_IDLE = 5;
     protected static final int ANIMATION_PHASE_2_ATTACK = 6;
+    protected static final int ANIMATION_SHOOT_SKULL = 7;
     protected static final int ANIMATION_START_PHASE_3 = 8;
     protected static final int ANIMATION_PHASE_3_ATTACK = 9;
     protected static final int ANIMATION_STOP = 10;
@@ -164,6 +167,12 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         if (getAnimationState() == ANIMATION_CORPSE_SPELL && getPhase() == 1) {
             event.getController().setAnimation(CORPSE_SPELL_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+
+        if (getAnimationState() == ANIMATION_SHOOT_SKULL && getPhase() == 1) {
+            event.getController().setAnimation(SHOOT_SKULL_ANIMATION);
             return PlayState.CONTINUE;
         }
 
@@ -879,6 +888,82 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                         corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
                         serverWorld.spawnEntity(corpse);
                     }
+                }
+            }
+        }
+    }
+
+    public class ShootSkullGoal extends Goal {
+        private final LichEntity mob;
+        public int cooldown;
+
+        public ShootSkullGoal(LichEntity mob) {
+            this.mob = mob;
+        }
+
+        public boolean canStart() {
+            return this.mob.getTarget() != null
+                    && this.mob.getPhase() == 1
+                    && this.mob.getAttackAnimTimer() <= 0
+                    && this.mob.getPhaseInvulnerableTimer() <= 0
+                    && this.mob.getInvulnerableTimer() <= 0
+                    && !this.mob.canCorpseSpellStart();
+        }
+
+        public void start() {
+            this.cooldown = 0;
+        }
+
+        public boolean shouldRunEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void stop() {
+            setAnimationState(ANIMATION_IDLE);
+            super.stop();
+        }
+
+        public void tick() {
+            LivingEntity livingEntity = this.mob.getTarget();
+            if (livingEntity != null) {
+                if (livingEntity.squaredDistanceTo(this.mob) < 5120.0D && livingEntity.squaredDistanceTo(this.mob) > 16.0D) {
+                    World world = this.mob.world;
+                    ++this.cooldown;
+
+                    if (this.cooldown == 10) {
+                        setAnimationState(ANIMATION_SHOOT_SKULL);
+                    }
+
+                    //if (this.cooldown == 10 && !this.mob.isSilent()) {
+                    //    world.syncWorldEvent((PlayerEntity)null, 1015, this.mob.getBlockPos(), 0);
+                    //}
+
+                    if (this.cooldown == 20) {
+                        double d = 0.5D;
+                        Vec3d vec3d = this.mob.getRotationVec(1.0F);
+                        //double f = livingEntity.getX() - (this.mob.getX() + vec3d.x * d);
+                        //double g = livingEntity.getBodyY(0.5D) - (0.5D + this.mob.getBodyY(0.5D));
+                        //double h = livingEntity.getZ() - (this.mob.getZ() + vec3d.z * d);
+
+                        //if (!this.mob.isSilent()) {
+                        //    world.syncWorldEvent((PlayerEntity)null, 1016, this.mob.getBlockPos(), 0);
+                        //}
+
+                        // SmallFireballEntity smallFireballEntity = new SmallFireballEntity(this.blaze.world, this.blaze, this.blaze.getRandom().nextTriangular(e, 2.297D * h), f, this.blaze.getRandom().nextTriangular(g, 2.297D * h));
+                        double e = livingEntity.getX() - this.mob.getX();
+                        double f = livingEntity.getBodyY(0.5D) - this.mob.getBodyY(0.5D);
+                        double g = livingEntity.getZ() - this.mob.getZ();
+                        SkullEntity skull = new SkullEntity(this.mob.world, this.mob, e, f, g);
+                        //SkullEntity skull = new SkullEntity(world, this.mob, f, g, h);
+                        skull.setPosition(skull.getX(), this.mob.getBodyY(0.5D) + 0.5D, skull.getZ());
+                        world.spawnEntity(skull);
+
+
+                        this.cooldown = -40;
+                    }
+                } else if (this.cooldown > 0) {
+                    --this.cooldown;
                 }
             }
         }

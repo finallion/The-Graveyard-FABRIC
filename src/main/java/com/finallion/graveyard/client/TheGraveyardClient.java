@@ -12,15 +12,18 @@ import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGItems;
 import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.item.VialOfBlood;
+import com.finallion.graveyard.network.GraveyardEntitySpawnPacker;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
@@ -29,11 +32,17 @@ import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.example.ClientListener;
+
+import java.util.UUID;
 
 
 @Environment(EnvType.CLIENT)
@@ -92,6 +101,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.register(TGEntities.WRAITH, WraithRenderer::new);
         EntityRendererRegistry.register(TGEntities.LICH, LichRenderer::new);
         EntityRendererRegistry.register(TGEntities.FALLING_CORPSE, FallingCorpseRenderer::new);
+        EntityRendererRegistry.register(TGEntities.SKULL, SkullEntityRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 
@@ -101,6 +111,10 @@ public class TheGraveyardClient implements ClientModInitializer {
                 return VialOfBlood.getBlood(stack);
             }
             return 0.0F;
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(GraveyardEntitySpawnPacker.ID, (client, handler, buf, responseSender) -> {
+            ClientListener.EntityPacketOnClient.onPacket(client, buf);
         });
     }
 }

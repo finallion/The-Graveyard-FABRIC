@@ -2,6 +2,7 @@ package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.*;
+import com.finallion.graveyard.entities.projectiles.SkullEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -93,6 +94,12 @@ public class TGEntities {
             .build();
 
 
+    public static final EntityType<SkullEntity> SKULL = FabricEntityTypeBuilder.<SkullEntity>create(
+            SpawnGroup.MISC, SkullEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.25F, 0.25F))
+                    .trackRangeBlocks(4).trackedUpdateRate(10)
+                    .build();
+
     private static void register(String name, EntityType<?> type) {
         entities.add(type);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, name), type);
@@ -112,6 +119,7 @@ public class TGEntities {
         register("wraith", WRAITH);
         register("lich", LICH);
         register("falling_corpse", FALLING_CORPSE);
+        register("skull", SKULL);
     }
 
 
