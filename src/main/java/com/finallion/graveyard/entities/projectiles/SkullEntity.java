@@ -59,16 +59,12 @@ public class SkullEntity extends ExplosiveProjectileEntity {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean bl;
-            if (entity2 instanceof HostileGraveyardEntity || entity2 instanceof LichEntity) {
-                return; // TODO
-            } else if (entity2 instanceof LivingEntity) {
+            if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
-                bl = entity.damage(DamageSource.magic(this, livingEntity), 8.0F);
+                bl = entity.damage(DamageSource.magic(this, livingEntity), 10.0F);
                 if (bl) {
-                    if (entity.isAlive()) {
+                    if (entity.isAlive() && !(entity instanceof HostileGraveyardEntity) && !(entity instanceof LichEntity)) {
                         this.applyDamageEffects(livingEntity, entity);
-                    } else {
-                        livingEntity.heal(5.0F);
                     }
                 }
             }

@@ -31,7 +31,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     private final AnimationBuilder LANDING_ANIMATION = new AnimationBuilder().addAnimation("landing", false).addAnimation("despawn", false);
     private static final TrackedData<Boolean> IS_FALLING;
     private static final TrackedData<Boolean> HAS_COLLIDED;
-    private final float DAMAGE = 8.0F;
+    private final float DAMAGE = 10.0F;
     private int landingCounter = 40;
     private int levitationCounter = 15;
     private float rotation;
