@@ -63,7 +63,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
                 LivingEntity livingEntity = (LivingEntity)entity2;
                 bl = entity.damage(DamageSource.magic(this, livingEntity), 10.0F);
                 if (bl) {
-                    if (entity.isAlive() && !(entity instanceof HostileGraveyardEntity) && !(entity instanceof LichEntity)) {
+                    if (entity.isAlive()) {
                         this.applyDamageEffects(livingEntity, entity);
                     }
                 }

@@ -61,7 +61,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
         this.goalSelector.add(6, new LookAroundGoal(this));
         this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[0]));
+        this.targetSelector.add(1, new RevengeGoal(this, LichEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));

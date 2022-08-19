@@ -66,7 +66,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
     protected void initDataTracker() {
         super.initDataTracker();
 
-        // selects one of eight skins for the ghoul
+        // selects one of eight skins for the ghoul (in BaseGhoulModel)
         byte variant = (byte) random.nextInt(8);
 
         this.dataTracker.startTracking(VARIANT, variant);
@@ -91,7 +91,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[0]));
+        this.targetSelector.add(1, new RevengeGoal(this, LichEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));

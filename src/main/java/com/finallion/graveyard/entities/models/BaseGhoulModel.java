@@ -37,6 +37,7 @@ public class BaseGhoulModel extends AnimatedGeoModel<GhoulEntity> {
             case 5 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin6.png");
             case 6 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin7.png");
             case 7 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin8.png");
+            case 10 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin9.png");
             default -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
         };
     }
