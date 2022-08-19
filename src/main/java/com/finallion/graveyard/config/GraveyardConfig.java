@@ -56,6 +56,7 @@ public class GraveyardConfig implements Config {
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
+    public final Map<String, Integer> intEntries = new HashMap<>();
 
     @Override
     public String getName() {
@@ -119,6 +120,7 @@ public class GraveyardConfig implements Config {
     public void save() {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
         booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
+        intEntries.putIfAbsent("cryptJigsawSize", 7);
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 

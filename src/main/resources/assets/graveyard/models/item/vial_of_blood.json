@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "minecraft:item/glass_bottle"
+        "layer0": "graveyard:item/vial_of_blood_08"
     },
     "overrides": [
         {

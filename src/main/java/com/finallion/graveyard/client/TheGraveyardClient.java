@@ -107,6 +107,7 @@ public class TheGraveyardClient implements ClientModInitializer {
             return 0.0F;
         });
 
+        // projectile packet logic
         ClientPlayNetworking.registerGlobalReceiver(GraveyardEntitySpawnPacket.ID, (client, handler, buf, responseSender) -> {
             ClientListener.EntityPacketOnClient.onPacket(client, buf);
         });

@@ -67,7 +67,7 @@ public class TGConfiguredStructureFeatures {
 
     public static final RegistryEntry<Structure> CRYPT_STRUCTURE_CONFIG = register(TGStructureTypeKeys.CRYPT,
             new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("crypt"), GenerationStep.Feature.UNDERGROUND_STRUCTURES, StructureTerrainAdaptation.NONE),
-                    CryptStructure.CryptGenerator.STARTING_POOL, 7,
+                    CryptStructure.CryptGenerator.STARTING_POOL, TheGraveyard.config.intEntries.get("cryptJigsawSize"),
                     ConstantHeightProvider.create(YOffset.fixed(-10)), false,
                     TheGraveyard.config.structureConfigEntries.get("crypt").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("crypt").maxTerrainHeightDifference,

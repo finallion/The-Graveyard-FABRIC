@@ -1,5 +1,7 @@
 package com.finallion.graveyard.entities.projectiles;
 
+import com.finallion.graveyard.entities.HostileGraveyardEntity;
+import com.finallion.graveyard.entities.LichEntity;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.network.GraveyardEntitySpawnPacket;
 import net.minecraft.block.BlockState;
@@ -57,7 +59,9 @@ public class SkullEntity extends ExplosiveProjectileEntity {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean bl;
-            if (entity2 instanceof LivingEntity) {
+            if (entity2 instanceof HostileGraveyardEntity || entity2 instanceof LichEntity) {
+                return; // TODO
+            } else if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
                 bl = entity.damage(DamageSource.magic(this, livingEntity), 8.0F);
                 if (bl) {
@@ -67,18 +71,8 @@ public class SkullEntity extends ExplosiveProjectileEntity {
                         livingEntity.heal(5.0F);
                     }
                 }
-            } else {
-                bl = entity.damage(DamageSource.MAGIC, 5.0F);
             }
 
-            if (bl && entity instanceof LivingEntity) {
-                int i = 0;
-                if (this.world.getDifficulty() == Difficulty.NORMAL) {
-                    i = 10;
-                } else if (this.world.getDifficulty() == Difficulty.HARD) {
-                    i = 40;
-                }
-            }
 
         }
     }
