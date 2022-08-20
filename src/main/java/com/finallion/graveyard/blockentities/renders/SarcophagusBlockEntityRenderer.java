@@ -52,8 +52,11 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         }
     }
 
+
+
     private void render(SarcophagusBlockEntity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, float g, Random random, BakedModel model, boolean isLid) {
         matrixStack.push();
+
         VertexConsumer vertices = vertexConsumer.getBuffer(RenderLayers.getEntityBlockLayer(entity.getCachedState(), false));
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
         float f = direction.asRotation();
