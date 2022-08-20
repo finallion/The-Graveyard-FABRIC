@@ -80,9 +80,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         if (!this.serializeLootTable(nbt)) {
             Inventories.writeNbt(nbt, this.inventory);
         }
-
     }
-
 
     public int size() {
         return 54;
@@ -111,43 +109,34 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         if (!this.removed && !player.isSpectator()) {
             this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
         }
-
     }
 
     public void onClose(PlayerEntity player) {
         if (!this.removed && !player.isSpectator()) {
             this.stateManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
         }
-
     }
 
     public void onScheduledTick() {
         if (!this.removed) {
             this.stateManager.updateViewerCount(this.getWorld(), this.getPos(), this.getCachedState());
         }
-
     }
-
 
     protected void onInvOpenOrClose(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
         Block block = state.getBlock();
         world.addSyncedBlockEvent(pos, block, 1, newViewerCount);
     }
 
-
     static void playSound(World world, BlockPos pos, BlockState state, SoundEvent soundEvent) {
         double d = (double) pos.getX() + 0.5D;
         double e = (double) pos.getY() + 0.5D;
         double f = (double) pos.getZ() + 0.5D;
 
-
         world.playSound((PlayerEntity) null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.75F, -70.0F);
     }
 
-    /*
-    ANIMATION STUFF
-     */
-
+    /* ANIMATION STUFF */
     public static void clientTick(World world, BlockPos pos, BlockState state, SarcophagusBlockEntity blockEntity) {
         blockEntity.lidAnimator.step();
     }
@@ -164,7 +153,6 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
     public float getAnimationProgress(float tickDelta) {
         return this.lidAnimator.getProgress(tickDelta);
     }
-
 
     public boolean isCoffin() {
         return this.getCachedState().get(SarcophagusBlock.IS_COFFIN);

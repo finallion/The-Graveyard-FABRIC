@@ -111,16 +111,16 @@ public class TGBlocks {
     public static final Block GREEN_URN = new UrnBlock();
     public static final Block LIME_URN = new UrnBlock();
 
-    public static final Block SARCOPHAGUS = new SarcophagusBlock(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(1.5F), false);
-    public static final Block OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block SPRUCE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block BIRCH_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block DARK_OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block JUNGLE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
-    public static final Block MANGROVE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true);
+    public static final Block SARCOPHAGUS = new SarcophagusBlock(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(1.5F), false, TGItems.SARCOPHAGUS_LID, TGItems.SARCOPHAGUS_BASE);
+    public static final Block OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.OAK_COFFIN_LID, TGItems.OAK_COFFIN_BASE);
+    public static final Block SPRUCE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.SPRUCE_COFFIN_LID, TGItems.SPRUCE_COFFIN_BASE);
+    public static final Block BIRCH_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.BIRCH_COFFIN_LID, TGItems.BIRCH_COFFIN_BASE);
+    public static final Block DARK_OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.DARK_OAK_COFFIN_LID, TGItems.DARK_OAK_COFFIN_BASE);
+    public static final Block JUNGLE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.JUNGLE_COFFIN_LID, TGItems.JUNGLE_COFFIN_BASE);
+    public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.ACACIA_COFFIN_LID, TGItems.ACACIA_COFFIN_BASE);
+    public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.WARPED_COFFIN_LID, TGItems.WARPED_COFFIN_BASE);
+    public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.CRIMSON_COFFIN_LID, TGItems.CRIMSON_COFFIN_BASE);
+    public static final Block MANGROVE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.MANGROVE_COFFIN_LID, TGItems.MANGROVE_COFFIN_BASE);
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();

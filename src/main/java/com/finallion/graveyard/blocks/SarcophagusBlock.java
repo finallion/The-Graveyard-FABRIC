@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.DefaultParticleType;
@@ -71,10 +72,14 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
+    private final Item lid;
+    private final Item base;
 
-    public SarcophagusBlock(Settings settings, boolean isCoffin) {
+    public SarcophagusBlock(Settings settings, boolean isCoffin, Item lid, Item base) {
         super(settings, () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
+        this.base = base;
+        this.lid = lid;
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -295,6 +300,14 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     public BlockEntityType<? extends SarcophagusBlockEntity> getExpectedEntityType() {
         return (BlockEntityType)this.entityTypeRetriever.get();
+    }
+
+    public Item getLid() {
+        return this.lid;
+    }
+
+    public Item getBase() {
+        return this.base;
     }
 
 
