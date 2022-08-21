@@ -97,5 +97,23 @@
       "graveyard:entity/lich/hurt4"
     ],
     "subtitle": "subtitle.entity.graveyard.lich.hurt"
+  },
+  "entity.lich.shoot_skull": {
+    "sounds": [
+      "graveyard:entity/lich/shoot_skull"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.shoot_skull"
+  },
+  "entity.lich.levitation": {
+    "sounds": [
+      "graveyard:entity/lich/levitation"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.levitation"
+  },
+  "entity.lich.heal": {
+    "sounds": [
+      "graveyard:entity/lich/heal"
+    ],
+    "subtitle": "subtitle.entity.graveyard.lich.heal"
   }
 }

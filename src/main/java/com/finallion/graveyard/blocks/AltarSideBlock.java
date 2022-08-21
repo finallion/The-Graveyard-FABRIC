@@ -42,11 +42,7 @@ public class AltarSideBlock extends Block {
         if (random.nextInt(100) == 0) {
             world.addParticle(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
         }
-
-
-        MathUtil.createParticleFlare(world, pos.getX(), pos.getY(), pos.getZ(), random.nextInt(200) + 150, ParticleTypes.HAPPY_VILLAGER, random);
-
-
+        //MathUtil.createParticleFlare(world, pos.getX(), pos.getY(), pos.getZ(), random.nextInt(300) + 150, ParticleTypes.SOUL, random);
     }
 
 

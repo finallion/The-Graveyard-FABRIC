@@ -37,22 +37,23 @@ public class MathUtil {
         double yCoord = y + 1.1D; // top of block
 
         double yDeviation = random.nextDouble() / 8 + 0.01; // pitch
-        double xzDeviation = -1.0 + 2.0D * random.nextDouble(); // random double between -1 and 1 to cover all x-z variations
+        double xDeviation = -1.0 + 2.0D * random.nextDouble(); // random double between -1 and 1 to cover all x-z variations
+        double zDeviation = -1.0 + 2.0D * random.nextDouble(); // random double between -1 and 1 to cover all x-z variations
         double curvatureFactor = random.nextInt(5) + 1;
-
 
         for (int j = 1; j < length; ++j) {
             float densityFactor = (float)j/25;
-            double deviation = (densityFactor * xzDeviation);
+            double xDeviationVector = (densityFactor * xDeviation);
+            double zDeviationVector = (densityFactor * zDeviation);
 
             double curvature = MathHelper.cos(densityFactor); // multiplies cos multiple times with itself to add more bendiness
             for (int k = 0; k < curvatureFactor; k++) {
                 curvature *= curvature;
             }
 
-            double xCoord = x - 0.5D + curvature + deviation;
+            double xCoord = x + (curvature + xDeviationVector); // curvature * deviation is also possible to distort even more
             yCoord += yDeviation; // density of the flare
-            double zCoord = z + 0.5D + MathHelper.cos(densityFactor) + deviation; // z-curvature
+            double zCoord = z + (MathHelper.cos(densityFactor) + zDeviationVector); // z-curvature
 
             world.addParticle(type, xCoord, yCoord, zCoord, 0, 0, 0);
         }

@@ -23,9 +23,9 @@ public class TGSounds {
     public static final Identifier LICH_PHASE_02_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase_two");
     public static final Identifier LICH_PHASE_03_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase_three");
     public static final Identifier LICH_CORPSE_SPELL_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.corpse_spell");
-    public static final Identifier LICH_CAST_SKULL_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.cast_skull");
-    public static final Identifier LICH_CAST_LEVITATION_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.cast_levitation");
-    public static final Identifier LICH_CAST_TELEPORT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.cast_teleport");
+    public static final Identifier LICH_CAST_SKULL_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.shoot_skull");
+    public static final Identifier LICH_CAST_LEVITATION_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.levitation");
+    public static final Identifier LICH_CAST_TELEPORT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.heal");
     public static final Identifier LICH_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.death");
     public static final Identifier LICH_HUNT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.hunt");
     public static final Identifier LICH_SCARE_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.scare");

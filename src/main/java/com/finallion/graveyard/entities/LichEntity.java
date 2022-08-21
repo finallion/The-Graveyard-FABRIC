@@ -3,6 +3,7 @@ package com.finallion.graveyard.entities;
 import com.finallion.graveyard.entities.ai.goals.LichMeleeGoal;
 import com.finallion.graveyard.entities.projectiles.SkullEntity;
 import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
 import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -276,12 +278,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 20.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 25.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 20.0D)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 20.0D)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 
 
+    /* PARTICLE HANDLING */
     @Override
     public void tickMovement() {
         randomDisplayTick(this.getWorld(), this.getBlockPos(), this.getRandom());
@@ -297,6 +300,22 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 }
                 MathUtil.createParticleDisk(this.getWorld(), this.getX(), this.getY() + ((float) i / 10), this.getZ(), 0.0D, 0.3D, 0.0D, 2 * offset, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom());
             }
+        }
+
+        if (getInvulnerableTimer() > 80 && random.nextInt(6) == 0 && getPhase() == 1) {
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1.0D, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, random);
+        }
+
+        if (getInvulnerableTimer() > 80 && getPhase() == 1) {
+            MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 0.5F);
+        }
+
+        if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, random);
+        }
+
+        if (getPhaseInvulnerableTimer() > 0 && getInvulnerableTimer() <= 0 && getPhase() == 1) {
+            MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY() + 1.5D, this.getZ(), 0.0D, 0.0D, 0.0D, 2.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
         }
 
         super.tickMovement();
@@ -316,10 +335,12 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         /* SUMMON MOB ATTACK */
         int duration = getFightDurationTimer();
         setFightDurationTimer(duration + 1);
-        if (duration < 6000 && duration % 400 == 0) {
-            summonMob(false);
-        } else if (duration >= 6000 && duration < 10000 && duration % 600 == 0) {
-            summonMob(true);
+        if (duration > 400) {
+            if (duration < 6000 && duration % 400 == 0) {
+                summonMob(false);
+            } else if (duration >= 6000 && duration < 10000 && duration % 600 == 0) {
+                summonMob(true);
+            }
         }
 
         /* PHASE 5 FIGHT LOGIC */
@@ -441,7 +462,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
 
         if (this.getPhaseInvulnerableTimer() > 0) {
-            // TODO: add particle ring
             int timer = getPhaseInvulnerableTimer() - 1;
             this.setPhaseInvulTimer(timer);
         }
@@ -475,6 +495,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             int timer;
             if (getPhase() == 1) {
                 timer = SPAWN_INVUL_TIMER;
+                this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
             } else {
                 timer = DEFAULT_INVUL_TIMER;
             }
@@ -535,10 +556,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         if (this.deathTime == 5) {
             playDeathSound();
-        }
-
-        if (this.deathTime == 100) {
-            // TODO: add particles
         }
 
         if (this.deathTime == 160 && !this.world.isClient()) {
@@ -650,6 +667,14 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 world.addParticle(ParticleTypes.SMOKE, (double) mutable.getX() + random.nextDouble(), (double) mutable.getY() + random.nextDouble(), (double) mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
             }
         }
+
+        /*
+        Vec3d rotation = this.getRotationVec(1.0F);
+        if (random.nextInt(8) == 0) {
+            world.addParticle(ParticleTypes.DRIPPING_LAVA, i + 0.45D + rotation.x, j + 3.0D, k + 0.45D + rotation.z, 0.0D, 0.0D, 0.0D);
+        }
+
+         */
     }
 
     public List<PlayerEntity> getPlayersInRange(double range) {
@@ -710,6 +735,10 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         return false;
     }
 
+    @Override
+    public boolean cannotDespawn() {
+        return true;
+    }
 
     ///////////////////////
     /* GETTER AND SETTER */
@@ -847,9 +876,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_MELEE, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
-    //TODO
     public void playHealSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CORPSE_SPELL, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_TELEPORT, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playCorpseSpellSound() {
@@ -880,14 +908,12 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_HUNT, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
-    //TODO
     private void playShootSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_SKULL, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
-    //TODO
     private void playLevitationSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_LEVITATION, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     @Override
@@ -1355,4 +1381,5 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             }
         }
     }
+
 }

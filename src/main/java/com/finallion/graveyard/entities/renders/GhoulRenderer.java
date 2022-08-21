@@ -11,7 +11,7 @@ public class GhoulRenderer extends GeoEntityRenderer<GhoulEntity> {
     public GhoulRenderer(EntityRendererFactory.Context context) {
         super(context, new BaseGhoulModel());
         // glowing eyes
-        this.addLayer(new GhoulEyesFeatureRenderer(this));
+        //this.addLayer(new GhoulEyesFeatureRenderer(this));
         this.shadowRadius = 0.7F;
     }
 
