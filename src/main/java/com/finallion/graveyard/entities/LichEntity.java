@@ -23,6 +23,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -53,8 +54,10 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected static final TargetPredicate HEAD_TARGET_PREDICATE;
     private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
+    private static final UUID ATTACKING_DMG_BOOST_ID = UUID.fromString("120E0DFB-87AE-4653-9776-831010E291A1");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
     private static final EntityAttributeModifier CRAWL_SPEED_BOOST;
+    private static final EntityAttributeModifier DMG_BOOST;
     // animation
     private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
     private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
@@ -69,6 +72,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private final AnimationBuilder SHOOT_SKULL_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
     private final AnimationBuilder SUMMON_ANIMATION = new AnimationBuilder().addAnimation("summon", true);
     private final AnimationBuilder CONJURE_FANG_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", true);
+    private final AnimationBuilder STUNNED_ANIMATION = new AnimationBuilder().addAnimation("stunned", true);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -82,6 +86,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     protected static final int ANIMATION_STOP = 10;
     protected static final int ANIMATION_SUMMON = 11;
     protected static final int ANIMATION_CONJURE_FANG = 12;
+    protected static final int ANIMATION_STUNNED = 13;
     // data tracker
     private static final TrackedData<Integer> INVUL_TIMER; // spawn invul timer
     private static final TrackedData<Integer> PHASE_INVUL_TIMER; // other invul timer
@@ -110,7 +115,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private final int START_PHASE_THREE_ANIMATION_DURATION = 220;
     private final int START_PHASE_TWO_PARTICLES = 80;
     private final int CORPSE_SPELL_DURATION = 400;
-    private final int HUNT_COOLDOWN = 800;
+    private final int HUNT_COOLDOWN = 600;
     private final int HUNT_DURATION = 800;
     protected static final EntityDimensions CRAWL_DIMENSIONS;
     // variables
@@ -127,8 +132,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     // teeth only one texture layer
     // prevent effect from being cleared (with milk)
     // teleport to altar pos
-    // stop looking while spawning
-    // dont despawn
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -197,6 +200,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             return PlayState.CONTINUE;
         }
         /* PHASE 3 */
+        if (getAnimationState() == ANIMATION_STUNNED && getPhase() == 3) {
+            event.getController().setAnimation(STUNNED_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
         if (getAnimationState() == ANIMATION_PHASE_2_IDLE && getPhase() == 3) {
             event.getController().setAnimation(PHASE_2_IDLE_ANIMATION);
             return PlayState.CONTINUE;
@@ -279,7 +287,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 20.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 20.0D)
-                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 20.0D)
+                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 15.0D)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 
@@ -303,7 +311,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         if (getInvulnerableTimer() > 80 && random.nextInt(6) == 0 && getPhase() == 1) {
-            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1.0D, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, random);
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1.0D + 3.5D - (float) getInvulnerableTimer() / 100, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
         if (getInvulnerableTimer() > 80 && getPhase() == 1) {
@@ -311,11 +319,27 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
-            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, random);
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
         if (getPhaseInvulnerableTimer() > 0 && getInvulnerableTimer() <= 0 && getPhase() == 1) {
             MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY() + 1.5D, this.getZ(), 0.0D, 0.0D, 0.0D, 2.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
+        }
+
+        if (!canHuntStart() && getPhase() == 3 && getAnimationState() == ANIMATION_STUNNED && random.nextInt(7) == 0) {
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() + 2.5D, this.getZ() - 0.75D, random.nextInt(100) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, true);
+        }
+
+        Vec3d rotation = this.getRotationVec(1.0F);
+        if (getHealTimer() > 0 && getPhase() == 1) {
+            MathUtil.createParticleSpiral(this.getWorld(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, 0.0D, 0.0D, 0.0D, 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+        }
+
+        if (getHealTimer() == 1 && getPhase() == 1) {
+            getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_WARDEN_SONIC_BOOM, SoundCategory.HOSTILE, 3.0F, 5.0F);
+            for (int i = 0; i < 20; i++) {
+                MathUtil.createParticleSpiral(this.getWorld(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+            }
         }
 
         super.tickMovement();
@@ -323,12 +347,12 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     protected void mobTick() {
         if (homePos == null) {
-            homePos = new BlockPos(this.getBlockX() + 0.5D, this.getBlockY(), this.getBlockZ() + 0.5D);
+            homePos = new BlockPos(this.getBlockX() + 1.0D, this.getBlockY(), this.getBlockZ() + 1.0D);
         }
 
         if (idleSoundAge <= 0) {
             playAmbientSound();
-            idleSoundAge = 120;
+            idleSoundAge = 100;
         }
         idleSoundAge--;
 
@@ -349,7 +373,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 playStartPhaseThreeAttackSound();
             }
 
-            if (phaseThreeAttackSoundAge == 0) {
+            if (phaseThreeAttackSoundAge == 20) {
                 phaseThreeAttackSoundAge = 120;
             } else {
                 phaseThreeAttackSoundAge--;
@@ -367,6 +391,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         /* PHASE 3 FIGHT LOGIC */
         if (getPhase() == 3) {
             EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+            EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
 
             if (getHuntCooldownTicker() > 0) {
                 setHuntCooldownTicker(getHuntCooldownTicker() - 1);
@@ -379,7 +404,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 Iterator<PlayerEntity> iterator = playersInRange.iterator();
                 while (iterator.hasNext()) {
                     PlayerEntity player = iterator.next();
-                    if (getPhaseInvulnerableTimer() == 0) {
+                    if (getPhaseInvulnerableTimer() == 0 || getPhaseInvulnerableTimer() % 300 == 0) {
                         player.teleport(this.getX() + random.nextInt(15), this.getY(), this.getZ() + random.nextInt(15));
                     }
                     if (getPhaseInvulnerableTimer() % 50 == 0) {
@@ -398,9 +423,12 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 }
                 setAnimationState(ANIMATION_PHASE_2_ATTACK);
 
-                // TODO: adjust dmg
                 if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
                     entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
+                }
+
+                if (!entityAttributeDmgInstance.hasModifier(DMG_BOOST)) {
+                    entityAttributeDmgInstance.addTemporaryModifier(DMG_BOOST);
                 }
             }
 
@@ -408,10 +436,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             if (getPhaseInvulnerableTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
                 this.teleport(homePos.getX(), homePos.getY(), homePos.getZ());
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
-                setAnimationState(ANIMATION_PHASE_2_IDLE);
+                setAnimationState(ANIMATION_STUNNED);
                 setHuntStart(false);
                 setCanMove(false);
                 entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
+                entityAttributeDmgInstance.removeModifier(DMG_BOOST);
             }
         }
         /* END PHASE 3 FIGHT LOGIC */
@@ -477,7 +506,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 }
                 if (!player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 40, 1));
-                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 40, 1));
+                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 50, 1));
                 }
             }
         }
@@ -630,8 +659,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                     return false;
                 }
 
-                // damage stops healing
-                setHealTimer(0);
+                // damage stops healing, set to one to add particle effect
+                if (getHealTimer() > 0) {
+                    setHealTimer(1);
+                } else {
+                    setHealTimer(0);
+                }
+
 
                 return super.damage(source, amount);
             }
@@ -710,8 +744,14 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     }
 
     private boolean summonMob(boolean hard) {
+        Box box = (new Box(this.getBlockPos())).expand(35.0D);
+        List<HostileGraveyardEntity> mobs = getWorld().getNonSpectatingEntities(HostileGraveyardEntity.class, box);
+        if (mobs.size() > 30) {
+            return false;
+        }
+
         for (int i = 10; i > 0; i--) {
-            BlockPos pos = new BlockPos(this.getBlockX() + random.nextInt(20), this.getBlockY(), this.getBlockZ() + +random.nextInt(20));
+            BlockPos pos = new BlockPos(this.getBlockX() + random.nextInt(20) + 5, this.getBlockY(), this.getBlockZ() + random.nextInt(20) + 5);
             int amount = random.nextInt(5) + 1;
             if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir()) {
                 if (!hard) {
@@ -918,7 +958,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     @Override
     public void playAmbientSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_IDLE, SoundCategory.HOSTILE, 7.0F, 1.0F);
+        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_IDLE, SoundCategory.HOSTILE, 15.0F, 1.0F);
     }
 
     @Override
@@ -1023,13 +1063,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F);
         CRAWL_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.18D, EntityAttributeModifier.Operation.ADDITION);
         ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15D, EntityAttributeModifier.Operation.ADDITION);
+        DMG_BOOST = new EntityAttributeModifier(ATTACKING_DMG_BOOST_ID, "Damage speed boost", 40.0D, EntityAttributeModifier.Operation.ADDITION);
     }
 
     public class SummonFallenCorpsesGoal extends Goal {
         protected final LichEntity lich;
         private final int FALL_HEIGHT = 15;
         private final int SQUARE_SIZE = 20;
-        private final int CORPSE_SPAWN_RARITY = 3;
         private final int CORPSE_SPAWN_RARITY_PLAYER = 9;
         private BlockPos pos;
         private List<PlayerEntity> list;
@@ -1042,7 +1082,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         @Override
         public boolean canStart() {
             return getCorpseSpellTimer() <= -400 // cooldown
-                    && random.nextInt(50) == 0
+                    && random.nextInt(75) == 0
                     && canSpellCast();
         }
 
@@ -1094,21 +1134,20 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
             ServerWorld serverWorld = (ServerWorld) LichEntity.this.world;
 
-            if (random.nextInt(CORPSE_SPAWN_RARITY) == 0) {
-                FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
-                BlockPos blockPos = positions.get(random.nextInt(positions.size()));
-                corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
-                serverWorld.spawnEntity(corpse);
-            }
+
+            FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
+            BlockPos blockPos = positions.get(random.nextInt(positions.size()));
+            corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
+            serverWorld.spawnEntity(corpse);
 
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
-                FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
+                FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
                 PlayerEntity target = list.get(random.nextInt(list.size()));
                 if (target != null) {
-                    BlockPos blockPos = target.getBlockPos().add(0, FALL_HEIGHT, 0);
-                    corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
-                    serverWorld.spawnEntity(corpse);
+                    BlockPos blockPos2 = target.getBlockPos().add(0, FALL_HEIGHT, 0);
+                    corpse2.setPos((double) blockPos2.getX() + 0.5D, (double) blockPos2.getY() + 0.55D, (double) blockPos2.getZ() + 0.5D);
+                    serverWorld.spawnEntity(corpse2);
                 }
             }
         }
@@ -1225,7 +1264,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         public void tick() {
             if (getHealTimer() > 1) {
                 setAnimationState(ANIMATION_SUMMON);
-                this.mob.heal(0.5F);
+                this.mob.heal(0.35F);
 
                 if (getHealTimer() == 1) {
                     setAnimationState(ANIMATION_IDLE);

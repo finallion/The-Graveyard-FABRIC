@@ -5,6 +5,8 @@ import com.finallion.graveyard.entities.GhoulEntity;
 import com.finallion.graveyard.entities.LichEntity;
 import com.finallion.graveyard.entities.models.BaseGhoulModel;
 import com.finallion.graveyard.entities.models.LichModel;
+import com.finallion.graveyard.entities.renders.features.GhoulEyesFeatureRenderer;
+import com.finallion.graveyard.entities.renders.features.LichEyesFeatureRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -18,6 +20,7 @@ public class LichRenderer extends GeoEntityRenderer<LichEntity> {
     public LichRenderer(EntityRendererFactory.Context context) {
         super(context, new LichModel());
         this.shadowRadius = 1.0F;
+        this.addLayer(new LichEyesFeatureRenderer(this));
     }
 
     @Override

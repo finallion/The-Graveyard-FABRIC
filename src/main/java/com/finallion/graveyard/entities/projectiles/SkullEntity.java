@@ -17,9 +17,11 @@ import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.Packet;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -43,6 +45,11 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     protected float getDrag() {
         return this.isCharged() ? 0.73F : super.getDrag();
+    }
+
+    @Override
+    public float getBrightnessAtEyes() {
+        return 0.0F;
     }
 
     public boolean isOnFire() {
@@ -71,6 +78,12 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
 
         }
+    }
+
+    public void tick() {
+        super.tick();
+        Vec3d vec3d = this.getVelocity();
+        this.getWorld().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + vec3d.x * 0.4D, this.getY() + vec3d.y + 0.5D, this.getZ() + vec3d.z * 0.4D, 0.0D, 0.0D, 0.0D);
     }
 
     protected void onCollision(HitResult hitResult) {
@@ -108,7 +121,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     }
 
     static {
-        CHARGED = DataTracker.registerData(WitherSkullEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        CHARGED = DataTracker.registerData(SkullEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
 }
 
