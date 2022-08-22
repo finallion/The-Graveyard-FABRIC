@@ -701,14 +701,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 world.addParticle(ParticleTypes.SMOKE, (double) mutable.getX() + random.nextDouble(), (double) mutable.getY() + random.nextDouble(), (double) mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
             }
         }
-
-        /*
-        Vec3d rotation = this.getRotationVec(1.0F);
-        if (random.nextInt(8) == 0) {
-            world.addParticle(ParticleTypes.DRIPPING_LAVA, i + 0.45D + rotation.x, j + 3.0D, k + 0.45D + rotation.z, 0.0D, 0.0D, 0.0D);
-        }
-
-         */
     }
 
     public List<PlayerEntity> getPlayersInRange(double range) {
@@ -1092,6 +1084,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             setPhaseInvulTimer(CORPSE_SPELL_DURATION);
             setCorpseSpellTimer(400);
             playCorpseSpellSound();
+            this.lich.teleport(this.lich.homePos.getX(), this.lich.homePos.getY(), this.lich.homePos.getZ());
 
             pos = this.lich.getBlockPos();
             list = getPlayersInRange(35.0D);
@@ -1134,12 +1127,10 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
             ServerWorld serverWorld = (ServerWorld) LichEntity.this.world;
 
-
             FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
             serverWorld.spawnEntity(corpse);
-
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
                 FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
