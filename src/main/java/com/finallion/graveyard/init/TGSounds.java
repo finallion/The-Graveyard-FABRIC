@@ -18,7 +18,6 @@ public class TGSounds {
     public static SoundEvent VIAL_SPLASH = new SoundEvent(VIAL_SPLASH_ID);
 
     public static final Identifier LICH_SPAWN_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.spawn");
-    public static final Identifier LICH_SUMMON_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.summon");
     public static final Identifier LICH_MELEE_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.melee");
     public static final Identifier LICH_PHASE_02_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase_two");
     public static final Identifier LICH_PHASE_03_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.phase_three");
@@ -33,7 +32,6 @@ public class TGSounds {
     public static final Identifier LICH_IDLE_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.idle");
     public static final Identifier LICH_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.lich.hurt");
     public static SoundEvent LICH_SPAWN = new SoundEvent(LICH_SPAWN_ID);
-    public static SoundEvent LICH_SUMMON = new SoundEvent(LICH_SUMMON_ID);
     public static SoundEvent LICH_MELEE = new SoundEvent(LICH_MELEE_ID);
     public static SoundEvent LICH_PHASE_02 = new SoundEvent(LICH_PHASE_02_ID);
     public static SoundEvent LICH_PHASE_03 = new SoundEvent(LICH_PHASE_03_ID);
@@ -54,19 +52,17 @@ public class TGSounds {
         Registry.register(Registry.SOUND_EVENT, BONE_AMBIENT_ID, BONE_AMBIENT);
         Registry.register(Registry.SOUND_EVENT, VIAL_SPLASH_ID, VIAL_SPLASH);
 
-        Registry.register(Registry.SOUND_EVENT, LICH_CORPSE_SPELL_ID, LICH_CORPSE_SPELL); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_DEATH_ID, LICH_DEATH); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_HUNT_ID, LICH_HUNT); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_IDLE_ID, LICH_IDLE); // not ready
-        Registry.register(Registry.SOUND_EVENT, LICH_MELEE_ID, LICH_MELEE); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_03_ID, LICH_PHASE_03); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_03_ATTACK_ID, LICH_PHASE_03_ATTACK); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_02_ID, LICH_PHASE_02); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_SCARE_ID, LICH_SCARE); // not ready
-        Registry.register(Registry.SOUND_EVENT, LICH_SPAWN_ID, LICH_SPAWN); // done
-        Registry.register(Registry.SOUND_EVENT, LICH_HURT_ID, LICH_HURT); // done
-
-        Registry.register(Registry.SOUND_EVENT, LICH_SUMMON_ID, LICH_SUMMON);
+        Registry.register(Registry.SOUND_EVENT, LICH_CORPSE_SPELL_ID, LICH_CORPSE_SPELL);
+        Registry.register(Registry.SOUND_EVENT, LICH_DEATH_ID, LICH_DEATH);
+        Registry.register(Registry.SOUND_EVENT, LICH_HUNT_ID, LICH_HUNT);
+        Registry.register(Registry.SOUND_EVENT, LICH_IDLE_ID, LICH_IDLE);
+        Registry.register(Registry.SOUND_EVENT, LICH_MELEE_ID, LICH_MELEE);
+        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_03_ID, LICH_PHASE_03);
+        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_03_ATTACK_ID, LICH_PHASE_03_ATTACK);
+        Registry.register(Registry.SOUND_EVENT, LICH_PHASE_02_ID, LICH_PHASE_02);
+        Registry.register(Registry.SOUND_EVENT, LICH_SCARE_ID, LICH_SCARE);
+        Registry.register(Registry.SOUND_EVENT, LICH_SPAWN_ID, LICH_SPAWN);
+        Registry.register(Registry.SOUND_EVENT, LICH_HURT_ID, LICH_HURT);
         Registry.register(Registry.SOUND_EVENT, LICH_CAST_SKULL_ID, LICH_CAST_SKULL);
         Registry.register(Registry.SOUND_EVENT, LICH_CAST_LEVITATION_ID, LICH_CAST_LEVITATION);
         Registry.register(Registry.SOUND_EVENT, LICH_CAST_TELEPORT_ID, LICH_CAST_TELEPORT);

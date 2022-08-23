@@ -62,10 +62,12 @@ public class AltarBlock extends Block {
 
     public static BlockPattern getCompletedFramePattern() {
         if (COMPLETED_ALTAR == null) {
-            COMPLETED_ALTAR = BlockPatternBuilder.start().aisle("???y???", "???????", "???????", "???????", "???????", "???????", "???????", "x??x??x")
+            COMPLETED_ALTAR = BlockPatternBuilder.start().aisle("???x???", "???????", "???????", "???????", "???????", "???????", "???????", "a??b??c")
                     .where('?', CachedBlockPosition.matchesBlockState(BlockStatePredicate.ANY))
-                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.MYSTERIOUS_BONE)))
-                    .where('y', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR)))
+                    .where('a', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF).or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF))))
+                    .where('b', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF)))
+                    .where('c', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF).or(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF))))
+                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR)))
                     .build();
         }
 

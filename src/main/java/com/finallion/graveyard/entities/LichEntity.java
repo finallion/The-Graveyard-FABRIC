@@ -128,13 +128,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private int phaseThreeAttackSoundAge = 120;
     private int idleSoundAge = 0;
 
-    // TODO:
-    // add falling parts of skeletons
-    // falling bone particles
-    // make unpushable
-    // teeth only one texture layer
-    // prevent effect from being cleared (with milk)
-    // teleport to altar pos
+    //TODO stop huge amount of dmg
+    //TODO check direction
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -653,7 +648,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.bossBar.removePlayer(player);
     }
 
-    //TODO stop huge amount of dmg
     public boolean damage(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;

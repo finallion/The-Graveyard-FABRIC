@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/lower_bone_staff"
+    },
+    "facing=north": {
+      "model": "graveyard:block/lower_bone_staff"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/lower_bone_staff"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/lower_bone_staff"
+    }
+  }
+}

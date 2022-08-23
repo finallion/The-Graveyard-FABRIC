@@ -82,6 +82,10 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "creeper_skeleton"), new BlockItem(TGBlocks.CREEPER_SKELETON, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_hand"), new BlockItem(TGBlocks.SKELETON_HAND, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), new BlockItem(TGBlocks.WITHER_SKELETON_HAND, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), new BlockItem(TGBlocks.TORSO_PILE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), new BlockItem(TGBlocks.SKULL_ON_PIKE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), new BlockItem(TGBlocks.BONE_REMAINS, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), new BlockItem(TGBlocks.LATERALLY_LYING_SKELETON, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "black_urn"), new BlockItem(TGBlocks.BLACK_URN, new FabricItemSettings().group(TheGraveyard.GROUP)));
@@ -168,7 +172,9 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin_base"), MANGROVE_COFFIN_BASE);
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar"), new BlockItem(TGBlocks.ALTAR, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "mysterious_bone"), new BlockItem(TGBlocks.MYSTERIOUS_BONE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), new BlockItem(TGBlocks.UPPER_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), new BlockItem(TGBlocks.MIDDLE_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), new BlockItem(TGBlocks.LOWER_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "vial_of_blood"), VIAL_OF_BLOOD);
 
         /*

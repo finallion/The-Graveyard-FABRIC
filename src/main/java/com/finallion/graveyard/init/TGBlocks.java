@@ -34,8 +34,6 @@ public class TGBlocks {
     public static final Block TG_ROOTED_DIRT = new TGStoneBlock(() -> Blocks.ROOTED_DIRT, FabricBlockSettings.copyOf(Blocks.ROOTED_DIRT).drops(Blocks.ROOTED_DIRT.getLootTableId()));
     public static final Block TG_PODZOL = new TGStoneBlock(() -> Blocks.PODZOL, FabricBlockSettings.copyOf(Blocks.PODZOL).drops(Blocks.PODZOL.getLootTableId()));
 
-    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE));
-
     public static final Identifier POLISHED_BASALT_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/polished_basalt_side");
     public static final Identifier COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/cobblestone");
     public static final Identifier MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/mossy_cobblestone");
@@ -93,6 +91,10 @@ public class TGBlocks {
     public static final Block CREEPER_SKELETON = new BoneDisplayBlock();
     public static final Block SKELETON_HAND = new BoneDisplayBlock();
     public static final Block WITHER_SKELETON_HAND = new BoneDisplayBlock();
+    public static final Block BONE_REMAINS = new BoneDisplayBlock();
+    public static final Block LATERALLY_LYING_SKELETON = new BoneDisplayBlock();
+    public static final Block SKULL_ON_PIKE = new BoneDisplayBlock();
+    public static final Block TORSO_PILE = new BoneDisplayBlock();
 
     public static final Block BLACK_URN = new UrnBlock();
     public static final Block WHITE_URN = new UrnBlock();
@@ -151,8 +153,11 @@ public class TGBlocks {
     public static final Block MOSSY_STONE_BRICKS_GRAVESTONE = new GravestoneBlock(MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE);
     public static final Block BRICKS_GRAVESTONE = new GravestoneBlock(BRICKS_GRAVESTONE_TEXTURE);
 
-    public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE));
-    public static final Block MYSTERIOUS_BONE = new MysteriousBoneBlock(FabricBlockSettings.of(Material.STONE));
+    public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
+    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
+    public static final Block LOWER_BONE_STAFF = new OminousBoneStaffFragment();
+    public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
+    public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
 
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -194,6 +199,10 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lying_wither_skeleton"), LYING_WITHER_SKELETON);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), WITHER_SKELETON_HAND);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "creeper_skeleton"), CREEPER_SKELETON);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), BONE_REMAINS);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), LATERALLY_LYING_SKELETON);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), SKULL_ON_PIKE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), TORSO_PILE);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brown_urn"), BROWN_URN);
@@ -260,7 +269,9 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mysterious_bone"), MYSTERIOUS_BONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), LOWER_BONE_STAFF);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);
 
 
         coffins.add(OAK_COFFIN);

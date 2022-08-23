@@ -104,7 +104,9 @@
   "block.graveyard.crimson_coffin": "Szkarłatna trumna",
 
   "item.graveyard.vial_of_blood": "Vial of Blood",
-  "item.graveyard.mysterious_bone": "Ominous Bone Fragment",
+  "block.graveyard.lower_bone_staff": "Ominous Bone Staff Fragment",
+  "block.graveyard.middle_bone_staff": "Ominous Bone Staff Fragment",
+  "block.graveyard.upper_bone_staff": "Ominous Bone Staff Fragment",
   "item.graveyard.altar": "Altar",
   "item.graveyard.altar_side": "Altar Decoration",
 

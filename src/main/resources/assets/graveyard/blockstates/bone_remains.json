@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/bone_remains"
+    },
+    "facing=north": {
+      "model": "graveyard:block/bone_remains"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:block/bone_remains"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:block/bone_remains"
+    }
+  }
+}
