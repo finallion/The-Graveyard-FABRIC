@@ -24,15 +24,12 @@ public class MathUtil {
 
     public static <T extends ParticleEffect> void createParticleCircle(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, Random random, float thickness) {
         int surfaceArea = MathHelper.ceil(Math.PI * radius * radius); // circle surface area
-        for (int j = 0; j < surfaceArea; ++j) {
-            float h = random.nextFloat() * 6.2831855F; // two pi const (one period of sin and cos), returns value 0 to two pi
-            float valueRange = MathHelper.sqrt(random.nextFloat()) * radius; // returns value 0 to radius
-            double xCoord = x + (double) (MathHelper.cos(h) * valueRange);
-            double zCoord = z + (double) (MathHelper.sin(h) * valueRange);
-
-            if (Math.abs(MathHelper.cos(h) * valueRange) + Math.abs(MathHelper.sin(h) * valueRange) >= radius - thickness) {
-                world.addParticle(type, xCoord, y, zCoord, velocityX, velocityY, velocityZ);
-            }
+        for (int i = 0; i < surfaceArea; ++i) {
+            float h = random.nextFloat() * 6.2831855F;
+            double circleThickness = radius - thickness + (radius - (radius - thickness)) * random.nextDouble(); // random value between radius and radius-thickness
+            double xCoord = x + MathHelper.sin(h) * circleThickness;
+            double zCoord = z + MathHelper.cos(h) * circleThickness;
+            world.addParticle(type, xCoord, y + 0.5, zCoord, velocityX, velocityY, velocityZ);
         }
     }
 

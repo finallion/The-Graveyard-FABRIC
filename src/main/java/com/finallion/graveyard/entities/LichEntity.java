@@ -315,7 +315,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         if (getInvulnerableTimer() > 80 && getPhase() == 1) {
-            MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 0.5F);
+            MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 1.0F);
         }
 
         if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
