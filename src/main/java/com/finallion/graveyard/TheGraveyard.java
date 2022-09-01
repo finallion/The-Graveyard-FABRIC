@@ -7,22 +7,32 @@ import com.finallion.graveyard.init.*;
 
 import com.finallion.graveyard.util.BiomeModification;;
 import com.finallion.graveyard.util.MobSpawningRules;
+import com.finallion.graveyard.util.TGCommands;
 import com.finallion.graveyard.util.TGTags;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+
+import static net.minecraft.server.command.CommandManager.*;
 
 public class TheGraveyard implements ModInitializer {
     public static final String MOD_ID = "graveyard";
@@ -69,6 +79,12 @@ public class TheGraveyard implements ModInitializer {
         FabricDefaultAttributeRegistry.register(TGEntities.WRAITH, WraithEntity.createWraithAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.NIGHTMARE, NightmareEntity.createNightmareAttributes());
 
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("horde").requires((source) -> {
+            return source.hasPermissionLevel(3);
+        }).then(CommandManager.literal("trigger").executes((context) -> {
+            return TGCommands.executeSpawn((ServerCommandSource) context.getSource());
+        }))));
     }
 
     public static ItemGroup GROUP = FabricItemGroupBuilder.create(

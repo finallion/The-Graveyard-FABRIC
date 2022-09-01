@@ -35,7 +35,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(2, new PatrolApproachGoal(this, 10.0F));
-        this.goalSelector.add(4, new HordeGraveyardEntity.PatrolGoal(this, 1.1D, 1.0D));
+        this.goalSelector.add(4, new HordeGraveyardEntity.PatrolGoal<>(this, 1.0D, 0.9D));
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {

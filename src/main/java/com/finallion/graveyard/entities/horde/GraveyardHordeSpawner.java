@@ -9,9 +9,11 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.tag.FluidTags;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -99,7 +101,7 @@ public class GraveyardHordeSpawner implements Spawner {
         }
     }
 
-    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random, boolean captain, boolean illagerSpawn) {
+    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain, boolean illagerSpawn) {
         BlockState blockState = world.getBlockState(pos);
         BlockState downState = world.getBlockState(pos.down());
         if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT)) {
@@ -130,6 +132,7 @@ public class GraveyardHordeSpawner implements Spawner {
                 if (captain) {
                     hordeEntity.setPatrolLeader(true);
                     hordeEntity.setRandomPatrolTarget();
+                    world.getServer().getPlayerManager().broadcast(Text.literal("A large Graveyard horde of undead appeared at " + pos.getX() + " " + pos.getY() + " " + pos.getZ() + "."), false);
                 }
 
                 hordeEntity.setPosition((double)pos.getX(), (double)pos.getY(), (double)pos.getZ());
