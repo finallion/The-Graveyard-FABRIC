@@ -2,7 +2,6 @@ package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.structureKeys.TGStructureTypeKeys;
-import com.finallion.graveyard.util.TGTags;
 import com.finallion.graveyard.world.structures.*;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.entity.SpawnGroup;
@@ -18,13 +17,11 @@ import net.minecraft.world.gen.StructureTerrainAdaptation;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.heightprovider.ConstantHeightProvider;
 import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
 import net.minecraft.world.gen.structure.Structure.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class TGConfiguredStructureFeatures {
     public static List<Structure> structures = new ArrayList<>();
@@ -36,7 +33,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("haunted_house").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("haunted_house").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("haunted_house").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("haunted_house").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("haunted_house").biomeBlacklist,
                     "haunted_house"
             )
     );
@@ -48,7 +45,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("large_graveyard").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("large_graveyard").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("large_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").biomeBlacklist,
                     "large_graveyard"
             )
     );
@@ -60,7 +57,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("altar").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("altar").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("altar").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("altar").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("altar").biomeBlacklist,
                     "altar"
             )
     );
@@ -72,7 +69,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("crypt").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("crypt").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("crypt").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("crypt").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("crypt").biomeBlacklist,
                     "crypt"
             )
     );
@@ -84,7 +81,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("giant_mushroom").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("giant_mushroom").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("giant_mushroom").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").biomeBlacklist,
                     "giant_mushroom"
             )
     );
@@ -96,7 +93,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("medium_graveyard").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("medium_graveyard").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("medium_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").biomeBlacklist,
                     "medium_graveyard"
             )
     );
@@ -108,7 +105,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_graveyard").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_graveyard").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").biomeBlacklist,
                     "small_graveyard"
             )
     );
@@ -120,7 +117,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").biomeBlacklist,
                     "small_desert_graveyard"
             )
     );
@@ -132,7 +129,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_grave").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_grave").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_grave").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_grave").biomeBlacklist,
                     "small_grave"
             )
     );
@@ -144,7 +141,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").biomeBlacklist,
                     "small_savanna_grave"
             )
     );
@@ -156,7 +153,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").biomeBlacklist,
                     "small_mountain_grave"
             )
     );
@@ -169,7 +166,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("small_desert_grave").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("small_desert_grave").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("small_desert_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").biomeBlacklist,
                     "small_desert_grave"
             )
     );
@@ -181,7 +178,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("memorial_tree").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("memorial_tree").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("memorial_tree").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").biomeBlacklist,
                     "memorial_tree"
             )
     );
@@ -193,7 +190,7 @@ public class TGConfiguredStructureFeatures {
                     TheGraveyard.config.structureConfigEntries.get("mushroom_grave").terrainCheckRadius,
                     TheGraveyard.config.structureConfigEntries.get("mushroom_grave").maxTerrainHeightDifference,
                     TheGraveyard.config.structureConfigEntries.get("mushroom_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").modIdWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").biomeBlacklist,
                     "mushroom_grave"
             )
     );

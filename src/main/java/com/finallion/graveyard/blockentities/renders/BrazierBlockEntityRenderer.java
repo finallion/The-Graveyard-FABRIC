@@ -16,7 +16,12 @@ public class BrazierBlockEntityRenderer extends GeoBlockRenderer<BrazierBlockEnt
     }
 
     @Override
+    public int getRenderDistance() {
+        return 32;
+    }
+
+    @Override
     public RenderLayer getRenderType(BrazierBlockEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
-        return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
+        return RenderLayer.getEntityCutout(getTextureResource(animatable));
     }
 }

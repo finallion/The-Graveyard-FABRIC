@@ -6,8 +6,6 @@ import com.finallion.graveyard.init.TGStructureType;
 import com.finallion.graveyard.util.BiomeSelectionUtil;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.api.biome.v1.BiomeModification;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.minecraft.entity.EntityType;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
@@ -29,7 +27,6 @@ import net.minecraft.world.gen.heightprovider.HeightProvider;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.structure.Structure.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,7 +175,7 @@ public class TGJigsawStructure extends Structure {
                 BiomeCoords.fromBlock(blockpos.getY()),
                 BiomeCoords.fromBlock(blockpos.getZ()), context.noiseConfig().getMultiNoiseSampler());
 
-        if (BiomeSelectionUtil.parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).biomeWhitelist, TheGraveyard.config.structureConfigEntries.get(name).modIdWhitelist, biome)) {
+        if (BiomeSelectionUtil.parseBiomes(TheGraveyard.config.structureConfigEntries.get(name).biomeWhitelist, TheGraveyard.config.structureConfigEntries.get(name).biomeBlacklist, biome)) {
             return true;
         }
 
