@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Random;
 
 public class SkeletonCreeper extends CreeperEntity {
-    private static final TargetPredicate CLOSE_PLAYER_PREDICATE;
     private PlayerEntity closestPlayer;
     private final double explosionRadius = 3.5D;
 
@@ -43,7 +42,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
 
     public boolean canStart() {
-        this.closestPlayer = this.world.getClosestPlayer(SkeletonCreeper.CLOSE_PLAYER_PREDICATE, this);
+        this.closestPlayer = this.world.getClosestPlayer(this, 8.0D);
         return this.closestPlayer != null;
     }
 
@@ -111,10 +110,6 @@ public class SkeletonCreeper extends CreeperEntity {
 
         }
         super.tickMovement();
-    }
-
-    static {
-        CLOSE_PLAYER_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(8);
     }
 
 }
