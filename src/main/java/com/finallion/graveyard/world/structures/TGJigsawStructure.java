@@ -59,7 +59,7 @@ public class TGJigsawStructure extends Structure {
                     Codec.INT.fieldOf("terrain_check_size").forGetter(structure -> structure.terrainCheckSize),
                     Codec.INT.fieldOf("max_height_difference").forGetter(structure -> structure.maxHeightDifference),
                     Codec.STRING.listOf().fieldOf("whitelist").orElse(new ArrayList<>()).forGetter(config -> config.whitelist),
-                    Codec.STRING.listOf().fieldOf("mod_whitelist").orElse(new ArrayList<>()).forGetter(config -> config.modWhitelist),
+                    Codec.STRING.listOf().fieldOf("blacklist").orElse(new ArrayList<>()).forGetter(config -> config.blacklist),
                     Codec.STRING.fieldOf("structure_name").forGetter(config -> config.structureName))
                     .apply(instance, TGJigsawStructure::new));
 
@@ -74,11 +74,11 @@ public class TGJigsawStructure extends Structure {
     public final int terrainCheckSize;
     public final int maxHeightDifference;
     public final List<String> whitelist;
-    public final List<String> modWhitelist;
+    public final List<String> blacklist;
     public final String structureName;
     protected final Config config;
 
-    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, Optional<Identifier> startJigsawName, int size, HeightProvider startHeight, Boolean useExpansionHack, Optional<Heightmap.Type> projectStartToHeightmap, int maxDistanceFromCenter, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> modWhitelist, String structureName) {
+    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, Optional<Identifier> startJigsawName, int size, HeightProvider startHeight, Boolean useExpansionHack, Optional<Heightmap.Type> projectStartToHeightmap, int maxDistanceFromCenter, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> blacklist, String structureName) {
         super(config);
         this.config = config;
         this.startPool = startPool;
@@ -91,16 +91,16 @@ public class TGJigsawStructure extends Structure {
         this.maxHeightDifference = maxHeightDifference;
         this.terrainCheckSize = terrainCheckSize;
         this.whitelist = whitelist;
-        this.modWhitelist = modWhitelist;
+        this.blacklist = blacklist;
         this.structureName = structureName;
     }
 
-    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, int size, HeightProvider startHeight, boolean useExpansionHack, Heightmap.Type projectStartToHeightmap, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> modWhitelist, String structureName) {
-        this(config, startPool, Optional.empty(), size, startHeight, useExpansionHack, Optional.of(projectStartToHeightmap), 80, terrainCheckSize, maxHeightDifference, whitelist, modWhitelist, structureName);
+    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, int size, HeightProvider startHeight, boolean useExpansionHack, Heightmap.Type projectStartToHeightmap, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> blacklist, String structureName) {
+        this(config, startPool, Optional.empty(), size, startHeight, useExpansionHack, Optional.of(projectStartToHeightmap), 80, terrainCheckSize, maxHeightDifference, whitelist, blacklist, structureName);
     }
 
-    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, int size, HeightProvider startHeight, boolean useExpansionHack, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> modWhitelist, String structureName) {
-        this(config, startPool, Optional.empty(), size, startHeight, useExpansionHack, Optional.empty(), 80, terrainCheckSize, maxHeightDifference, whitelist, modWhitelist, structureName);
+    public TGJigsawStructure(Config config, RegistryEntry<StructurePool> startPool, int size, HeightProvider startHeight, boolean useExpansionHack, int terrainCheckSize, int maxHeightDifference, List<String> whitelist, List<String> blacklist, String structureName) {
+        this(config, startPool, Optional.empty(), size, startHeight, useExpansionHack, Optional.empty(), 80, terrainCheckSize, maxHeightDifference, whitelist, blacklist, structureName);
     }
 
 

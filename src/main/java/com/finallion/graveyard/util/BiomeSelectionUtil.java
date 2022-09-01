@@ -16,24 +16,23 @@ import java.util.List;
 public class BiomeSelectionUtil {
 
     // structures
-    public static boolean parseBiomes(List<String> biomeWhitelist, List<String> modIdWhitelist, RegistryEntry<Biome> biome) {
-        if (biomeWhitelist == null || modIdWhitelist == null) {
+    public static boolean parseBiomes(List<String> biomeWhitelist, List<String> biomeBlacklist, RegistryEntry<Biome> biome) {
+        if (biomeWhitelist == null || biomeBlacklist == null) {
             TheGraveyard.LOGGER.error("The Graveyard config file (\"the-graveyard-config.json5\") isn't up to date. Please delete the file in your .minecraft/config folder and restart the game to create a new config file. If the error keeps showing up, contact the mod developer via Github or Discord (links can be found here: https://www.curseforge.com/minecraft/mc-mods/the-graveyard-fabric)!");
             return false;
         }
 
-        String biomeName = biome.getKey().get().getValue().toString();
-        String modId = biome.getKey().get().getValue().getNamespace();
+        String biomeName = biome.getKey().orElseThrow().getValue().toString();
 
-        // mod is whitelisted, weights higher than biome whitelist
-        //if (modIdWhitelist.contains("#" + modId)) {
-        //    return true;
-        //}
+        if (biomeBlacklist.contains(biomeName)) {
+            return false;
+        }
 
         for (String biomeInList : biomeWhitelist) {
             // tag whitelist
-            if (biomeInList.startsWith("c:")) {
-                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier("c", biomeInList.substring(2)));
+            if (biomeInList.startsWith("#")) {
+                String[] parts = biomeInList.substring(1).split(":");
+                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier(parts[0], parts[1]));
                 if (BuiltinRegistries.BIOME.getOrCreateEntryList(tag).contains(biome)) {
                     return true;
                 }
@@ -44,39 +43,5 @@ public class BiomeSelectionUtil {
 
         return false;
     }
-
-    // mobs
-    public static boolean parseBiomes(List<String> biomeWhitelist, List<String> biomeBlacklist, List<String> modIdWhitelist, RegistryEntry<Biome> biome) {
-        if (biomeWhitelist == null || modIdWhitelist == null || biomeBlacklist == null) {
-            TheGraveyard.LOGGER.error("The Graveyard config file (\"the-graveyard-config.json5\") isn't up to date. Please delete the file in your .minecraft/config folder and restart the game to create a new config file. If the error keeps showing up, contact the mod developer via Github or Discord (links can be found here: https://www.curseforge.com/minecraft/mc-mods/the-graveyard-fabric)!");
-            return false;
-        }
-
-        String biomeName = biome.getKey().get().getValue().toString();
-        String modId = biome.getKey().get().getValue().getNamespace();
-
-        // mod is whitelisted and not on the blacklist
-        //if (modIdWhitelist.contains("#" + modId) && !biomeBlacklist.contains(biomeName)) {
-        //    return true;
-        //}
-
-        for (String biomeInList : biomeWhitelist) {
-            // tag whitelist
-            if (biomeInList.startsWith("c:")) {
-                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier("c", biomeInList.substring(2)));
-                if (BuiltinRegistries.BIOME.getEntryList(tag).orElseThrow().contains(biome) && !biomeBlacklist.contains(biomeName)) {
-                    return true;
-                }
-            }
-        }
-
-        // biome is whitelisted and not on the blacklist
-        if (biomeWhitelist.contains(biomeName) && !biomeBlacklist.contains(biomeName)) {
-            return true;
-        }
-
-        return false;
-    }
-
 }
 

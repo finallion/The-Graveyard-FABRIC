@@ -17,7 +17,7 @@ public class MobSpawningRules {
 
     public static void addSpawnEntries() {
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                 .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("ghoul").whitelist, TheGraveyard.config.mobConfigEntries.get("ghoul").blacklist, TheGraveyard.config.mobConfigEntries.get("ghoul").modWhitelist, context.getBiomeRegistryEntry()))
+                 .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("ghoul").whitelist, TheGraveyard.config.mobConfigEntries.get("ghoul").blacklist, context.getBiomeRegistryEntry()))
                  .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("ghoul").enabled)),
                 SpawnGroup.MONSTER, TGEntities.GHOUL,
                 TheGraveyard.config.mobConfigEntries.get("ghoul").weight,
@@ -25,7 +25,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("ghoul").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("acolyte").whitelist, TheGraveyard.config.mobConfigEntries.get("acolyte").blacklist, TheGraveyard.config.mobConfigEntries.get("acolyte").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("acolyte").whitelist, TheGraveyard.config.mobConfigEntries.get("acolyte").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("acolyte").enabled)),
                 SpawnGroup.MONSTER, TGEntities.ACOLYTE,
                 TheGraveyard.config.mobConfigEntries.get("acolyte").weight,
@@ -33,7 +33,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("acolyte").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("revenant").whitelist, TheGraveyard.config.mobConfigEntries.get("revenant").blacklist, TheGraveyard.config.mobConfigEntries.get("revenant").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("revenant").whitelist, TheGraveyard.config.mobConfigEntries.get("revenant").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("revenant").enabled)),
                 SpawnGroup.MONSTER, TGEntities.REVENANT,
                 TheGraveyard.config.mobConfigEntries.get("revenant").weight,
@@ -41,7 +41,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("revenant").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("reaper").whitelist, TheGraveyard.config.mobConfigEntries.get("reaper").blacklist, TheGraveyard.config.mobConfigEntries.get("reaper").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("reaper").whitelist, TheGraveyard.config.mobConfigEntries.get("reaper").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("reaper").enabled)),
                 SpawnGroup.MONSTER, TGEntities.REAPER,
                 TheGraveyard.config.mobConfigEntries.get("reaper").weight,
@@ -49,7 +49,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("reaper").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("nightmare").whitelist, TheGraveyard.config.mobConfigEntries.get("nightmare").blacklist, TheGraveyard.config.mobConfigEntries.get("nightmare").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("nightmare").whitelist, TheGraveyard.config.mobConfigEntries.get("nightmare").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("nightmare").enabled)),
                 SpawnGroup.MONSTER, TGEntities.NIGHTMARE,
                 TheGraveyard.config.mobConfigEntries.get("nightmare").weight,
@@ -57,7 +57,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("nightmare").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").whitelist, TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").blacklist, TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").whitelist, TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").enabled)),
                 SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER,
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").weight,
@@ -65,7 +65,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("skeleton_creeper").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("wraith").whitelist, TheGraveyard.config.mobConfigEntries.get("wraith").blacklist, TheGraveyard.config.mobConfigEntries.get("wraith").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("wraith").whitelist, TheGraveyard.config.mobConfigEntries.get("wraith").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("wraith").enabled)),
                 SpawnGroup.MONSTER, TGEntities.WRAITH,
                 TheGraveyard.config.mobConfigEntries.get("wraith").weight,
@@ -73,7 +73,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("wraith").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").blacklist, TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").enabled)),
                 SpawnGroup.MONSTER, TGEntities.CORRUPTED_PILLAGER,
                 TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").weight,
@@ -81,7 +81,7 @@ public class MobSpawningRules {
                 TheGraveyard.config.mobConfigEntries.get("corrupted_pillager").maxGroup);
 
         BiomeModifications.addSpawn(BiomeSelectors.all()
-                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").blacklist, TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").modWhitelist, context.getBiomeRegistryEntry()))
+                        .and(context -> BiomeSelectionUtil.parseBiomes(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").whitelist, TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").blacklist, context.getBiomeRegistryEntry()))
                         .and(BiomeUtils.booleanToPredicate(TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").enabled)),
                 SpawnGroup.MONSTER, TGEntities.CORRUPTED_VINDICATOR,
                 TheGraveyard.config.mobConfigEntries.get("corrupted_vindicator").weight,

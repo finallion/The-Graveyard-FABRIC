@@ -25,10 +25,16 @@ public class GraveyardConfig implements Config {
              Configure separation (Minimum distance between two structures of this type in chunks. Must be less than spacing).
              Configure spacing (Average distance between two structure placement attempts of this type in chunks).
              Configure whitelist: 
-                 1) use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
-                 A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
-                 2) use "c:biomeTag" to whitelist the structure for any biome in this tag (c + ":" + tag name). 
-                 A list of all valid tags can be found here: https://github.com/FabricMC/fabric/tree/1.19.1/fabric-convention-tags-v1/src/generated/resources/data/c/tags/worldgen/biome
+                 1) Whitelist a single biome: use "modId:biomeName" to whitelist a biome (mod identifier + ":" + biome name).
+                    A full list of all the vanilla biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
+                    Common mod identifier are: graveyard_biomes, terralith, byg ...
+                 2) Whitelist a biome category: use "#c:biomeTag" to whitelist the structure for any biome in this fabric tag (#c + ":" + tag name). 
+                    A list of all valid tags can be found here: https://github.com/FabricMC/fabric/tree/1.19.1/fabric-convention-tags-v1/src/generated/resources/data/c/tags/worldgen/biome.
+                 3) Whitelist a biome category: use "#minecraft:biomeTag" to whitelist the structure for any biome in this vanilla tag (#minecraft + ":" + tag name). 
+                    A list of all valid tags can be found here: https://minecraft.fandom.com/wiki/Tag#Biomes.
+             Configure blacklist:
+                 Blacklist a single biome: use "modId:biome" to blacklist biomes (mod identifier + ":" + biome name).
+                 A full list of all the vanilla biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
              Configure terrain check radius: set how far from structure placement a block is checked in all cardinal directions. Only necessary for the large graveyard.
              Configure max terrain height: set how far apart the different heights from the terrain check can be. Increase this value to allow more structures to spawn, but to also increase chance of weird placement.
              Configure if graveyard mobs can spawn naturally in structures.
@@ -37,11 +43,16 @@ public class GraveyardConfig implements Config {
              Configure spawning weight and group size of the spawn.
              Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect.
              Configure whitelist: 
-                 1) use "minecraft:biome" to whitelist biomes (mod identifier + ":" + biome name).
-                 A full list of all the biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
-                 2) use "c:biomeTag" to whitelist the structure for any biome in this tag (c + ":" + tag name). 
-                 A list of all valid tags can be found here: https://github.com/FabricMC/fabric/tree/1.19.1/fabric-convention-tags-v1/src/generated/resources/data/c/tags/worldgen/biome
-             Configure blacklist: use "minecraft:biome" to blacklist biomes (mod identifier + ":" + biome name).
+                 1) Whitelist a single biome: use "modId:biomeName" to whitelist a biome (mod identifier + ":" + biome name).
+                    A full list of all the vanilla biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
+                    Common mod identifier are: graveyard_biomes, terralith, byg ...
+                 2) Whitelist a biome category: use "#c:biomeTag" to whitelist the mob for any biome in this fabric tag (#c + ":" + tag name). 
+                    A list of all valid tags can be found here: https://github.com/FabricMC/fabric/tree/1.19.1/fabric-convention-tags-v1/src/generated/resources/data/c/tags/worldgen/biome.
+                 3) Whitelist a biome category: use "#minecraft:biomeTag" to whitelist the mob for any biome in this vanilla tag (#minecraft + ":" + tag name). 
+                    A list of all valid tags can be found here: https://minecraft.fandom.com/wiki/Tag#Biomes.
+             Configure blacklist:
+                 Blacklist a single biome: use "modId:biome" to blacklist biomes (mod identifier + ":" + biome name).
+                 A full list of all the vanilla biomes can be found here https:minecraft.fandom.com/wiki/Biome#Biome_IDs.
 
              Additional:
              Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
@@ -60,7 +71,7 @@ public class GraveyardConfig implements Config {
 
     @Override
     public String getName() {
-        return "the-graveyard-1.19-config";
+        return "the-graveyard-2.0-config";
     }
 
     @Override
@@ -129,7 +140,7 @@ public class GraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("haunted_house", StructureConfigEntry.of(20, 18, 451235912,
                 Arrays.asList(
                         "minecraft:dark_forest",
-                        "c:swamp",
+                        "#c:swamp",
                         "minecraft:old_growth_pine_taiga",
                         "minecraft:old_growth_spruce_taiga",
                         "terralith:moonlight_valley",
@@ -141,7 +152,7 @@ public class GraveyardConfig implements Config {
                 Arrays.asList(
                         "minecraft:taiga",
                         "minecraft:snowy_taiga",
-                        "c:plains",
+                        "#c:plains",
                         "terralith:forested_highlands",
                         "terralith:lush_valley",
                         "terralith:shield",
@@ -158,12 +169,13 @@ public class GraveyardConfig implements Config {
 
         structureConfigEntries.putIfAbsent("crypt", StructureConfigEntry.of(24, 22, 893183913,
                 Arrays.asList(
-                        "c:caves"),
-                Collections.emptyList(), 1,3,false));
+                        "#c:caves"),
+                Arrays.asList(
+                        "minecraft:deep_dark"), 1,3,false));
 
         structureConfigEntries.putIfAbsent("giant_mushroom", StructureConfigEntry.of(20, 18, 365012356,
                 Arrays.asList(
-                        "minecraft:mushroom_fields"),
+                        "#c:mushroom"),
                 Collections.emptyList(), 10,3,false));
 
         structureConfigEntries.putIfAbsent("medium_graveyard", StructureConfigEntry.of(18, 16, 1690192399,
@@ -186,19 +198,19 @@ public class GraveyardConfig implements Config {
 
         structureConfigEntries.putIfAbsent("mushroom_grave", StructureConfigEntry.of(24, 18, 379123039,
                 Arrays.asList(
-                        "c:mushroom",
-                        "c:jungle",
-                        "c:swamp"),
+                        "#c:mushroom",
+                        "#c:jungle",
+                        "#c:swamp"),
                 Collections.emptyList(), 7,3,false));
 
         structureConfigEntries.putIfAbsent("small_desert_graveyard", StructureConfigEntry.of(32, 28, 598017285,
                 Arrays.asList(
-                        "c:desert"),
+                        "#c:desert"),
                 Collections.emptyList(), 20,3,false));
 
         structureConfigEntries.putIfAbsent("small_graveyard", StructureConfigEntry.of(20, 18, 598017285,
                 Arrays.asList(
-                        "c:plains",
+                        "#c:plains",
                         "minecraft:meadow",
                         "terralith:blooming_plateau",
                         "terralith:blooming_valley"),
@@ -206,21 +218,21 @@ public class GraveyardConfig implements Config {
 
         structureConfigEntries.putIfAbsent("small_desert_grave", StructureConfigEntry.of(20, 16, 681236914,
                 Arrays.asList(
-                        "c:desert"),
+                        "#c:desert"),
                 Collections.emptyList(), 4,3,false));
 
         structureConfigEntries.putIfAbsent("small_grave", StructureConfigEntry.of(12, 8, 240451934,
                 Arrays.asList(
                         "minecraft:forest",
-                        "c:plains",
-                        "c:forest",
+                        "#c:plains",
+                        "#c:forest",
                         "terralith:blooming_plateau",
                         "terralith:blooming_valley"),
                 Collections.emptyList(), 4,3,false));
 
         structureConfigEntries.putIfAbsent("small_mountain_grave", StructureConfigEntry.of(12, 8, 725689810,
                 Arrays.asList(
-                        "c:mountain",
+                        "#c:mountain",
                         "terralith:painted_mountains",
                         "terralith:rocky_mountains",
                         "terralith:haze_mountain",
@@ -229,59 +241,33 @@ public class GraveyardConfig implements Config {
 
         structureConfigEntries.putIfAbsent("small_savanna_grave", StructureConfigEntry.of(12, 8, 709787761,
                 Arrays.asList(
-                        "c:badlands",
-                        "c:savanna",
+                        "#c:badlands",
+                        "#c:savanna",
                         "terralith:savanna_badlands",
                         "terralith:savanna_slopes",
                         "terralith:fractured_savanna"),
                 Collections.emptyList(), 4,3,false));
 
 
-
-
-        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false,0, 2, 3, false, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,5, 2, 3, true, false, Arrays.asList("graveyard_biomes:eroded_haunted_forest"), Collections.emptyList(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
-        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+        mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
         Config.super.save();
     }
 
     private List<String> getMobBlacklist() {
         Set<RegistryKey<Biome>> biomes = new HashSet<>();
-        //biomes.add(BiomeKeys.END_BARRENS);
-       // biomes.add(BiomeKeys.SMALL_END_ISLANDS);
-        //biomes.add(BiomeKeys.END_MIDLANDS);
-        //biomes.add(BiomeKeys.END_HIGHLANDS);
-        //biomes.add(BiomeKeys.THE_END);
-        //biomes.add(BiomeKeys.BASALT_DELTAS);
-        //biomes.add(BiomeKeys.CRIMSON_FOREST);
-        //biomes.add(BiomeKeys.WARPED_FOREST);
-        //biomes.add(BiomeKeys.NETHER_WASTES);
         biomes.add(BiomeKeys.DEEP_DARK);
         biomes.add(BiomeKeys.MUSHROOM_FIELDS);
-        biomes.add(BiomeKeys.DEEP_FROZEN_OCEAN);
-        biomes.add(BiomeKeys.FROZEN_OCEAN);
-        biomes.add(BiomeKeys.DEEP_COLD_OCEAN);
-        biomes.add(BiomeKeys.COLD_OCEAN);
-        biomes.add(BiomeKeys.DEEP_OCEAN);
-        biomes.add(BiomeKeys.OCEAN);
-        biomes.add(BiomeKeys.DEEP_LUKEWARM_OCEAN);
-        biomes.add(BiomeKeys.LUKEWARM_OCEAN);
-        biomes.add(BiomeKeys.WARM_OCEAN);
-        biomes.add(BiomeKeys.FROZEN_RIVER);
-        biomes.add(BiomeKeys.RIVER);
         biomes.add(BiomeKeys.FLOWER_FOREST);
-        //biomes.add(BiomeKeys.THE_VOID);
-        //biomes.add(BiomeKeys.SOUL_SAND_VALLEY);
-
 
         return new ArrayList<>(biomes.stream().map(value -> value.getValue().toString()).toList());
-
     }
 
 }

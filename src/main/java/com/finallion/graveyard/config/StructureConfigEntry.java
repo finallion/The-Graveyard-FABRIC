@@ -29,8 +29,8 @@ public class StructureConfigEntry {
         this.canSpawnGraveyardMobs = canSpawnGraveyardMobs;
     }
 
-    public static StructureConfigEntry of(int spacing, int separation, int salt, List<String> whitelist, List<String> biomeBlacklist, int terrainCheckRadius, int maxTerrainHeightDifference, boolean canSpawnGraveyardMobs) {
-        return new StructureConfigEntry(spacing, separation, salt, whitelist, biomeBlacklist, terrainCheckRadius, maxTerrainHeightDifference, canSpawnGraveyardMobs);
+    public static StructureConfigEntry of(int spacing, int separation, int salt, List<String> whitelist, List<String> blacklist, int terrainCheckRadius, int maxTerrainHeightDifference, boolean canSpawnGraveyardMobs) {
+        return new StructureConfigEntry(spacing, separation, salt, whitelist, blacklist, terrainCheckRadius, maxTerrainHeightDifference, canSpawnGraveyardMobs);
     }
 
 }
