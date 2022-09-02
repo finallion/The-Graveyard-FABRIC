@@ -1,6 +1,7 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.item.BoneStaffItem;
 import com.finallion.graveyard.item.DaggerItem;
 import com.finallion.graveyard.item.SarcophagusItem;
 import com.finallion.graveyard.item.VialOfBlood;
@@ -148,7 +149,7 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), new SpawnEggItem(TGEntities.LICH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
-
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_staff"), new BoneStaffItem());
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_lid"), SARCOPHAGUS_LID);
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_base"), SARCOPHAGUS_BASE);

@@ -1,11 +1,14 @@
 package com.finallion.graveyard.entities.ai.goals;
 
+import com.finallion.graveyard.entities.GhoulingEntity;
+import com.finallion.graveyard.entities.GraveyardMinionEntity;
 import com.finallion.graveyard.entities.LichEntity;
 import com.finallion.graveyard.init.TGParticles;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
@@ -17,8 +20,8 @@ import java.util.EnumSet;
 
 
 /* MOSTLY COPY OF MELEE_ATTACK_GOAL */
-public class LichMeleeGoal extends Goal {
-    protected final LichEntity mob;
+public class GhoulingMeleeAttackGoal extends Goal {
+    protected final GhoulingEntity mob;
     private final double speed;
     private final boolean pauseWhenMobIdle;
     private Path path;
@@ -31,10 +34,8 @@ public class LichMeleeGoal extends Goal {
     private long lastUpdateTime;
     private final int DAMAGE_START_IN_ANIM = 16;
     private int animationTicker = 40;
-    private int scareSoundAge = 40;
-    boolean canFinishAttack = false;
 
-    public LichMeleeGoal(LichEntity mob, double speed, boolean pauseWhenMobIdle) {
+    public GhoulingMeleeAttackGoal(GhoulingEntity mob, double speed, boolean pauseWhenMobIdle) {
         this.mob = mob;
         this.speed = speed;
         this.pauseWhenMobIdle = pauseWhenMobIdle;
@@ -128,74 +129,32 @@ public class LichMeleeGoal extends Goal {
 
             this.cooldown = Math.max(this.cooldown - 1, 0);
             this.animationTicker--;
-            this.scareSoundAge--;
             this.attack(livingEntity, d);
         }
     }
 
     protected void attack(LivingEntity target, double squaredDistance) {
         double d = this.getSquaredMaxAttackDistance(target);
-
-        int phase = this.mob.getPhase();
-
-        // SOUL BEAM ATTACK
-        if (phase == 1) {
-            if (this.mob.canMeeleAttack()) {
-                if (squaredDistance <= d && this.cooldown <= 0) {
-                    this.resetCooldown(20);
-                    // set timer to start animation, after timer runs out, possibility to set again
-                    if (this.mob.getAttackAnimTimer() == 0) {
-                        this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
-                        animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
-                    }
-
-                    // sound on start anim
-                    if (this.mob.getAttackAnimTimer() == this.mob.ATTACK_ANIMATION_DURATION) {
-                        this.mob.playAttackSound();
-                    }
-
-                    canFinishAttack = true;
-                }
-
-                if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
-                    // warden sonic boom logic
-                    Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
-                    Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
-                    Vec3d vec3d3 = vec3d2.normalize();
-
-                    for (int i = 1; i < MathHelper.floor(vec3d2.length()) + 7; ++i) {
-                        Vec3d vec3d4 = vec3d.add(vec3d3.multiply((double) i));
-                        ((ServerWorld) mob.getWorld()).spawnParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-                    }
-
-                    double e = 2.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    double f = 1.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * f, vec3d3.getZ() * e);
-                    canFinishAttack = false;
-
-                }
-            }
-            // HUNT ATTACK
-        } else if ((phase == 3 && this.mob.canHuntStart()) || phase == 5) {
-            // if lich enters "light-sphere" while player has blindness, play sound
-            if (phase == 3 && squaredDistance <= d + 7.0D && scareSoundAge <= 0) {
-                this.mob.playScareSound();
-                scareSoundAge = 40;
+        if (squaredDistance <= d && this.cooldown <= 0) {
+            this.resetCooldown(20);
+            if (this.mob.getAttackAnimTimer() == 0) {
+                this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
+                animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
             }
 
-            if (squaredDistance <= d && this.cooldown <= 0) {
-                this.resetCooldown(20);
+            // sound on start anim
+            if (this.mob.getAttackAnimTimer() == this.mob.ATTACK_ANIMATION_DURATION) {
+                //this.mob.playAttackSound();
+            }
+
+            if (animationTicker == DAMAGE_START_IN_ANIM) {
                 this.mob.tryAttack(target);
             }
         }
+
     }
 
     protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-        if (this.mob.getPhase() == 1) {
-            return 16.0D;
-        } else if (this.mob.getPhase() == 3) {
-            return (double) (this.mob.getWidth() * 3.0F * this.mob.getWidth() * 3.0F + entity.getWidth());
-        }
         return (double) (this.mob.getWidth() * 2.0F * this.mob.getWidth() * 2.0F + entity.getWidth());
     }
 

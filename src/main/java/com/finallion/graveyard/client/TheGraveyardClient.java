@@ -100,10 +100,11 @@ public class TheGraveyardClient implements ClientModInitializer {
         EntityRendererRegistry.register(TGEntities.LICH, LichRenderer::new);
         EntityRendererRegistry.register(TGEntities.FALLING_CORPSE, FallingCorpseRenderer::new);
         EntityRendererRegistry.register(TGEntities.SKULL, SkullEntityRenderer::new);
+        EntityRendererRegistry.register(TGEntities.GHOULING, GhoulingRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 
-
+        /* CHANGING ITEM TEXTURE */
         ModelPredicateProviderRegistry.register(TGItems.VIAL_OF_BLOOD, new Identifier("charged"), (stack, world, entity, seed) -> {
             if (entity != null && stack.isOf(TGItems.VIAL_OF_BLOOD)) {
                 return VialOfBlood.getBlood(stack);

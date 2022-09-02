@@ -43,12 +43,14 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
+        /* HORDE TICK EVENT */
         if (config.getHorde(new Identifier(MOD_ID, "horde_spawn")).enabled) {
             ServerWorldEvents.LOAD.register(new TGSpawner.WorldLoad());
             ServerLifecycleEvents.SERVER_STOPPED.register(new TGSpawner.ServerStopped());
             ServerTickEvents.END_WORLD_TICK.register(new TGSpawner.OnWorldTick());
         }
 
+        /* GENERAL INIT REGISTRY */
         TGAdvancements.init();
         TGSounds.init();
         TGBlocks.registerBlocks();
@@ -56,17 +58,21 @@ public class TheGraveyard implements ModInitializer {
         TGEntities.registerEntities();
         TGProcessors.registerProcessors();
 
+        /* FEATURE INIT REGISTRY */
         TGStructureType.init();
         TGTags.init();
         TGStructureSets.init();
         TGConfiguredStructureFeatures.init();
 
+        /* BIOME MODIFICATION */
         MobSpawningRules.addSpawnEntries();
 
+        /* COMPAT */
         if (FabricLoader.getInstance().isModLoaded("graveyard_biomes")) {
             BiomeModification.init();
         }
 
+        /* ENTITY ATTRIBUTES */
         FabricDefaultAttributeRegistry.register(TGEntities.LICH, LichEntity.createLichAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.FALLING_CORPSE, FallingCorpse.createFallingCorpseAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.REAPER, ReaperEntity.createReaperAttributes());
@@ -78,8 +84,9 @@ public class TheGraveyard implements ModInitializer {
         FabricDefaultAttributeRegistry.register(TGEntities.REVENANT, RevenantEntity.createRevenantAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.WRAITH, WraithEntity.createWraithAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.NIGHTMARE, NightmareEntity.createNightmareAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.GHOULING, GhoulingEntity.createGhoulingAttributes());
 
-
+        /* COMMANDS */
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("horde").requires((source) -> {
             return source.hasPermissionLevel(3);
         }).then(CommandManager.literal("trigger").executes((context) -> {

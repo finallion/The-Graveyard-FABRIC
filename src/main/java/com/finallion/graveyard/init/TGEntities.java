@@ -93,6 +93,11 @@ public class TGEntities {
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
+    public static final EntityType<GhoulingEntity> GHOULING = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.CREATURE)
+            .entityFactory(GhoulingEntity::new)
+            .dimensions(EntityDimensions.fixed(0.7F, 2.0F))
+            .build();
 
     public static final EntityType<SkullEntity> SKULL = FabricEntityTypeBuilder.<SkullEntity>create(
             SpawnGroup.MISC, SkullEntity::new)
@@ -103,7 +108,6 @@ public class TGEntities {
     private static void register(String name, EntityType<?> type) {
         entities.add(type);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, name), type);
-
     }
 
 
@@ -120,6 +124,7 @@ public class TGEntities {
         register("lich", LICH);
         register("falling_corpse", FALLING_CORPSE);
         register("skull", SKULL);
+        register("ghouling", GHOULING);
     }
 
 
