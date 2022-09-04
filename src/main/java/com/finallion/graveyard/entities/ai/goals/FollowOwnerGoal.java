@@ -82,7 +82,7 @@ public class FollowOwnerGoal extends Goal {
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = this.getTickCount(10);
             if (!this.tameable.isLeashed() && !this.tameable.hasVehicle()) {
-                if (this.tameable.squaredDistanceTo(this.owner) >= 144.0D) {
+                if (this.tameable.squaredDistanceTo(this.owner) >= 288.0D) {
                     this.tryTeleport();
                 } else {
                     this.navigation.startMovingTo(this.owner, this.speed);

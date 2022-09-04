@@ -52,7 +52,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Integer> SPAWN_TIMER;
     private static final TrackedData<Boolean> COFFIN;
-    private static final TrackedData<ItemStack> CARRIED_ITEM;
+    private static final TrackedData<Byte> VARIANT;
     //private static final TrackedData<Boolean> CAN_COLLECT;
 
     private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
@@ -104,7 +104,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
         this.dataTracker.startTracking(COFFIN, false);
         this.dataTracker.startTracking(SPAWN_TIMER, 0);
-        this.dataTracker.startTracking(CARRIED_ITEM, ItemStack.EMPTY);
+        this.dataTracker.startTracking(VARIANT, (byte)0);
         //this.dataTracker.startTracking(CAN_COLLECT, false);
     }
 
@@ -246,7 +246,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
             if (!itemStack.isEmpty()) {
                 if (!this.hasCoffin() && GHOULING_HOLDABLE.contains(itemStack.getItem())) {
                     this.equipStack(EquipmentSlot.OFFHAND, itemStack);
-                    setCarriedItem(itemStack);
                     if (inventory == null) {
                         inventory = new SimpleInventory(54);
                         this.setHasCoffin(true);
@@ -285,13 +284,18 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         this.dataTracker.set(SPAWN_TIMER, ticks);
     }
 
-    public void setCarriedItem(ItemStack stack) {
-        this.dataTracker.set(CARRIED_ITEM, stack);
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return false;
     }
 
-    public ItemStack getCarriedItem() {
-        return this.dataTracker.get(CARRIED_ITEM);
+    public byte getVariant() {
+        return dataTracker.get(VARIANT);
     }
+
+    public void setVariant(byte variant) {
+        dataTracker.set(VARIANT, variant);
+    }
+
 
 /*
     public boolean canCollect() {
@@ -326,11 +330,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         super.dropInventory();
         if (this.hasCoffin()) {
             if (!this.world.isClient) {
-                ItemStack itemStack = this.getCarriedItem();
-                if (itemStack != null) {
-                    this.dropItem(itemStack.getItem());
-                }
-
+                this.dropItem(this.getOffHandStack().getItem());
                 if (this.inventory != null) {
                     for (int i = 0; i < this.inventory.size(); i++) {
                         ItemStack stack = this.inventory.getStack(i);
@@ -348,6 +348,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("CoffinGhouling", this.hasCoffin());
+        nbt.putByte("ghoulVariant", getVariant());
         //nbt.put("Ghouling", this.writeNbt(new NbtCompound()));
         if (staff != null) {
             nbt.put("Staff", staff.writeNbt(new NbtCompound()));
@@ -359,15 +360,13 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
             }
             nbt.put("Inventory", inv);
         }
-        if (!this.getCarriedItem().isEmpty()) {
-            nbt.put("carriedItem", this.getCarriedItem().writeNbt(new NbtCompound()));
-        }
     }
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         this.setHasCoffin(nbt.getBoolean("CoffinGhouling"));
+        this.setVariant(nbt.getByte("ghoulVariant"));
         if (nbt.contains("Staff")) {
             staff = ItemStack.fromNbt(nbt.getCompound("Staff"));
         }
@@ -378,11 +377,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 inventory.setStack(i, ItemStack.fromNbt(inv.getCompound(i)));
             }
         }
-        if (nbt.contains("carriedItem", 10)) {
-            ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("carriedItem"));
-            this.setCarriedItem(itemStack);
-        }
-
     }
 
     @Override
@@ -395,22 +389,22 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
 
 
     static {
-        GHOULING_HOLDABLE.add(TGItems.SARCOPHAGUS);
-        GHOULING_HOLDABLE.add(TGItems.OAK_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.DARK_OAK_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.SPRUCE_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.BIRCH_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.JUNGLE_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.ACACIA_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.MANGROVE_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.WARPED_COFFIN);
-        GHOULING_HOLDABLE.add(TGItems.CRIMSON_COFFIN);
+        GHOULING_HOLDABLE.add(TGBlocks.SARCOPHAGUS.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.OAK_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.DARK_OAK_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.SPRUCE_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.BIRCH_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.JUNGLE_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.ACACIA_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.MANGROVE_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.WARPED_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.CRIMSON_COFFIN.asItem());
 
         ATTACK_ANIM_TIMER = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         SPAWN_TIMER = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         COFFIN = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        CARRIED_ITEM = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.ITEM_STACK);
+        VARIANT = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BYTE);
         //CAN_COLLECT = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
 

@@ -39,6 +39,10 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
 
     @Override
     public void renderRecursively(GeoBone bone, MatrixStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (bone.getName().equals("chain") && ghouling != null) {
+            bone.setHidden(!ghouling.hasCoffin());
+        }
+
         if (bone.getName().equals("torso") && ghouling != null && ghouling.hasCoffin()) {
             stack.push();
             stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));

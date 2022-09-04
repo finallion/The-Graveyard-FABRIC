@@ -2,10 +2,13 @@ package com.finallion.graveyard.item;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.GhoulingEntity;
+import com.finallion.graveyard.entities.GraveyardMinionEntity;
 import com.finallion.graveyard.init.TGEntities;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
@@ -30,9 +33,11 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class BoneStaffItem extends Item {
+    private final byte ghoulVariant;
 
-    public BoneStaffItem() {
+    public BoneStaffItem(byte ghoulVariant) {
         super(new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP));
+        this.ghoulVariant = ghoulVariant;
     }
 
     @Override
@@ -51,11 +56,11 @@ public class BoneStaffItem extends Item {
                 }
             }
 
-
             GhoulingEntity ghouling = (GhoulingEntity) TGEntities.GHOULING.create(world);
             ghouling.refreshPositionAndAngles(blockPos.up(), 0.0F, 0.0F);
             ghouling.setOwner(player);
             ghouling.onSummoned(stack);
+            ghouling.setVariant(ghoulVariant);
             world.spawnEntity(ghouling);
 
             stack.getOrCreateNbt().putUuid("GhoulingUUID", ghouling.getUuid());
@@ -108,26 +113,42 @@ public class BoneStaffItem extends Item {
                     return TypedActionResult.fail(stack);
                 } else {
                     UUID ghoulingUUID = tag.getUuid("GhoulingUUID");
-                    GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElseThrow();
-                    if (user.isSneaking()) {
-                        ghouling.setTarget(null);
-                        ghouling.setAttacking(false);
-                        //ghouling.removeCollectGoal();
-                        //ghouling.setCanCollect(false);
-                        ghouling.teleport(user.getX(), user.getY(), user.getZ());
-                    } else {
-                        Predicate<Entity> predicate = entity -> entity != ghouling;
-                        int distance = 100;
-                        Vec3d start = user.getEyePos();
-                        Vec3d rot = user.getRotationVec(1.0F).multiply(distance);
-                        Vec3d end = start.add(rot);
-                        Box box = user.getBoundingBox().stretch(rot).expand(1.0D);
-                        HitResult result = ProjectileUtil.raycast(user, start, end, box, predicate, distance * distance);
-                        if (result != null && result.getType() == HitResult.Type.ENTITY) {
-                            Entity entity = ((EntityHitResult)result).getEntity();
-                            if (entity instanceof LivingEntity livingEntity) {
-                                ghouling.setTarget(livingEntity);
-                                ghouling.setAttacking(true);
+                    GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElse(null);
+                    if (ghouling != null) {
+                        if (user.isSneaking()) {
+                            ghouling.setTarget(null);
+                            ghouling.setAttacking(false);
+                            //ghouling.removeCollectGoal();
+                            //ghouling.setCanCollect(false);
+                            ghouling.teleport(user.getX(), user.getY(), user.getZ());
+                        } else {
+                            Predicate<Entity> predicate = entity -> {
+                                if (entity instanceof LivingEntity) {
+                                    if (entity instanceof TameableEntity tameableEntity) {
+                                        if (tameableEntity.getOwnerUuid() != null) {
+                                            return tameableEntity.getOwnerUuid().compareTo(tag.getUuid("OwnerUUID")) != 0;
+                                        }
+                                    } else if (entity instanceof GraveyardMinionEntity minion) {
+                                        if (minion.getOwnerUuid() != null) {
+                                            return minion.getOwnerUuid().compareTo(tag.getUuid("OwnerUUID")) != 0;
+                                        }
+                                    }
+                                    return true;
+                                }
+                                return false;
+                            };
+                            int distance = 100;
+                            Vec3d start = user.getEyePos();
+                            Vec3d rot = user.getRotationVec(1.0F).multiply(distance);
+                            Vec3d end = start.add(rot);
+                            Box box = user.getBoundingBox().stretch(rot).expand(1.0D);
+                            HitResult result = ProjectileUtil.raycast(user, start, end, box, predicate, distance * distance);
+                            if (result != null && result.getType() == HitResult.Type.ENTITY) {
+                                Entity entity = ((EntityHitResult) result).getEntity();
+                                if (entity instanceof LivingEntity livingEntity) {
+                                    ghouling.setTarget(livingEntity);
+                                    ghouling.setAttacking(true);
+                                }
                             }
                         }
                     }
