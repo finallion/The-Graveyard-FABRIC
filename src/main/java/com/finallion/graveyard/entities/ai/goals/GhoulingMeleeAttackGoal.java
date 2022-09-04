@@ -30,10 +30,11 @@ public class GhoulingMeleeAttackGoal extends Goal {
     private double targetZ;
     private int updateCountdownTicks;
     private int cooldown;
-    private final int attackIntervalTicks = 20;
+    private final int attackIntervalTicks = 15;
     private long lastUpdateTime;
-    private final int DAMAGE_START_IN_ANIM = 16;
-    private int animationTicker = 40;
+    private final int DAMAGE_START_IN_ANIM = 12;
+    private int animationTicker = 14;
+    private boolean canFinishAttack = false;
 
     public GhoulingMeleeAttackGoal(GhoulingEntity mob, double speed, boolean pauseWhenMobIdle) {
         this.mob = mob;
@@ -140,18 +141,14 @@ public class GhoulingMeleeAttackGoal extends Goal {
             if (this.mob.getAttackAnimTimer() == 0) {
                 this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
                 animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
-            }
-
-            // sound on start anim
-            if (this.mob.getAttackAnimTimer() == this.mob.ATTACK_ANIMATION_DURATION) {
-                //this.mob.playAttackSound();
-            }
-
-            if (animationTicker == DAMAGE_START_IN_ANIM) {
-                this.mob.tryAttack(target);
+                canFinishAttack = true;
             }
         }
 
+        if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
+             this.mob.tryAttack(target);
+            canFinishAttack = false;
+        }
     }
 
     protected double getSquaredMaxAttackDistance(LivingEntity entity) {

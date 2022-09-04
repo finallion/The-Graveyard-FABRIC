@@ -7,8 +7,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 
 public class SarcophagusItem extends BlockItem {
-    public SarcophagusItem(Settings settings) {
-        super(TGBlocks.SARCOPHAGUS, settings);
+    public SarcophagusItem(Settings settings, Block block) {
+        super(block, settings);
     }
 
     protected boolean place(ItemPlacementContext context, BlockState state) {
