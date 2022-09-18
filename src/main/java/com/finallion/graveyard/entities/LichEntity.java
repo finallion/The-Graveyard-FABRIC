@@ -128,8 +128,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private int phaseThreeAttackSoundAge = 120;
     private int idleSoundAge = 0;
 
-    //TODO stop huge amount of dmg
-    //TODO check direction
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
@@ -532,7 +530,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             int timer;
             if (getPhase() == 1) {
                 timer = SPAWN_INVUL_TIMER;
-                this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
+                //this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
+                //this.refreshPositionAndAngles(this.getBlockPos(), spawnDirection.asRotation(), 0.0F);
             } else {
                 timer = DEFAULT_INVUL_TIMER;
             }
@@ -655,11 +654,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && source != DamageSource.OUT_OF_WORLD) {
                 return false;
             } else {
-                // removes entity immediately when killed with commands
-                //if (source == DamageSource.OUT_OF_WORLD && amount > this.getHealth()) {
-                //    this.deathTime = 155;
-                //}
-
                 if (amount > this.getHealth() && getPhase() < 5 && source != DamageSource.OUT_OF_WORLD) {
                     //amount = this.getHealth() - 1;
                     respawn();

@@ -24,6 +24,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -69,9 +70,10 @@ public class VialOfBlood extends Item {
                 playerEntity.world.playSound(null, playerEntity.getBlockPos(), TGSounds.VIAL_SPLASH, SoundCategory.BLOCKS, 5.0F, 1.0F);
                 world.setBlockState(context.getBlockPos(), blockState.with(AltarBlock.BLOODY, true));
                 if (!world.isClient()) {
-                    // TODO Not in creative
-                    ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-                    ItemUsage.exchangeStack(stack, playerEntity, bottle);
+                    if (!playerEntity.isCreative()) {
+                        ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+                        ItemUsage.exchangeStack(stack, playerEntity, bottle);
+                    }
 
                     playerEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 430));
 
@@ -86,12 +88,6 @@ public class VialOfBlood extends Item {
 
                                 if (state.getBlock() instanceof OminousBoneStaffFragment) {
                                     world.setBlockState(iteratorPos, Blocks.AIR.getDefaultState());
-                                    world.setBlockState(iteratorPos, Blocks.SOUL_FIRE.getDefaultState());
-                                }
-
-                                if (state.getBlock() instanceof CandleBlock) {
-                                    world.setBlockState(iteratorPos, state.with(CandleBlock.LIT, false));
-                                    playerEntity.world.playSound(null, playerEntity.getBlockPos(), SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 }
                             }
                         }
@@ -99,7 +95,10 @@ public class VialOfBlood extends Item {
 
                     LichEntity lich = (LichEntity) TGEntities.LICH.create(world);
                     BlockPos blockPos = context.getBlockPos().up();
-                    lich.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, result.getUp().getOpposite().asRotation(), 0.0F);
+                    lich.setYaw(result.getUp().getOpposite().asRotation());
+                    lich.setBodyYaw(result.getUp().getOpposite().asRotation());
+                    lich.setHeadYaw(result.getUp().getOpposite().asRotation());
+                    lich.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, 0.0F, 0.0F);
                     lich.onSummoned(result.getUp().getOpposite(), context.getBlockPos().up());
                     /*
                     Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
