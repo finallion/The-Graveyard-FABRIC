@@ -34,6 +34,9 @@ public class GhoulingModel extends AnimatedGeoModel<GhoulingEntity> {
             //case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");
             case 1 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/white_ghouling.png");
             case 2 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/black_ghouling.png");
+            case 3 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/red_ghouling.png");
+            case 4 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/cyan_ghouling.png");
+            case 5 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/purple_ghouling.png");
         };
     }
 

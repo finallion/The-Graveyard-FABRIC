@@ -240,7 +240,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         ItemStack itemStack = player.getStackInHand(hand);
 
         if (!this.world.isClient()) {
-            if (this.hasCoffin()) {
+            if (this.hasCoffin() && player.isSneaking()) {
                 player.openHandledScreen(this);
                 return ActionResult.SUCCESS;
             }

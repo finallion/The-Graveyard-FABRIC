@@ -115,6 +115,11 @@
   "block.graveyard.upper_bone_staff": "Ominous Bone Staff Fragment",
   "item.graveyard.altar": "Altar",
   "item.graveyard.altar_side": "Altar Decoration",
+  "item.graveyard.white_bone_staff": "Staff of Zatraq'gul",
+  "item.graveyard.black_bone_staff": "Staff of Nortoq'gul",
+  "item.graveyard.red_bone_staff": "Staff of Azrata'gul",
+  "item.graveyard.cyan_bone_staff": "Staff of Mynakta'gul",
+  "item.graveyard.purple_bone_staff": "Staff of Xaphnok'gul",
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",
