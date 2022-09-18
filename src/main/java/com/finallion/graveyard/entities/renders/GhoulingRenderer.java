@@ -48,7 +48,7 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
             stack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
             stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
             stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-25));
-            stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(bone.getRotationZ()));
+            //stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(bone.getRotationZ()));
             stack.translate(1.3D, 0.86D, 0.0D);
             stack.scale(2.0F, 2.0F, 2.0F);
             MinecraftClient.getInstance().getItemRenderer().renderItem(offHand, ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, packedLightIn, packedOverlayIn, stack, this.rtb, 0);

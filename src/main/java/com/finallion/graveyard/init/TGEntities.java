@@ -93,7 +93,7 @@ public class TGEntities {
             .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
             .build();
 
-    public static final EntityType<GhoulingEntity> GHOULING = FabricEntityTypeBuilder.createMob()
+    public static final EntityType<GhoulingEntity> GHOULING = FabricEntityTypeBuilder.<GhoulingEntity>create()
             .spawnGroup(SpawnGroup.CREATURE)
             .entityFactory(GhoulingEntity::new)
             .dimensions(EntityDimensions.fixed(0.7F, 2.0F))

@@ -30,6 +30,11 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
     public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
 
     @Override
+    public int getRenderDistance() {
+        return 45;
+    }
+
+    @Override
     public void render(SarcophagusBlockEntity entity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         BlockState blockState = entity.getCachedState();
         DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getWorld(), entity.getPos(), (worldx, pos) -> {

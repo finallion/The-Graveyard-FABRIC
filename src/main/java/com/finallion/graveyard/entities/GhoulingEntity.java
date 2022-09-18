@@ -6,8 +6,12 @@ import com.finallion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
 import com.finallion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGItems;
+import com.finallion.graveyard.item.BoneStaffItem;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -17,6 +21,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -30,8 +35,11 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -42,6 +50,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 
@@ -51,6 +60,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Integer> SPAWN_TIMER;
+    private static final TrackedData<ItemStack> STAFF;
     private static final TrackedData<Boolean> COFFIN;
     private static final TrackedData<Byte> VARIANT;
     //private static final TrackedData<Boolean> CAN_COLLECT;
@@ -68,9 +78,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
 
     public final int ATTACK_ANIMATION_DURATION = 14;
     protected Inventory inventory;
-    private ItemStack staff;
     //private Goal collectGoal;
-
     private static final List<Item> GHOULING_HOLDABLE = new ArrayList<>();
 
     public GhoulingEntity(EntityType<? extends GhoulingEntity> entityType, World world) {
@@ -80,6 +88,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     protected void initGoals() {
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new GhoulingEntity.GhoulingEscapeDangerGoal(1.5D));
+        this.goalSelector.add(3, new WanderAroundGoal(this, 1.0F));
         this.goalSelector.add(5, new GhoulingMeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.add(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
@@ -91,9 +100,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
 
     public static DefaultAttributeContainer.Builder createGhoulingAttributes() {
         return PathAwareEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.245D)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D)
+                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 2.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 5.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.265D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D);
     }
 
@@ -101,6 +112,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+        this.dataTracker.startTracking(STAFF, ItemStack.EMPTY);
         this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
         this.dataTracker.startTracking(COFFIN, false);
         this.dataTracker.startTracking(SPAWN_TIMER, 0);
@@ -187,16 +199,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         super.tickMovement();
     }
 
-    @Override
-    public void onDeath(DamageSource damageSource) {
-        if (this.staff != null) {
-            if (this.staff.getNbt() != null) {
-                this.staff.getNbt().putBoolean("isAlive", false);
-            }
-        }
-        super.onDeath(damageSource);
-    }
-
     public int getAnimationState() {
         return this.dataTracker.get(ANIMATION);
     }
@@ -213,14 +215,14 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         this.dataTracker.set(ATTACK_ANIM_TIMER, time);
     }
 
-    public void onSummoned(ItemStack item) {
+    public void onSummoned() {
         this.setAnimationState(ANIMATION_SPAWN);
         setSpawnTimer(55);
-        this.staff = item;
-        if (this.staff.getNbt() != null && this.staff.getNbt().contains("OwnerUUID")) {
-            setOwnerUuid(this.staff.getNbt().getUuid("OwnerUUID"));
-        }
-        //playSpawnSound();
+    }
+
+    @Override
+    public boolean canImmediatelyDespawn(double distanceSquared) {
+        return false;
     }
 
     @Override
@@ -238,7 +240,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         ItemStack itemStack = player.getStackInHand(hand);
 
         if (!this.world.isClient()) {
-            if (player.isSneaking() && this.hasCoffin()) {
+            if (this.hasCoffin()) {
                 player.openHandledScreen(this);
                 return ActionResult.SUCCESS;
             }
@@ -274,6 +276,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
             this.world.sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
+
     }
 
     public int getSpawnTimer() {
@@ -284,10 +287,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         this.dataTracker.set(SPAWN_TIMER, ticks);
     }
 
-    public boolean canImmediatelyDespawn(double distanceSquared) {
-        return false;
-    }
-
     public byte getVariant() {
         return dataTracker.get(VARIANT);
     }
@@ -296,8 +295,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         dataTracker.set(VARIANT, variant);
     }
 
+    public ItemStack getStaff() {
+        return dataTracker.get(STAFF);
+    }
 
-/*
+    public void setStaff(ItemStack staff) {
+        dataTracker.set(STAFF, staff);
+    }
+
+    /*
     public boolean canCollect() {
         return (Boolean) this.dataTracker.get(CAN_COLLECT);
     }
@@ -345,13 +351,20 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     }
 
     @Override
+    public void onDeath(DamageSource damageSource) {
+        ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
+
+        super.onDeath(damageSource);
+    }
+
+    @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("CoffinGhouling", this.hasCoffin());
         nbt.putByte("ghoulVariant", getVariant());
         //nbt.put("Ghouling", this.writeNbt(new NbtCompound()));
-        if (staff != null) {
-            nbt.put("Staff", staff.writeNbt(new NbtCompound()));
+        if (getStaff() != null) {
+            nbt.put("Staff", getStaff().writeNbt(new NbtCompound()));
         }
         if (inventory != null) {
             final NbtList inv = new NbtList();
@@ -359,6 +372,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 inv.add(inventory.getStack(i).writeNbt(new NbtCompound()));
             }
             nbt.put("Inventory", inv);
+        }
+
+
+        if (isAlive()) {
+            ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.putIfAbsent(this.getUuid(), getOwnerUuid());
         }
     }
 
@@ -368,7 +386,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         this.setHasCoffin(nbt.getBoolean("CoffinGhouling"));
         this.setVariant(nbt.getByte("ghoulVariant"));
         if (nbt.contains("Staff")) {
-            staff = ItemStack.fromNbt(nbt.getCompound("Staff"));
+            setStaff(ItemStack.fromNbt(nbt.getCompound("Staff")));
         }
         if (nbt.contains("Inventory")) {
             final NbtList inv = nbt.getList("Inventory", 10);
@@ -405,8 +423,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         SPAWN_TIMER = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         COFFIN = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         VARIANT = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BYTE);
+        STAFF = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.ITEM_STACK);
         //CAN_COLLECT = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
+
+
 
 
     class GhoulingEscapeDangerGoal extends EscapeDangerGoal {

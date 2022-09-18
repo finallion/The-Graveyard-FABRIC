@@ -6,7 +6,6 @@ import com.finallion.graveyard.entities.GraveyardMinionEntity;
 import com.finallion.graveyard.init.TGEntities;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +18,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -27,13 +25,12 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.sql.SQLOutput;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class BoneStaffItem extends Item {
     private final byte ghoulVariant;
+    public Map<UUID, UUID> ownerGhoulingMapping = new HashMap<>();
 
     public BoneStaffItem(byte ghoulVariant) {
         super(new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP));
@@ -46,55 +43,88 @@ public class BoneStaffItem extends Item {
         BlockPos blockPos = context.getBlockPos();
         PlayerEntity player = context.getPlayer();
         ItemStack stack = context.getStack();
-        NbtCompound tag = stack.getNbt();
 
-        if (!world.isClient && player != null && (tag == null || !tag.getBoolean("isAlive"))) {
-            // owner check
-            if (tag != null && tag.contains("OwnerUUID")) {
-                if (tag.getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
+        /*
+        There only exists one BoneStaffItem, so to use nbt and create a unique mob, that only can be summoned if the
+        previous mob died, we need to use ItemStacks.
+        On creation, the staff passes an ItemStack to the summoned Ghouling with Player UUID and Ghouling UUID.
+        It saves this pair in a map. Why? Because if the Ghouling unloads and reloads, the ItemStack passed and saved in the Ghouling
+        will not be the same but a copy. Therefor there is no way to tell the staff from the Ghouling the difference between being unloaded and died.
+        Or that the Ghoulings status has changed.
+        We only want to summon a new Ghouling if the previous died, not if the previous was unloaded.
+        (Searching the server with the Ghouling UUID will return null, if the Ghouling is unloaded, as unloaded entities are saved in chunk nbt.)
+        On use the staff checks with its nbt, if the player using it is the owner of the staff and if exists a Ghouling with an
+        UUID (in the Map) that matches the UUID in the staff ItemStack nbt.
+        On death, the Ghouling deletes its entry in the map.
+        Other way: a NBT to the player with its Ghoulings UUID ?
+         */
+
+        if (player != null) {
+            // TAG OWNER UUID CHECK
+            /* Does the OwnerUUID in the NBT match the user of the staff*/
+            if (stack.getNbt() != null && stack.getNbt().contains("OwnerUUID")) {
+                if (stack.getNbt().getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
                     return ActionResult.PASS;
                 }
             }
 
-            GhoulingEntity ghouling = (GhoulingEntity) TGEntities.GHOULING.create(world);
+            /* Is the Ghouling with the UUID saved in the NBT still alive?*/
+            if (stack.getNbt() != null && stack.getNbt().contains("GhoulingUUID")) {
+                if (ownerGhoulingMapping.containsKey(stack.getNbt().getUuid("GhoulingUUID"))) {
+                    return ActionResult.PASS;
+                }
+            }
+
+            /*
+            If owner match and Ghouling dead, summon new one
+            - Create new NBT
+            - Pass data to Ghouling
+            - Save Owner-Ghouling in Map
+             */
+            GhoulingEntity ghouling = TGEntities.GHOULING.create(world);
             ghouling.refreshPositionAndAngles(blockPos.up(), 0.0F, 0.0F);
             ghouling.setOwner(player);
-            ghouling.onSummoned(stack);
             ghouling.setVariant(ghoulVariant);
-            world.spawnEntity(ghouling);
 
+            /* TAG INPUTS BOUND TO ITEM STACK */
             stack.getOrCreateNbt().putUuid("GhoulingUUID", ghouling.getUuid());
-            stack.getOrCreateNbt().putBoolean("isAlive", true);
 
-            // owner is set on first summon
-            if (tag == null || !tag.contains("OwnerUUID")) {
+            if (!stack.getNbt().contains("OwnerUUID")) {
                 stack.getOrCreateNbt().putUuid("OwnerUUID", player.getUuid());
-                player.sendMessage(Text.literal("I hear and obey."));
+                player.sendMessage(Text.literal("I hear and obey..."));
             } else {
-                player.sendMessage(Text.literal("Death is a mere inconvenience."));
+                player.sendMessage(Text.literal("Death... is a mere inconvenience."));
             }
 
+            /* END TAG INPUT */
+            if (!world.isClient()) {
+                ownerGhoulingMapping.putIfAbsent(ghouling.getUuid(), player.getUuid());
+            }
+
+            ghouling.setStaff(stack); // pass stack to ghouling
+            ghouling.onSummoned();
+            world.spawnEntity(ghouling);
             return ActionResult.SUCCESS;
         }
-        /*
 
-        if (!world.isClient && player != null && tag != null && tag.contains("GhoulingUUID") && tag.contains("OwnerUUID")) {
-            if (tag.getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
-                return ActionResult.PASS;
-            }
 
-            UUID ghoulingUUID = tag.getUuid("GhoulingUUID");
-            GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, player.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElseThrow();
+        //
+        //if (!world.isClient && player != null && tag != null && tag.contains("GhoulingUUID") && tag.contains("OwnerUUID")) {
+        //    if (tag.getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
+        //        return ActionResult.PASS;
+        //    }
+        //
+        //    UUID ghoulingUUID = tag.getUuid("GhoulingUUID");
+        //    GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, player.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElseThrow();
+        //
+        //    ghouling.removeCollectGoal();
+        //    ghouling.setTarget(null);
+        //    ghouling.setAttacking(false);
+        //    ghouling.setCanCollect(true);
+        //    System.out.println("Set Goal to " + world.getBlockState(blockPos).getBlock() + " at " + blockPos);
+        //    ghouling.setCollectGoal(new BreakBlockGoal(ghouling, world.getBlockState(blockPos).getBlock(), blockPos));
+        //}
 
-            ghouling.removeCollectGoal();
-            ghouling.setTarget(null);
-            ghouling.setAttacking(false);
-            ghouling.setCanCollect(true);
-            System.out.println("Set Goal to " + world.getBlockState(blockPos).getBlock() + " at " + blockPos);
-            ghouling.setCollectGoal(new BreakBlockGoal(ghouling, world.getBlockState(blockPos).getBlock(), blockPos));
-        }
-
-         */
 
         return super.useOnBlock(context);
     }
@@ -102,17 +132,14 @@ public class BoneStaffItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getMainHandStack();
-        NbtCompound tag = stack.getNbt();
+        NbtCompound nbt = stack.getNbt();
         if (!world.isClient) {
-            //System.out.println("Tag: " + tag);
-            if (tag != null && tag.contains("GhoulingUUID") && tag.contains("OwnerUUID") && tag.contains("isAlive")) {
-                if (user.getUuid().compareTo(tag.getUuid("OwnerUUID")) != 0) { // case wrong owner
+            if (nbt != null && nbt.contains("GhoulingUUID") && nbt.contains("OwnerUUID")) {
+                if (user.getUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0) { // case wrong owner
                     user.sendMessage(Text.literal("I don't obey your orders, you are no master of mine!"));
                     return TypedActionResult.fail(stack);
-                } else if (!tag.getBoolean("isAlive")) { // case no alive ghouling
-                    return TypedActionResult.fail(stack);
                 } else {
-                    UUID ghoulingUUID = tag.getUuid("GhoulingUUID");
+                    UUID ghoulingUUID = nbt.getUuid("GhoulingUUID");
                     GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElse(null);
                     if (ghouling != null) {
                         if (user.isSneaking()) {
@@ -126,11 +153,11 @@ public class BoneStaffItem extends Item {
                                 if (entity instanceof LivingEntity) {
                                     if (entity instanceof TameableEntity tameableEntity) {
                                         if (tameableEntity.getOwnerUuid() != null) {
-                                            return tameableEntity.getOwnerUuid().compareTo(tag.getUuid("OwnerUUID")) != 0;
+                                            return tameableEntity.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
                                         }
                                     } else if (entity instanceof GraveyardMinionEntity minion) {
                                         if (minion.getOwnerUuid() != null) {
-                                            return minion.getOwnerUuid().compareTo(tag.getUuid("OwnerUUID")) != 0;
+                                            return minion.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
                                         }
                                     }
                                     return true;
@@ -158,6 +185,5 @@ public class BoneStaffItem extends Item {
 
         return super.use(world, user, hand);
     }
-
 
 }
