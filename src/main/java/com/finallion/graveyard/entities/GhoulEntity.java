@@ -233,6 +233,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
 
         // RAGE TIMER
         if (this.getRageAnimTimer() == RAGE_ANIMATION_DURATION) {
+            this.playSound(SoundEvents.ENTITY_WARDEN_ANGRY, 1.0F, -1.0F);
             setIsRaging(true);
             setAnimationState(ANIMATION_RAGE);
         }
@@ -262,9 +263,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
     public void tickMovement() {
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
         if (isRaging()) {
-            if (getRageAnimTimer() == RAGE_ANIMATION_DURATION) {
-                this.playSound(SoundEvents.ENTITY_HUSK_CONVERTED_TO_ZOMBIE, 1.0F, -5.0F);
-            }
             if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
                 entityAttributeInstance.addTemporaryModifier(SLOWNESS_EFFECT);
             }

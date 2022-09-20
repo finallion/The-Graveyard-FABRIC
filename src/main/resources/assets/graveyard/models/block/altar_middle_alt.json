@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "up": "graveyard:block/altar_middle_alt",
+    "down": "minecraft:block/deepslate_top",
+    "east": "minecraft:block/deepslate",
+    "west": "minecraft:block/deepslate",
+    "north": "minecraft:block/deepslate",
+    "south": "minecraft:block/deepslate",
+    "particle": "minecraft:block/deepslate"
+  }
+}

@@ -23,6 +23,9 @@
     },
     "faces=8": {
       "model": "graveyard:block/altar_bottom_right"
+    },
+    "faces=9": {
+      "model": "graveyard:block/altar_middle_alt"
     }
   }
 }

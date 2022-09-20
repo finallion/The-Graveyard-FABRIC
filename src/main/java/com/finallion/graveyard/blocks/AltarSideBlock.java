@@ -21,7 +21,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
 public class AltarSideBlock extends Block {
-    public static final IntProperty FACES = IntProperty.of("faces", 1, 8);
+    public static final IntProperty FACES = IntProperty.of("faces", 1, 9);
 
     public AltarSideBlock(Settings settings) {
         super(settings);
