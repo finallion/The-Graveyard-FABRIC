@@ -1,0 +1,41 @@
+{
+  "parent": "graveyard:graveyard/upper_bone_staff",
+  "display": {
+    "icon": {
+      "item": "graveyard:altar"
+    },
+    "title": {
+      "translate": "advancements.graveyard.lich_prison.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.lich_prison.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "lich_prison": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:lich_prison"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "requirements": [
+    [
+      "lich_prison"
+    ]
+  ]
+}

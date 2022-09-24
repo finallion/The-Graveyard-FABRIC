@@ -1,0 +1,39 @@
+{
+  "parent": "graveyard:graveyard/lich_prison",
+  "criteria": {
+    "summoned": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "graveyard:lich"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:summoned_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.graveyard.summon_lich.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:spawner"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.graveyard.summon_lich.title"
+    }
+  },
+  "requirements": [
+    [
+      "summoned"
+    ]
+  ]
+}

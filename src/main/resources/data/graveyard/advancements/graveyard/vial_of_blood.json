@@ -1,0 +1,37 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "item": "graveyard:vial_of_blood"
+    },
+    "title": {
+      "translate": "advancements.graveyard.vial_of_blood.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.vial_of_blood.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "vial_of_blood": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:vial_of_blood"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "vial_of_blood"
+    ]
+  ]
+}

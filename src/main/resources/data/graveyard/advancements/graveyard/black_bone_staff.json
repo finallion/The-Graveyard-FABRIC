@@ -1,0 +1,37 @@
+{
+  "parent": "graveyard:graveyard/summon_lich",
+  "display": {
+    "icon": {
+      "item": "graveyard:black_bone_staff"
+    },
+    "title": {
+      "translate": "advancements.graveyard.black_bone_staff.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.black_bone_staff.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "black_bone_staff": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:black_bone_staff"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "black_bone_staff"
+    ]
+  ]
+}

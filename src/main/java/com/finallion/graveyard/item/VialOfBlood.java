@@ -8,6 +8,7 @@ import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGSounds;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CandleBlock;
@@ -18,6 +19,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -26,9 +28,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class VialOfBlood extends Item {
@@ -63,7 +67,7 @@ public class VialOfBlood extends Item {
         World world = context.getWorld();
         Random random = context.getWorld().random;
         float blood = VialOfBlood.getBlood(stack);
-        if (blockState.isOf(TGBlocks.ALTAR) && playerEntity!= null && blood >= 0.8F) {
+        if (blockState.isOf(TGBlocks.ALTAR) && playerEntity!= null && blood >= 0.8F && world.getDifficulty() != Difficulty.PEACEFUL && world.isNight()) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, context.getBlockPos());
 
             if (!blockState.get(AltarBlock.BLOODY) && result != null) {
@@ -100,7 +104,7 @@ public class VialOfBlood extends Item {
                     lich.setHeadYaw(result.getUp().getOpposite().asRotation());
                     lich.refreshPositionAndAngles((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, 0.0F, 0.0F);
                     lich.onSummoned(result.getUp().getOpposite(), context.getBlockPos().up());
-                    /*
+
                     Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
 
                     while(var13.hasNext()) {
@@ -108,7 +112,7 @@ public class VialOfBlood extends Item {
                         Criteria.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
                     }
 
-                     */
+
 
                     world.spawnEntity(lich);
                     lich.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 5));

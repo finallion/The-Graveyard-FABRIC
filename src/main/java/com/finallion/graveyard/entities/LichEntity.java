@@ -410,7 +410,13 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 while (iterator.hasNext()) {
                     PlayerEntity player = iterator.next();
                     if (getPhaseInvulnerableTimer() == 0 || getPhaseInvulnerableTimer() % 300 == 0) {
-                        player.teleport(this.getX() + random.nextInt(15) + 3.0D, this.getY(), this.getZ() + random.nextInt(15) + 3.0D);
+                        for (int i = 0; i <= 3; i++) {
+                            BlockPos targetPos = new BlockPos(this.getX() + random.nextInt(15) + 3.0D, this.getY(), this.getZ() + random.nextInt(15) + 3.0D);
+                            if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir()) {
+                                player.teleport(this.getX() + random.nextInt(15) + 3.0D, this.getY(), this.getZ() + random.nextInt(15) + 3.0D);
+                                break;
+                            }
+                        }
                     }
                     if (getPhaseInvulnerableTimer() % 50 == 0) {
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 80, 2));
@@ -508,7 +514,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             while (iterator.hasNext()) {
                 PlayerEntity player = iterator.next();
                 if (getHealTimer() == 400) {
-                    player.teleport(this.getX(), this.getY() + 15.0D, this.getZ());
+                    player.teleport(this.getX(), this.getY() - 15.0D, this.getZ());
                 }
                 if (!player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 40, 1));
@@ -530,8 +536,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             int timer;
             if (getPhase() == 1) {
                 timer = SPAWN_INVUL_TIMER;
-                //this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
-                //this.refreshPositionAndAngles(this.getBlockPos(), spawnDirection.asRotation(), 0.0F);
             } else {
                 timer = DEFAULT_INVUL_TIMER;
             }
@@ -743,7 +747,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         for (int i = 10; i > 0; i--) {
-            BlockPos pos = new BlockPos(this.getBlockX() + random.nextInt(20) + 5, this.getBlockY(), this.getBlockZ() + random.nextInt(20) + 5);
+            BlockPos pos = new BlockPos(this.getBlockX() + random.nextInt(15) + 5, this.getBlockY(), this.getBlockZ() + random.nextInt(15) + 5);
             int amount = random.nextInt(5) + 1;
             if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir()) {
                 if (!hard) {

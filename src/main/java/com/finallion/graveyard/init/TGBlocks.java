@@ -154,7 +154,7 @@ public class TGBlocks {
     public static final Block BRICKS_GRAVESTONE = new GravestoneBlock(BRICKS_GRAVESTONE_TEXTURE);
 
     public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
-    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
+    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
     public static final Block LOWER_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
