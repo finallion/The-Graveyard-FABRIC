@@ -1,19 +1,19 @@
 {
   "variants": {
     "facing=north": {
-      "model": "graveyard:block/dark_oak_coffin_foot"
+      "model": "graveyard:item/dark_oak_coffin"
     },
     "facing=south": {
       "y": 180,
-      "model": "graveyard:block/dark_oak_coffin_foot"
+      "model": "graveyard:item/dark_oak_coffin"
     },
     "facing=east": {
       "y": 90,
-      "model": "graveyard:block/dark_oak_coffin_foot"
+      "model": "graveyard:item/dark_oak_coffin"
     },
     "facing=west": {
       "y": 270,
-      "model": "graveyard:block/dark_oak_coffin_foot"
+      "model": "graveyard:item/dark_oak_coffin"
     }
   }
 }

@@ -282,10 +282,10 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 400.0F)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 20.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 22.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 20.0D)
-                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 15.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 18.0D)
+                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 14.0D)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 

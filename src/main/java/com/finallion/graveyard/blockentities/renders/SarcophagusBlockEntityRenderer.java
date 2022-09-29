@@ -74,7 +74,9 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         }
 
         if (isLid) {
-            matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 70)); // lid rotation
+            matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 45)); // lid rotation, originally 70
+            //matrices.translate(isFoot ? -(openFactor * 0.25) : openFactor * 0.25, openFactor * 0.25, 0.0F);
+            matrixStack.translate(g * 0.3, g * 0.3, 0.0F); // moves lid away from body
         }
 
         for (int i = 0; i <= 6; i++) {
