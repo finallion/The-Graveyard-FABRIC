@@ -59,12 +59,20 @@
   "block.graveyard.skeleton_hand": "Skeleton Hand",
   "block.graveyard.skull_pile": "Skull Pile",
   "block.graveyard.skull_with_rib_cage": "Skull and Rib Cage",
+  "block.graveyard.laterally_lying_skeleton": "Laterally Lying Skeleton",
+  "block.graveyard.torso_pile": "Torso Pile",
+  "block.graveyard.bone_remains": "Defeated Skeleton",
+  "block.graveyard.skull_on_pike": "Skull on Pike",
 
   "block.graveyard.lying_wither_skeleton": "Lying Wither Skeleton",
   "block.graveyard.leaning_wither_skeleton": "Leaning Wither Skeleton",
   "block.graveyard.wither_skeleton_hand": "Wither Skeleton Hand",
   "block.graveyard.wither_skull_pile": "Wither Skull Pile",
   "block.graveyard.wither_skull_with_rib_cage": "Wither Skull and Rib Cage",
+  "block.graveyard.laterally_lying_wither_skeleton": "Laterally Lying Wither Skeleton",
+  "block.graveyard.wither_torso_pile": "Wither Torso Pile",
+  "block.graveyard.wither_bone_remains": "Defeated Wither Skeleton",
+  "block.graveyard.wither_skull_on_pike": "Wither Skull on Pike",
   "block.graveyard.creeper_skeleton": "Creeper Skeleton",
 
   "block.graveyard.dark_iron_bars": "Dark Iron Bars",
@@ -84,6 +92,9 @@
   "block.graveyard.stone_bricks_gravestone": "Stone Bricks Gravestone",
   "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
   "block.graveyard.bricks_gravestone": "Bricks Gravestone",
+
+  "block.graveyard.altar": "Lich Altar",
+  "block.graveyard.altar_side": "Corrupted Deepslate",
 
   "item.graveyard.bone_dagger": "Bone Dagger",
   "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
@@ -140,6 +151,7 @@
   "entity.graveyard.wraith": "Wraith",
   "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
   "entity.graveyard.lich": "Lich",
+  "entity.graveyard.ghouling": "Ghouling",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",
@@ -205,9 +217,8 @@
   "advancements.graveyard.purple_bone_staff.description": "Attain the Staff of Xaphnok'gul.",
   "advancements.graveyard.cyan_bone_staff.title": "Staff of Mynakta'gul",
   "advancements.graveyard.cyan_bone_staff.description": "Attain the Staff of Mynakta'gul.",
-
-
-
+  "advancements.graveyard.equip_coffin.title": "The dead shall serve",
+  "advancements.graveyard.equip_coffin.description": "Equip a Ghouling with a coffin or sarcophagus.",
 
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"

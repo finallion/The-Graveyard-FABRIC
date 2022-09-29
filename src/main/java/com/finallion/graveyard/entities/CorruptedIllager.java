@@ -71,7 +71,12 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
 
 
     public static DefaultAttributeContainer.Builder createCorruptedIllagerAttributes() {
-        return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D).add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D);
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 2.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D);
     }
 
     public State getState() {

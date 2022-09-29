@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/white_bone_staff",
+  "display": {
+    "icon": {
+      "item": "graveyard:sarcophagus"
+    },
+    "title": {
+      "translate": "advancements.graveyard.equip_coffin.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.equip_coffin.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "equip_coffin": {
+      "trigger": "graveyard:equip_coffin"
+    }
+  },
+  "requirements": [
+    [
+      "equip_coffin"
+    ]
+  ]
+}

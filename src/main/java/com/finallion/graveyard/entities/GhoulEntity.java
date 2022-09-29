@@ -1,8 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
-import com.finallion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
-import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -11,22 +10,14 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.Angerable;
-import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -35,6 +26,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
+import java.util.List;
 import java.util.UUID;
 
 public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable {
@@ -233,9 +225,10 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
 
         // RAGE TIMER
         if (this.getRageAnimTimer() == RAGE_ANIMATION_DURATION) {
-            this.playSound(SoundEvents.ENTITY_WARDEN_ANGRY, 1.0F, -1.0F);
+            this.playSound(TGSounds.GHOUL_ROAR, 1.0F, 1.0F);
             setIsRaging(true);
             setAnimationState(ANIMATION_RAGE);
+            aggroMobs();
         }
 
         if (this.getAttackAnimTimer() > 0) {
@@ -290,12 +283,19 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         setSpawnTimer(nbt.getInt("spawnTimer"));
     }
 
+    private void aggroMobs() {
+        if (getTarget() != null) {
+            List<HordeGraveyardEntity> monster = world.getEntitiesByClass(HordeGraveyardEntity.class, new Box(getBlockPos()).expand(45.0D), this::canSee);
+            for (HordeGraveyardEntity entity : monster) {
+                entity.setTarget(getTarget());
+            }
+        }
+    }
+
 
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
-        //data.addAnimationController(new AnimationController(this, "controller2", 0, this::predicate2));
-        //data.addAnimationController(new AnimationController(this, "controller3", 0, this::predicate3));
     }
 
 

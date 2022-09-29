@@ -46,14 +46,14 @@ public class BoneStaffItem extends Item {
 
         /*
         There only exists one BoneStaffItem, so to use nbt and create a unique mob, that only can be summoned if the
-        previous mob died, we need to use ItemStacks.
+        previous mob died, we need to use ItemStacks nbt.
         On creation, the staff passes an ItemStack to the summoned Ghouling with Player UUID and Ghouling UUID.
         It saves this pair in a map. Why? Because if the Ghouling unloads and reloads, the ItemStack passed and saved in the Ghouling
-        will not be the same but a copy. Therefor there is no way to tell the staff from the Ghouling the difference between being unloaded and died.
-        Or that the Ghoulings status has changed.
+        will not be the same but a copy. Therefore, there is no way to tell the staff from the Ghouling the difference between being unloaded and dead.
+        Or that the Ghoulings status has changed in some other way.
         We only want to summon a new Ghouling if the previous died, not if the previous was unloaded.
         (Searching the server with the Ghouling UUID will return null, if the Ghouling is unloaded, as unloaded entities are saved in chunk nbt.)
-        On use the staff checks with its nbt, if the player using it is the owner of the staff and if exists a Ghouling with an
+        On use, the staff checks with its nbt, if the player using it is the owner of the staff and if there exists a Ghouling with an
         UUID (in the Map) that matches the UUID in the staff ItemStack nbt.
         On death, the Ghouling deletes its entry in the map.
         Other way: a NBT to the player with its Ghoulings UUID ?
@@ -91,9 +91,9 @@ public class BoneStaffItem extends Item {
 
             if (!stack.getNbt().contains("OwnerUUID")) {
                 stack.getOrCreateNbt().putUuid("OwnerUUID", player.getUuid());
-                player.sendMessage(Text.literal("I hear and obey..."));
+                if (!world.isClient) player.sendMessage(Text.literal("I hear and obey..."));
             } else {
-                player.sendMessage(Text.literal("Death... is a mere inconvenience."));
+                if (!world.isClient) player.sendMessage(Text.literal("Death... is a mere inconvenience."));
             }
 
             /* END TAG INPUT */
@@ -104,6 +104,7 @@ public class BoneStaffItem extends Item {
             ghouling.setStaff(stack); // pass stack to ghouling
             ghouling.onSummoned();
             world.spawnEntity(ghouling);
+            player.getItemCooldownManager().set(this, 200);
             return ActionResult.SUCCESS;
         }
 

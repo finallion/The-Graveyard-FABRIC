@@ -190,7 +190,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
 
     public static DefaultAttributeContainer.Builder createNightmareAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 45.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0D)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.19D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D);

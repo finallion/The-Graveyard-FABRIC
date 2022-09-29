@@ -84,9 +84,13 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_hand"), new BlockItem(TGBlocks.SKELETON_HAND, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), new BlockItem(TGBlocks.WITHER_SKELETON_HAND, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), new BlockItem(TGBlocks.TORSO_PILE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_torso_pile"), new BlockItem(TGBlocks.WITHER_TORSO_PILE, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), new BlockItem(TGBlocks.SKULL_ON_PIKE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_skull_on_pike"), new BlockItem(TGBlocks.WITHER_SKULL_ON_PIKE, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), new BlockItem(TGBlocks.BONE_REMAINS, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_bone_remains"), new BlockItem(TGBlocks.WITHER_BONE_REMAINS, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), new BlockItem(TGBlocks.LATERALLY_LYING_SKELETON, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_wither_skeleton"), new BlockItem(TGBlocks.LATERALLY_LYING_WITHER_SKELETON, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "black_urn"), new BlockItem(TGBlocks.BLACK_URN, new FabricItemSettings().group(TheGraveyard.GROUP)));
@@ -146,7 +150,7 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_vindicator_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_VINDICATOR, 7567737, 2380632, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_pillager_spawn_egg"), new SpawnEggItem(TGEntities.CORRUPTED_PILLAGER, 7567737, 4924973, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wraith_spawn_egg"), new SpawnEggItem(TGEntities.WRAITH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), new SpawnEggItem(TGEntities.LICH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        //Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), new SpawnEggItem(TGEntities.LICH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "white_bone_staff"), new BoneStaffItem((byte) 1));

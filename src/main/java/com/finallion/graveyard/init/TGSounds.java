@@ -6,6 +6,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class TGSounds {
+    public static final Identifier GHOUL_ROAR_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.roar");
+    public static SoundEvent GHOUL_ROAR = new SoundEvent(GHOUL_ROAR_ID);
+
     public static final Identifier ALTAR_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "block.altar.ambient");
     public static SoundEvent ALTAR_AMBIENT = new SoundEvent(ALTAR_AMBIENT_ID);
 
@@ -47,6 +50,7 @@ public class TGSounds {
     public static SoundEvent LICH_PHASE_03_ATTACK = new SoundEvent(LICH_PHASE_03_ATTACK_ID);
 
     public static void init() {
+        Registry.register(Registry.SOUND_EVENT, GHOUL_ROAR_ID, GHOUL_ROAR);
         Registry.register(Registry.SOUND_EVENT, ALTAR_AMBIENT_ID, ALTAR_AMBIENT);
         Registry.register(Registry.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);
         Registry.register(Registry.SOUND_EVENT, BONE_AMBIENT_ID, BONE_AMBIENT);

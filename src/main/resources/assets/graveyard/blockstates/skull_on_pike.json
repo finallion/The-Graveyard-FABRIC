@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=east": {
-      "y": 90,
+      "y": 270,
       "model": "graveyard:block/skull_on_pike"
     },
     "facing=north": {
-      "model": "graveyard:block/skull_on_pike"
-    },
-    "facing=south": {
       "y": 180,
       "model": "graveyard:block/skull_on_pike"
     },
+    "facing=south": {
+      "model": "graveyard:block/skull_on_pike"
+    },
     "facing=west": {
-      "y": 270,
+      "y": 90,
       "model": "graveyard:block/skull_on_pike"
     }
   }

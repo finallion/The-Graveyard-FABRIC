@@ -3,7 +3,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "graveyard:block/bone_staff",
-		"particle": "graveyard:block/bone_staff"
+		"particle": "block/calcite"
 	},
 	"elements": [
 		{
@@ -253,6 +253,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
+			"translation": [0, 2, 0],
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {

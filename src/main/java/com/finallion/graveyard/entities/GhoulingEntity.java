@@ -4,6 +4,7 @@ import com.finallion.graveyard.entities.ai.goals.AttackWithOwnerGoal;
 import com.finallion.graveyard.entities.ai.goals.FollowOwnerGoal;
 import com.finallion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
 import com.finallion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
+import com.finallion.graveyard.init.TGAdvancements;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGItems;
 import com.finallion.graveyard.item.BoneStaffItem;
@@ -35,6 +36,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -88,7 +90,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     protected void initGoals() {
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new GhoulingEntity.GhoulingEscapeDangerGoal(1.5D));
-        this.goalSelector.add(3, new WanderAroundGoal(this, 1.0F));
+        //this.goalSelector.add(3, new WanderAroundGoal(this, 1.0F));
         this.goalSelector.add(5, new GhoulingMeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.add(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
@@ -103,8 +105,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 2.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 5.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.5D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.265D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.31D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0D);
     }
 
@@ -130,6 +132,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     }
 
     private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
+
         /* DEATH */
         if (this.isDead() || this.getHealth() < 0.01) {
             event.getController().setAnimation(DEATH_ANIMATION);
@@ -151,7 +154,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         }
 
         /* IDLE */
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0) {
+        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getSpawnTimer() <= 0) {
             event.getController().setAnimation(IDLE_ANIMATION);
             return PlayState.CONTINUE;
         }
@@ -188,6 +191,10 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
             this.setSpawnTimer(getSpawnTimer() - 1);
         }
 
+        if (this.getHealth() < this.getMaxHealth()) {
+            this.heal(0.01F);
+        }
+
         super.mobTick();
     }
 
@@ -217,7 +224,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
 
     public void onSummoned() {
         this.setAnimationState(ANIMATION_SPAWN);
-        setSpawnTimer(55);
+        setSpawnTimer(50);
     }
 
     @Override
@@ -249,6 +256,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 if (!this.hasCoffin() && GHOULING_HOLDABLE.contains(itemStack.getItem())) {
                     this.equipStack(EquipmentSlot.OFFHAND, itemStack);
                     if (inventory == null) {
+                        TGAdvancements.EQUIP_COFFIN.trigger((ServerPlayerEntity) player);
                         inventory = new SimpleInventory(54);
                         this.setHasCoffin(true);
                     }

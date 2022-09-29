@@ -92,9 +92,13 @@ public class TGBlocks {
     public static final Block SKELETON_HAND = new BoneDisplayBlock();
     public static final Block WITHER_SKELETON_HAND = new BoneDisplayBlock();
     public static final Block BONE_REMAINS = new BoneDisplayBlock();
+    public static final Block WITHER_BONE_REMAINS = new BoneDisplayBlock();
     public static final Block LATERALLY_LYING_SKELETON = new BoneDisplayBlock();
+    public static final Block LATERALLY_LYING_WITHER_SKELETON = new BoneDisplayBlock();
     public static final Block SKULL_ON_PIKE = new BoneDisplayBlock();
+    public static final Block WITHER_SKULL_ON_PIKE = new BoneDisplayBlock();
     public static final Block TORSO_PILE = new BoneDisplayBlock();
+    public static final Block WITHER_TORSO_PILE = new BoneDisplayBlock();
 
     public static final Block BLACK_URN = new UrnBlock();
     public static final Block WHITE_URN = new UrnBlock();
@@ -200,9 +204,13 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), WITHER_SKELETON_HAND);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "creeper_skeleton"), CREEPER_SKELETON);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), BONE_REMAINS);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_bone_remains"), WITHER_BONE_REMAINS);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), LATERALLY_LYING_SKELETON);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_wither_skeleton"), LATERALLY_LYING_WITHER_SKELETON);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), SKULL_ON_PIKE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_on_pike"), WITHER_SKULL_ON_PIKE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), TORSO_PILE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_torso_pile"), WITHER_TORSO_PILE);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brown_urn"), BROWN_URN);
