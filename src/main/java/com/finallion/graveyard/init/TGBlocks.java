@@ -159,6 +159,8 @@ public class TGBlocks {
 
     public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
     public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CORNER = new AltarCornerBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CENTER = new AltarCenterBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
     public static final Block LOWER_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
@@ -181,8 +183,6 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), TG_MOSS_BLOCK);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), TG_ROOTED_DIRT);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
-
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), DARK_IRON_TRAPDOOR);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), DARK_IRON_DOOR);
@@ -277,6 +277,9 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_corner"), ALTAR_CORNER);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_center"), ALTAR_CENTER);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), LOWER_BONE_STAFF);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);

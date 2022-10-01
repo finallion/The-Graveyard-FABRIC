@@ -96,7 +96,8 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     }
 
-    public boolean collides() {
+    @Override
+    public boolean canHit() {
         return false;
     }
 

@@ -1,32 +1,23 @@
 package com.finallion.graveyard.blocks;
 
 import com.finallion.graveyard.init.TGParticles;
-import com.finallion.graveyard.init.TGSounds;
-import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.*;
-import net.minecraft.util.BlockMirror;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
-public class AltarSideBlock extends Block {
+public class AltarCornerBlock extends Block {
     public static final DirectionProperty FACING;
 
-    public AltarSideBlock(Settings settings) {
+    public AltarCornerBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }

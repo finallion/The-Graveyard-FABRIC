@@ -93,9 +93,6 @@
   "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
   "block.graveyard.bricks_gravestone": "Bricks Gravestone",
 
-  "block.graveyard.altar": "Lich Altar",
-  "block.graveyard.altar_side": "Corrupted Deepslate",
-
   "item.graveyard.bone_dagger": "Bone Dagger",
   "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
   "item.graveyard.corruption": "Corruption",
@@ -124,8 +121,10 @@
   "block.graveyard.lower_bone_staff": "Ominous Bone Staff Fragment",
   "block.graveyard.middle_bone_staff": "Ominous Bone Staff Fragment",
   "block.graveyard.upper_bone_staff": "Ominous Bone Staff Fragment",
-  "item.graveyard.altar": "Altar",
-  "item.graveyard.altar_side": "Altar Decoration",
+  "block.graveyard.altar": "Altar",
+  "block.graveyard.altar_side": "Corrupted Deepslate Side",
+  "block.graveyard.altar_corner": "Corrupted Deepslate Corner",
+  "block.graveyard.altar_center": "Corrupted Deepslate Center",
   "item.graveyard.white_bone_staff": "Staff of Zatraq'gul",
   "item.graveyard.black_bone_staff": "Staff of Nortoq'gul",
   "item.graveyard.red_bone_staff": "Staff of Azrata'gul",

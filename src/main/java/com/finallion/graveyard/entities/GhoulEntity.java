@@ -162,6 +162,9 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        float limbSwingAmount = event.getLimbSwingAmount();
+        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
+
         /* SPAWN */
         if (getSpawnTimer() > 0) {
             event.getController().setAnimation(SPAWN_ANIMATION);
@@ -189,7 +192,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         }
 
         /* WALK */
-        if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) && !isRaging()) {
+        if ((getAnimationState() == ANIMATION_WALK || event.isMoving() || isMoving) && getAttackAnimTimer() <= 0 && !isRaging()) {
             if (isAttacking() && !isWet()) {
                 event.getController().setAnimation(RUNNING_ANIMATION);
             } else {

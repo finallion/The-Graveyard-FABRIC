@@ -146,7 +146,6 @@ public class TGJigsawStructure extends Structure {
             }
         }
 
-
         return StructurePoolBasedGenerator.generate(
                 context,
                 this.startPool,

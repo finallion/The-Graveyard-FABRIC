@@ -31,7 +31,7 @@ public class ServerPlayNetworkHandlerMixin {
     public ServerPlayerEntity player;
 
     @Inject(method = "onSignUpdate(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;Ljava/util/List;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void signUpdate(UpdateSignC2SPacket packet, List<FilteredMessage<String>> signText, CallbackInfo info) {
+    private void signUpdate(UpdateSignC2SPacket packet, List<FilteredMessage> signText, CallbackInfo info) {
         this.player.updateLastActionTime();
         ServerWorld serverWorld = this.player.getWorld();
         BlockPos blockPos = packet.getPos();
@@ -49,11 +49,11 @@ public class ServerPlayNetworkHandlerMixin {
                 }
 
                 for (int i = 0; i < signText.size(); ++i) {
-                    FilteredMessage<Text> filteredMessage = signText.get(i).map(Text::literal);
+                    FilteredMessage filteredMessage = (FilteredMessage)signText.get(i);
                     if (this.player.shouldFilterText()) {
-                        signBlockEntity.setTextOnRow(i, (Text)filteredMessage.filteredOrElse(ScreenTexts.EMPTY));
+                        signBlockEntity.setTextOnRow(i, Text.literal(filteredMessage.getString()));
                     } else {
-                        signBlockEntity.setTextOnRow(i, (Text)filteredMessage.raw(), (Text)filteredMessage.filteredOrElse(ScreenTexts.EMPTY));
+                        signBlockEntity.setTextOnRow(i, Text.literal(filteredMessage.raw()), Text.literal(filteredMessage.getString()));
                     }
                 }
 

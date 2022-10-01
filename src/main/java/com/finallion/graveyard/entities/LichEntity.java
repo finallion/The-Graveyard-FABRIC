@@ -120,6 +120,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private final int CORPSE_SPELL_DURATION = 400;
     private final int HUNT_COOLDOWN = 600;
     private final int HUNT_DURATION = 800;
+    private final int HEALING_DURATION = 700;
     protected static final EntityDimensions CRAWL_DIMENSIONS;
     // variables
     private int huntCooldownTicker = 100; // initial cooldown from spawn time until first spell, will be set in goal
@@ -282,7 +283,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 400.0F)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 22.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 30.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 18.0D)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 14.0D)
@@ -411,9 +412,9 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                     PlayerEntity player = iterator.next();
                     if (getPhaseInvulnerableTimer() == 0 || getPhaseInvulnerableTimer() % 300 == 0) {
                         for (int i = 0; i <= 3; i++) {
-                            BlockPos targetPos = new BlockPos(this.getX() + random.nextInt(15) + 3.0D, this.getY(), this.getZ() + random.nextInt(15) + 3.0D);
-                            if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir()) {
-                                player.teleport(this.getX() + random.nextInt(15) + 3.0D, this.getY(), this.getZ() + random.nextInt(15) + 3.0D);
+                            BlockPos targetPos = new BlockPos(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
+                            if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir() && !world.getBlockState(targetPos.down()).isAir()) {
+                                player.teleport(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
                                 break;
                             }
                         }
@@ -445,7 +446,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
             // if the invul (= hunt duration) runs out, set cooldown
             if (getPhaseInvulnerableTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
-                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 1.1D, homePos.getZ() + 0.5D);
+                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
                 setHuntStart(false);
@@ -460,7 +461,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         if (getPhase() == 2) {
             int phaseTwoTimer = getStartPhaseTwoAnimTimer();
             if (getPhaseInvulnerableTimer() == 0) {
-                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 1.1D, homePos.getZ() + 0.5D);
+                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION); // invul
             }
             setAnimationState(ANIMATION_START_PHASE_2);
@@ -513,7 +514,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             Iterator<PlayerEntity> iterator = playersInRange.iterator();
             while (iterator.hasNext()) {
                 PlayerEntity player = iterator.next();
-                if (getHealTimer() == 400) {
+                if (getHealTimer() == HEALING_DURATION) {
                     player.teleport(this.getX(), this.getY() - 15.0D, this.getZ());
                 }
                 if (!player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
@@ -747,13 +748,14 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         }
 
         for (int i = 10; i > 0; i--) {
-            BlockPos pos = new BlockPos(this.getBlockX() + random.nextInt(15) + 5, this.getBlockY(), this.getBlockZ() + random.nextInt(15) + 5);
+            BlockPos pos = new BlockPos(this.getBlockX() + MathHelper.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + MathHelper.nextInt(random, -15, 15));
             int amount = random.nextInt(5) + 1;
-            if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir()) {
+            if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir() && !world.getBlockState(pos.down()).isAir()) {
                 if (!hard) {
                     for (int ii = 0; ii < amount; ++ii) {
                         RevenantEntity revenant = TGEntities.REVENANT.create(world);
                         revenant.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                        revenant.setCanBurnInSunlight(false);
                         world.spawnEntity(revenant);
                     }
                 } else {
@@ -761,6 +763,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                         GhoulEntity ghoul = TGEntities.GHOUL.create(world);
                         ghoul.setVariant((byte) 10);
                         ghoul.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                        ghoul.setCanBurnInSunlight(false);
                         world.spawnEntity(ghoul);
                     }
                 }
@@ -1064,8 +1067,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
     public class SummonFallenCorpsesGoal extends Goal {
         protected final LichEntity lich;
-        private final int FALL_HEIGHT = 15;
-        private final int SQUARE_SIZE = 20;
+        private final int FALL_HEIGHT = 10;
+        private final int SQUARE_SIZE = 30;
         private final int CORPSE_SPAWN_RARITY_PLAYER = 9;
         private BlockPos pos;
         private List<PlayerEntity> list;
@@ -1088,14 +1091,17 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             setPhaseInvulTimer(CORPSE_SPELL_DURATION);
             setCorpseSpellTimer(400);
             playCorpseSpellSound();
-            this.lich.teleport(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 1.1D, this.lich.homePos.getZ() + 0.5D);
+            this.lich.teleport(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 0.5D, this.lich.homePos.getZ() + 0.5D);
 
             pos = this.lich.getBlockPos();
             list = getPlayersInRange(35.0D);
 
             for (int i = -SQUARE_SIZE; i < SQUARE_SIZE; i++) {
                 for (int ii = -SQUARE_SIZE; ii < SQUARE_SIZE; ii++) {
-                    positions.add(pos.add(i, FALL_HEIGHT, ii));
+                    BlockPos position = this.lich.homePos.down().down().add(i, 0, ii);
+                    if (world.getBlockState(position).isSolidBlock(world, position)) {
+                        positions.add(pos.add(i, FALL_HEIGHT, ii));
+                    }
                 }
             }
 
@@ -1130,11 +1136,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             }
 
             ServerWorld serverWorld = (ServerWorld) LichEntity.this.world;
-
             FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
             serverWorld.spawnEntity(corpse);
+
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
                 FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
@@ -1227,15 +1233,15 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         public boolean canStart() {
             return this.mob.getHealth() <= 300.0F
-                    && random.nextInt(20) == 0
-                    && this.mob.getHealTimer() <= -200
+                    && random.nextInt(30) == 0
+                    && this.mob.getHealTimer() <= -600
                     && this.mob.getLevitationDurationTimer() <= -60
                     && canSpellCast();
         }
 
         public void start() {
-            setHealTimer(400);
-            this.mob.teleport(homePos.getX() + 0.5D, homePos.getY() + 1.1D, homePos.getZ() + 0.5D);
+            setHealTimer(HEALING_DURATION);
+            this.mob.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
             playHealSound();
         }
 
@@ -1260,7 +1266,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         public void tick() {
             if (getHealTimer() > 1) {
                 setAnimationState(ANIMATION_SUMMON);
-                this.mob.heal(0.35F);
+                this.mob.heal(0.2F);
 
                 if (getHealTimer() == 1) {
                     setAnimationState(ANIMATION_IDLE);

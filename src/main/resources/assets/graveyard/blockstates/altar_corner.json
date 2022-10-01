@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "y": 0,
+      "model": "graveyard:block/altar_top_left"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:block/altar_top_right"
+    },
+    "facing=west": {
+      "y": 180,
+      "model": "graveyard:block/altar_bottom_left"
+    },
+    "facing=south": {
+      "y": 270,
+      "model": "graveyard:block/altar_bottom_right"
+    }
+  }
+}

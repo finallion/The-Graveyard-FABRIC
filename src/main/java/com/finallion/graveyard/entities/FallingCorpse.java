@@ -17,6 +17,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -40,7 +41,6 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         experiencePoints = 0;
-        setRotation(getRandom().nextInt(361));
     }
 
     public float getRotation() {
@@ -104,7 +104,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
             for (int i = 0; i < 20; i++) {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
                 BlockState state = this.world.getBlockState(pos);
-                if (!state.isAir()) {
+                if (!state.isAir() && state.isSolidBlock(world, pos)) {
                     //this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
                     MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
                     break;
@@ -119,7 +119,9 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     protected void mobTick() {
         if (levitationCounter > 0) {
             levitationCounter--;
-            this.setVelocity(this.getVelocity().x, 0, this.getVelocity().z);
+            this.setVelocity(this.getVelocity().add(0.0D, 0.04D, 0.0D));
+        } else {
+            this.setVelocity(this.getVelocity().add(0.0D, -0.04D, 0.0D));
         }
 
         // kill after despawn animation has played to avoid red death overlay
@@ -131,7 +133,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
             this.discard();
         }
 
-        if (world.getBlockState(this.getBlockPos().down()).isAir()) {
+        if (!world.getBlockState(this.getBlockPos().down()).isAir()) {
             setIsFalling(false);
         }
 

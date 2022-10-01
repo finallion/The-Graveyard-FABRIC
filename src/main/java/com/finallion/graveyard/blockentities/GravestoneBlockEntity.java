@@ -200,7 +200,7 @@ public class GravestoneBlockEntity extends BlockEntity {
             Style style = text.getStyle();
             ClickEvent clickEvent = style.getClickEvent();
             if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                player.getServer().getCommandManager().execute(this.getCommandSource(player), clickEvent.getValue());
+                player.getServer().getCommandManager().executeWithPrefix(this.getCommandSource(player), clickEvent.getValue());
             }
         }
 

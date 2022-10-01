@@ -50,8 +50,6 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), new BlockItem(TGBlocks.TG_ROOTED_DIRT, new FabricItemSettings()));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), new BlockItem(TGBlocks.TG_PODZOL, new FabricItemSettings()));
 
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar_side"), new BlockItem(TGBlocks.ALTAR_SIDE, new FabricItemSettings().group(TheGraveyard.GROUP)));
-
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "corruption"), new Item(new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_block"), new BlockItem(TGBlocks.DARK_IRON_BLOCK, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "dark_iron_ingot"), new Item(new FabricItemSettings().group(TheGraveyard.GROUP)));
@@ -182,6 +180,9 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin_base"), MANGROVE_COFFIN_BASE);
 
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar"), new BlockItem(TGBlocks.ALTAR, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar_side"), new BlockItem(TGBlocks.ALTAR_SIDE, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar_corner"), new BlockItem(TGBlocks.ALTAR_CORNER, new FabricItemSettings().group(TheGraveyard.GROUP)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar_center"), new BlockItem(TGBlocks.ALTAR_CENTER, new FabricItemSettings().group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), new BlockItem(TGBlocks.UPPER_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), new BlockItem(TGBlocks.MIDDLE_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), new BlockItem(TGBlocks.LOWER_BONE_STAFF, new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP)));

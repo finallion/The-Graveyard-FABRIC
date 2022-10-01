@@ -5,6 +5,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.FlightMoveControl;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
@@ -20,10 +23,17 @@ import java.util.Random;
 
 public abstract class HostileGraveyardEntity extends HostileEntity {
     private String name;
+    private static final TrackedData<Boolean> CAN_BURN_IN_SUNLIGHT;
 
     public HostileGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
         super(entityType, world);
         this.name = name;
+    }
+
+    @Override
+    protected void initDataTracker() {
+        this.dataTracker.startTracking(CAN_BURN_IN_SUNLIGHT, true);
+        super.initDataTracker();
     }
 
     @Override
@@ -33,6 +43,14 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
 
     protected boolean burnsInDaylight() {
         return true;
+    }
+
+    private boolean canBurnInSunlight() {
+        return dataTracker.get(CAN_BURN_IN_SUNLIGHT);
+    }
+
+    public void setCanBurnInSunlight(boolean bool) {
+        dataTracker.set(CAN_BURN_IN_SUNLIGHT, bool);
     }
 
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
@@ -50,7 +68,7 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
     @Override
     public void tickMovement() {
         if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get(name).canBurnInSunlight;
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {
@@ -80,6 +98,10 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
 
     public static boolean canSpawnInLight(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, net.minecraft.util.math.random.Random random) {
         return canSpawnIgnoreLightLevel(type, world, spawnReason, pos, random);
+    }
+
+    static {
+        CAN_BURN_IN_SUNLIGHT = DataTracker.registerData(HostileGraveyardEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
 
 

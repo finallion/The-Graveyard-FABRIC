@@ -148,7 +148,7 @@ public class GraveyardConfig implements Config {
                         "graveyard_biomes:haunted_lakes"),
                 Collections.emptyList(),30,3,false));
 
-        structureConfigEntries.putIfAbsent("large_graveyard", StructureConfigEntry.of(16, 15, 304812394,
+        structureConfigEntries.putIfAbsent("large_graveyard", StructureConfigEntry.of(25, 20, 304812394,
                 Arrays.asList(
                         "minecraft:taiga",
                         "minecraft:snowy_taiga",
@@ -251,13 +251,17 @@ public class GraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(30, 28, 258195719,
                 Arrays.asList(
                         "#c:ocean"),
-                Collections.emptyList(), 1,1,false));
-
-        structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of(23, 15, 367108394,
                 Arrays.asList(
-                        "#c:plains",
+                        "minecraft:cold_ocean",
+                        "minecraft:deep_cold_ocean",
+                        "minecraft:frozen_ocean",
+                        "minecraft:deep_frozen_ocean"
+                ), 1,1,false));
+
+        structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of(30, 26, 467108394,
+                Arrays.asList(
                         "#c:forest"),
-                Collections.emptyList(), 15,3,false));
+                Collections.emptyList(), 25,3,false));
 
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
