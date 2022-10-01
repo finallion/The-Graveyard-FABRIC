@@ -39,7 +39,9 @@ public class TGJigsawStructure extends Structure {
             new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 35, 1, 1),
             new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 45, 1, 3),
             new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 50, 1, 3));
+
     public static final Pool<SpawnSettings.SpawnEntry> EMPTY = Pool.of();
+
     public static final Pool<SpawnSettings.SpawnEntry> ILLAGER_SPAWNS = Pool.of(
             new SpawnSettings.SpawnEntry(EntityType.PILLAGER, 10, 1, 1),
             new SpawnSettings.SpawnEntry(EntityType.VINDICATOR, 1, 1, 1));
@@ -126,6 +128,18 @@ public class TGJigsawStructure extends Structure {
             if (!TGJigsawStructure.canGenerateUnderground(context, structureName)) {
                 return Optional.empty();
             }
+        } else if (structureName.equals("lich_prison")) {
+            ChunkPos chunkPos = context.chunkPos();
+            Random random = context.random();
+
+            int x = random.nextInt(chunkPos.getEndX() - chunkPos.getStartX()) + chunkPos.getStartX();
+            int z = random.nextInt(chunkPos.getEndZ() - chunkPos.getStartZ()) + chunkPos.getStartZ();
+            int y = 210;
+            blockpos = new BlockPos(x, y, z);
+
+            if (!TGJigsawStructure.canGenerateInTheAir(context, structureName)) {
+                return Optional.empty();
+            }
         } else {
             if (!TGJigsawStructure.canGenerate(context, terrainCheckSize, structureName, blockpos, maxHeightDifference)) {
                 return Optional.empty();
@@ -150,6 +164,15 @@ public class TGJigsawStructure extends Structure {
 
         return true;
     }
+
+    private static boolean canGenerateInTheAir(Context context, String name) {
+        if (!isCorrectBiome(context, name)) {
+            return false;
+        }
+
+        return true;
+    }
+
 
     private static boolean canGenerate(Context context, int size, String name, BlockPos centerOfChunk, int maxHeightDifference) {
         if (!isCorrectBiome(context, name)) {

@@ -2,6 +2,8 @@ package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
 import com.finallion.graveyard.init.TGSounds;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -15,8 +17,12 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -265,10 +271,25 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
             }
         }
 
-        if (getSpawnTimer() > 0) {
-            MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
-        }
         super.tickMovement();
+    }
+
+    @Override
+    public void tick() {
+        if (getSpawnTimer() > 0 && world != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+            Random random = this.getRandom();
+            BlockState blockState = this.getSteppingBlockState();
+            if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+                for(int i = 0; i < 30; ++i) {
+                    double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    double e = this.getY();
+                    double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    this.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                }
+            }
+        }
+        super.tick();
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {

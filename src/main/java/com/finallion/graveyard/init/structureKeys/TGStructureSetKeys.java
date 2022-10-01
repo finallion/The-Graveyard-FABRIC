@@ -21,6 +21,8 @@ public class TGStructureSetKeys {
     public static RegistryKey<StructureSet> ALTARS = of("altars");
     public static RegistryKey<StructureSet> GIANT_MUSHROOMS = of("giant_mushrooms");
     public static RegistryKey<StructureSet> CRYPTS = of("crypts");
+    public static RegistryKey<StructureSet> LICH_PRISONS = of("lich_prisons");
+    public static RegistryKey<StructureSet> RUINS = of("ruins");
 
     private static RegistryKey<StructureSet> of(String id) {
         return RegistryKey.of(Registry.STRUCTURE_SET_KEY, new Identifier(TheGraveyard.MOD_ID, id));

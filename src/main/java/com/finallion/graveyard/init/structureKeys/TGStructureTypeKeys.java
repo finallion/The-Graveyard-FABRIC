@@ -23,6 +23,8 @@ public class TGStructureTypeKeys {
     public static RegistryKey<Structure> ALTAR = of("altar");
     public static RegistryKey<Structure> GIANT_MUSHROOM = of("giant_mushroom");
     public static RegistryKey<Structure> CRYPT = of("crypt");
+    public static RegistryKey<Structure> LICH_PRISON = of("lich_prison");
+    public static RegistryKey<Structure> RUINS = of("ruins");
 
     private static RegistryKey<Structure> of(String id) {
         return RegistryKey.of(Registry.STRUCTURE_KEY, new Identifier(TheGraveyard.MOD_ID, id));

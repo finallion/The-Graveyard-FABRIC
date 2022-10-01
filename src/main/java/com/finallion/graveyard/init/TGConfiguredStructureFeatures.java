@@ -195,6 +195,30 @@ public class TGConfiguredStructureFeatures {
             )
     );
 
+    public static final RegistryEntry<Structure> LICH_PRISON_STRUCTURE_CONFIG = register(TGStructureTypeKeys.LICH_PRISON,
+            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("lich_prison"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.NONE),
+                    LichPrisonStructure.LichPrisonGenerator.STARTING_POOL, 1,
+                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
+                    TheGraveyard.config.structureConfigEntries.get("lich_prison").terrainCheckRadius,
+                    TheGraveyard.config.structureConfigEntries.get("lich_prison").maxTerrainHeightDifference,
+                    TheGraveyard.config.structureConfigEntries.get("lich_prison").biomeWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("lich_prison").biomeBlacklist,
+                    "lich_prison"
+            )
+    );
+
+    public static final RegistryEntry<Structure> RUINS_STRUCTURE_CONFIG = register(TGStructureTypeKeys.RUINS,
+            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("ruins"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
+                    RuinsStructure.RuinsGenerator.STARTING_POOL, 1,
+                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
+                    TheGraveyard.config.structureConfigEntries.get("ruins").terrainCheckRadius,
+                    TheGraveyard.config.structureConfigEntries.get("ruins").maxTerrainHeightDifference,
+                    TheGraveyard.config.structureConfigEntries.get("ruins").biomeWhitelist,
+                    TheGraveyard.config.structureConfigEntries.get("ruins").biomeBlacklist,
+                    "ruins"
+            )
+    );
+
 
     private static Config createConfig(TagKey<Biome> biomeTag, Map<SpawnGroup, StructureSpawns> spawns, GenerationStep.Feature featureStep, StructureTerrainAdaptation terrainAdaptation) {
         return new Config(BuiltinRegistries.BIOME.getOrCreateEntryList(biomeTag), spawns, featureStep, terrainAdaptation);
@@ -204,6 +228,7 @@ public class TGConfiguredStructureFeatures {
         structures.add(configuredStructureFeature);
         return BuiltinRegistries.add(BuiltinRegistries.STRUCTURE, key, configuredStructureFeature);
     }
+
     public static void init() {}
 
     private static Map<SpawnGroup, StructureSpawns> addMobSpawnsToStructure(String name) {

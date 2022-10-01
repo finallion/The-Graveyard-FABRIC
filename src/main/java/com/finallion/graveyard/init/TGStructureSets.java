@@ -7,6 +7,7 @@ import net.minecraft.structure.StructureSets;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.gen.chunk.placement.ConcentricRingsStructurePlacement;
 import net.minecraft.world.gen.chunk.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.gen.chunk.placement.SpreadType;
 
@@ -111,6 +112,20 @@ public class TGStructureSets {
                         TheGraveyard.config.structureConfigEntries.get("crypt").separation,
                         SpreadType.LINEAR,
                         TheGraveyard.config.structureConfigEntries.get("crypt").salt));
+
+        StructureSets.register(TGStructureSetKeys.LICH_PRISONS, TGConfiguredStructureFeatures.LICH_PRISON_STRUCTURE_CONFIG,
+                new RandomSpreadStructurePlacement(
+                        TheGraveyard.config.structureConfigEntries.get("lich_prison").spacing,
+                        TheGraveyard.config.structureConfigEntries.get("lich_prison").separation,
+                        SpreadType.LINEAR,
+                        TheGraveyard.config.structureConfigEntries.get("lich_prison").salt));
+
+        StructureSets.register(TGStructureSetKeys.RUINS, TGConfiguredStructureFeatures.RUINS_STRUCTURE_CONFIG,
+                new RandomSpreadStructurePlacement(
+                        TheGraveyard.config.structureConfigEntries.get("ruins").spacing,
+                        TheGraveyard.config.structureConfigEntries.get("ruins").separation,
+                        SpreadType.LINEAR,
+                        TheGraveyard.config.structureConfigEntries.get("ruins").salt));
 
     }
 

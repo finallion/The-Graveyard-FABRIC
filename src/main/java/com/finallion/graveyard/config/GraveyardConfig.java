@@ -248,6 +248,17 @@ public class GraveyardConfig implements Config {
                         "terralith:fractured_savanna"),
                 Collections.emptyList(), 4,3,false));
 
+        structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(30, 28, 258195719,
+                Arrays.asList(
+                        "#c:ocean"),
+                Collections.emptyList(), 1,1,false));
+
+        structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of(23, 15, 367108394,
+                Arrays.asList(
+                        "#c:plains",
+                        "#c:forest"),
+                Collections.emptyList(), 15,3,false));
+
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
         mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));

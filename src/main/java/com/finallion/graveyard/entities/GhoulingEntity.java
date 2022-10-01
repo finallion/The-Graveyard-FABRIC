@@ -10,6 +10,7 @@ import com.finallion.graveyard.init.TGItems;
 import com.finallion.graveyard.item.BoneStaffItem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -33,6 +34,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
@@ -41,7 +44,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -199,13 +204,22 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     }
 
     @Override
-    public void tickMovement() {
-        if (getSpawnTimer() > 0) {
-            MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+    public void tick() {
+        if (getSpawnTimer() > 0 && world != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+            Random random = this.getRandom();
+            BlockState blockState = this.getSteppingBlockState();
+            if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+                for(int i = 0; i < 30; ++i) {
+                    double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    double e = this.getY();
+                    double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    this.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                }
+            }
         }
-        super.tickMovement();
+        super.tick();
     }
-
     public int getAnimationState() {
         return this.dataTracker.get(ANIMATION);
     }
