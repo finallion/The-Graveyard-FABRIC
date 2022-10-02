@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 
 public class BoneStaffItem extends Item {
     private final byte ghoulVariant;
-    public Map<UUID, UUID> ownerGhoulingMapping = new HashMap<>();
+    public static Map<UUID, UUID> ownerGhoulingMapping = new HashMap<>();
 
     public BoneStaffItem(byte ghoulVariant) {
         super(new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP));
@@ -59,7 +59,7 @@ public class BoneStaffItem extends Item {
         Other way: a NBT to the player with its Ghoulings UUID ?
          */
 
-        if (player != null) {
+        if (player != null && !world.isClient()) {
             // TAG OWNER UUID CHECK
             /* Does the OwnerUUID in the NBT match the user of the staff*/
             if (stack.getNbt() != null && stack.getNbt().contains("OwnerUUID")) {
@@ -91,20 +91,17 @@ public class BoneStaffItem extends Item {
 
             if (!stack.getNbt().contains("OwnerUUID")) {
                 stack.getOrCreateNbt().putUuid("OwnerUUID", player.getUuid());
-                if (!world.isClient) player.sendMessage(Text.literal("I hear and obey..."));
+                player.sendMessage(Text.literal("I hear and obey..."));
             } else {
-                if (!world.isClient) player.sendMessage(Text.literal("Death... is a mere inconvenience."));
+                player.sendMessage(Text.literal("Death... is a mere inconvenience."));
             }
 
             /* END TAG INPUT */
-            if (!world.isClient()) {
-                ownerGhoulingMapping.putIfAbsent(ghouling.getUuid(), player.getUuid());
-            }
+            ownerGhoulingMapping.putIfAbsent(ghouling.getUuid(), player.getUuid());
 
             ghouling.setStaff(stack); // pass stack to ghouling
             ghouling.onSummoned();
             world.spawnEntity(ghouling);
-            player.getItemCooldownManager().set(this, 200);
             return ActionResult.SUCCESS;
         }
 
@@ -134,55 +131,54 @@ public class BoneStaffItem extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getMainHandStack();
         NbtCompound nbt = stack.getNbt();
-        if (!world.isClient) {
-            if (nbt != null && nbt.contains("GhoulingUUID") && nbt.contains("OwnerUUID")) {
-                if (user.getUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0) { // case wrong owner
-                    user.sendMessage(Text.literal("I don't obey your orders, you are no master of mine!"));
-                    return TypedActionResult.fail(stack);
-                } else {
-                    UUID ghoulingUUID = nbt.getUuid("GhoulingUUID");
-                    GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElse(null);
-                    if (ghouling != null) {
-                        if (user.isSneaking()) {
-                            ghouling.setTarget(null);
-                            ghouling.setAttacking(false);
-                            //ghouling.removeCollectGoal();
-                            //ghouling.setCanCollect(false);
-                            ghouling.teleport(user.getX(), user.getY(), user.getZ());
-                        } else {
-                            Predicate<Entity> predicate = entity -> {
-                                if (entity instanceof LivingEntity) {
-                                    if (entity instanceof TameableEntity tameableEntity) {
-                                        if (tameableEntity.getOwnerUuid() != null) {
-                                            return tameableEntity.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
-                                        }
-                                    } else if (entity instanceof GraveyardMinionEntity minion) {
-                                        if (minion.getOwnerUuid() != null) {
-                                            return minion.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
-                                        }
+        if (nbt != null && nbt.contains("GhoulingUUID") && nbt.contains("OwnerUUID")) {
+            if (user.getUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0) { // case wrong owner
+                user.sendMessage(Text.literal("I don't obey your orders, you are no master of mine!"));
+                return TypedActionResult.fail(stack);
+            } else {
+                UUID ghoulingUUID = nbt.getUuid("GhoulingUUID");
+                GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Objects::nonNull).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElse(null);
+                if (ghouling != null) {
+                    if (user.isSneaking()) {
+                        ghouling.setTarget(null);
+                        ghouling.setAttacking(false);
+                        //ghouling.removeCollectGoal();
+                        //ghouling.setCanCollect(false);
+                        ghouling.teleport(user.getX(), user.getY(), user.getZ());
+                    } else {
+                        Predicate<Entity> predicate = entity -> {
+                            if (entity instanceof LivingEntity) {
+                                if (entity instanceof TameableEntity tameableEntity) {
+                                    if (tameableEntity.getOwnerUuid() != null) {
+                                        return tameableEntity.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
                                     }
-                                    return true;
+                                } else if (entity instanceof GraveyardMinionEntity minion) {
+                                    if (minion.getOwnerUuid() != null) {
+                                        return minion.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
+                                    }
                                 }
-                                return false;
-                            };
-                            int distance = 100;
-                            Vec3d start = user.getEyePos();
-                            Vec3d rot = user.getRotationVec(1.0F).multiply(distance);
-                            Vec3d end = start.add(rot);
-                            Box box = user.getBoundingBox().stretch(rot).expand(1.0D);
-                            HitResult result = ProjectileUtil.raycast(user, start, end, box, predicate, distance * distance);
-                            if (result != null && result.getType() == HitResult.Type.ENTITY) {
-                                Entity entity = ((EntityHitResult) result).getEntity();
-                                if (entity instanceof LivingEntity livingEntity) {
-                                    ghouling.setTarget(livingEntity);
-                                    ghouling.setAttacking(true);
-                                }
+                                return true;
+                            }
+                            return false;
+                        };
+                        int distance = 100;
+                        Vec3d start = user.getEyePos();
+                        Vec3d rot = user.getRotationVec(1.0F).multiply(distance);
+                        Vec3d end = start.add(rot);
+                        Box box = user.getBoundingBox().stretch(rot).expand(1.0D);
+                        HitResult result = ProjectileUtil.raycast(user, start, end, box, predicate, distance * distance);
+                        if (result != null && result.getType() == HitResult.Type.ENTITY) {
+                            Entity entity = ((EntityHitResult) result).getEntity();
+                            if (entity instanceof LivingEntity livingEntity) {
+                                ghouling.setTarget(livingEntity);
+                                ghouling.setAttacking(true);
                             }
                         }
                     }
                 }
             }
         }
+
 
         return super.use(world, user, hand);
     }

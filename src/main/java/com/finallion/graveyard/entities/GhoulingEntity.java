@@ -108,6 +108,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     public static DefaultAttributeContainer.Builder createGhoulingAttributes() {
         return PathAwareEntity.createMobAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.4D)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 2.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 5.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
@@ -218,6 +219,12 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 }
             }
         }
+
+
+        //if (isAlive()) {
+        //    ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.putIfAbsent(this.getUuid(), getOwnerUuid());
+        //}
+
         super.tick();
     }
     public int getAnimationState() {
@@ -374,8 +381,9 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
 
     @Override
     public void onDeath(DamageSource damageSource) {
-        ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
-
+        if (!world.isClient()) {
+            BoneStaffItem.ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
+        }
         super.onDeath(damageSource);
     }
 
@@ -394,11 +402,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
                 inv.add(inventory.getStack(i).writeNbt(new NbtCompound()));
             }
             nbt.put("Inventory", inv);
-        }
-
-
-        if (isAlive()) {
-            ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.putIfAbsent(this.getUuid(), getOwnerUuid());
         }
     }
 

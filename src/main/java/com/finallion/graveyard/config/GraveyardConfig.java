@@ -79,6 +79,11 @@ public class GraveyardConfig implements Config {
         return "json5";
     }
 
+    @Override
+    public String getDirectory() {
+        return "graveyard";
+    }
+
     // generation booleans
     public boolean enabled(Identifier id) {
         return getStructure(id).enabled;
