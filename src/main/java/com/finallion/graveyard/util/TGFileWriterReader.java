@@ -1,4 +1,4 @@
-package com.finallion.graveyard.init;
+package com.finallion.graveyard.util;
 
 import com.finallion.graveyard.entities.horde.GraveyardHordeSpawner;
 import com.finallion.graveyard.item.BoneStaffItem;
