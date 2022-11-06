@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "1.11",
+  "version": "2.1",
 
   "name": "The Graveyard",
-  "description": "Adds new biomes, structures, mobs and blocks themed around the graveyard.",
+  "description": "Adds new bosses, structures, mobs and blocks themed around the graveyard.",
   "authors": [
     "Finallion"
   ],
@@ -33,7 +33,7 @@
     "fabricloader": ">=0.14.6",
     "fabric": "*",
     "minecraft": "1.19.x",
-    "geckolib3": ">=3.1.0",
+    "geckolib3": ">=3.1.35",
     "java": ">=17"
   }
 }

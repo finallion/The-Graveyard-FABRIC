@@ -71,7 +71,7 @@ public class GraveyardConfig implements Config {
 
     @Override
     public String getName() {
-        return "the-graveyard-2.0-config";
+        return "the-graveyard-2.1-config";
     }
 
     @Override
@@ -253,7 +253,7 @@ public class GraveyardConfig implements Config {
                         "terralith:fractured_savanna"),
                 Collections.emptyList(), 4,3,false));
 
-        structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(30, 28, 258195719,
+        structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(35, 30, 258195719,
                 Arrays.asList(
                         "#c:ocean"),
                 Arrays.asList(
@@ -263,7 +263,7 @@ public class GraveyardConfig implements Config {
                         "minecraft:deep_frozen_ocean"
                 ), 1,1,false));
 
-        structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of(30, 26, 467108394,
+        structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of(16, 12, 467108394,
                 Arrays.asList(
                         "#c:forest"),
                 Collections.emptyList(), 25,3,false));

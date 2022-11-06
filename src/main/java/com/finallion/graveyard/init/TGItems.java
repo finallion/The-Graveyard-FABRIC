@@ -150,7 +150,7 @@ public class TGItems {
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "wraith_spawn_egg"), new SpawnEggItem(TGEntities.WRAITH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
         //Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), new SpawnEggItem(TGEntities.LICH, 1644568, 16777215, new FabricItemSettings().group(TheGraveyard.GROUP)));
 
-        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, 1.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
+        Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), new DaggerItem(ToolMaterials.STONE, 4.0F, -2.0F, new Item.Settings().group(TheGraveyard.GROUP).maxCount(1)));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "white_bone_staff"), new BoneStaffItem((byte) 1));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "black_bone_staff"), new BoneStaffItem((byte) 2));
         Registry.register(Registry.ITEM, new Identifier(TheGraveyard.MOD_ID, "red_bone_staff"), new BoneStaffItem((byte) 3));

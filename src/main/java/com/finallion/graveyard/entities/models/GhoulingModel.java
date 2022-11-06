@@ -27,8 +27,8 @@ public class GhoulingModel extends AnimatedGeoModel<GhoulingEntity> {
     }
 
     @Override
-    public void setLivingAnimations(GhoulingEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
-        super.setLivingAnimations(entity, uniqueID, customPredicate);
+    public void setCustomAnimations(GhoulingEntity entity, int uniqueID, AnimationEvent customPredicate) {
+        super.setCustomAnimations(entity, uniqueID, customPredicate);
 
         switch (entity.getVariant()) {
             //case 0 -> texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/ghoul_skin1.png");

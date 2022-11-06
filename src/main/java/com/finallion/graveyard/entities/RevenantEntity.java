@@ -35,15 +35,17 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.UUID;
 
 public class RevenantEntity extends AngerableGraveyardEntity implements IAnimatable {
-    private AnimationFactory factory = new AnimationFactory(this);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A4");
     private static final EntityAttributeModifier SLOWNESS_EFFECT;
 
@@ -52,13 +54,14 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Boolean> CAN_REANIMATE;
 
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder FAKE_DEATH_ANIMATION = new AnimationBuilder().addAnimation("fake_death", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
-    private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", true);
-    private final AnimationBuilder REANIMATE_ANIMATION = new AnimationBuilder().addAnimation("reanimate", false);
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder FAKE_DEATH_ANIMATION = new AnimationBuilder().addAnimation("fake_death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder REANIMATE_ANIMATION = new AnimationBuilder().addAnimation("reanimate", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+
 
     protected static final int ANIMATION_IDLE = 0;
     protected static final int ANIMATION_WALK = 1;

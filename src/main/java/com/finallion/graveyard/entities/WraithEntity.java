@@ -55,24 +55,26 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.EnumSet;
 import java.util.UUID;
 
 public class WraithEntity extends HostileGraveyardEntity implements IAnimatable {
     private AttributeContainer attributeContainer;
-    private AnimationFactory factory = new AnimationFactory(this);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, EntityAttributeModifier.Operation.ADDITION);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
-    private final AnimationBuilder MOVE_ANIMATION = new AnimationBuilder().addAnimation("moving", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attacking", true);
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder MOVE_ANIMATION = new AnimationBuilder().addAnimation("moving", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attacking", ILoopType.EDefaultLoopTypes.LOOP);
     protected final byte ANIMATION_SPAWN = 0;
     protected final byte ANIMATION_IDLE = 1;
     protected final byte ANIMATION_DEATH = 2;

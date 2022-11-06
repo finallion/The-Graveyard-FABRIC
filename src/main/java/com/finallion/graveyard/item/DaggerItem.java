@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 public class DaggerItem extends SwordItem {
 
     public DaggerItem(ToolMaterial material, float effectiveDamage, float effectiveSpeed, Item.Settings settings) {
-        super(material, (int) (effectiveDamage - material.getAttackDamage()), 2 - effectiveSpeed, settings);
+        super(material, (int) (effectiveDamage - material.getAttackDamage()), effectiveSpeed, settings);
     }
 
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {

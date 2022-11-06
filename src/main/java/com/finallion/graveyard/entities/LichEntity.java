@@ -41,17 +41,19 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 public class LichEntity extends HostileEntity implements IAnimatable {
     private final ServerBossBar bossBar;
-    private AnimationFactory factory = new AnimationFactory(this);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
     protected static final TargetPredicate HEAD_TARGET_PREDICATE;
     private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
@@ -60,21 +62,21 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private static final EntityAttributeModifier CRAWL_SPEED_BOOST;
     private static final EntityAttributeModifier DMG_BOOST;
     // animation
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
-    private final AnimationBuilder CORPSE_SPELL_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", true);
-    private final AnimationBuilder START_PHASE_2_ANIMATION = new AnimationBuilder().addAnimation("phase_two", false);
-    private final AnimationBuilder PHASE_2_IDLE_ANIMATION = new AnimationBuilder().addAnimation("phase_two_idle", true);
-    private final AnimationBuilder PHASE_2_ATTACK_ANIMATION = new AnimationBuilder().addAnimation("phase_two_attack", true);
-    private final AnimationBuilder START_PHASE_3_ANIMATION = new AnimationBuilder().addAnimation("phase_three", false);
-    private final AnimationBuilder PHASE_3_ATTACK_ANIMATION = new AnimationBuilder().addAnimation("crawl", true);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder SHOOT_SKULL_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
-    private final AnimationBuilder SUMMON_ANIMATION = new AnimationBuilder().addAnimation("summon", true);
-    private final AnimationBuilder CONJURE_FANG_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", true);
-    private final AnimationBuilder STUNNED_ANIMATION = new AnimationBuilder().addAnimation("stunned", true);
-    private final AnimationBuilder CRAWL_IDLE_ANIMATION = new AnimationBuilder().addAnimation("crawl_idle", true);
+    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder CORPSE_SPELL_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder START_PHASE_2_ANIMATION = new AnimationBuilder().addAnimation("phase_two", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder PHASE_2_IDLE_ANIMATION = new AnimationBuilder().addAnimation("phase_two_idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder PHASE_2_ATTACK_ANIMATION = new AnimationBuilder().addAnimation("phase_two_attack", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder START_PHASE_3_ANIMATION = new AnimationBuilder().addAnimation("phase_three", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder PHASE_3_ATTACK_ANIMATION = new AnimationBuilder().addAnimation("crawl", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder SHOOT_SKULL_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder SUMMON_ANIMATION = new AnimationBuilder().addAnimation("summon", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder CONJURE_FANG_ANIMATION = new AnimationBuilder().addAnimation("corpse_spell", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder STUNNED_ANIMATION = new AnimationBuilder().addAnimation("stunned", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder CRAWL_IDLE_ANIMATION = new AnimationBuilder().addAnimation("crawl_idle", ILoopType.EDefaultLoopTypes.LOOP);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -154,7 +156,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         /* PHASE 1 */
         // takes one tick to get to this method (from mobtick)
         // do not attack when: the spawn invul timer is active, the phase is incorrect or the phase invul timer was set from a spell
-        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack()) {
+        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack() && getAnimationState() != ANIMATION_SPAWN) {
             setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2); // disables to call the animation immediately after (seems to be called multiple times per tick, per frame tick?)
             event.getController().setAnimation(ATTACK_ANIMATION);
             return PlayState.CONTINUE;
@@ -184,7 +186,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getInvulnerableTimer() <= 0) {
                 event.getController().setAnimation(IDLE_ANIMATION);
                 return PlayState.CONTINUE;
-            } else if (getAnimationState() != ANIMATION_SHOOT_SKULL || getAnimationState() != ANIMATION_SUMMON || getAnimationState() != ANIMATION_CONJURE_FANG || getAnimationState() != ANIMATION_CORPSE_SPELL) {
+            } else if ((getAnimationState() != ANIMATION_SHOOT_SKULL || getAnimationState() != ANIMATION_SUMMON || getAnimationState() != ANIMATION_CONJURE_FANG || getAnimationState() != ANIMATION_CORPSE_SPELL) && getAttackAnimTimer() > 0) {
                 setAnimationState(ANIMATION_MELEE);
             }
         }
@@ -238,7 +240,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         /* STOPPERS */
         // stops attack animation from looping
         if (getPhase() == 1) {
-            if (getAttackAnimTimer() <= 0) {
+            if (getAttackAnimTimer() <= 0 && getInvulnerableTimer() <= 0) {
                 setAnimationState(ANIMATION_IDLE);
                 return PlayState.STOP;
             }

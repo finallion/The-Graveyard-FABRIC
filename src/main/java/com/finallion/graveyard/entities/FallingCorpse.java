@@ -22,15 +22,17 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class FallingCorpse extends HostileEntity implements IAnimatable {
-    private AnimationFactory factory = new AnimationFactory(this);
-    private final AnimationBuilder FALLING_ANIMATION = new AnimationBuilder().addAnimation("falling", true);
-    private final AnimationBuilder LANDING_ANIMATION = new AnimationBuilder().addAnimation("landing", false).addAnimation("despawn", false);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimationBuilder FALLING_ANIMATION = new AnimationBuilder().addAnimation("falling", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder LANDING_ANIMATION = new AnimationBuilder().addAnimation("landing", ILoopType.EDefaultLoopTypes.PLAY_ONCE).addAnimation("despawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private static final TrackedData<Boolean> IS_FALLING;
     private static final TrackedData<Boolean> HAS_COLLIDED;
     private final float DAMAGE = 10.0F;
@@ -41,6 +43,7 @@ public class FallingCorpse extends HostileEntity implements IAnimatable {
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         experiencePoints = 0;
+        setRotation(getRandom().nextInt(361));
     }
 
     public float getRotation() {
