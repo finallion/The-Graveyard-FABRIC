@@ -1,10 +1,11 @@
 package com.finallion.graveyard.item;
 
 
+import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.TGAdvancements;
 import com.finallion.graveyard.init.TGItems;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +34,7 @@ public class DaggerItem extends SwordItem {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (target.isDead() && target instanceof VillagerEntity && attacker instanceof PlayerEntity playerEntity) {
+        if (target.isDead() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof PlayerEntity playerEntity) {
             ItemStack stackOffhand = attacker.getOffHandStack();
             if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD)) {
                 float blood = VialOfBlood.getBlood(stackOffhand);

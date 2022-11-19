@@ -106,6 +106,8 @@ public class GraveyardHordeSpawner implements Spawner {
         BlockState downState = world.getBlockState(pos.down());
         if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT)) {
             return false;
+        } else if (world.getLightLevel(pos) > 1) {
+            return false;
         } else if (blockState.getFluidState().isIn(FluidTags.WATER) || downState.getFluidState().isIn(FluidTags.WATER)) {
             return false;
         } else if (!HostileGraveyardEntity.canSpawnInDarkness(TGEntities.GHOUL, world, SpawnReason.PATROL, pos, random)) {

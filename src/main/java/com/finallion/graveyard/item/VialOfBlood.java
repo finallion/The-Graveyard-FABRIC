@@ -58,9 +58,10 @@ public class VialOfBlood extends Item {
         }
     }
 
-
+        /*
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
+
         BlockState blockState = context.getWorld().getBlockState(context.getBlockPos());
         ItemStack stack = context.getStack();
         PlayerEntity playerEntity = context.getPlayer();
@@ -126,7 +127,7 @@ public class VialOfBlood extends Item {
 
         return ActionResult.PASS;
     }
-
+*/
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {

@@ -14,12 +14,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.tag.TagEntry;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +45,7 @@ public class TheGraveyard implements ModInitializer {
         }
 
         /* GENERAL INIT REGISTRY */
+        TGParticles.init();
         TGAdvancements.init();
         TGSounds.init();
         TGBlocks.registerBlocks();
@@ -51,7 +55,6 @@ public class TheGraveyard implements ModInitializer {
 
         /* FEATURE INIT REGISTRY */
         TGStructureType.init();
-        TGTags.init();
         TGStructureSets.init();
         TGConfiguredStructureFeatures.init();
 

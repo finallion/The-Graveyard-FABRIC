@@ -66,12 +66,13 @@ public class GraveyardConfig implements Config {
     public final Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
     public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
+    public final Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
     public final Map<String, Integer> intEntries = new HashMap<>();
 
     @Override
     public String getName() {
-        return "the-graveyard-2.1-config";
+        return "the-graveyard-2.2-config";
     }
 
     @Override
@@ -253,7 +254,7 @@ public class GraveyardConfig implements Config {
                         "terralith:fractured_savanna"),
                 Collections.emptyList(), 4,3,false));
 
-        structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(35, 30, 258195719,
+        structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of(85, 70, 258195719,
                 Arrays.asList(
                         "#c:ocean"),
                 Arrays.asList(
@@ -278,6 +279,12 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
         mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,0, 2, 3, true, false, Arrays.asList("#c:in_overworld"), getMobBlacklist(), Collections.emptyList()));
+
+        corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", CorruptedChampionEntry.of(
+              400.0F, 200.0F, 30.0D, 40.0D, 18.0D, 14.0D, 0.15D,
+                800, 400,  700, 150, 5,
+                30, 5, 6000, List.of("entity.minecraft.villager"), List.of("item.minecraft.debug_stick"), true, true, true
+        ));
         Config.super.save();
     }
 

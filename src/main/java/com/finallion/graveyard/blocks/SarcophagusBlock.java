@@ -14,6 +14,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LidOpenable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -251,6 +252,10 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         BlockPos blockPos2 = blockPos.offset(direction);
         World world = ctx.getWorld();
         return world.getBlockState(blockPos2).canReplace(ctx) && world.getWorldBorder().contains(blockPos2) ? (BlockState) this.getDefaultState().with(FACING, direction).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER) : null;
+    }
+
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+        return false;
     }
 
     public static Direction getOppositePartDirection(BlockState state) {
