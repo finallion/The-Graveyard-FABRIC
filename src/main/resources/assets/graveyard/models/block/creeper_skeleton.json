@@ -1,4 +1,5 @@
 {
+	"ambientocclusion": false,
 	"textures": {
 		"0": "graveyard:block/creeper_skeleton_body",
 		"1": "graveyard:block/creeper_skeleton_front",

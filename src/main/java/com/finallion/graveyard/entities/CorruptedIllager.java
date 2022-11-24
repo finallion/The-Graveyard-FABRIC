@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
@@ -24,7 +25,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CorruptedIllager extends HordeGraveyardEntity {
-    private AttributeContainer attributeContainer;
 
     public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
         super(entityType, world, name);
@@ -69,11 +69,13 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null)
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D).add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D).build());
-        return attributeContainer;
+    public static DefaultAttributeContainer.Builder createCorruptedIllagerAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 2.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D);
     }
 
     public State getState() {

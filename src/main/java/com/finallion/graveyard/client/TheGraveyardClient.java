@@ -10,11 +10,13 @@ import com.finallion.graveyard.entities.renders.*;
 import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
+import com.finallion.graveyard.particles.GraveyardFogParticle;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -55,6 +57,14 @@ public class TheGraveyardClient implements ClientModInitializer {
                 TGBlocks.LEANING_WITHER_SKELETON,
                 TGBlocks.LYING_SKELETON,
                 TGBlocks.LYING_WITHER_SKELETON,
+                TGBlocks.BONE_REMAINS,
+                TGBlocks.SKULL_ON_PIKE,
+                TGBlocks.LATERALLY_LYING_SKELETON,
+                TGBlocks.TORSO_PILE,
+                TGBlocks.WITHER_BONE_REMAINS,
+                TGBlocks.WITHER_SKULL_ON_PIKE,
+                TGBlocks.LATERALLY_LYING_WITHER_SKELETON,
+                TGBlocks.WITHER_TORSO_PILE,
                 TGBlocks.DARK_IRON_BARS,
                 TGBlocks.TG_GRASS_BLOCK,
                 TGBlocks.SOUL_FIRE_BRAZIER,
@@ -96,22 +106,7 @@ public class TheGraveyardClient implements ClientModInitializer {
 
         EntityModelLayerRegistry.registerModelLayer(CORRUPTED_ILLAGER_MODEL_LAYER, CorruptedIllagerModel::getTexturedModelData);
 
-        // register block bench model
-        ModelLoadingRegistry.INSTANCE.registerModelProvider((ResourceManager manager, Consumer<Identifier> out) -> {
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_FOOT_LID);
-            out.accept(SarcophagusBlockEntityRenderer.SARCOPHAGUS_HEAD_LID);
 
-            for (Block block : TGBlocks.coffins) {
-                String woodType = block.getTranslationKey().split("\\.")[2];
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_foot_lid"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head"));
-                out.accept(new Identifier(TheGraveyard.MOD_ID, "block/" + woodType + "_head_lid"));
-            }
-
-        });
 
     }
 }

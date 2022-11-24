@@ -107,8 +107,8 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
 
     static {
         ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, EntityAttributeModifier.Operation.ADDITION);
-        ANGRY = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        PROVOKED = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        ANGRY = DataTracker.registerData(AngerableGraveyardEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        PROVOKED = DataTracker.registerData(AngerableGraveyardEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         ANGER_TIME = TimeHelper.betweenSeconds(20, 39);
     }
 

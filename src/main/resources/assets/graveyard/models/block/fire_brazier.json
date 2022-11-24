@@ -1,4 +1,5 @@
 {
+  "ambientocclusion": false,
   "parent": "minecraft:block/block",
   "textures": {
     "1": "graveyard:block/brazier",

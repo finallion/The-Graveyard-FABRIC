@@ -1,19 +1,19 @@
 {
   "variants": {
     "facing=north": {
-      "model": "graveyard:block/acacia_coffin_foot"
+      "model": "graveyard:item/acacia_coffin"
     },
     "facing=south": {
       "y": 180,
-      "model": "graveyard:block/acacia_coffin_foot"
+      "model": "graveyard:item/acacia_coffin"
     },
     "facing=east": {
       "y": 90,
-      "model": "graveyard:block/acacia_coffin_foot"
+      "model": "graveyard:item/acacia_coffin"
     },
     "facing=west": {
       "y": 270,
-      "model": "graveyard:block/acacia_coffin_foot"
+      "model": "graveyard:item/acacia_coffin"
     }
   }
 }

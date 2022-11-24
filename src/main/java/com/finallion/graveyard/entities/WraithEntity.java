@@ -15,10 +15,7 @@ import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -50,30 +47,33 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.EnumSet;
 import java.util.UUID;
 
 public class WraithEntity extends HostileGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
-    private AnimationFactory factory = new AnimationFactory(this);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, EntityAttributeModifier.Operation.ADDITION);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
-    private final AnimationBuilder MOVE_ANIMATION = new AnimationBuilder().addAnimation("moving", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attacking", true);
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder MOVE_ANIMATION = new AnimationBuilder().addAnimation("moving", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attacking", ILoopType.EDefaultLoopTypes.LOOP);
     protected final byte ANIMATION_SPAWN = 0;
     protected final byte ANIMATION_IDLE = 1;
     protected final byte ANIMATION_DEATH = 2;
@@ -206,15 +206,13 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
     }
 
+
+
     @Override
     public void tickMovement() {
         spawnTimer--;
         if (world.isClient() && spawnTimer >= 0 && spawned) {
             addParticles();
-        }
-
-        if (world.isClient() && spawnTimer >= 0) {
-            world.playSound(null, this.getBlockPos(), SoundEvents.BLOCK_SOUL_SAND_BREAK, SoundCategory.BLOCKS,2.5F, -10.0F);
         }
 
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
@@ -234,6 +232,13 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         super.tickMovement();
     }
 
+
+    @Nullable
+    @Override
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+        world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE,2.0F, -5.0F);
+        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    }
 
     public EntityGroup getGroup() {
         return EntityGroup.UNDEAD;
@@ -325,16 +330,14 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
         return PlayState.CONTINUE;
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
-                    .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35).build());
-        }
-        return attributeContainer;
+
+
+    public static DefaultAttributeContainer.Builder createWraithAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 27.5D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6.5D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
+                .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.35);
     }
 
 

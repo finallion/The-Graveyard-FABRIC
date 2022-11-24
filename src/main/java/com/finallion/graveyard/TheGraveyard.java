@@ -1,6 +1,7 @@
 package com.finallion.graveyard;
 
 import com.finallion.graveyard.config.GraveyardConfig;
+import com.finallion.graveyard.entities.*;
 import com.finallion.graveyard.init.*;
 
 
@@ -13,6 +14,7 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -37,7 +39,10 @@ public class TheGraveyard implements ModInitializer {
             ServerTickEvents.END_WORLD_TICK.register(new TGSpawner.OnWorldTick());
         }
 
+        /* GENERAL INIT REGISTRY */
+        //TGParticles.init();
         TGAdvancements.init();
+        TGSounds.init();
         TGBlocks.registerBlocks();
         TGItems.registerItems();
         TGEntities.registerEntities();
@@ -55,6 +60,16 @@ public class TheGraveyard implements ModInitializer {
             BiomeModification.init();
         }
 
+        /* ENTITY ATTRIBUTES */
+        FabricDefaultAttributeRegistry.register(TGEntities.REAPER, ReaperEntity.createReaperAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.ACOLYTE, CorruptedIllager.createCorruptedIllagerAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.CORRUPTED_VINDICATOR, CorruptedIllager.createCorruptedIllagerAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.CORRUPTED_PILLAGER, CorruptedPillager.createCorruptedPillagerAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.SKELETON_CREEPER, SkeletonCreeper.createSkeletonCreeperAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.GHOUL, GhoulEntity.createGhoulAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.REVENANT, RevenantEntity.createRevenantAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.WRAITH, WraithEntity.createWraithAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.NIGHTMARE, NightmareEntity.createNightmareAttributes());
     }
 
     public static ItemGroup GROUP = FabricItemGroupBuilder.create(

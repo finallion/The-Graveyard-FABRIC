@@ -5,6 +5,7 @@ import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.attribute.AttributeContainer;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -25,8 +26,6 @@ import java.util.Iterator;
 import java.util.Random;
 
 public class SkeletonCreeper extends CreeperEntity {
-    private AttributeContainer attributeContainer;
-    private static final TargetPredicate CLOSE_PLAYER_PREDICATE;
     private PlayerEntity closestPlayer;
     private final double explosionRadius = 3.5D;
 
@@ -34,16 +33,16 @@ public class SkeletonCreeper extends CreeperEntity {
         super(entityType, world);
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null)
-            attributeContainer = new AttributeContainer(CreeperEntity.createCreeperAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.29D).build());
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createSkeletonCreeperAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.29D);
     }
 
 
+
     public boolean canStart() {
-        this.closestPlayer = this.world.getClosestPlayer(SkeletonCreeper.CLOSE_PLAYER_PREDICATE, this);
+        this.closestPlayer = this.world.getClosestPlayer(this, 8.0D);
         return this.closestPlayer != null;
     }
 
@@ -111,10 +110,6 @@ public class SkeletonCreeper extends CreeperEntity {
 
         }
         super.tickMovement();
-    }
-
-    static {
-        CLOSE_PLAYER_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(8);
     }
 
 }

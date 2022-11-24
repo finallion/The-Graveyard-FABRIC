@@ -19,12 +19,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.mob.EvokerEntity;
 import net.minecraft.entity.mob.VindicatorEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.DefaultParticleType;
@@ -69,17 +71,21 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty OPEN;
     public static final BooleanProperty PLAYER_PLACED;
-    public static final BooleanProperty IS_COFFIN;
+    public static final BooleanProperty IS_COFFIN = BooleanProperty.of("is_coffin");
     public static final DirectionProperty FACING;
     protected static final VoxelShape DOUBLE_NORTH_SHAPE;
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
+    private final Item lid;
+    private final Item base;
 
-    public SarcophagusBlock(Settings settings, boolean isCoffin) {
+    public SarcophagusBlock(Settings settings, boolean isCoffin, Item lid, Item base) {
         super(settings, () -> TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
+        this.base = base;
+        this.lid = lid;
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -121,7 +127,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
                 return DOUBLE_EAST_SHAPE;
         }
     }
-
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         Random random = new Random();
@@ -253,14 +258,16 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         return world.getBlockState(blockPos2).canReplace(ctx) && world.getWorldBorder().contains(blockPos2) ? (BlockState) this.getDefaultState().with(FACING, direction).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER) : null;
     }
 
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+        return false;
+    }
+
     public static Direction getOppositePartDirection(BlockState state) {
         Direction direction = (Direction) state.get(FACING);
         return state.get(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
     }
 
-    /*
-    ANIMATION STUFF
-     */
+    // ANIMATION STUFF
 
     public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(ChestAnimationProgress progress) {
         return new DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction>() {
@@ -304,7 +311,13 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         return (BlockEntityType)this.entityTypeRetriever.get();
     }
 
+    public Item getLid() {
+        return this.lid;
+    }
 
+    public Item getBase() {
+        return this.base;
+    }
 
 
     static {
@@ -312,7 +325,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         OPEN = Properties.OPEN;
         WATERLOGGED = Properties.WATERLOGGED;
         FACING = Properties.HORIZONTAL_FACING;
-        IS_COFFIN = Properties.LIT;
         DOUBLE_NORTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_SOUTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
         DOUBLE_WEST_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);

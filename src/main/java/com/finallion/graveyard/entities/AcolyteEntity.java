@@ -47,13 +47,6 @@ public class AcolyteEntity extends CorruptedIllager {
 
 
     @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null)
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D).add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D).build());
-        return attributeContainer;
-    }
-
-    @Override
     public void playAmbientSound() {
         this.playSound(SoundEvents.ENTITY_VINDICATOR_AMBIENT, 1.0F, 1.0F);
     }

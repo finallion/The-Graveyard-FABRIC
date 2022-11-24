@@ -1,12 +1,13 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
+import com.finallion.graveyard.init.TGSounds;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -18,49 +19,61 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.TimeHelper;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
-    protected static final TrackedData<Byte> ANIMATION_MOVE_STATE = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", true);
-    private final AnimationBuilder RAGE_ANIMATION = new AnimationBuilder().addAnimation("rage", false);
-    private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", false);
-    protected static final byte ANIMATION_IDLE = 0;
-    protected static final byte ANIMATION_WALK = 1;
-    protected static final byte ANIMATION_RAGE = 2;
-    protected static final byte ANIMATION_DEATH = 3;
-    protected static final byte ANIMATION_RUNNING = 4;
-    protected static final byte ANIMATION_ATTACK = 5;
-    protected static final byte ANIMATION_SPAWN = 6;
-    protected static final TrackedData<Byte> VARIANT = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
-    private AnimationFactory factory = new AnimationFactory(this);
-    private static boolean canRage = false;
-    private static boolean canAttack = false;
-    private static final double ATTACK_RANGE = 4.5D;
-    private static int timeSinceLastAttack = 0;
-    private boolean spawned = false;
-    private int spawnTimer;
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A1");
+    private static final EntityAttributeModifier SLOWNESS_EFFECT;
 
-    //TODO: total rework of the class, this is a mess: replace attributes with DataTrackers, rework animation logic.
+    private static final TrackedData<Byte> VARIANT;
+    private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
+    private static final TrackedData<Integer> RAGE_ANIM_TIMER;
+    private static final TrackedData<Integer> ANIMATION;
+    private static final TrackedData<Integer> SPAWN_TIMER;
+    private static final TrackedData<Boolean> IS_RAGING;
+
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder RAGE_ANIMATION = new AnimationBuilder().addAnimation("rage", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    protected static final int ANIMATION_IDLE = 0;
+    protected static final int ANIMATION_WALK = 1;
+    protected static final int ANIMATION_RAGE = 2;
+    protected static final int ANIMATION_DEATH = 3;
+    protected static final int ANIMATION_RUNNING = 4;
+    protected static final int ANIMATION_MELEE = 5;
+    protected static final int ANIMATION_SPAWN = 6;
+
+    public final int ATTACK_ANIMATION_DURATION = 14;
+    public final int RAGE_ANIMATION_DURATION = 35;
+    public final int RAGE_ANIMATION_COOLDOWN = 300;
+
     public GhoulEntity(EntityType<? extends GhoulEntity> entityType, World world) {
         super(entityType, world, "ghoul");
     }
@@ -73,24 +86,17 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         byte variant = (byte) random.nextInt(8);
 
         this.dataTracker.startTracking(VARIANT, variant);
-        this.dataTracker.startTracking(ANIMATION_MOVE_STATE, (byte) 0);
-
-        spawnTimer = 30;
-        setState((byte) ANIMATION_SPAWN);
-    }
-
-    public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION_MOVE_STATE);
-    }
-
-    public void setState(byte time) {
-        this.dataTracker.set(ANIMATION_MOVE_STATE, time);
+        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+        this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
+        this.dataTracker.startTracking(RAGE_ANIM_TIMER, 0);
+        this.dataTracker.startTracking(SPAWN_TIMER, 32);
+        this.dataTracker.startTracking(IS_RAGING, false);
     }
 
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.add(2, new GhoulMeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
@@ -100,17 +106,14 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
     }
 
-    @Override
-    public AttributeContainer getAttributes() {
-        if (attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes()
-                    .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                    .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
-                    .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
-                    .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
-                    .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D).build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createGhoulAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.175D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
     }
 
 
@@ -118,98 +121,44 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         return EntityGroup.UNDEAD;
     }
 
-    @Override
-    public double squaredAttackRange(LivingEntity target) {
-        return ATTACK_RANGE;
+    public int getAnimationState() {
+        return this.dataTracker.get(ANIMATION);
     }
 
-    // to play the rage animation when the mob is spawned in and disengages
-    private void stopAttackAnimation() {
-        if (!this.hasAngerTime()) {
-            setState(ANIMATION_RAGE);
-        }
+    public void setAnimationState(int state) {
+        this.dataTracker.set(ANIMATION, state);
     }
 
-    @Override
-    public void tickMovement() {
-        // stops attack animation when anger time is 0 and sets rage animation to play
-        stopAttackAnimation();
-
-        timeSinceLastAttack--;
-        spawnTimer--;
-
-        if (world.isClient() && spawnTimer >= 0 && spawned) {
-            MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
-        }
-
-
-        if (!this.world.isClient()) {
-            if (this.getTarget() != null) {
-                canAttack = this.getTarget().squaredDistanceTo(this) <= ATTACK_RANGE;
-                canRage = this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE * 6;
-            }
-        }
-
-        super.tickMovement();
+    public int getAttackAnimTimer() {
+        return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
     }
 
-
-    private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
-        // new AnimationBuilder().addAnimation(first_anim, false (this is mandatory)).addAnimation(second_anim, false)
-        if (isAttacking() && canAttack && !(this.isDead() || this.getHealth() < 0.01)) {
-            timeSinceLastAttack = 25;
-            canAttack = false;
-            event.getController().setAnimation(ATTACK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        if (getAnimationState() == ANIMATION_RAGE  && !(this.isDead() || this.getHealth() < 0.01) && canRage) {
-            event.getController().setAnimation(RAGE_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        if (timeSinceLastAttack < 0) {
-            return PlayState.STOP;
-        }
-
-        return PlayState.CONTINUE;
+    public void setAttackAnimTimer(int time) {
+        this.dataTracker.set(ATTACK_ANIM_TIMER, time);
     }
 
-    private <E extends IAnimatable> PlayState predicate3(AnimationEvent<E> event) {
-        if (getAnimationState() == 6) {
-            event.getController().setAnimation(SPAWN_ANIMATION);
-            spawned = true;
-
-            return PlayState.CONTINUE;
-        }
-        return PlayState.CONTINUE;
+    public int getSpawnTimer() {
+        return (Integer) this.dataTracker.get(SPAWN_TIMER);
     }
 
+    public void setSpawnTimer(int ticks) {
+        this.dataTracker.set(SPAWN_TIMER, ticks);
+    }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
+    public int getRageAnimTimer() {
+        return (Integer) this.dataTracker.get(RAGE_ANIM_TIMER);
+    }
 
-        if (isDead()) {
-            event.getController().setAnimation(DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
+    public void setRageAnimTimer(int time) {
+        this.dataTracker.set(RAGE_ANIM_TIMER, time);
+    }
 
-        if (spawnTimer < 0) {
-            if (event.isMoving() || isMoving) {
-                if (isWet()) {
-                    event.getController().setAnimation(WALK_ANIMATION);
-                } else if (isAttacking() && timeSinceLastAttack < 0) {
-                    event.getController().setAnimation(RUNNING_ANIMATION);
-                } else if (timeSinceLastAttack < 0) {
-                    event.getController().setAnimation(WALK_ANIMATION);
-                }
-            } else if (timeSinceLastAttack < 0) {
-                event.getController().setAnimation(IDLE_ANIMATION);
-            }
-        }
-        return PlayState.CONTINUE;
+    public boolean isRaging() {
+        return this.dataTracker.get(IS_RAGING);
+    }
 
+    public void setIsRaging(boolean raging) {
+        this.dataTracker.set(IS_RAGING, raging);
     }
 
     public byte getVariant() {
@@ -220,23 +169,179 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
         dataTracker.set(VARIANT, variant);
     }
 
+
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        float limbSwingAmount = event.getLimbSwingAmount();
+        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
+
+        /* SPAWN */
+        if (getSpawnTimer() > 0) {
+            event.getController().setAnimation(SPAWN_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        /* DEATH */
+        if (this.isDead() || this.getHealth() < 0.01) {
+            event.getController().setAnimation(DEATH_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        /* ATTACK */
+        // takes one tick to get to this method (from mobtick)
+        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
+            setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
+            event.getController().setAnimation(ATTACK_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        /* RAGE */
+        if (getAnimationState() == ANIMATION_RAGE && getRageAnimTimer() == (RAGE_ANIMATION_DURATION - 1) && isRaging()) {
+            event.getController().setAnimation(RAGE_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        /* WALK */
+        if ((event.isMoving() || isMoving) && getAttackAnimTimer() <= 0 && !isRaging()) {
+            if (isAttacking() && !isWet()) {
+                event.getController().setAnimation(RUNNING_ANIMATION);
+            } else {
+                event.getController().setAnimation(WALK_ANIMATION);
+            }
+            return PlayState.CONTINUE;
+        }
+
+        if (!event.isMoving() && !isRaging()) {
+            event.getController().setAnimation(IDLE_ANIMATION);
+        }
+
+        /* IDLE */
+        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
+            setAnimationState(ANIMATION_IDLE);
+            return PlayState.CONTINUE;
+        }
+
+        /* STOPPERS */
+        // stops idle animation from looping
+        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
+            setAnimationState(ANIMATION_MELEE);
+            return PlayState.STOP;
+        }
+
+        // stops attack animation from looping
+        if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_RAGE) {
+            setAnimationState(ANIMATION_IDLE);
+            return PlayState.STOP;
+        }
+
+        return PlayState.CONTINUE;
+    }
+
+    protected void mobTick() {
+        // ATTACK TIMER
+        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+            setAnimationState(ANIMATION_MELEE);
+            if (getRageAnimTimer() <= 0) {
+                setRageAnimTimer(RAGE_ANIMATION_COOLDOWN);
+            }
+        }
+
+        // RAGE TIMER
+        if (this.getRageAnimTimer() == RAGE_ANIMATION_DURATION) {
+            this.playSound(TGSounds.GHOUL_ROAR, 1.0F, 1.0F);
+            setIsRaging(true);
+            setAnimationState(ANIMATION_RAGE);
+            aggroMobs();
+        }
+
+        if (this.getAttackAnimTimer() > 0) {
+            int animTimer = this.getAttackAnimTimer() - 1;
+            this.setAttackAnimTimer(animTimer);
+        }
+
+        if (this.getRageAnimTimer() > 0) {
+            int animTimer = this.getRageAnimTimer() - 1;
+            this.setRageAnimTimer(animTimer);
+        }
+
+        if (this.getRageAnimTimer() == 0) {
+            setIsRaging(false);
+        }
+
+        if (this.getSpawnTimer() > 0) {
+            this.setSpawnTimer(getSpawnTimer() - 1);
+        }
+
+        super.mobTick();
+    }
+
+    @Override
+    public void tickMovement() {
+        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        if (isRaging()) {
+            if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+                entityAttributeInstance.addTemporaryModifier(SLOWNESS_EFFECT);
+            }
+        } else {
+            if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+                entityAttributeInstance.removeModifier(SLOWNESS_EFFECT);
+            }
+        }
+
+        /*
+        if (getSpawnTimer() > 0 && world != null && world.isClient()) {
+            MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+        }
+
+         */
+
+        super.tickMovement();
+    }
+
+    @Override
+    public void tick() {
+        if (getSpawnTimer() > 0 && world != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+            Random random = this.getRandom();
+            BlockState blockState = this.getLandingBlockState();
+            if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+                for(int i = 0; i < 30; ++i) {
+                    double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    double e = this.getY();
+                    double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    this.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                }
+            }
+        }
+        super.tick();
+    }
+
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putByte("ghoulVariant", getVariant());
+        nbt.putInt("spawnTimer", getSpawnTimer());
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         setVariant(nbt.getByte("ghoulVariant"));
+        setSpawnTimer(nbt.getInt("spawnTimer"));
+    }
+
+    private void aggroMobs() {
+        if (getTarget() != null) {
+            List<HordeGraveyardEntity> monster = world.getEntitiesByClass(HordeGraveyardEntity.class, new Box(getBlockPos()).expand(45.0D), this::canSee);
+            for (HordeGraveyardEntity entity : monster) {
+                entity.setTarget(getTarget());
+            }
+        }
     }
 
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 3, this::predicate));
-        data.addAnimationController(new AnimationController(this, "controller2", 3, this::predicate2));
-        data.addAnimationController(new AnimationController(this, "controller3", 0, this::predicate3));
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
+
 
     @Override
     public AnimationFactory getFactory() {
@@ -257,6 +362,16 @@ public class GhoulEntity extends AngerableGraveyardEntity implements IAnimatable
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.0F, -5.0F);
+    }
+
+    static {
+        VARIANT = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
+        ATTACK_ANIM_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        RAGE_ANIM_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        ANIMATION = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        SPAWN_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        IS_RAGING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        SLOWNESS_EFFECT = new EntityAttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, EntityAttributeModifier.Operation.ADDITION);
     }
 
 }

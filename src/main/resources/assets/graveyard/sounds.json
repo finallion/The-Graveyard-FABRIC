@@ -1,0 +1,8 @@
+{
+  "entity.ghoul.roar": {
+    "sounds": [
+      "graveyard:entity/ghoul/roar"
+    ],
+    "subtitle": "subtitle.entity.graveyard.ghoul.roar"
+  }
+}

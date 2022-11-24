@@ -1,4 +1,5 @@
 {
+  "ambientocclusion": false,
   "textures": {
     "0": "minecraft:block/lime_terracotta",
     "particle": "minecraft:block/lime_terracotta"

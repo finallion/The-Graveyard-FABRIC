@@ -1,6 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.entities.ai.goals.NightmareMeleeAttackGoal;
 import com.finallion.graveyard.init.TGAdvancements;
 import com.finallion.graveyard.item.DaggerItem;
 import net.minecraft.block.BlockState;
@@ -9,10 +10,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -43,10 +41,12 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -54,19 +54,19 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class NightmareEntity extends HostileGraveyardEntity implements IAnimatable, Angerable {
-    private AttributeContainer attributeContainer;
-    private AnimationFactory factory = new AnimationFactory(this);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", false);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", true);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", true);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", true);
+    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
     protected static final byte ANIMATION_DEATH = 3;
     protected static final byte ANIMATION_ATTACK = 5;
     protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.BYTE);
-    private static boolean isInRange = false;
-    private static final double ATTACK_RANGE = 5.5D;
+    private static final TrackedData<Integer> ATTACK_ANIM_TIMER = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    public final int ATTACK_ANIMATION_DURATION = 20;
+
 
     private static final TrackedData<Boolean> ANGRY;
     private static final TrackedData<Boolean> PROVOKED;
@@ -86,6 +86,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         this.dataTracker.startTracking(ANGRY, false);
         this.dataTracker.startTracking(PROVOKED, false);
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+        this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
     }
 
     public int getAnimationState() {
@@ -106,10 +107,20 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         this.goalSelector.add(8, new LookAroundGoal(this));
         this.targetSelector.add(1, new TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
         this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
-        this.targetSelector.add(4, new UniversalAngerGoal<>(this, false));
+        this.targetSelector.add(4, new UniversalAngerGoal(this, false));
     }
 
     protected void mobTick() {
+        // ATTACK TIMER
+        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+            setAnimation(ANIMATION_ATTACK);
+        }
+
+        if (this.getAttackAnimTimer() > 0) {
+            int animTimer = this.getAttackAnimTimer() - 1;
+            this.setAttackAnimTimer(animTimer);
+        }
+
         if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {
             float f = this.getBrightnessAtEyes();
             if (f > 0.5F && this.world.isSkyVisible(this.getBlockPos()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
@@ -123,11 +134,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
 
 
     public void tickMovement() {
-        // hinders attack animation from playing when there is no target
-        isInAttackDistance();
-        // stops attack animation when anger time is 0 and sets idle animation to play
-        stopAttackAnimation();
-
         this.jumping = false;
 
         if (!this.world.isClient) {
@@ -152,51 +158,57 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         this.readAngerFromNbt(this.world, nbt);
     }
 
-    private void isInAttackDistance() {
-        if (this.getTarget() != null) {
-            if (this.getTarget().squaredDistanceTo(this) > ATTACK_RANGE) {
-                isInRange = false;
-                setState(ANIMATION_IDLE);
-            }
-        }
-    }
-
-    private void stopAttackAnimation() {
-        if (!this.hasAngerTime()) {
-            setState(ANIMATION_IDLE);
-        }
-    }
-
-
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        float limbSwingAmount = event.getLimbSwingAmount();
-        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
-
         if (isDead()) {
             event.getController().setAnimation(DEATH_ANIMATION);
             return PlayState.CONTINUE;
         }
 
-        if (getAnimationState() == ANIMATION_ATTACK && !(this.isDead() || this.getHealth() < 0.01)) {
+        /* ATTACK */
+        // takes one tick to get to this method (from mobtick)
+        if (getAnimationState() == ANIMATION_ATTACK && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
+            setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
             event.getController().setAnimation(ATTACK_ANIMATION);
             return PlayState.CONTINUE;
         }
 
-        if (event.isMoving() || isMoving) {
+        /* WALK */
+        if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0)) {
             event.getController().setAnimation(WALK_ANIMATION);
-        } else {
-            event.getController().setAnimation(IDLE_ANIMATION);
+            return PlayState.CONTINUE;
         }
+
+        /* IDLE */
+        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
+            event.getController().setAnimation(IDLE_ANIMATION);
+            return PlayState.CONTINUE;
+        }
+
+        /* STOPPERS */
+        // stops idle animation from looping
+        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
+            setAnimation(ANIMATION_ATTACK);
+            return PlayState.STOP;
+        }
+
+        // stops attack animation from looping
+        if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01)) {
+            setAnimation(ANIMATION_IDLE);
+            return PlayState.STOP;
+        }
+
         return PlayState.CONTINUE;
 
     }
-    @Override
-    public AttributeContainer getAttributes() {
-        if(attributeContainer == null) {
-            attributeContainer = new AttributeContainer(HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 50.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0D).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.19D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D).build());
-        }
-        return attributeContainer;
+
+    public static DefaultAttributeContainer.Builder createNightmareAttributes() {
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 45.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 10.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.19D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64.0D);
     }
 
     @Override
@@ -225,6 +237,14 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
 
     public void setAnimation(byte animation) {
         dataTracker.set(ANIMATION, animation);
+    }
+
+    public int getAttackAnimTimer() {
+        return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
+    }
+
+    public void setAttackAnimTimer(int time) {
+        this.dataTracker.set(ATTACK_ANIM_TIMER, time);
     }
 
 
@@ -385,57 +405,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
         ANGER_TIME = TimeHelper.betweenSeconds(20, 39);
     }
 
-    static class NightmareMeleeAttackGoal extends MeleeAttackGoal {
-        private final NightmareEntity nightmare;
-        private static final int ATTACK_DURATION = 20;
-        private int attackTimer = 0;
-
-        public NightmareMeleeAttackGoal(NightmareEntity nightmareEntity, double speed, boolean pauseWhenIdle) {
-            super(nightmareEntity, speed, pauseWhenIdle);
-            this.nightmare = nightmareEntity;
-        }
-
-        @Override
-        public void tick() {
-            LivingEntity livingEntity = this.mob.getTarget();
-            isInRange = false;
-            if (livingEntity != null) {
-                double squaredDistance = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-
-                // if target is in range, allow attack animation to actually happen
-                isInRange = squaredDistance < ATTACK_RANGE;
-            }
-            super.tick();
-        }
-
-        @Override
-        protected void attack(LivingEntity target, double squaredDistance) {
-            double d = ATTACK_RANGE;
-
-            if (squaredDistance <= d && attackTimer <= 0) {
-                nightmare.setState(ANIMATION_ATTACK);
-                attackTimer = ATTACK_DURATION;
-                this.mob.tryAttack(target);
-                attackTimer--;
-            }
-
-
-            if (attackTimer > 0) {
-                attackTimer--;
-
-                if (attackTimer == 0) {
-                    nightmare.setState(ANIMATION_WALK);
-                }
-            }
-
-        }
-
-        @Override
-        public void stop() {
-            super.stop();
-            attackTimer = 0;
-        }
-    }
 
     static class ChasePlayerGoal extends Goal {
         private final NightmareEntity nightmare;
