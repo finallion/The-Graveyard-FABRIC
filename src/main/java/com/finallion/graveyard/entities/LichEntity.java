@@ -99,6 +99,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     private static final TrackedData<Integer> PHASE_THREE_START_ANIM_TIMER; // main phase two to three
     private static final TrackedData<Integer> PHASE; // divides fight into three main phases and two transitions, animations are named after the main phase
     private static final TrackedData<Integer> ANIMATION;
+    private static final TrackedData<Integer> HUNT_TIMER;
     private static final TrackedData<Boolean> CAN_HUNT_START;
     private static final TrackedData<Boolean> CAN_MOVE;
 
@@ -309,16 +310,17 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             }
         }
 
-        if (getInvulnerableTimer() > 80 && random.nextInt(6) == 0 && getPhase() == 1) {
-            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1.0D + 3.5D - (float) getInvulnerableTimer() / 100, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
+        if (getInvulnerableTimer() > 60 && random.nextInt(6) == 0 && getPhase() == 1) {
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() - 1.0D + 3.5D - (float) getInvulnerableTimer() / 100, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
-        if (getInvulnerableTimer() > 80 && getPhase() == 1) {
+        if (getInvulnerableTimer() > 20 && getPhase() == 1) {
             MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 1.0F);
         }
 
+        Vec3d rotation = this.getRotationVec(1.0F);
         if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
-            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 1.0D, this.getY() - 1, this.getZ() - 1.0D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
+            MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() - 1, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
         if (getPhaseInvulnerableTimer() > 0 && getInvulnerableTimer() <= 0 && getPhase() == 1) {
@@ -329,7 +331,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() + 2.5D, this.getZ() - 0.75D, random.nextInt(100) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, true);
         }
 
-        Vec3d rotation = this.getRotationVec(1.0F);
         if (getHealTimer() > 0 && getPhase() == 1) {
             MathUtil.createParticleSpiral(this.getWorld(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, 0.0D, 0.0D, 0.0D, 350, ParticleTypes.SOUL_FIRE_FLAME, random);
         }
@@ -410,7 +411,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 Iterator<PlayerEntity> iterator = playersInRange.iterator();
                 while (iterator.hasNext()) {
                     PlayerEntity player = iterator.next();
-                    if ((getPhaseInvulnerableTimer() == 0 || getPhaseInvulnerableTimer() % 300 == 0) && !player.isCreative()) {
+                    if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                         for (int i = 0; i <= 3; i++) {
                             BlockPos targetPos = new BlockPos(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
                             if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir() && world.getBlockState(targetPos.down()).isSolidBlock(world, targetPos.down())) {
@@ -419,20 +420,21 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                             }
                         }
                     }
-                    if (getPhaseInvulnerableTimer() % 50 == 0 && !player.isCreative()) {
+                    if (getHuntTimer() % 50 == 0 && !player.isCreative()) {
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 80, 2));
                     }
                 }
 
                 setCanMove(true);
-                if (getPhaseInvulnerableTimer() == 0) {
+                if (getHuntTimer() == 0) {
                     playHuntSound();
+                    setHuntTimer(HUNT_DURATION);
                     if (TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
-                        this.setPhaseInvulTimer(HUNT_DURATION); // acts as hunt duration counter
+                        this.setPhaseInvulTimer(HUNT_DURATION);
                     }
                 }
 
-                if (getPhaseInvulnerableTimer() == 400) {
+                if (getHuntTimer() == 400) {
                     playHuntSound();
                 }
                 setAnimationState(ANIMATION_PHASE_2_ATTACK);
@@ -446,8 +448,8 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 }
             }
 
-            // if the invul (= hunt duration) runs out, set cooldown
-            if (getPhaseInvulnerableTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
+            // if the hunt runs out, set cooldown
+            if (getHuntTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
                 this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
@@ -455,6 +457,11 @@ public class LichEntity extends HostileEntity implements IAnimatable {
                 setCanMove(false);
                 entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
                 entityAttributeDmgInstance.removeModifier(DMG_BOOST);
+            }
+
+            if (this.getHuntTimer() > 0) {
+                int timer = getHuntTimer() - 1;
+                this.setHuntTimer(timer);
             }
         }
         /* END PHASE 3 FIGHT LOGIC */
@@ -484,6 +491,20 @@ public class LichEntity extends HostileEntity implements IAnimatable {
 
         /* TRANSITION MAIN PHASE TWO to THREE, == PHASE FOUR */
         if (getPhase() == 4) {
+            // config adaption
+            if (!TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells && canHuntStart()) {
+                EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+                EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+
+                this.teleport(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
+                this.setHuntCooldownTicker(HUNT_COOLDOWN);
+                setAnimationState(ANIMATION_STUNNED);
+                setHuntStart(false);
+                setCanMove(false);
+                entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
+                entityAttributeDmgInstance.removeModifier(DMG_BOOST);
+            }
+
             int phaseThreeTimer = getStartPhaseThreeAnimTimer();
             if (getPhaseInvulnerableTimer() == 0) {
                 setPhaseInvulTimer(START_PHASE_THREE_ANIMATION_DURATION); // invul
@@ -503,7 +524,6 @@ public class LichEntity extends HostileEntity implements IAnimatable {
             }
         }
         /* END TRANSITION MAIN PHASE TWO TO THREE */
-
 
         if (this.getPhaseInvulnerableTimer() > 0) {
             int timer = getPhaseInvulnerableTimer() - 1;
@@ -856,6 +876,15 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         this.dataTracker.set(PHASE_INVUL_TIMER, ticks);
     }
 
+    public int getHuntTimer() {
+        return (Integer) this.dataTracker.get(HUNT_TIMER);
+    }
+
+    public void setHuntTimer(int ticks) {
+        this.dataTracker.set(HUNT_TIMER, ticks);
+    }
+
+
     public int getAnimationState() {
         return this.dataTracker.get(ANIMATION);
     }
@@ -972,6 +1001,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
         super.initDataTracker();
         this.dataTracker.startTracking(CAN_MOVE, false);
         this.dataTracker.startTracking(INVUL_TIMER, 0);
+        this.dataTracker.startTracking(HUNT_TIMER, 0);
         this.dataTracker.startTracking(FIGHT_DURATION_TIMER, 0);
         this.dataTracker.startTracking(HEAL_DURATION_TIMER, 0);
         this.dataTracker.startTracking(LEVITATION_DURATION_TIMER, 0);
@@ -1047,6 +1077,7 @@ public class LichEntity extends HostileEntity implements IAnimatable {
     static {
         INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         PHASE_INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        HUNT_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ATTACK_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         PHASE_TWO_START_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         PHASE_THREE_START_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
