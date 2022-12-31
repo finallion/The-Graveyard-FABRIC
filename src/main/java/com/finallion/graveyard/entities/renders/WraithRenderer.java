@@ -12,13 +12,14 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
 
     public WraithRenderer(EntityRendererFactory.Context context) {
         super(context, new WraithModel());
-        this.addLayer(new WraithEyesFeatureRenderer(this));
+        this.addRenderLayer(new WraithEyesFeatureRenderer(this));
         this.shadowRadius = 0.3F;
     }
 
@@ -29,7 +30,8 @@ public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
     }
 
     @Override
-    public RenderLayer getRenderType(WraithEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
-        return RenderLayer.getEntityTranslucent(getTexture(animatable));
+    public RenderLayer getRenderType(WraithEntity animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
+        return RenderLayer.getEntityTranslucent(texture);
     }
+
 }

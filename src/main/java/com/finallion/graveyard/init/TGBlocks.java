@@ -9,9 +9,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,118 +172,118 @@ public class TGBlocks {
     //public static final Block ROTTEN_SPRUCE_LOG = new PillarBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
 
     public static void registerBlocks() {
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_stone"), TG_STONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_diorite"), TG_DIORITE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_granite"), TG_GRANITE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_andesite"), TG_ANDESITE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_dirt"), TG_DIRT);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_coarse_dirt"), TG_COARSE_DIRT);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_tuff"), TG_TUFF);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_grass_block"), TG_GRASS_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), TG_MOSS_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), TG_ROOTED_DIRT);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), TG_DEEPSLATE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_stone"), TG_STONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_diorite"), TG_DIORITE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_granite"), TG_GRANITE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_andesite"), TG_ANDESITE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_dirt"), TG_DIRT);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_coarse_dirt"), TG_COARSE_DIRT);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_tuff"), TG_TUFF);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_grass_block"), TG_GRASS_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), TG_MOSS_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_rooted_dirt"), TG_ROOTED_DIRT);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "tg_podzol"), TG_PODZOL);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), DARK_IRON_TRAPDOOR);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), DARK_IRON_DOOR);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_block"), DARK_IRON_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), DARK_IRON_BARS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "soul_fire_brazier"), SOUL_FIRE_BRAZIER);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "fire_brazier"), FIRE_BRAZIER);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "candle_holder"), CANDLE_HOLDER);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "pedestal"), PEDESTAL);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_with_rib_cage"), SKULL_WITH_RIB_CAGE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_skeleton"), LEANING_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_pile"), SKULL_PILE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lying_skeleton"), LYING_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skeleton_hand"), SKELETON_HAND);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_with_rib_cage"), WITHER_SKULL_WITH_RIB_CAGE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_wither_skeleton"), LEANING_WITHER_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_pile"), WITHER_SKULL_PILE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lying_wither_skeleton"), LYING_WITHER_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), WITHER_SKELETON_HAND);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "creeper_skeleton"), CREEPER_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), BONE_REMAINS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_bone_remains"), WITHER_BONE_REMAINS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), LATERALLY_LYING_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_wither_skeleton"), LATERALLY_LYING_WITHER_SKELETON);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), SKULL_ON_PIKE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_on_pike"), WITHER_SKULL_ON_PIKE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), TORSO_PILE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_torso_pile"), WITHER_TORSO_PILE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_trapdoor"), DARK_IRON_TRAPDOOR);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_door"), DARK_IRON_DOOR);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_block"), DARK_IRON_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_iron_bars"), DARK_IRON_BARS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "soul_fire_brazier"), SOUL_FIRE_BRAZIER);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "fire_brazier"), FIRE_BRAZIER);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "candle_holder"), CANDLE_HOLDER);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "pedestal"), PEDESTAL);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_with_rib_cage"), SKULL_WITH_RIB_CAGE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_skeleton"), LEANING_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_pile"), SKULL_PILE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lying_skeleton"), LYING_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skeleton_hand"), SKELETON_HAND);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_with_rib_cage"), WITHER_SKULL_WITH_RIB_CAGE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "leaning_wither_skeleton"), LEANING_WITHER_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_pile"), WITHER_SKULL_PILE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lying_wither_skeleton"), LYING_WITHER_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skeleton_hand"), WITHER_SKELETON_HAND);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "creeper_skeleton"), CREEPER_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bone_remains"), BONE_REMAINS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_bone_remains"), WITHER_BONE_REMAINS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), LATERALLY_LYING_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_wither_skeleton"), LATERALLY_LYING_WITHER_SKELETON);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "skull_on_pike"), SKULL_ON_PIKE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_on_pike"), WITHER_SKULL_ON_PIKE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), TORSO_PILE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_torso_pile"), WITHER_TORSO_PILE);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brown_urn"), BROWN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "blue_urn"), BLUE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "light_blue_urn"), LIGHT_BLUE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cyan_urn"), CYAN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gray_urn"), GRAY_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "light_gray_urn"), LIGHT_GRAY_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "white_urn"), WHITE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "purple_urn"), PURPLE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "magenta_urn"), MAGENTA_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "pink_urn"), PINK_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lime_urn"), LIME_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "green_urn"), GREEN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "red_urn"), RED_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "orange_urn"), ORANGE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "yellow_urn"), YELLOW_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brown_urn"), BROWN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "blue_urn"), BLUE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "light_blue_urn"), LIGHT_BLUE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cyan_urn"), CYAN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gray_urn"), GRAY_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "light_gray_urn"), LIGHT_GRAY_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "white_urn"), WHITE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "purple_urn"), PURPLE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "magenta_urn"), MAGENTA_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "pink_urn"), PINK_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lime_urn"), LIME_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "green_urn"), GREEN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "red_urn"), RED_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "orange_urn"), ORANGE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "yellow_urn"), YELLOW_URN);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_black_urn"), SMALL_BLACK_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_brown_urn"), SMALL_BROWN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_blue_urn"), SMALL_BLUE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_light_blue_urn"), SMALL_LIGHT_BLUE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_cyan_urn"), SMALL_CYAN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_gray_urn"), SMALL_GRAY_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_light_gray_urn"), SMALL_LIGHT_GRAY_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_white_urn"), SMALL_WHITE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_purple_urn"), SMALL_PURPLE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_magenta_urn"), SMALL_MAGENTA_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_pink_urn"), SMALL_PINK_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_lime_urn"), SMALL_LIME_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_green_urn"), SMALL_GREEN_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_red_urn"), SMALL_RED_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_orange_urn"), SMALL_ORANGE_URN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_yellow_urn"), SMALL_YELLOW_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_black_urn"), SMALL_BLACK_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_brown_urn"), SMALL_BROWN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_blue_urn"), SMALL_BLUE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_light_blue_urn"), SMALL_LIGHT_BLUE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_cyan_urn"), SMALL_CYAN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_gray_urn"), SMALL_GRAY_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_light_gray_urn"), SMALL_LIGHT_GRAY_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_white_urn"), SMALL_WHITE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_purple_urn"), SMALL_PURPLE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_magenta_urn"), SMALL_MAGENTA_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_pink_urn"), SMALL_PINK_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_lime_urn"), SMALL_LIME_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_green_urn"), SMALL_GREEN_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_red_urn"), SMALL_RED_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_orange_urn"), SMALL_ORANGE_URN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "small_yellow_urn"), SMALL_YELLOW_URN);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "vase_block"), VASE_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "vase_block"), VASE_BLOCK);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gravestone"), GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cobblestone_gravestone"), COBBLESTONE_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "blackstone_gravestone"), BLACKSTONE_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cracked_blackstone_gravestone"), CRACKED_BLACKSTONE_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "stone_bricks_gravestone"), STONE_BRICKS_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_stone_bricks_gravestone"), MOSSY_STONE_BRICKS_GRAVESTONE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bricks_gravestone"), BRICKS_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gravestone"), GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cobblestone_gravestone"), COBBLESTONE_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_cobblestone_gravestone"), MOSSY_COBBLESTONE_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "deepslate_gravestone"), DEEPSLATE_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "blackstone_gravestone"), BLACKSTONE_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cracked_blackstone_gravestone"), CRACKED_BLACKSTONE_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "stone_bricks_gravestone"), STONE_BRICKS_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_stone_bricks_gravestone"), MOSSY_STONE_BRICKS_GRAVESTONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bricks_gravestone"), BRICKS_GRAVESTONE);
 
         /*
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), ROTTEN_SPRUCE_STAIRS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_slab"), ROTTEN_SPRUCE_SLAB);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_log"), ROTTEN_SPRUCE_LOG);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_stairs"), ROTTEN_SPRUCE_STAIRS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_slab"), ROTTEN_SPRUCE_SLAB);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_log"), ROTTEN_SPRUCE_LOG);
          */
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), SARCOPHAGUS);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), OAK_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), SPRUCE_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), DARK_OAK_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "birch_coffin"), BIRCH_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), JUNGLE_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), ACACIA_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sarcophagus"), SARCOPHAGUS);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "oak_coffin"), OAK_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "spruce_coffin"), SPRUCE_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "dark_oak_coffin"), DARK_OAK_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "birch_coffin"), BIRCH_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "jungle_coffin"), JUNGLE_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "acacia_coffin"), ACACIA_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
 
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_corner"), ALTAR_CORNER);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_center"), ALTAR_CENTER);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), LOWER_BONE_STAFF);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
-        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_corner"), ALTAR_CORNER);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_center"), ALTAR_CENTER);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), LOWER_BONE_STAFF);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);
 
 
         coffins.add(OAK_COFFIN);
@@ -296,7 +297,7 @@ public class TGBlocks {
         coffins.add(MANGROVE_COFFIN);
     }
 
-    public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
+    public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
             GRAVESTONE,
             COBBLESTONE_GRAVESTONE,
             MOSSY_COBBLESTONE_GRAVESTONE,
@@ -308,7 +309,7 @@ public class TGBlocks {
             BRICKS_GRAVESTONE).build(null));
 
 
-    public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
+    public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
             BLACK_URN,
             BLUE_URN,
             LIGHT_BLUE_URN,
@@ -326,7 +327,7 @@ public class TGBlocks {
             LIME_URN,
             WHITE_URN).build(null));
 
-    public static final BlockEntityType<SarcophagusBlockEntity> SARCOPHAGUS_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_block_entity"), FabricBlockEntityTypeBuilder.create(SarcophagusBlockEntity::new,
+    public static final BlockEntityType<SarcophagusBlockEntity> SARCOPHAGUS_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "sarcophagus_block_entity"), FabricBlockEntityTypeBuilder.create(SarcophagusBlockEntity::new,
             SARCOPHAGUS,
             OAK_COFFIN,
             DARK_OAK_COFFIN,
@@ -338,7 +339,7 @@ public class TGBlocks {
             SPRUCE_COFFIN,
             MANGROVE_COFFIN).build(null));
 
-    public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
+    public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,
             FIRE_BRAZIER).build(null));
 

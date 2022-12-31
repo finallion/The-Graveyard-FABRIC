@@ -17,6 +17,7 @@ import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -39,9 +40,10 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     }
 
     @Override
-    public Packet<?> createSpawnPacket() {
+    public Packet<ClientPlayPacketListener> createSpawnPacket() {
         return GraveyardEntitySpawnPacket.createPacket(this);
     }
+
 
     protected float getDrag() {
         return this.isCharged() ? 0.73F : super.getDrag();
@@ -89,8 +91,9 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
         if (!this.world.isClient) {
-            Explosion.DestructionType destructionType = Explosion.DestructionType.NONE;
-            this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, destructionType);
+            Explosion.DestructionType destructionType = Explosion.DestructionType.KEEP;
+            World.ExplosionSourceType sourceType = World.ExplosionSourceType.NONE;
+            this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, sourceType);
             this.discard();
         }
 

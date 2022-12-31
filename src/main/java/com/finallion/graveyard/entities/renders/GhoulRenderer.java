@@ -4,7 +4,7 @@ import com.finallion.graveyard.entities.GhoulEntity;
 import com.finallion.graveyard.entities.models.BaseGhoulModel;
 import com.finallion.graveyard.entities.renders.features.GhoulEyesFeatureRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class GhoulRenderer extends GeoEntityRenderer<GhoulEntity> {
 

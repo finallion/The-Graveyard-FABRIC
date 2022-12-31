@@ -24,10 +24,10 @@ import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -38,27 +38,26 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class NightmareEntity extends HostileGraveyardEntity implements IAnimatable, Angerable {
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
+public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity, Angerable {
+    private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
     protected static final byte ANIMATION_DEATH = 3;
@@ -159,49 +158,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
     }
 
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (isDead()) {
-            event.getController().setAnimation(DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* ATTACK */
-        // takes one tick to get to this method (from mobtick)
-        if (getAnimationState() == ANIMATION_ATTACK && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
-            setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-            event.getController().setAnimation(ATTACK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* WALK */
-        if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0)) {
-            event.getController().setAnimation(WALK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* IDLE */
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
-            event.getController().setAnimation(IDLE_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* STOPPERS */
-        // stops idle animation from looping
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-            setAnimation(ANIMATION_ATTACK);
-            return PlayState.STOP;
-        }
-
-        // stops attack animation from looping
-        if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01)) {
-            setAnimation(ANIMATION_IDLE);
-            return PlayState.STOP;
-        }
-
-        return PlayState.CONTINUE;
-
-    }
-
     public static DefaultAttributeContainer.Builder createNightmareAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 45.0D)
@@ -248,15 +204,56 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
     }
 
 
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 2, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
+        data.add(new AnimationController(this, "controller", 2, event -> {
+            if (isDead()) {
+                event.getController().setAnimation(DEATH_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* ATTACK */
+            // takes one tick to get to this method (from mobtick)
+            if (getAnimationState() == ANIMATION_ATTACK && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
+                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
+                event.getController().setAnimation(ATTACK_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* WALK */
+            if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0)) {
+                event.getController().setAnimation(WALK_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* IDLE */
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
+                event.getController().setAnimation(IDLE_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* STOPPERS */
+            // stops idle animation from looping
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
+                setAnimation(ANIMATION_ATTACK);
+                return PlayState.STOP;
+            }
+
+            // stops attack animation from looping
+            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01)) {
+                setAnimation(ANIMATION_IDLE);
+                return PlayState.STOP;
+            }
+
+            return PlayState.CONTINUE;
+        }));
     }
 
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return factory;
     }
+
 
 
     @Override

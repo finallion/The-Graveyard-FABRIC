@@ -14,8 +14,8 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
             if (blockEntity instanceof MobSpawnerBlockEntity) {
                 NbtCompound nbtCompound = structureBlockInfo2.nbt.getCompound("SpawnData");
                 if (nbtCompound.toString().contains("wither_skeleton")) {
-                    ((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.SKELETON);
+                    ((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.SKELETON, (World) world, data.getRandom(worldPos), worldPos);
                     //TheGraveyard.LOGGER.error("The Graveyard Config: Wither Skeleton Spawner switched to Skeleton Spawner at " + worldPos);
                 }
             }

@@ -21,7 +21,8 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
 
 @Environment(EnvType.CLIENT)
@@ -65,7 +66,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         VertexConsumer vertices = vertexConsumer.getBuffer(RenderLayers.getEntityBlockLayer(entity.getCachedState(), false));
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
         float f = direction.asRotation();
-        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-f));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f));
 
         switch (direction) {
             case EAST -> matrixStack.translate(-1.0F, 0F, 1.0F);
@@ -74,7 +75,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         }
 
         if (isLid) {
-            matrixStack.multiply(Vec3f.NEGATIVE_Z.getDegreesQuaternion(g * 45)); // lid rotation, originally 70
+            matrixStack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(g * 45)); // lid rotation, originally 70
             //matrices.translate(isFoot ? -(openFactor * 0.25) : openFactor * 0.25, openFactor * 0.25, 0.0F);
             matrixStack.translate(g * 0.3, g * 0.3, 0.0F); // moves lid away from body
         }

@@ -22,7 +22,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.SignType;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -45,10 +45,9 @@ public class GravestoneScreen extends Screen {
     }
 
     protected void init() {
-        this.client.keyboard.setRepeatEvents(true);
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120, 200, 20, ScreenTexts.DONE, (button) -> {
+        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
             this.finishEditing();
-        }));
+        }).dimensions(this.width / 2 - 100, this.height / 4 + 120, 200, 20).build());
         this.sign.setEditable(false);
         this.selectionManager = new SelectionManager(() -> {
             return this.text[this.currentRow];
@@ -64,7 +63,6 @@ public class GravestoneScreen extends Screen {
     }
 
     public void removed() {
-        this.client.keyboard.setRepeatEvents(false);
         ClientPlayNetworkHandler clientPlayNetworkHandler = this.client.getNetworkHandler();
         if (clientPlayNetworkHandler != null) {
             clientPlayNetworkHandler.sendPacket(new UpdateSignC2SPacket(this.sign.getPos(), this.text[0], this.text[1], this.text[2], this.text[3]));
@@ -91,7 +89,7 @@ public class GravestoneScreen extends Screen {
         return true;
     }
 
-    public void onClose() {
+    public void close() {
         this.finishEditing();
     }
 
@@ -194,21 +192,18 @@ public class GravestoneScreen extends Screen {
                     int y = Math.max(v, w);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder bufferBuilder = tessellator.getBuffer();
-                    RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     RenderSystem.disableTexture();
                     RenderSystem.enableColorLogicOp();
                     RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
                     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
                     float var32 = (float) x;
-                    Objects.requireNonNull(this.client.textRenderer);
-                    bufferBuilder.vertex(matrix4f, var32, (float) (l + 9), 0.0F).color(0, 0, 255, 255).next();
+                    bufferBuilder.vertex(matrix4f, (float)var32, (float)(l + 9), 0.0F).color(0, 0, 255, 255).next();
                     var32 = (float) y;
-                    Objects.requireNonNull(this.client.textRenderer);
-                    bufferBuilder.vertex(matrix4f, var32, (float) (l + 9), 0.0F).color(0, 0, 255, 255).next();
-                    bufferBuilder.vertex(matrix4f, (float) y, (float) l, 0.0F).color(0, 0, 255, 255).next();
-                    bufferBuilder.vertex(matrix4f, (float) x, (float) l, 0.0F).color(0, 0, 255, 255).next();
-                    bufferBuilder.end();
-                    BufferRenderer.drawWithShader(bufferBuilder.end());
+                    bufferBuilder.vertex(matrix4f, (float)var32, (float)(l + 9), 0.0F).color(0, 0, 255, 255).next();
+                    bufferBuilder.vertex(matrix4f, (float)x, (float)l, 0.0F).color(0, 0, 255, 255).next();
+                    bufferBuilder.vertex(matrix4f, (float)y, (float)l, 0.0F).color(0, 0, 255, 255).next();
+                    BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
                     RenderSystem.disableColorLogicOp();
                     RenderSystem.enableTexture();
                 }

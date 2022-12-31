@@ -35,13 +35,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.annotation.Debug;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -52,29 +52,28 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
 
 import java.util.EnumSet;
 import java.util.UUID;
 
-public class WraithEntity extends HostileGraveyardEntity implements IAnimatable {
-    private AttributeContainer attributeContainer;
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
+    private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, EntityAttributeModifier.Operation.ADDITION);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder MOVE_ANIMATION = new AnimationBuilder().addAnimation("moving", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attacking", ILoopType.EDefaultLoopTypes.LOOP);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation MOVE_ANIMATION = RawAnimation.begin().then("moving", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attacking", Animation.LoopType.LOOP);
     protected final byte ANIMATION_SPAWN = 0;
     protected final byte ANIMATION_IDLE = 1;
     protected final byte ANIMATION_DEATH = 2;
@@ -286,50 +285,13 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
                 damageSource == DamageSource.SWEET_BERRY_BUSH ||
                 damageSource == DamageSource.HOT_FLOOR ||
                 damageSource == DamageSource.FLY_INTO_WALL ||
-                damageSource == DamageSource.FALLING_BLOCK ||
+                damageSource == DamageSource.STALAGMITE ||
                 damageSource == DamageSource.FALL ||
-                damageSource == DamageSource.ANVIL)
+                damageSource == DamageSource.IN_WALL)
             return true;
 
         return super.isInvulnerableTo(damageSource);
     }
-
-
-    @SuppressWarnings("rawtypes")
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        AnimationController controller = event.getController();
-        float limbSwingAmount = event.getLimbSwingAmount();
-        boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
-
-        if (this.isDead()) {
-            controller.setAnimation(DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        if (spawnTimer < 0) {
-            if (isAttacking()) {
-                controller.setAnimation(ATTACK_ANIMATION);
-            } else if (isMoving) {
-                controller.setAnimation(MOVE_ANIMATION);
-            } else {
-                controller.setAnimation(IDLE_ANIMATION);
-            }
-            return PlayState.CONTINUE;
-
-        }
-        return PlayState.CONTINUE;
-    }
-
-    private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
-        if (getAnimation() == 0) {
-            event.getController().setAnimation(SPAWN_ANIMATION);
-            spawned = true;
-
-            return PlayState.CONTINUE;
-        }
-        return PlayState.CONTINUE;
-    }
-
 
 
     public static DefaultAttributeContainer.Builder createWraithAttributes() {
@@ -351,16 +313,47 @@ public class WraithEntity extends HostileGraveyardEntity implements IAnimatable 
     }
 
 
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 2, this::predicate));
-        data.addAnimationController(new AnimationController(this, "controller2", 0, this::predicate2));
+    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
+        data.add(new AnimationController(this, "controller", 2, event -> {
+            AnimationController controller = event.getController();
+            float limbSwingAmount = event.getLimbSwingAmount();
+            boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
+
+            if (this.isDead()) {
+                controller.setAnimation(DEATH_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            if (spawnTimer < 0) {
+                if (isAttacking()) {
+                    controller.setAnimation(ATTACK_ANIMATION);
+                } else if (isMoving) {
+                    controller.setAnimation(MOVE_ANIMATION);
+                } else {
+                    controller.setAnimation(IDLE_ANIMATION);
+                }
+                return PlayState.CONTINUE;
+
+            }
+            return PlayState.CONTINUE;
+        }));
+        data.add(new AnimationController(this, "controller2", 0, event -> {
+            if (getAnimation() == 0) {
+                event.getController().setAnimation(SPAWN_ANIMATION);
+                spawned = true;
+
+                return PlayState.CONTINUE;
+            }
+            return PlayState.CONTINUE;
+        }));
     }
 
 
     @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return factory;
     }
+
 
     boolean isWithinDistance(BlockPos pos, int distance) {
         if (pos == null) {

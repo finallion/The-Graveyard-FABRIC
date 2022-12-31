@@ -7,7 +7,6 @@
     "ChunkRegionAccessor",
     "CreeperEntityMixin",
     "LakeFeatureMixin",
-    "LocateCommandMixin",
     "PlantBlockMixin",
     "ServerPlayNetworkHandlerMixin",
     "TreeFeatureMixin",

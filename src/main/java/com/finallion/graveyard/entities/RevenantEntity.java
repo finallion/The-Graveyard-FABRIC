@@ -32,20 +32,19 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
 
-public class RevenantEntity extends AngerableGraveyardEntity implements IAnimatable {
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntity {
+    private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A4");
     private static final EntityAttributeModifier SLOWNESS_EFFECT;
 
@@ -54,13 +53,13 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Boolean> CAN_REANIMATE;
 
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder FAKE_DEATH_ANIMATION = new AnimationBuilder().addAnimation("fake_death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder RUNNING_ANIMATION = new AnimationBuilder().addAnimation("running", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder REANIMATE_ANIMATION = new AnimationBuilder().addAnimation("reanimate", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation FAKE_DEATH_ANIMATION = RawAnimation.begin().then("fake_death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().then("running", Animation.LoopType.LOOP);
+    private final RawAnimation REANIMATE_ANIMATION = RawAnimation.begin().then("reanimate", Animation.LoopType.PLAY_ONCE);
 
 
     protected static final int ANIMATION_IDLE = 0;
@@ -115,63 +114,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
     }
 
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        /* DEATH */
-        if (this.isDead() || this.getHealth() < 0.01) {
-            event.getController().setAnimation(DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* REANIMATION */
-        if (getAnimationState() == ANIMATION_FAKE_DEATH && getReanimateAnimTimer() > 39) { // one tick delay
-            event.getController().setAnimation(FAKE_DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        if (getAnimationState() == ANIMATION_REANIMATE && getReanimateAnimTimer() == 39) { // one tick delay
-            event.getController().setAnimation(REANIMATE_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* ATTACK */
-        // takes one tick to get to this method (from mobtick)
-        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && getReanimateAnimTimer() <= 0) {
-            setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-            event.getController().setAnimation(ATTACK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* WALK */
-        if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) && getReanimateAnimTimer() <= 0) {
-            if (isAttacking() && !isWet()) {
-                event.getController().setAnimation(RUNNING_ANIMATION);
-            } else {
-                event.getController().setAnimation(WALK_ANIMATION);
-            }
-            return PlayState.CONTINUE;
-        }
-
-        /* IDLE */
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving() && getReanimateAnimTimer() <= 0) {
-            event.getController().setAnimation(IDLE_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* STOPPERS */
-        // stops idle animation from looping
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-            setAnimationState(ANIMATION_MELEE);
-            return PlayState.STOP;
-        }
-
-        // stops attack animation from looping
-        if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_REANIMATE) {
-            setAnimationState(ANIMATION_IDLE);
-            return PlayState.STOP;
-        }
-
-        return PlayState.CONTINUE;
-    }
 
     protected void mobTick() {
         // ATTACK TIMER
@@ -244,13 +186,70 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
     }
 
     @Override
-    public AnimationFactory getFactory() {
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return factory;
     }
 
+
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
+        data.add(new AnimationController(this, "controller", 0, event -> {
+            /* DEATH */
+            if (this.isDead() || this.getHealth() < 0.01) {
+                event.getController().setAnimation(DEATH_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* REANIMATION */
+            if (getAnimationState() == ANIMATION_FAKE_DEATH && getReanimateAnimTimer() > 39) { // one tick delay
+                event.getController().setAnimation(FAKE_DEATH_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            if (getAnimationState() == ANIMATION_REANIMATE && getReanimateAnimTimer() == 39) { // one tick delay
+                event.getController().setAnimation(REANIMATE_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* ATTACK */
+            // takes one tick to get to this method (from mobtick)
+            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && getReanimateAnimTimer() <= 0) {
+                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
+                event.getController().setAnimation(ATTACK_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* WALK */
+            if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) && getReanimateAnimTimer() <= 0) {
+                if (isAttacking() && !isWet()) {
+                    event.getController().setAnimation(RUNNING_ANIMATION);
+                } else {
+                    event.getController().setAnimation(WALK_ANIMATION);
+                }
+                return PlayState.CONTINUE;
+            }
+
+            /* IDLE */
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving() && getReanimateAnimTimer() <= 0) {
+                event.getController().setAnimation(IDLE_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* STOPPERS */
+            // stops idle animation from looping
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
+                setAnimationState(ANIMATION_MELEE);
+                return PlayState.STOP;
+            }
+
+            // stops attack animation from looping
+            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_REANIMATE) {
+                setAnimationState(ANIMATION_IDLE);
+                return PlayState.STOP;
+            }
+
+            return PlayState.CONTINUE;
+        }));
     }
 
 

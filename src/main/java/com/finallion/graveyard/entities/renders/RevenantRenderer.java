@@ -13,13 +13,15 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+
 
 public class RevenantRenderer extends GeoEntityRenderer<RevenantEntity> {
 
     public RevenantRenderer(EntityRendererFactory.Context context) {
         super(context, new RevenantModel());
-        this.addLayer(new RevenantEyesFeatureRenderer(this));
+        this.addRenderLayer(new RevenantEyesFeatureRenderer(this));
         this.shadowRadius = 0.4F;
     }
 
@@ -30,11 +32,9 @@ public class RevenantRenderer extends GeoEntityRenderer<RevenantEntity> {
     }
 
     @Override
-    public RenderLayer getRenderType(RevenantEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
-        return RenderLayer.getEntityCutoutNoCull(textureLocation);
+    public RenderLayer getRenderType(RevenantEntity animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
+        return RenderLayer.getEntityCutoutNoCull(texture);
     }
-
-
 
 
 }

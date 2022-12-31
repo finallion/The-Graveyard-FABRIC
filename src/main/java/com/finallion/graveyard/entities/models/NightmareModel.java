@@ -4,9 +4,10 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.NightmareEntity;
 import com.finallion.graveyard.entities.RevenantEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class NightmareModel extends AnimatedGeoModel<NightmareEntity> {
+
+public class NightmareModel extends GeoModel<NightmareEntity> {
 
     @Override
     public Identifier getModelResource(NightmareEntity object) {

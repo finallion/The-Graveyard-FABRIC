@@ -1,0 +1,15 @@
+{
+  "name": "graveyard:crypt/start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/start_pool/start_room",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

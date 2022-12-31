@@ -1,0 +1,15 @@
+{
+  "name": "graveyard:haunted_house/start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:haunted_house/start_pool/haunted_house_01",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

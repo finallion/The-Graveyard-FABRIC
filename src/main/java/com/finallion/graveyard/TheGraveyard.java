@@ -8,11 +8,11 @@ import com.finallion.graveyard.init.*;
 import com.finallion.graveyard.util.*;;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
@@ -20,13 +20,16 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.tag.TagEntry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib.GeckoLib;
+
 
 public class TheGraveyard implements ModInitializer {
     public static final String MOD_ID = "graveyard";
@@ -48,23 +51,19 @@ public class TheGraveyard implements ModInitializer {
         TGParticles.init();
         TGAdvancements.init();
         TGSounds.init();
-        TGBlocks.registerBlocks();
         TGItems.registerItems();
+        TGBlocks.registerBlocks();
         TGEntities.registerEntities();
         TGProcessors.registerProcessors();
 
         /* FEATURE INIT REGISTRY */
         TGStructureType.init();
-        TGStructureSets.init();
-        TGConfiguredStructureFeatures.init();
+        //TGStructureSets.init();
+        TGConfiguredStructureFeatures.registerStructureFeatures();
 
         /* BIOME MODIFICATION */
         MobSpawningRules.addSpawnEntries();
 
-        /* COMPAT */
-        if (FabricLoader.getInstance().isModLoaded("graveyard_biomes")) {
-            BiomeModification.init();
-        }
 
         /* ENTITY ATTRIBUTES */
         FabricDefaultAttributeRegistry.register(TGEntities.LICH, LichEntity.createLichAttributes());
@@ -95,7 +94,124 @@ public class TheGraveyard implements ModInitializer {
         ServerWorldEvents.UNLOAD.register(new TGFileWriterReader.Unload());
     }
 
-    public static ItemGroup GROUP = FabricItemGroupBuilder.create(
-                    new Identifier(MOD_ID, "group"))
-            .icon(() -> new ItemStack(Items.SKELETON_SKULL)).build();
+
+    public static ItemGroup GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "group"))
+            .displayName(Text.literal("The Graveyard"))
+            .icon(() -> new ItemStack(Items.SKELETON_SKULL))
+            .entries((enabledFeatures, entries, operatorEnabled) -> {
+                entries.add(TGItems.CORRUPTION);
+                entries.add(TGItems.DARK_IRON_BLOCK);
+                entries.add(TGItems.DARK_IRON_INGOT);
+                entries.add(TGItems.DARK_IRON_DOOR);
+                entries.add(TGItems.DARK_IRON_TRAPDOOR);
+                entries.add(TGItems.DARK_IRON_BARS);
+                entries.add(TGItems.SOUL_FIRE_BRAZIER);
+                entries.add(TGItems.FIRE_BRAZIER);
+                entries.add(TGItems.PEDESTAL);
+                entries.add(TGItems.CANDLE_HOLDER);
+                entries.add(TGItems.GRAVESTONE);
+                entries.add(TGItems.COBBLESTONE_GRAVESTONE);
+                entries.add(TGItems.MOSSY_COBBLESTONE_GRAVESTONE);
+                entries.add(TGItems.DEEPSLATE_GRAVESTONE);
+                entries.add(TGItems.BLACKSTONE_GRAVESTONE);
+                entries.add(TGItems.CRACKED_BLACKSTONE_GRAVESTONE);
+                entries.add(TGItems.STONE_BRICKS_GRAVESTONE);
+                entries.add(TGItems.MOSSY_STONE_BRICKS_GRAVESTONE);
+                entries.add(TGItems.BRICKS_GRAVESTONE);
+
+                entries.add(TGItems.SKULL_WITH_RIB_CAGE);
+                entries.add(TGItems.LEANING_SKELETON);
+                entries.add(TGItems.SKULL_PILE);
+                entries.add(TGItems.LYING_SKELETON);
+                entries.add(TGItems.WITHER_SKULL_WITH_RIB_CAGE);
+                entries.add(TGItems.LEANING_WITHER_SKELETON);
+                entries.add(TGItems.WITHER_SKULL_PILE);
+                entries.add(TGItems.LYING_WITHER_SKELETON);
+                entries.add(TGItems.CREEPER_SKELETON);
+                entries.add(TGItems.SKELETON_HAND);
+                entries.add(TGItems.WITHER_SKELETON_HAND);
+                entries.add(TGItems.TORSO_PILE);
+                entries.add(TGItems.WITHER_TORSO_PILE);
+                entries.add(TGItems.SKULL_ON_PIKE);
+                entries.add(TGItems.WITHER_SKULL_ON_PIKE);
+                entries.add(TGItems.BONE_REMAINS);
+                entries.add(TGItems.WITHER_BONE_REMAINS);
+                entries.add(TGItems.LATERALLY_LYING_SKELETON);
+                entries.add(TGItems.LATERALLY_LYING_WITHER_SKELETON);
+
+                entries.add(TGItems.BLACK_URN);
+                entries.add(TGItems.GRAY_URN);
+                entries.add(TGItems.LIGHT_GRAY_URN);
+                entries.add(TGItems.WHITE_URN);
+                entries.add(TGItems.LIGHT_BLUE_URN);
+                entries.add(TGItems.BLUE_URN);
+                entries.add(TGItems.CYAN_URN);
+                entries.add(TGItems.GREEN_URN);
+                entries.add(TGItems.LIME_URN);
+                entries.add(TGItems.PINK_URN);
+                entries.add(TGItems.MAGENTA_URN);
+                entries.add(TGItems.PURPLE_URN);
+                entries.add(TGItems.RED_URN);
+                entries.add(TGItems.ORANGE_URN);
+                entries.add(TGItems.YELLOW_URN);
+                entries.add(TGItems.BROWN_URN);
+
+                entries.add(TGItems.SMALL_BLACK_URN);
+                entries.add(TGItems.SMALL_GRAY_URN);
+                entries.add(TGItems.SMALL_LIGHT_GRAY_URN);
+                entries.add(TGItems.SMALL_WHITE_URN);
+                entries.add(TGItems.SMALL_LIGHT_BLUE_URN);
+                entries.add(TGItems.SMALL_BLUE_URN);
+                entries.add(TGItems.SMALL_CYAN_URN);
+                entries.add(TGItems.SMALL_GREEN_URN);
+                entries.add(TGItems.SMALL_LIME_URN);
+                entries.add(TGItems.SMALL_PINK_URN);
+                entries.add(TGItems.SMALL_MAGENTA_URN);
+                entries.add(TGItems.SMALL_PURPLE_URN);
+                entries.add(TGItems.SMALL_RED_URN);
+                entries.add(TGItems.SMALL_ORANGE_URN);
+                entries.add(TGItems.SMALL_YELLOW_URN);
+                entries.add(TGItems.SMALL_BROWN_URN);
+
+                entries.add(TGItems.VASE_BLOCK);
+
+                entries.add(TGItems.SARCOPHAGUS);
+                entries.add(TGItems.OAK_COFFIN);
+                entries.add(TGItems.DARK_OAK_COFFIN);
+                entries.add(TGItems.SPRUCE_COFFIN);
+                entries.add(TGItems.BIRCH_COFFIN);
+                entries.add(TGItems.JUNGLE_COFFIN);
+                entries.add(TGItems.ACACIA_COFFIN);
+                entries.add(TGItems.WARPED_COFFIN);
+                entries.add(TGItems.CRIMSON_COFFIN);
+                entries.add(TGItems.MANGROVE_COFFIN);
+
+                entries.add(TGItems.SKELETON_CREEPER_SPAWN_EGG);
+                entries.add(TGItems.ACOLYTE_SPAWN_EGG);
+                entries.add(TGItems.GHOUL_SPAWN_EGG);
+                entries.add(TGItems.REAPER_SPAWN_EGG);
+                entries.add(TGItems.REVENANT_SPAWN_EGG);
+                entries.add(TGItems.NIGHTMARE_SPAWN_EGG);
+                entries.add(TGItems.CORRUPTED_VINDICATOR_SPAWN_EGG);
+                entries.add(TGItems.CORRUPTED_PILLAGER_SPAWN_EGG);
+                entries.add(TGItems.WRAITH_SPAWN_EGG);
+
+                entries.add(TGItems.BONE_DAGGER);
+                entries.add(TGItems.WHITE_BONE_STAFF);
+                entries.add(TGItems.BLACK_BONE_STAFF);
+                entries.add(TGItems.RED_BONE_STAFF);
+                entries.add(TGItems.CYAN_BONE_STAFF);
+                entries.add(TGItems.PURPLE_BONE_STAFF);
+
+                entries.add(TGItems.ALTAR);
+                entries.add(TGItems.ALTAR_SIDE);
+                entries.add(TGItems.ALTAR_CORNER);
+                entries.add(TGItems.ALTAR_CENTER);
+                entries.add(TGItems.UPPER_BONE_STAFF);
+                entries.add(TGItems.MIDDLE_BONE_STAFF);
+                entries.add(TGItems.LOWER_BONE_STAFF);
+                entries.add(TGItems.VIAL_OF_BLOOD);
+            })
+            .build();
+
 }

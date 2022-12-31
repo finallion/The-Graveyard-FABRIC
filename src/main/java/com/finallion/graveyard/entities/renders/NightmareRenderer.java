@@ -6,7 +6,7 @@ import com.finallion.graveyard.entities.models.NightmareModel;
 import com.finallion.graveyard.entities.models.RevenantModel;
 import com.finallion.graveyard.entities.renders.features.RevenantEyesFeatureRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class NightmareRenderer extends GeoEntityRenderer<NightmareEntity> {
 

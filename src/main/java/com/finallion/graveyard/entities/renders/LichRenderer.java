@@ -13,19 +13,20 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class LichRenderer extends GeoEntityRenderer<LichEntity> {
 
     public LichRenderer(EntityRendererFactory.Context context) {
         super(context, new LichModel());
         this.shadowRadius = 1.0F;
-        this.addLayer(new LichEyesFeatureRenderer(this));
+        this.addRenderLayer(new LichEyesFeatureRenderer(this));
     }
 
     @Override
-    public RenderLayer getRenderType(LichEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
-        return RenderLayer.getEntityCutoutNoCull(textureLocation);
+    public RenderLayer getRenderType(LichEntity animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
+        return RenderLayer.getEntityCutoutNoCull(texture);
     }
 
     // stops the vanilla death animation

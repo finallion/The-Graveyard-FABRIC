@@ -4,10 +4,10 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.GhoulEntity;
 import com.finallion.graveyard.entities.LichEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class LichModel extends AnimatedGeoModel<LichEntity> {
+
+public class LichModel extends GeoModel<LichEntity> {
     private Identifier texture = new Identifier(TheGraveyard.MOD_ID, "textures/entity/lich_texture.png");
 
     @Override

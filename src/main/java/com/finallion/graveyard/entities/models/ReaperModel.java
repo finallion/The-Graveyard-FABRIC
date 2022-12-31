@@ -3,9 +3,9 @@ package com.finallion.graveyard.entities.models;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.ReaperEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class ReaperModel extends AnimatedGeoModel<ReaperEntity> {
+public class ReaperModel extends GeoModel<ReaperEntity> {
 
     @Override
     public Identifier getModelResource(ReaperEntity object) {

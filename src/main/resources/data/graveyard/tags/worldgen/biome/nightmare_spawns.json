@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#c:dead",
+    "#c:plains",
+    "#c:snowy",
+    "#c:snowy_plains",
+    "#c:desert",
+    "#c:savanna",
+    "#c:badlands",
+    "#c:swamp"
+  ]
+}

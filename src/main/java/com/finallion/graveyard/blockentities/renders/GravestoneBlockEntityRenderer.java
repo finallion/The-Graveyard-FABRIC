@@ -31,8 +31,8 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SignType;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +60,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
 
         float rotation = -blockState.get(GravestoneBlock.FACING).asRotation();
         //float h = -((float)((Integer)blockState.getStructure(SignBlock.ROTATION) * 360) / 16.0F);
-        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
         matrixStack.push();
         // size
         matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
@@ -113,7 +113,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.translate(0.5, 0.43, 0.5);
         matrixStack.scale(2.28F, 2.15F, 2.28F);
         float rotation = state.get(GravestoneBlock.FACING).asRotation();
-        matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
         //MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, i, j, matrixStack, vertexConsumerProvider, 2);
         MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(state.getBlock().asItem(), 1), ModelTransformation.Mode.GROUND, i, j, matrixStack, vertexConsumerProvider, 2);
         matrixStack.pop();

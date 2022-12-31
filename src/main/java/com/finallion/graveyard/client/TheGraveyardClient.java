@@ -26,9 +26,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
@@ -38,14 +37,22 @@ import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.example.ClientListener;
+import software.bernie.geckolib.network.GeckoLibNetwork;
+
+import java.util.UUID;
 
 
 @Environment(EnvType.CLIENT)
@@ -150,9 +157,37 @@ public class TheGraveyardClient implements ClientModInitializer {
             return 0.0F;
         });
 
+
         // projectile packet logic
         ClientPlayNetworking.registerGlobalReceiver(GraveyardEntitySpawnPacket.ID, (client, handler, buf, responseSender) -> {
-            ClientListener.EntityPacketOnClient.onPacket(client, buf);
+            EntityPacketOnClient.onPacket(client, buf);
         });
+    }
+
+    public class EntityPacketOnClient {
+        @Environment(EnvType.CLIENT)
+        public static void onPacket(MinecraftClient context, PacketByteBuf byteBuf) {
+            EntityType<?> type = Registries.ENTITY_TYPE.get(byteBuf.readVarInt());
+            UUID entityUUID = byteBuf.readUuid();
+            int entityID = byteBuf.readVarInt();
+            double x = byteBuf.readDouble();
+            double y = byteBuf.readDouble();
+            double z = byteBuf.readDouble();
+            float pitch = (byteBuf.readByte() * 360) / 256.0F;
+            float yaw = (byteBuf.readByte() * 360) / 256.0F;
+            context.execute(() -> {
+                ClientWorld world = MinecraftClient.getInstance().world;
+                Entity entity = type.create(world);
+                if (entity != null) {
+                    entity.updatePosition(x, y, z);
+                    entity.updateTrackedPosition(x, y, z);
+                    entity.setPitch(pitch);
+                    entity.setYaw(yaw);
+                    entity.setId(entityID);
+                    entity.setUuid(entityUUID);
+                    world.addEntity(entityID, entity);
+                }
+            });
+        }
     }
 }

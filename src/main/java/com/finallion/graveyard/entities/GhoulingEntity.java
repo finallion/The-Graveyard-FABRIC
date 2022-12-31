@@ -49,22 +49,21 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
 
-public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable, NamedScreenHandlerFactory {
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, NamedScreenHandlerFactory {
+    private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
     private static final TrackedData<Integer> ANIMATION;
@@ -74,11 +73,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     private static final TrackedData<Byte> VARIANT;
     //private static final TrackedData<Boolean> CAN_COLLECT;
 
-    private final AnimationBuilder SPAWN_ANIMATION = new AnimationBuilder().addAnimation("spawn", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder IDLE_ANIMATION = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ATTACK_ANIMATION = new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder WALK_ANIMATION = new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder DEATH_ANIMATION = new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -130,59 +129,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
         //this.dataTracker.startTracking(CAN_COLLECT, false);
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (getAnimationState() == ANIMATION_SPAWN && getSpawnTimer() >= 0) {
-            event.getController().setAnimation(SPAWN_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        return PlayState.CONTINUE;
-    }
-
-    private <E extends IAnimatable> PlayState predicate2(AnimationEvent<E> event) {
-
-        /* DEATH */
-        if (this.isDead() || this.getHealth() < 0.01) {
-            event.getController().setAnimation(DEATH_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* ATTACK */
-        // takes one tick to get to this method (from mobtick)
-        if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
-            setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-            event.getController().setAnimation(ATTACK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* WALK */
-        if ((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) {
-            event.getController().setAnimation(WALK_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* IDLE */
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getSpawnTimer() <= 0) {
-            event.getController().setAnimation(IDLE_ANIMATION);
-            return PlayState.CONTINUE;
-        }
-
-        /* STOPPERS */
-        // stops idle animation from looping
-        if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-            setAnimationState(ANIMATION_MELEE);
-            return PlayState.STOP;
-        }
-
-        // stops attack animation from looping
-        if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getSpawnTimer() <= 0) {
-            setAnimationState(ANIMATION_IDLE);
-            return PlayState.STOP;
-        }
-
-
-        return PlayState.CONTINUE;
-    }
 
     protected void mobTick() {
         // ATTACK TIMER
@@ -256,15 +202,66 @@ public class GhoulingEntity extends GraveyardMinionEntity implements IAnimatable
     }
 
     @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
-        animationData.addAnimationController(new AnimationController(this, "controller2", 0, this::predicate2));
+    public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
+        animationData.add(new AnimationController(this, "controller", 0, event -> {
+            if (getAnimationState() == ANIMATION_SPAWN && getSpawnTimer() >= 0) {
+                event.getController().setAnimation(SPAWN_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            return PlayState.CONTINUE;
+        }));
+        animationData.add(new AnimationController(this, "controller2", 0, event -> {
+
+            /* DEATH */
+            if (this.isDead() || this.getHealth() < 0.01) {
+                event.getController().setAnimation(DEATH_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* ATTACK */
+            // takes one tick to get to this method (from mobtick)
+            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
+                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
+                event.getController().setAnimation(ATTACK_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* WALK */
+            if ((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) {
+                event.getController().setAnimation(WALK_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* IDLE */
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getSpawnTimer() <= 0) {
+                event.getController().setAnimation(IDLE_ANIMATION);
+                return PlayState.CONTINUE;
+            }
+
+            /* STOPPERS */
+            // stops idle animation from looping
+            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
+                setAnimationState(ANIMATION_MELEE);
+                return PlayState.STOP;
+            }
+
+            // stops attack animation from looping
+            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getSpawnTimer() <= 0) {
+                setAnimationState(ANIMATION_IDLE);
+                return PlayState.STOP;
+            }
+
+
+            return PlayState.CONTINUE;
+        }));
     }
 
     @Override
-    public AnimationFactory getFactory() {
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
         return factory;
     }
+
 
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);

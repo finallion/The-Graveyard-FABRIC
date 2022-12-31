@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:climate_cold",
+    "#c:climate_dry",
+    "#c:climate_hot",
+    "#c:climate_temperate",
+    "#c:climate_wet"
+  ]
+}

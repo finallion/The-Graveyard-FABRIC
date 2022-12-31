@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:mountain",
+    {"id": "terralith:painted_mountains", "required": false},
+    {"id": "terralith:rocky_mountains", "required": false},
+    {"id": "terralith:haze_mountain", "required": false},
+    {"id": "terralith:mountain_steppe", "required": false}
+  ]
+}

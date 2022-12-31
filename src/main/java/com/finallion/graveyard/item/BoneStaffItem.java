@@ -33,7 +33,7 @@ public class BoneStaffItem extends Item {
     public static Map<UUID, UUID> ownerGhoulingMapping = new HashMap<>();
 
     public BoneStaffItem(byte ghoulVariant) {
-        super(new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP));
+        super(new FabricItemSettings().maxCount(1));
         this.ghoulVariant = ghoulVariant;
     }
 

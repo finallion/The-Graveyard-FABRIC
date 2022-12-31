@@ -5,13 +5,12 @@ import com.finallion.graveyard.world.processors.RemoveWaterloggedCryptProcessor;
 import com.finallion.graveyard.world.processors.RemoveWaterloggedProcessor;
 import com.finallion.graveyard.world.processors.SwitchSpawnerProcessor;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorList;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 
 public class TGProcessors {
 
@@ -24,6 +23,7 @@ public class TGProcessors {
     public static StructureProcessorType<RemoveWaterloggedCryptProcessor> REMOVE_WATERLOGGED_CRYPT = () -> RemoveWaterloggedCryptProcessor.CODEC;
     public static StructureProcessorType<SwitchSpawnerProcessor> SWITCH_SPAWNER = () -> SwitchSpawnerProcessor.CODEC;
 
+    /*
     public static final RegistryEntry<StructureProcessorList> WATERLOGGED_LIST = BuiltinRegistries.add(BuiltinRegistries.STRUCTURE_PROCESSOR_LIST,
             new Identifier(TheGraveyard.MOD_ID, "waterlogged_processor_list"),
             new StructureProcessorList(ImmutableList.of(new RemoveWaterloggedProcessor())));
@@ -36,10 +36,12 @@ public class TGProcessors {
             new Identifier(TheGraveyard.MOD_ID, "switch_spawner_list"),
             new StructureProcessorList(ImmutableList.of(new SwitchSpawnerProcessor())));
 
+     */
+
 
     public static void registerProcessors() {
-        Registry.register(Registry.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "remove_waterlogged_processor"), REMOVE_WATERLOGGED);
-        Registry.register(Registry.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "switch_spawner_processor"), SWITCH_SPAWNER);
-        Registry.register(Registry.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "waterlogged_crypt_processor"), REMOVE_WATERLOGGED_CRYPT);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "remove_waterlogged_processor"), REMOVE_WATERLOGGED);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "switch_spawner_processor"), SWITCH_SPAWNER);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(TheGraveyard.MOD_ID, "waterlogged_crypt_processor"), REMOVE_WATERLOGGED_CRYPT);
     }
 }

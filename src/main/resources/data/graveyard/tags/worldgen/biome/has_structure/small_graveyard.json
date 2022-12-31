@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#c:plains",
+    "minecraft:meadow",
+    {"id": "terralith:blooming_plateau", "required": false},
+    {"id": "terralith:blooming_valley", "required": false}
+  ]
+}

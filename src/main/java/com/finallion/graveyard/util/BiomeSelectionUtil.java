@@ -4,14 +4,15 @@ package com.finallion.graveyard.util;
 import com.finallion.graveyard.TheGraveyard;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.BiomeTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BiomeSelectionUtil {
 
@@ -32,8 +33,14 @@ public class BiomeSelectionUtil {
             // tag whitelist
             if (biomeInList.startsWith("#")) {
                 String[] parts = biomeInList.substring(1).split(":");
-                TagKey<Biome> tag = TagKey.of(Registry.BIOME_KEY, new Identifier(parts[0], parts[1]));
-                if (BuiltinRegistries.BIOME.getOrCreateEntryList(tag).contains(biome)) {
+                TagKey<Biome> tag = TagKey.of(RegistryKeys.BIOME, new Identifier(parts[0], parts[1]));
+
+                RegistryEntryLookup<Biome> biomeLookup = BuiltinRegistries.createWrapperLookup().createRegistryLookup().getOrThrow(RegistryKeys.BIOME);
+                //blockLookup.getOptional(ConventionalBiomeTags.IN_OVERWORLD).stream().map(b -> b.toString()).collect(Collectors.toList());
+
+                //BuiltinRegistries.createWrapperLookup().createRegistryLookup().
+                //if (Registries.BIOME.getOrCreateEntryList(tag).contains(biome)) {
+                if (biomeLookup.getOptional(tag).isPresent()) {
                     return true;
                 }
             } else if (biomeWhitelist.contains(biomeName)) { // biome is whitelisted

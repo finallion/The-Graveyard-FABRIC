@@ -66,7 +66,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
     public void explode() {
         if (!this.world.isClient) {
-            Explosion.DestructionType destructionType = Explosion.DestructionType.NONE;
+            World.ExplosionSourceType destructionType = World.ExplosionSourceType.NONE;
             float f = this.shouldRenderOverlay() ? 2.0F : 1.0F;
 
             if (canStart()) {

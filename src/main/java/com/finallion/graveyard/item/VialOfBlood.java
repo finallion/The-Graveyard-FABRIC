@@ -39,7 +39,7 @@ public class VialOfBlood extends Item {
     private static final String BlOOD_KEY = "Blood";
 
     public VialOfBlood() {
-        super(new FabricItemSettings().maxCount(1).group(TheGraveyard.GROUP));
+        super(new FabricItemSettings().maxCount(1));
     }
 
     public static float getBlood(ItemStack stack) {

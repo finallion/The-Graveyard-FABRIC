@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "2.3",
+  "version": "2.4",
 
   "name": "The Graveyard",
   "description": "Adds new bosses, structures, mobs and blocks themed around the graveyard.",
@@ -31,9 +31,9 @@
 
   "depends": {
     "fabricloader": ">=0.14.6",
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": "1.19.x",
-    "geckolib3": ">=3.1.35",
+    "geckolib": ">=3.1.35",
     "java": ">=17"
   }
 }

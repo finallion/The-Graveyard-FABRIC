@@ -4,9 +4,9 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.FallingCorpse;
 import com.finallion.graveyard.entities.NightmareEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class FallingCorpseModel extends AnimatedGeoModel<FallingCorpse> {
+public class FallingCorpseModel extends GeoModel<FallingCorpse> {
 
     @Override
     public Identifier getModelResource(FallingCorpse object) {

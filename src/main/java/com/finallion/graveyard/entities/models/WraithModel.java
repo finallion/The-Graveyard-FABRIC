@@ -4,9 +4,9 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.NightmareEntity;
 import com.finallion.graveyard.entities.WraithEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class WraithModel extends AnimatedGeoModel<WraithEntity> {
+public class WraithModel extends GeoModel<WraithEntity> {
 
     @Override
     public Identifier getModelResource(WraithEntity object) {

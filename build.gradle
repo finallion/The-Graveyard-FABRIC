@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -26,7 +26,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${project.geckolib_version_fabric}"
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19.3:${project.geckolib_version_fabric}"
 
 	//modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
 	//	exclude group: "net.fabricmc.fabric-api"
