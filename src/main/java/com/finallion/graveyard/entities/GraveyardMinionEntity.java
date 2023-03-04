@@ -26,6 +26,8 @@ import java.util.UUID;
 
 public class GraveyardMinionEntity extends PathAwareEntity {
     protected static final TrackedData<Optional<UUID>> OWNER_UUID;
+    protected static final TrackedData<Byte> TAMEABLE_FLAGS;
+    private boolean sitting;
 
     public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, World world) {
         super(entityType, world);
@@ -36,6 +38,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(OWNER_UUID, Optional.empty());
+        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte)0);
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
@@ -43,6 +46,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
         if (this.getOwnerUuid() != null) {
             nbt.putUuid("Owner", this.getOwnerUuid());
         }
+        nbt.putBoolean("Sitting", this.sitting);
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
@@ -61,6 +65,8 @@ public class GraveyardMinionEntity extends PathAwareEntity {
             } catch (Throwable var4) {
             }
         }
+        this.sitting = nbt.getBoolean("Sitting");
+        this.setInSittingPose(this.sitting);
     }
 
     @Nullable
@@ -75,6 +81,29 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     public void setOwner(PlayerEntity player) {
         this.setOwnerUuid(player.getUuid());
     }
+
+    public boolean isSitting() {
+        return this.sitting;
+    }
+
+    public void setSitting(boolean sitting) {
+        this.sitting = sitting;
+    }
+
+    public boolean isInSittingPose() {
+        return ((Byte)this.dataTracker.get(TAMEABLE_FLAGS) & 1) != 0;
+    }
+
+    public void setInSittingPose(boolean inSittingPose) {
+        byte b = (Byte)this.dataTracker.get(TAMEABLE_FLAGS);
+        if (inSittingPose) {
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 1));
+        } else {
+            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -2));
+        }
+
+    }
+
 
     @Nullable
     public LivingEntity getOwner() {
@@ -125,6 +154,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     static {
+        TAMEABLE_FLAGS = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.BYTE);
         OWNER_UUID = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     }
 

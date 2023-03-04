@@ -20,13 +20,17 @@ public class AttackWithOwnerGoal extends TrackTargetGoal {
     }
 
     public boolean canStart() {
-        LivingEntity livingEntity = this.tameable.getOwner();
-        if (livingEntity == null) {
-            return false;
+        if (!this.tameable.isSitting()) {
+            LivingEntity livingEntity = this.tameable.getOwner();
+            if (livingEntity == null) {
+                return false;
+            } else {
+                this.attacking = livingEntity.getAttacking();
+                int i = livingEntity.getLastAttackTime();
+                return i != this.lastAttackTime && this.canTrack(this.attacking, TargetPredicate.DEFAULT) && this.tameable.canAttackWithOwner(this.attacking, livingEntity);
+            }
         } else {
-            this.attacking = livingEntity.getAttacking();
-            int i = livingEntity.getLastAttackTime();
-            return i != this.lastAttackTime && this.canTrack(this.attacking, TargetPredicate.DEFAULT) && this.tameable.canAttackWithOwner(this.attacking, livingEntity);
+            return false;
         }
     }
 

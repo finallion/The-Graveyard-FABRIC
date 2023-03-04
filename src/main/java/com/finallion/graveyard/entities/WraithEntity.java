@@ -3,6 +3,7 @@ package com.finallion.graveyard.entities;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blocks.BrazierBlock;
 import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.AboveGroundTargeting;
@@ -364,12 +365,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 1.5F, -10.0F);
+        this.playSound(TGSounds.WRAITH_AMBIENT, 1.5F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.BLOCK_SOUL_SAND_HIT, 1.0F, -10.0F);
+        this.playSound(TGSounds.WRAITH_HURT, 1.0F, -10.0F);
     }
 
     @Override
@@ -380,7 +381,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private void playDeathSound() {
         for (int i = 0; i < 10; i++) {
-            this.playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 2.5F, -10.0F);
+            this.playSound(TGSounds.WRAITH_AMBIENT, 2.5F, -10.0F);
         }
     }
 

@@ -86,7 +86,7 @@ public class TGFileWriterReader {
             File file = new File(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
             if (file.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
-                    TheGraveyard.LOGGER.info("Reading Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
+                    //TheGraveyard.LOGGER.info("Reading Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
                     while ((line = reader.readLine()) != null) {
                         String[] keyValuePair = line.split(":", 2);
 
@@ -118,7 +118,7 @@ public class TGFileWriterReader {
             try {
                 FileWriter fileWriter = new FileWriter(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                TheGraveyard.LOGGER.info("Saving Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
+                //TheGraveyard.LOGGER.info("Saving Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
 
                 for (Map.Entry<UUID, UUID> entry : BoneStaffItem.ownerGhoulingMapping.entrySet()) {
                     bufferedWriter.write(entry.getKey() + ":" + entry.getValue());

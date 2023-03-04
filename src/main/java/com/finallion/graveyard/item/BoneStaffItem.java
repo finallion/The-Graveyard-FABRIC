@@ -4,6 +4,8 @@ import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.GhoulingEntity;
 import com.finallion.graveyard.entities.GraveyardMinionEntity;
 import com.finallion.graveyard.init.TGEntities;
+import com.finallion.graveyard.init.TGParticles;
+import com.finallion.graveyard.util.MathUtil;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -91,9 +93,9 @@ public class BoneStaffItem extends Item {
 
             if (!stack.getNbt().contains("OwnerUUID")) {
                 stack.getOrCreateNbt().putUuid("OwnerUUID", player.getUuid());
-                player.sendMessage(Text.literal("I hear and obey..."));
+                player.sendMessage(Text.translatable("entity.graveyard.ghouling.spawn"), true);
             } else {
-                player.sendMessage(Text.literal("Death... is a mere inconvenience."));
+                player.sendMessage(Text.translatable("entity.graveyard.ghouling.respawn"), true);
             }
 
             /* END TAG INPUT */
@@ -134,7 +136,7 @@ public class BoneStaffItem extends Item {
         if (!world.isClient) {
             if (nbt != null && nbt.contains("GhoulingUUID") && nbt.contains("OwnerUUID")) {
                 if (user.getUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0) { // case wrong owner
-                    user.sendMessage(Text.literal("I don't obey your orders, you are no master of mine!"));
+                    user.sendMessage(Text.translatable("entity.graveyard.ghouling.obey"), true);
                     return TypedActionResult.fail(stack);
                 } else {
                     UUID ghoulingUUID = nbt.getUuid("GhoulingUUID");
@@ -143,6 +145,7 @@ public class BoneStaffItem extends Item {
                         if (user.isSneaking()) {
                             ghouling.setTarget(null);
                             ghouling.setAttacking(false);
+                            ghouling.setTeleportTimer(15);
                             //ghouling.removeCollectGoal();
                             //ghouling.setCanCollect(false);
                             ghouling.teleport(user.getX(), user.getY(), user.getZ());
@@ -173,6 +176,7 @@ public class BoneStaffItem extends Item {
                                 if (entity instanceof LivingEntity livingEntity) {
                                     ghouling.setTarget(livingEntity);
                                     ghouling.setAttacking(true);
+                                    ghouling.setSitting(false);
                                 }
                             }
                         }

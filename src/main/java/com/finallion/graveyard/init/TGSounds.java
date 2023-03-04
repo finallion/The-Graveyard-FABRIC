@@ -7,8 +7,61 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class TGSounds {
+    public static final Identifier CORRUPTED_ILLAGER_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.ambient");
+    public static SoundEvent CORRUPTED_ILLAGER_AMBIENT = SoundEvent.of(CORRUPTED_ILLAGER_AMBIENT_ID);
+    public static final Identifier CORRUPTED_ILLAGER_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.hurt");
+    public static SoundEvent CORRUPTED_ILLAGER_HURT = SoundEvent.of(CORRUPTED_ILLAGER_HURT_ID);
+    public static final Identifier CORRUPTED_ILLAGER_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.death");
+    public static SoundEvent CORRUPTED_ILLAGER_DEATH = SoundEvent.of(CORRUPTED_ILLAGER_DEATH_ID);
+    public static final Identifier CORRUPTED_ILLAGER_STEP_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.step");
+    public static SoundEvent CORRUPTED_ILLAGER_STEP = SoundEvent.of(CORRUPTED_ILLAGER_STEP_ID);
+
     public static final Identifier GHOUL_ROAR_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.roar");
     public static SoundEvent GHOUL_ROAR = SoundEvent.of(GHOUL_ROAR_ID);
+    public static final Identifier GHOUL_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.ambient");
+    public static SoundEvent GHOUL_AMBIENT = SoundEvent.of(GHOUL_AMBIENT_ID);
+    public static final Identifier GHOUL_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.hurt");
+    public static SoundEvent GHOUL_HURT = SoundEvent.of(GHOUL_HURT_ID);
+    public static final Identifier GHOUL_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.death");
+    public static SoundEvent GHOUL_DEATH = SoundEvent.of(GHOUL_DEATH_ID);
+    public static final Identifier GHOUL_STEP_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.step");
+    public static SoundEvent GHOUL_STEP = SoundEvent.of(GHOUL_STEP_ID);
+
+    public static final Identifier GHOULING_GROAN_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.groan");
+    public static SoundEvent GHOULING_GROAN = SoundEvent.of(GHOULING_GROAN_ID);
+    public static final Identifier GHOULING_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.ambient");
+    public static SoundEvent GHOULING_AMBIENT = SoundEvent.of(GHOULING_AMBIENT_ID);
+    public static final Identifier GHOULING_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.hurt");
+    public static SoundEvent GHOULING_HURT = SoundEvent.of(GHOULING_HURT_ID);
+    public static final Identifier GHOULING_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.death");
+    public static SoundEvent GHOULING_DEATH = SoundEvent.of(GHOULING_DEATH_ID);
+    public static final Identifier GHOULING_ATTACK_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.attack");
+    public static SoundEvent GHOULING_ATTACK = SoundEvent.of(GHOULING_ATTACK_ID);
+    public static final Identifier GHOULING_STEP_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.step");
+    public static SoundEvent GHOULING_STEP = SoundEvent.of(GHOULING_STEP_ID);
+    public static final Identifier GHOULING_SPAWN_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghouling.spawn");
+    public static SoundEvent GHOULING_SPAWN = SoundEvent.of(GHOULING_SPAWN_ID);
+
+    public static final Identifier REVENANT_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.revenant.ambient");
+    public static SoundEvent REVENANT_AMBIENT = SoundEvent.of(REVENANT_AMBIENT_ID);
+    public static final Identifier REVENANT_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.revenant.hurt");
+    public static SoundEvent REVENANT_HURT = SoundEvent.of(REVENANT_HURT_ID);
+    public static final Identifier REVENANT_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.revenant.death");
+    public static SoundEvent REVENANT_DEATH = SoundEvent.of(REVENANT_DEATH_ID);
+    public static final Identifier REVENANT_STEP_ID = new Identifier(TheGraveyard.MOD_ID, "entity.revenant.step");
+    public static SoundEvent REVENANT_STEP = SoundEvent.of(REVENANT_STEP_ID);
+
+    public static final Identifier NIGHTMARE_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nightmare.ambient");
+    public static SoundEvent NIGHTMARE_AMBIENT = SoundEvent.of(NIGHTMARE_AMBIENT_ID);
+    public static final Identifier NIGHTMARE_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nightmare.hurt");
+    public static SoundEvent NIGHTMARE_HURT = SoundEvent.of(NIGHTMARE_HURT_ID);
+    public static final Identifier NIGHTMARE_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nightmare.death");
+    public static SoundEvent NIGHTMARE_DEATH = SoundEvent.of(NIGHTMARE_DEATH_ID);
+
+    public static final Identifier WRAITH_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.wraith.ambient");
+    public static SoundEvent WRAITH_AMBIENT = SoundEvent.of(WRAITH_AMBIENT_ID);
+    public static final Identifier WRAITH_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.wraith.hurt");
+    public static SoundEvent WRAITH_HURT = SoundEvent.of(WRAITH_HURT_ID);
 
     public static final Identifier ALTAR_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "block.altar.ambient");
     public static SoundEvent ALTAR_AMBIENT = SoundEvent.of(ALTAR_AMBIENT_ID);
@@ -52,6 +105,36 @@ public class TGSounds {
 
     public static void init() {
         Registry.register(Registries.SOUND_EVENT, GHOUL_ROAR_ID, GHOUL_ROAR);
+        Registry.register(Registries.SOUND_EVENT, GHOUL_AMBIENT_ID, GHOUL_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, GHOUL_HURT_ID, GHOUL_HURT);
+        Registry.register(Registries.SOUND_EVENT, GHOUL_DEATH_ID, GHOUL_DEATH);
+        Registry.register(Registries.SOUND_EVENT, GHOUL_STEP_ID, GHOUL_STEP);
+
+        Registry.register(Registries.SOUND_EVENT, GHOULING_GROAN_ID, GHOULING_GROAN);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_SPAWN_ID, GHOULING_SPAWN);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_AMBIENT_ID, GHOULING_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_HURT_ID, GHOULING_HURT);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_ATTACK_ID, GHOULING_ATTACK);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_DEATH_ID, GHOULING_DEATH);
+        Registry.register(Registries.SOUND_EVENT, GHOULING_STEP_ID, GHOULING_STEP);
+
+        Registry.register(Registries.SOUND_EVENT, REVENANT_AMBIENT_ID, REVENANT_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, REVENANT_HURT_ID, REVENANT_HURT);
+        Registry.register(Registries.SOUND_EVENT, REVENANT_DEATH_ID, REVENANT_DEATH);
+        Registry.register(Registries.SOUND_EVENT, REVENANT_STEP_ID, REVENANT_STEP);
+
+        Registry.register(Registries.SOUND_EVENT, NIGHTMARE_AMBIENT_ID, NIGHTMARE_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, NIGHTMARE_HURT_ID, NIGHTMARE_HURT);
+        Registry.register(Registries.SOUND_EVENT, NIGHTMARE_DEATH_ID, NIGHTMARE_DEATH);
+
+        Registry.register(Registries.SOUND_EVENT, WRAITH_AMBIENT_ID, WRAITH_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, WRAITH_HURT_ID, WRAITH_HURT);
+
+        Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_AMBIENT_ID, CORRUPTED_ILLAGER_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_HURT_ID, CORRUPTED_ILLAGER_HURT);
+        Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_STEP_ID, CORRUPTED_ILLAGER_STEP);
+        Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_DEATH_ID, CORRUPTED_ILLAGER_DEATH);
+
         Registry.register(Registries.SOUND_EVENT, ALTAR_AMBIENT_ID, ALTAR_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);
         Registry.register(Registries.SOUND_EVENT, BONE_AMBIENT_ID, BONE_AMBIENT);

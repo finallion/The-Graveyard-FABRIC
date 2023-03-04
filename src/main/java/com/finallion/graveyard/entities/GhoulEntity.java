@@ -20,6 +20,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
@@ -332,18 +333,23 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_AMBIENT, 1.0F, -5.0F);
+    }
+
+    @Override
+    public void playStepSound(BlockPos pos, BlockState state) {
+        this.playSound(TGSounds.GHOUL_STEP, 0.5F, -1.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_HUSK_HURT, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_HURT, 1.0F, -5.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_HUSK_DEATH, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_DEATH, 1.0F, -5.0F);
     }
 
     static {
