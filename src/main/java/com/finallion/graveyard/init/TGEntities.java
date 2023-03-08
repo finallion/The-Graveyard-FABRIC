@@ -110,6 +110,12 @@ public class TGEntities {
                     .trackRangeBlocks(4).trackedUpdateRate(10)
                     .build();
 
+    public static final EntityType<NamelessHangedEntity> NAMELESS_HANGED = FabricEntityTypeBuilder.create()
+            .spawnGroup(SpawnGroup.CREATURE)
+            .entityFactory(NamelessHangedEntity::new)
+            .dimensions(EntityDimensions.fixed(0.8F, 1.2F))
+            .build();
+
     private static void register(String name, EntityType<?> type) {
         entities.add(type);
         Registry.register(Registries.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, name), type);
@@ -130,6 +136,7 @@ public class TGEntities {
         register("falling_corpse", FALLING_CORPSE);
         register("skull", SKULL);
         register("ghouling", GHOULING);
+        register("nameless_hanged", NAMELESS_HANGED);
     }
 
 

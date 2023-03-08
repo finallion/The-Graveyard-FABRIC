@@ -258,7 +258,8 @@
   },
   "entity.lich.melee": {
     "sounds": [
-      "graveyard:entity/lich/melee"
+      "graveyard:entity/lich/melee",
+      "graveyard:entity/lich/melee2"
     ],
     "subtitle": "subtitles.entity.graveyard.lich.melee"
   },

@@ -204,7 +204,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.dataTracker.set(ATTACK_ANIM_TIMER, time);
     }
 
-
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController(this, "controller", 2, event -> {
             if (isDead()) {

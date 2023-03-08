@@ -3,8 +3,14 @@ package com.finallion.graveyard.particles;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @Environment(EnvType.CLIENT)
 public class GraveyardFogParticle extends SpriteBillboardParticle {
@@ -14,7 +20,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
     GraveyardFogParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
         super(clientWorld, d, e, f, g, h, i);
         this.collidesWithWorld = false;
-        this.scale *= 6.0D;
+        this.scale *= 4.0D;
         this.velocityY *= 0.002999999552965164D;
         this.startY = y;
     }

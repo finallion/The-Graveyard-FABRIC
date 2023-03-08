@@ -136,6 +136,7 @@
   "entity.graveyard.ghouling.spawn": "I hear and obey...",
   "entity.graveyard.ghouling.respawn": "Death... is a mere inconvenience.",
   "entity.graveyard.ghouling.obey": "I don't obey your orders, you are no master of mine!",
+  "entity.graveyard.nameless_hanged.wait": "A visitor...? Let me enjoy the sun. Come back at night.",
 
   "subtitles.entity.graveyard.ghouling.spawn": "Ghouling emerges",
   "subtitles.entity.graveyard.ghouling.death": "Ghouling dies",

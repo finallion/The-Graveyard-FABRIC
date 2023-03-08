@@ -78,6 +78,7 @@ public class TheGraveyard implements ModInitializer {
         FabricDefaultAttributeRegistry.register(TGEntities.WRAITH, WraithEntity.createWraithAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.NIGHTMARE, NightmareEntity.createNightmareAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.GHOULING, GhoulingEntity.createGhoulingAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.NAMELESS_HANGED, NamelessHangedEntity.createNamelessHangedAttributes());
 
         /* COMMANDS */
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("horde").requires((source) -> {
