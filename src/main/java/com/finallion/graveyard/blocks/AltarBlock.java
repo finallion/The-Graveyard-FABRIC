@@ -92,7 +92,7 @@ public class AltarBlock extends Block {
             blood = VialOfBlood.getBlood(stack);
         }
 
-        if (state.isOf(TGBlocks.ALTAR) && (blood >= 0.8F || TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && world.isNight()) {
+        if (state.isOf(TGBlocks.ALTAR) && (blood >= 0.8F || TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
 
             if (!state.get(AltarBlock.BLOODY) && (result != null || !TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {

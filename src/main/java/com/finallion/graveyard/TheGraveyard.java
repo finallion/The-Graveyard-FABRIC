@@ -5,6 +5,7 @@ import com.finallion.graveyard.entities.*;
 import com.finallion.graveyard.init.*;
 
 
+import com.finallion.graveyard.recipe.TGRecipeTypes;
 import com.finallion.graveyard.util.*;;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
@@ -14,14 +15,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -48,6 +44,8 @@ public class TheGraveyard implements ModInitializer {
         }
 
         /* GENERAL INIT REGISTRY */
+        TGRecipeTypes.init();
+        TGScreens.init();
         TGParticles.init();
         TGAdvancements.init();
         TGSounds.init();
@@ -139,6 +137,8 @@ public class TheGraveyard implements ModInitializer {
                 entries.add(TGItems.WITHER_BONE_REMAINS);
                 entries.add(TGItems.LATERALLY_LYING_SKELETON);
                 entries.add(TGItems.LATERALLY_LYING_WITHER_SKELETON);
+
+                entries.add(TGItems.OSSUARY);
 
                 entries.add(TGItems.BLACK_URN);
                 entries.add(TGItems.GRAY_URN);

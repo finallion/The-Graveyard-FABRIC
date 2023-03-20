@@ -3,14 +3,13 @@ package com.finallion.graveyard.client;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
+import com.finallion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.finallion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
+import com.finallion.graveyard.client.gui.OssuaryScreen;
 import com.finallion.graveyard.entities.models.CorruptedIllagerModel;
 import com.finallion.graveyard.entities.renders.*;
-import com.finallion.graveyard.init.TGBlocks;
-import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.init.TGItems;
-import com.finallion.graveyard.init.TGParticles;
+import com.finallion.graveyard.init.*;
 import com.finallion.graveyard.item.VialOfBlood;
 import com.finallion.graveyard.network.GraveyardEntitySpawnPacket;
 import com.finallion.graveyard.particles.GraveyardFogParticle;
@@ -32,6 +31,7 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.client.render.RenderLayer;
@@ -62,32 +62,13 @@ public class TheGraveyardClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
 
-        /*
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
-            registry.register(new Identifier(TheGraveyard.MOD_ID, "particle/graveyard_fog_particle"));
-        }));
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
-            registry.register(new Identifier(TheGraveyard.MOD_ID, "particle/graveyard_hand_particle"));
-        }));
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
-            registry.register(new Identifier(TheGraveyard.MOD_ID, "particle/graveyard_left_hand_particle"));
-        }));
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
-            registry.register(new Identifier(TheGraveyard.MOD_ID, "particle/graveyard_soul_beam_particle"));
-        }));
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register(((atlasTexture, registry) -> {
-            registry.register(new Identifier(TheGraveyard.MOD_ID, "particle/graveyard_soul_particle"));
-        }));
-
-         */
-
+        HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
 
         BlockRenderLayerMap.INSTANCE.putBlocks(CUTOUT_MIPPED,
                 TGBlocks.SKULL_WITH_RIB_CAGE,
@@ -110,11 +91,14 @@ public class TheGraveyardClient implements ClientModInitializer {
                 TGBlocks.FIRE_BRAZIER,
                 TGBlocks.CANDLE_HOLDER,
                 TGBlocks.DARK_IRON_DOOR,
-                TGBlocks.DARK_IRON_TRAPDOOR);
+                TGBlocks.DARK_IRON_TRAPDOOR,
+                TGBlocks.OSSUARY
+        );
 
         BlockEntityRendererRegistry.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(TGBlocks.SARCOPHAGUS_BLOCK_ENTITY, SarcophagusBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(TGBlocks.BRAZIER_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new BrazierBlockEntityRenderer());
+        BlockEntityRendererRegistry.register(TGBlocks.OSSUARY_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new OssuaryBlockEntityRenderer());
 
         // coloring of tg_grass_block depending on biome
         ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {

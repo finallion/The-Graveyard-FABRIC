@@ -85,7 +85,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        return false;
+        return source == DamageSource.OUT_OF_WORLD || source == DamageSource.CRAMMING;
     }
 
     public boolean isImmuneToExplosion() {
@@ -110,14 +110,26 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     public void tickMovement() {
         if (this.world.isClient) {
-            this.world.addParticle(ParticleTypes.WHITE_ASH, this.getParticleX(0.5D), this.getY() + 1.0D, this.getParticleZ(0.5D), 0, 0, 0);
+            this.world.addParticle(ParticleTypes.ASH, this.getParticleX(0.5D), this.getY() + 1.75D, this.getParticleZ(0.5D), 0, 0, 0);
         }
 
         super.tickMovement();
     }
 
+    @Override
+    public void tick() {
+        if (world.isDay() && this.offers != null) {
+            this.offers = null;
+        }
+
+        super.tick();
+    }
 
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (world.isDay() && !this.world.isClient) {
+            player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
+        }
+
         if (this.isAlive() && !this.hasCustomer() && world.isNight()) {
             if (!this.getOffers().isEmpty()) {
                 if (!this.world.isClient) {
@@ -127,7 +139,6 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
             }
             return ActionResult.success(this.world.isClient);
         } else {
-            player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"));
             return super.interactMob(player, hand);
         }
     }
@@ -137,7 +148,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         TradeOffers.Factory[] factorys2 = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(2);
         if (factorys != null && factorys2 != null) {
             TradeOfferList tradeOfferList = this.getOffers();
-            this.fillRecipesFromPool(tradeOfferList, factorys, 5);
+            this.fillRecipesFromPool(tradeOfferList, factorys, 6);
             int i = this.random.nextInt(factorys2.length);
             TradeOffers.Factory factory = factorys2[i];
             TradeOffer tradeOffer = factory.create(this, this.random);

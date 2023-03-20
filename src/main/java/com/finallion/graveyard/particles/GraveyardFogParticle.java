@@ -39,7 +39,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
 
         this.move(0, this.velocityY, 0);
 
-        if (this.y >= startY + 1.0D + random.nextDouble()) {
+        if (this.y >= startY + 0.75D + random.nextDouble()) {
             this.markDead();
         }
 

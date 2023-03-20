@@ -12,10 +12,10 @@
   "block.graveyard.tg_tuff": "Tuff",
   "block.graveyard.tg_dirt": "Dirt",
 
-
   "container.sarcophagus": "Sarcophagus",
   "container.coffin": "Coffin",
   "container.urn": "Urn",
+  "container.ossuary": "Ossuary",
 
   "block.graveyard.white_urn": "White Glazed Urn",
   "block.graveyard.black_urn": "Black Glazed Urn",
@@ -52,6 +52,7 @@
   "block.graveyard.small_light_blue_urn": "Small Light Blue Urn",
 
   "block.graveyard.vase_block": "Ceramics",
+  "block.graveyard.ossuary": "Ossuary",
 
 
   "block.graveyard.lying_skeleton": "Lying Skeleton",
@@ -136,7 +137,7 @@
   "entity.graveyard.ghouling.spawn": "I hear and obey...",
   "entity.graveyard.ghouling.respawn": "Death... is a mere inconvenience.",
   "entity.graveyard.ghouling.obey": "I don't obey your orders, you are no master of mine!",
-  "entity.graveyard.nameless_hanged.wait": "A visitor...? Let me enjoy the sun. Come back at night.",
+  "entity.graveyard.nameless_hanged.wait": "Yes, you can see me, I feel your presence. But let me enjoy the sun for once. Come back at night.",
 
   "subtitles.entity.graveyard.ghouling.spawn": "Ghouling emerges",
   "subtitles.entity.graveyard.ghouling.death": "Ghouling dies",

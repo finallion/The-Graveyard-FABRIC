@@ -1,0 +1,8 @@
+{
+  "ambientocclusion": false,
+  "parent": "minecraft:block/block",
+  "textures": {
+    "1": "graveyard:block/ossuary",
+    "particle": "graveyard:block/corrupted_stone"
+  }
+}

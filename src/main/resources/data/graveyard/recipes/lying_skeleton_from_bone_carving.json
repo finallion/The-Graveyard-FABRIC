@@ -1,0 +1,8 @@
+{
+  "type": "graveyard:ossuary_carving",
+  "count": 1,
+  "ingredient": {
+    "item": "minecraft:bone_block"
+  },
+  "result": "graveyard:lying_skeleton"
+}

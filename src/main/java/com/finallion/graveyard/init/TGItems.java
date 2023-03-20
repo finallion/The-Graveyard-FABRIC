@@ -149,6 +149,8 @@ public class TGItems {
     public static final Item MIDDLE_BONE_STAFF = new BlockItem(TGBlocks.MIDDLE_BONE_STAFF, new FabricItemSettings().maxCount(1));
     public static final Item LOWER_BONE_STAFF = new BlockItem(TGBlocks.LOWER_BONE_STAFF, new FabricItemSettings().maxCount(1));
 
+    public static final Item OSSUARY = new BlockItem(TGBlocks.OSSUARY, new FabricItemSettings());
+
 
     public static void registerItems() {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings()));
@@ -300,6 +302,9 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "lower_bone_staff"), LOWER_BONE_STAFF);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "vial_of_blood"), VIAL_OF_BLOOD);
+
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "ossuary"), OSSUARY);
+
 
         /*
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_PLANKS, new FabricItemSettings().group(TheGraveyard.GROUP)));

@@ -166,6 +166,8 @@ public class TGBlocks {
     public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
 
+    public static final Block OSSUARY = new OssuaryBlock(FabricBlockSettings.of(Material.STONE).requiresTool().nonOpaque().strength(3.5F));
+
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_SLAB = new SlabBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -285,6 +287,8 @@ public class TGBlocks {
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);
 
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "ossuary"), OSSUARY);
+
 
         coffins.add(OAK_COFFIN);
         coffins.add(SPRUCE_COFFIN);
@@ -342,5 +346,8 @@ public class TGBlocks {
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,
             FIRE_BRAZIER).build(null));
+
+    public static final BlockEntityType<OssuaryBlockEntity> OSSUARY_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "ossuary_block_entity"), FabricBlockEntityTypeBuilder.create(OssuaryBlockEntity::new,
+            OSSUARY).build(null));
 
 }
