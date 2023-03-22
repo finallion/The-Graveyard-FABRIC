@@ -139,9 +139,10 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,true, false));
 
         corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", CorruptedChampionEntry.of(
-              400.0F, 200.0F, 30.0D, 40.0D, 18.0D, 14.0D, 0.15D,
+              400.0F, 200.0F, 30.0D, 40.0D, 14.0D, 12.0D, 0.15D,
                 800, 400,  700, 150, 5,
-                30, 5, 6000, List.of("entity.minecraft.villager"), List.of("item.minecraft.debug_stick"), true, true, true
+                30, 5, 6000, List.of("entity.minecraft.villager"), List.of("item.minecraft.debug_stick"),
+                true, true, true, 400, 600, 400, -15
         ));
         Config.super.save();
     }

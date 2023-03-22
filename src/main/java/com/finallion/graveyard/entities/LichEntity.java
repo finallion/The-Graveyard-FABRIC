@@ -9,6 +9,7 @@ import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
 import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
@@ -55,6 +56,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final UUID ATTACKING_DMG_BOOST_ID = UUID.fromString("120E0DFB-87AE-4653-9776-831010E291A1");
+    private static final UUID CRAWL_SPEED_BOOST_ID = UUID.fromString("120E0DFB-87AE-1978-9776-831010E291A2");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
     private static final EntityAttributeModifier CRAWL_SPEED_BOOST;
     private static final EntityAttributeModifier DMG_BOOST;
@@ -284,7 +286,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").armor)
                 .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").armorToughness)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0D);
     }
 
 
@@ -345,6 +347,24 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             }
         }
 
+        if (canHuntStart()) {
+            List<PlayerEntity> playersInRange = getPlayersInRange(30.0D);
+            Iterator<PlayerEntity> iterator = playersInRange.iterator();
+            while (iterator.hasNext()) {
+                PlayerEntity player = iterator.next();
+                if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
+                    player.playSound(SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, 2.5F, -5.0F);
+                    for (int i = 0; i < 10; i++) {
+                        MathUtil.createParticleCircle(this.getWorld(), player.getX(), player.getY(), player.getZ(), 0.0D, 0.01D, 0.0D, 1.0F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
+                    }
+                }
+            }
+        }
+
+        if (!canHuntStart() && random.nextInt(5) == 0) {
+            world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE, 4.0F, -10.0F);
+        }
+
         super.tickMovement();
     }
 
@@ -363,9 +383,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         int duration = getFightDurationTimer();
         setFightDurationTimer(duration + 1);
         if (duration > 400) {
-            if (duration < TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight && duration % 400 == 0) {
+            if (duration < TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight && duration % 400 == 0 && random.nextBoolean()) {
                 summonMob(false);
-            } else if (duration >= TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight && duration < TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight * 2 && duration % 600 == 0) {
+            } else if (duration >= TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight && duration < TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").ghoulSpawnTimerInFight * 2 && duration % 600 == 0 && random.nextBoolean()) {
                 summonMob(true);
             }
         }
@@ -408,10 +428,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 while (iterator.hasNext()) {
                     PlayerEntity player = iterator.next();
                     if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
-                        for (int i = 0; i <= 3; i++) {
+                        for (int i = 0; i <= 5; i++) {
                             BlockPos targetPos = new BlockPos(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
+
                             if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir() && world.getBlockState(targetPos.down()).isSolidBlock(world, targetPos.down())) {
-                                player.teleport(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
+                                player.teleport(targetPos.getX(), targetPos.getY(), targetPos.getZ());
                                 break;
                             }
                         }
@@ -533,7 +554,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             while (iterator.hasNext()) {
                 PlayerEntity player = iterator.next();
                 if (getHealTimer() == HEALING_DURATION && !player.isCreative()) {
-                    player.teleport(this.getX(), this.getY() - 15.0D, this.getZ());
+                    player.teleport(this.getX(), this.getY() + TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
                 }
                 if (!player.hasStatusEffect(StatusEffects.MINING_FATIGUE) && !player.isCreative()) {
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 40, 1));
@@ -759,34 +780,36 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     private boolean summonMob(boolean hard) {
-        Box box = (new Box(this.getBlockPos())).expand(35.0D);
-        List<HostileGraveyardEntity> mobs = getWorld().getNonSpectatingEntities(HostileGraveyardEntity.class, box);
-        if (mobs.size() >= TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxSummonedMobs) {
-            return false;
-        }
+        if (this.getHuntTimer() <= 1) { // do not summon mobs when lich is hunting
+            Box box = (new Box(this.getBlockPos())).expand(35.0D);
+            List<HostileGraveyardEntity> mobs = getWorld().getNonSpectatingEntities(HostileGraveyardEntity.class, box);
+            if (mobs.size() >= TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxSummonedMobs) {
+                return false;
+            }
 
-        for (int i = 10; i > 0; i--) {
-            BlockPos pos = new BlockPos(this.getBlockX() + MathHelper.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + MathHelper.nextInt(random, -15, 15));
-            int amount = random.nextInt(TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxGroupSizeSummonedMobs) + 1;
-            if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir() && !world.getBlockState(pos.down()).isAir()) {
-                if (!hard) {
-                    for (int ii = 0; ii < amount; ++ii) {
-                        RevenantEntity revenant = TGEntities.REVENANT.create(world);
-                        revenant.setPosition(pos.getX(), pos.getY(), pos.getZ());
-                        revenant.setCanBurnInSunlight(false);
-                        world.spawnEntity(revenant);
+            for (int i = 10; i > 0; i--) {
+                BlockPos pos = new BlockPos(this.getBlockX() + MathHelper.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + MathHelper.nextInt(random, -15, 15));
+                int amount = random.nextInt(TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxGroupSizeSummonedMobs) + 1;
+                if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir() && !world.getBlockState(pos.down()).isAir()) {
+                    if (!hard) {
+                        for (int ii = 0; ii < amount; ++ii) {
+                            RevenantEntity revenant = TGEntities.REVENANT.create(world);
+                            revenant.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                            revenant.setCanBurnInSunlight(false);
+                            world.spawnEntity(revenant);
+                        }
+                    } else {
+                        for (int ii = 0; ii < amount - 1; ++ii) {
+                            GhoulEntity ghoul = TGEntities.GHOUL.create(world);
+                            ghoul.setVariant((byte) 9);
+                            ghoul.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                            ghoul.setCanBurnInSunlight(false);
+                            world.spawnEntity(ghoul);
+                        }
                     }
-                } else {
-                    for (int ii = 0; ii < amount - 1; ++ii) {
-                        GhoulEntity ghoul = TGEntities.GHOUL.create(world);
-                        ghoul.setVariant((byte) 9);
-                        ghoul.setPosition(pos.getX(), pos.getY(), pos.getZ());
-                        ghoul.setCanBurnInSunlight(false);
-                        world.spawnEntity(ghoul);
-                    }
+                    return true;
+
                 }
-                return true;
-
             }
         }
         return false;
@@ -1089,7 +1112,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         CAN_ATTACK_PREDICATE = Entity::isPlayer;
         HEAD_TARGET_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(20.0D).setPredicate(CAN_ATTACK_PREDICATE);
         CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F);
-        CRAWL_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.18D, EntityAttributeModifier.Operation.ADDITION);
+        CRAWL_SPEED_BOOST = new EntityAttributeModifier(CRAWL_SPEED_BOOST_ID, "Crawl speed boost", 0.18D, EntityAttributeModifier.Operation.ADDITION);
         ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").speedInHuntPhase, EntityAttributeModifier.Operation.ADDITION);
         DMG_BOOST = new EntityAttributeModifier(ATTACKING_DMG_BOOST_ID, "Damage speed boost", TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").damageHuntingPhaseAddition, EntityAttributeModifier.Operation.ADDITION);
     }
@@ -1109,7 +1132,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public boolean canStart() {
-            return getCorpseSpellTimer() <= -400 // cooldown
+            return getCorpseSpellTimer() <= -TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell // cooldown
                     && random.nextInt(75) == 0
                     && canSpellCast();
         }
@@ -1272,7 +1295,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         public boolean canStart() {
             return this.mob.getHealth() <= 300.0F
                     && random.nextInt(30) == 0
-                    && this.mob.getHealTimer() <= -600
+                    && this.mob.getHealTimer() <= -TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownTeleportPlayerAndHeal
                     && this.mob.getLevitationDurationTimer() <= -60
                     && canSpellCast();
         }
@@ -1321,7 +1344,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         public boolean canStart() {
-            return canSpellCast() && random.nextInt(125) == 0 && this.mob.getLevitationDurationTimer() <= -400; // cooldown
+            return canSpellCast()
+                    && random.nextInt(125) == 0
+                    && this.mob.getLevitationDurationTimer() <= -TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownLevitationSpell; // cooldown
         }
 
         public void start() {

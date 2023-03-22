@@ -178,9 +178,9 @@ public class LichMeleeGoal extends Goal {
             // HUNT ATTACK
         } else if ((phase == 3 && this.mob.canHuntStart()) || phase == 5) {
             // if lich enters "light-sphere" while player has blindness, play sound
-            if (phase == 3 && squaredDistance <= d + 7.0D && scareSoundAge <= 0) {
+            if (phase == 3 && squaredDistance <= d + 11.0D && scareSoundAge <= 0) {
                 this.mob.playScareSound();
-                scareSoundAge = 40;
+                scareSoundAge = 80;
             }
 
             if (squaredDistance <= d && this.cooldown <= 0) {
