@@ -86,7 +86,7 @@ public class AltarBlock extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack stack = player.getMainHandStack();
+        ItemStack stack = player.getStackInHand(hand);
         float blood = 0.0F;
         if (stack.isOf(TGItems.VIAL_OF_BLOOD)) {
             blood = VialOfBlood.getBlood(stack);

@@ -1,4 +1,3 @@
-
 {
   "block.graveyard.tg_stone": "墓园石",
   "block.graveyard.tg_granite": "墓园花岗岩",
@@ -13,32 +12,6 @@
   "block.graveyard.tg_tuff": "墓园凝灰岩",
   "block.graveyard.tg_rooted_dirt": "墓园根须土",
   "block.graveyard.tg_moss_block": "墓园苔藓",
-
-  "block.graveyard.moss_block": "苔藓",
-  "block.graveyard.moss_carpet": "苔藓地毯",
-
-  "block.graveyard.tg_cobbled_deepslate": "墓园圆石深石板",
-  "block.graveyard.tg_cobbled_deepslate_slab": "墓园圆石深石板台阶",
-  "block.graveyard.tg_cobbled_deepslate_stairs": "墓园圆石深石板楼梯",
-  "block.graveyard.tg_cobbled_deepslate_wall": "墓园圆石深石板墙",
-  "block.graveyard.tg_chiseled_deepslate": "墓园雕琢深石板",
-
-  "block.graveyard.tg_polished_deepslate": "墓园平滑深石板",
-  "block.graveyard.tg_polished_deepslate_slab": "墓园平滑深石板台阶",
-  "block.graveyard.tg_polished_deepslate_stairs": "墓园平滑深石板楼梯",
-  "block.graveyard.tg_polished_deepslate_wall": "墓园平滑深石板墙",
-
-  "block.graveyard.tg_deepslate_bricks": "墓园深石板砖",
-  "block.graveyard.tg_deepslate_brick_slab": "墓园深石板砖台阶",
-  "block.graveyard.tg_deepslate_brick_stairs": "墓园深石板砖楼梯",
-  "block.graveyard.tg_deepslate_brick_wall": "墓园深石板砖墙",
-  "block.graveyard.tg_cracked_deepslate_bricks": "墓园裂纹深石板砖",
-
-  "block.graveyard.tg_deepslate_tiles": "墓园深石板瓦",
-  "block.graveyard.tg_deepslate_tile_slab": "墓园深石板瓦台阶",
-  "block.graveyard.tg_deepslate_tile_stairs": "墓园深石板瓦楼梯",
-  "block.graveyard.tg_deepslate_tile_wall": "墓园深石板瓦墙",
-  "block.graveyard.tg_cracked_deepslate_tiles": "墓园裂纹深石板瓦",
 
   "container.urn": "瓮",
   "container.sarcophagus": "石棺",
@@ -235,7 +208,7 @@
   "biome.graveyard.eroded_haunted_forest": "侵蚀中的闹鬼森林",
   "biome.graveyard.ancient_dead_coral_reef": "远古死珊瑚礁",
 
-  "itemGroup.graveyard.group": "The Graveyard",
+  "itemGroup.graveyard_group": "墓园",
   "gravestone.edit": "编辑墓碑",
 
   "advancements.graveyard.crypt.title": "进入黑暗",
@@ -299,5 +272,3 @@
   "advancements.graveyard.equip_coffin.title": "为死者服务",
   "advancements.graveyard.equip_coffin.description": "为食尸鬼配备合适的棺材。"
 }
-
-

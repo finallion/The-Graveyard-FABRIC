@@ -315,7 +315,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
             if (!itemStack.isEmpty()) {
                 if (!this.hasCoffin() && GHOULING_HOLDABLE.contains(itemStack.getItem())) {
-                    this.equipStack(EquipmentSlot.OFFHAND, itemStack);
+                    this.equipStack(EquipmentSlot.OFFHAND, new ItemStack(itemStack.getItem()));
                     if (inventory == null) {
                         this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 1.0F, -5.0F);
                         TGAdvancements.EQUIP_COFFIN.trigger((ServerPlayerEntity) player);

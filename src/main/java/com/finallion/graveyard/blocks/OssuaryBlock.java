@@ -11,6 +11,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -31,6 +32,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -65,11 +67,17 @@ public class OssuaryBlock extends BlockWithEntity implements BlockEntityProvider
         }
     }
 
+    @Override
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        for (int i = 0; i < 10; i++) {
+            world.addParticle(ParticleTypes.ASH, pos.getX() + random.nextBetween(-1, 1) + 0.5D, pos.getY() + 1.0D, pos.getZ() + random.nextBetween(-1, 1) + 0.5D, 0, 0, 0);
+
+        }
+
+    }
+
     @Nullable
     public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        //if (!state.get(OPEN)) world.setBlockState(pos, state.with(OPEN, true), 3);
-
-        world.playSound(null, pos, SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.BLOCKS, 3.0F, -3.0F);
         return new SimpleNamedScreenHandlerFactory((syncId, playerInventory, player) -> {
             return new OssuaryScreenHandler(syncId, playerInventory, ScreenHandlerContext.create(world, pos));
         }, TITLE);

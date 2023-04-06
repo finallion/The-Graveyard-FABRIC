@@ -1,6 +1,7 @@
 package com.finallion.graveyard.trades;
 
 import com.finallion.graveyard.init.TGItems;
+import com.finallion.graveyard.init.TGTags;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -59,7 +60,7 @@ public class NamelessHangedTradeOffers {
                         new SellItemFactory(TGItems.FIRE_BRAZIER, 5, 1, 4, 1),
                         new SellItemFactory(TGItems.PEDESTAL, 3, 1, 6, 1),
                         new SellItemFactory(TGItems.CANDLE_HOLDER, 6, 1, 6, 1),
-                        new SellMapFactory(13, StructureTags.ON_OCEAN_EXPLORER_MAPS, "filled_map.ruins", MapIcon.Type.TARGET_X, 12, 5),
+                        new SellMapFactory(13, TGTags.ON_RUINS_EXPLORER_MAPS, "filled_map.ruins", MapIcon.Type.TARGET_X, 12, 5),
                         new SellItemFactory(TGItems.CREEPER_SKELETON, 3, 3, 6, 1)}));
 
 

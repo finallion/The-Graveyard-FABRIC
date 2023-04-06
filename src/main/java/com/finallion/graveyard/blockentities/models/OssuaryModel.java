@@ -24,4 +24,6 @@ public class OssuaryModel extends GeoModel<OssuaryBlockEntity> {
     }
 
 
+
+
 }

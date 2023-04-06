@@ -172,6 +172,11 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
     @Override
     public boolean damage(DamageSource source, float amount) {
+        if (source == DamageSource.CRAMMING ||source == DamageSource.IN_WALL || source == DamageSource.STARVE || source == DamageSource.OUT_OF_WORLD) {
+            setCanReanimate(false);
+            setReanimateAnimTimer(0);
+        }
+
         if (amount >= getHealth() && canReanimate() && random.nextInt(3) == 0) {
             setCanReanimate(false);
             setReanimateAnimTimer(REANIMATE_DURATION);

@@ -251,7 +251,7 @@
   "advancements.graveyard.upper_bone_staff.description": "骨の杖の上部分を回収する",
   "advancements.graveyard.summon_lich.title": "不死の怒り",
   "advancements.graveyard.summon_lich.description": "夜中の祭壇に血入りのガラス瓶と骨の杖の断片３つを全て置いて、不死の魔法使いを召喚する",
-  "advancements.graveyard.vial_of_blood.title": "血の\"ドネーション\"",
+  "advancements.graveyard.vial_of_blood.title": "血のドネーション",
   "advancements.graveyard.vial_of_blood.description": "ガラス瓶と骨のダガーを使って村人から血を集める",
   "advancements.graveyard.lich_prison.title": "呪われた島",
   "advancements.graveyard.lich_prison.description": "不死の魔法使いの祭壇を見つける",
@@ -268,6 +268,6 @@
   "advancements.graveyard.equip_coffin.title": "死者は仕えるもの",
   "advancements.graveyard.equip_coffin.description": "グーリングに石棺や棺を装備させる",
 
-  "itemGroup.graveyard.group": "The Graveyard",
+  "itemGroup.graveyard_group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"
 }

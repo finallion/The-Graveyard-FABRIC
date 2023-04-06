@@ -4,6 +4,7 @@ import com.finallion.graveyard.init.TGBlocks;
 import com.finallion.graveyard.recipe.TGRecipeTypes;
 import com.finallion.graveyard.init.TGScreens;
 import com.finallion.graveyard.recipe.OssuaryRecipe;
+import com.finallion.graveyard.util.MathUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,10 +13,12 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -71,7 +74,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
                 context.run((world, pos) -> {
                     long l = world.getTime();
                     if (OssuaryScreenHandler.this.lastTakeTime != l) {
-                        world.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0F, -1.0F);
+                        world.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0F, -3.0F);
                         OssuaryScreenHandler.this.lastTakeTime = l;
                     }
 

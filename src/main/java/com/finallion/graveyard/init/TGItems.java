@@ -1,10 +1,7 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.item.BoneStaffItem;
-import com.finallion.graveyard.item.DaggerItem;
-import com.finallion.graveyard.item.SarcophagusItem;
-import com.finallion.graveyard.item.VialOfBlood;
+import com.finallion.graveyard.item.*;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
