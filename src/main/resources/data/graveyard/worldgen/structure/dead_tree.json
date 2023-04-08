@@ -8,7 +8,7 @@
   "use_expansion_hack": true,
   "terrain_check_size": 15,
   "max_height_difference": 3,
-  "terrain_adaptation": "none",
+  "terrain_adaptation": "beard_box",
   "structure_name": "dead_tree",
   "start_height": {
     "absolute": 1

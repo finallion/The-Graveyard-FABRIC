@@ -14,6 +14,7 @@ import com.finallion.graveyard.item.VialOfBlood;
 import com.finallion.graveyard.network.GraveyardEntitySpawnPacket;
 import com.finallion.graveyard.particles.GraveyardFogParticle;
 import com.finallion.graveyard.particles.GraveyardHandParticle;
+import com.finallion.graveyard.particles.GraveyardLineFogParticle;
 import com.finallion.graveyard.particles.GraveyardSoulParticle;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -67,6 +68,7 @@ public class TheGraveyardClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_LINE_FOG_PARTICLE, GraveyardLineFogParticle.Factory::new);
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
 

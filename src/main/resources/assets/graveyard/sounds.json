@@ -185,6 +185,32 @@
     "subtitle": "subtitles.entity.graveyard.corrupted_illager.death"
   },
 
+  "entity.acolyte.ambient": {
+    "sounds": [
+      "minecraft:mob/vindication_illager/idle1",
+      "minecraft:mob/vindication_illager/idle2",
+      "minecraft:mob/vindication_illager/idle3",
+      "minecraft:mob/vindication_illager/idle4",
+      "minecraft:mob/vindication_illager/idle5"
+    ],
+    "subtitle": "subtitles.entity.graveyard.acolyte.ambient"
+  },
+  "entity.acolyte.hurt": {
+    "sounds": [
+      "minecraft:mob/vindication_illager/hurt1",
+      "minecraft:mob/vindication_illager/hurt2",
+      "minecraft:mob/vindication_illager/hurt3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.acolyte.hurt"
+  },
+  "entity.acolyte.death": {
+    "sounds": [
+      "minecraft:mob/vindication_illager/death1",
+      "minecraft:mob/vindication_illager/death2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.acolyte.death"
+  },
+
   "entity.nightmare.ambient": {
     "sounds": [
       "minecraft:mob/endermen/idle1",

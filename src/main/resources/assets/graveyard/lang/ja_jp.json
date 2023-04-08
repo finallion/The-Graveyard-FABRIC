@@ -284,5 +284,8 @@
   "entity.graveyard.nameless_hanged": "Nameless Hanged",
   "advancements.graveyard.dead_tree.title": "Hanging Tree",
   "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree.",
+  "subtitles.entity.graveyard.acolyte.ambient": "Acolyte breaths",
+  "subtitles.entity.graveyard.acolyte.hurt": "Acolyte hurts",
+  "subtitles.entity.graveyard.acolyte.death": "Acolyte dies",
   "itemGroup.graveyard.group": "The Graveyard"
 }

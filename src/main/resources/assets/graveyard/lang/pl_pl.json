@@ -11,6 +11,9 @@
   "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
   "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
   "entity.graveyard.nameless_hanged": "Nameless Hanged",
+  "subtitles.entity.graveyard.acolyte.ambient": "Acolyte breaths",
+  "subtitles.entity.graveyard.acolyte.hurt": "Acolyte hurts",
+  "subtitles.entity.graveyard.acolyte.death": "Acolyte dies",
 
   "block.graveyard.tg_grass_block": "Blok trawy",
   "block.graveyard.tg_moss_block": "Blok mchu",
@@ -279,7 +282,7 @@
   "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree.",
 
 
-  "itemGroup.group": "Cmentarz",
+  "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edytuj nagrobek"
 
 }

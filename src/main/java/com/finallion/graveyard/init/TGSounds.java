@@ -23,6 +23,13 @@ public class TGSounds {
     public static final Identifier CORRUPTED_ILLAGER_STEP_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.step");
     public static SoundEvent CORRUPTED_ILLAGER_STEP = SoundEvent.of(CORRUPTED_ILLAGER_STEP_ID);
 
+    public static final Identifier ACOLYTE_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.acolyte.ambient");
+    public static SoundEvent ACOLYTE_AMBIENT = SoundEvent.of(ACOLYTE_AMBIENT_ID);
+    public static final Identifier ACOLYTE_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.acolyte.hurt");
+    public static SoundEvent ACOLYTE_HURT = SoundEvent.of(ACOLYTE_HURT_ID);
+    public static final Identifier ACOLYTE_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.acolyte.death");
+    public static SoundEvent ACOLYTE_DEATH = SoundEvent.of(ACOLYTE_DEATH_ID);
+
     public static final Identifier GHOUL_ROAR_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.roar");
     public static SoundEvent GHOUL_ROAR = SoundEvent.of(GHOUL_ROAR_ID);
     public static final Identifier GHOUL_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.ambient");
@@ -145,6 +152,10 @@ public class TGSounds {
         Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_HURT_ID, CORRUPTED_ILLAGER_HURT);
         Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_STEP_ID, CORRUPTED_ILLAGER_STEP);
         Registry.register(Registries.SOUND_EVENT, CORRUPTED_ILLAGER_DEATH_ID, CORRUPTED_ILLAGER_DEATH);
+
+        Registry.register(Registries.SOUND_EVENT, ACOLYTE_AMBIENT_ID, ACOLYTE_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, ACOLYTE_HURT_ID, ACOLYTE_HURT);
+        Registry.register(Registries.SOUND_EVENT, ACOLYTE_DEATH_ID, ACOLYTE_DEATH);
 
         Registry.register(Registries.SOUND_EVENT, ALTAR_AMBIENT_ID, ALTAR_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);

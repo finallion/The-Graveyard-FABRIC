@@ -158,6 +158,15 @@
     {
       "weight": 1,
       "element": {
+        "location": "graveyard:small_grave/small_grave_18",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
         "location": "graveyard:small_grave/crashed_carriage",
         "processors": "minecraft:empty",
         "projection": "rigid",

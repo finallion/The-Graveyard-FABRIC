@@ -33,7 +33,8 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
             if (blockEntity instanceof MobSpawnerBlockEntity) {
                 NbtCompound nbtCompound = structureBlockInfo2.nbt.getCompound("SpawnData");
                 if (nbtCompound.toString().contains("wither_skeleton")) {
-                    ((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.SKELETON, (World) world, data.getRandom(worldPos), worldPos);
+                    ((MobSpawnerBlockEntity)blockEntity).setEntityType(EntityType.SKELETON, data.getRandom(worldPos));
+                    //((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.SKELETON, (World) world, data.getRandom(worldPos), worldPos);
                     //TheGraveyard.LOGGER.error("The Graveyard Config: Wither Skeleton Spawner switched to Skeleton Spawner at " + worldPos);
                 }
             }

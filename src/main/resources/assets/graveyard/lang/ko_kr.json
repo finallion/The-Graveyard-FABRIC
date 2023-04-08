@@ -10,6 +10,9 @@
   "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
   "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
   "entity.graveyard.nameless_hanged": "Nameless Hanged",
+  "subtitles.entity.graveyard.acolyte.ambient": "Acolyte breaths",
+  "subtitles.entity.graveyard.acolyte.hurt": "Acolyte hurts",
+  "subtitles.entity.graveyard.acolyte.death": "Acolyte dies",
 
   "block.graveyard.tg_grass_block": "잔디 블록",
   "block.graveyard.tg_moss_block": "이끼 블록",

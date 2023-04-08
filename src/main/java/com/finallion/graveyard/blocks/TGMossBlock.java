@@ -40,7 +40,6 @@ public class TGMossBlock extends MossBlock {
             if (random.nextInt(250) == 0) {
                 world.addParticle(TGParticles.GRAVEYARD_HAND_PARTICLE, (double)pos.getX() + random.nextDouble(), (double)pos.getY() + 1.2D, (double)pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
             }
-
         }
 
 
