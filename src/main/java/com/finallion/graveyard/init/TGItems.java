@@ -135,7 +135,9 @@ public class TGItems {
     public static final Item NIGHTMARE_SPAWN_EGG = new SpawnEggItem(TGEntities.NIGHTMARE, 592137, 4718849, new FabricItemSettings());
     public static final Item CORRUPTED_VINDICATOR_SPAWN_EGG = new SpawnEggItem(TGEntities.CORRUPTED_VINDICATOR, 7567737, 2380632, new FabricItemSettings());
     public static final Item CORRUPTED_PILLAGER_SPAWN_EGG = new SpawnEggItem(TGEntities.CORRUPTED_PILLAGER, 7567737, 4924973, new FabricItemSettings());
-    public static final Item WRAITH_SPAWN_EGG = new SpawnEggItem(TGEntities.WRAITH, 1644568, 16777215, new FabricItemSettings());
+    public static final Item WRAITH_SPAWN_EGG = new SpawnEggItem(TGEntities.WRAITH, 16777215, 1644568, new FabricItemSettings());
+    public static final Item LICH_SPAWN_EGG = new SpawnEggItem(TGEntities.LICH, 13750223, 4144959, new FabricItemSettings());
+    public static final Item NAMELESS_HANGED_SPAWN_EGG = new SpawnEggItem(TGEntities.NAMELESS_HANGED, 5389367, 9803156, new FabricItemSettings());
 
     public static final Item BONE_DAGGER = new DaggerItem(ToolMaterials.STONE, 4.0F, -2.0F, new Item.Settings().maxCount(1));
     public static final Item WHITE_BONE_STAFF = new BoneStaffItem((byte) 1);
@@ -272,6 +274,8 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_vindicator_spawn_egg"), CORRUPTED_VINDICATOR_SPAWN_EGG);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "corrupted_pillager_spawn_egg"), CORRUPTED_PILLAGER_SPAWN_EGG);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "wraith_spawn_egg"), WRAITH_SPAWN_EGG);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "lich_spawn_egg"), LICH_SPAWN_EGG);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "nameless_hanged_spawn_egg"), NAMELESS_HANGED_SPAWN_EGG);
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "bone_dagger"), BONE_DAGGER);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "white_bone_staff"), WHITE_BONE_STAFF);

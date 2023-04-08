@@ -41,7 +41,7 @@ public class GraveyardConfig implements Config {
 
     @Override
     public String getName() {
-        return "the-graveyard-2.5-config";
+        return "the-graveyard-2.7-config";
     }
 
     @Override

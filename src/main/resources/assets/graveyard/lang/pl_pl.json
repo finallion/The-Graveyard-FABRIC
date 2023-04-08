@@ -14,6 +14,8 @@
   "subtitles.entity.graveyard.acolyte.ambient": "Acolyte breaths",
   "subtitles.entity.graveyard.acolyte.hurt": "Acolyte hurts",
   "subtitles.entity.graveyard.acolyte.death": "Acolyte dies",
+  "item.graveyard.lich_spawn_egg": "Corrupted Champion Spawn Egg",
+  "item.graveyard.nameless_hanged_spawn_egg": "Nameless Hanged Spawn Egg",
 
   "block.graveyard.tg_grass_block": "Blok trawy",
   "block.graveyard.tg_moss_block": "Blok mchu",

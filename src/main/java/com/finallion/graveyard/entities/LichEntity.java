@@ -1132,6 +1132,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public boolean canStart() {
+            System.out.println(-TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell);
             return getCorpseSpellTimer() <= -TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell // cooldown
                     && random.nextInt(75) == 0
                     && canSpellCast();

@@ -42,6 +42,7 @@ public class TGFileWriterReader {
             File oldConfig2 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-1.19-config.json5");
             File oldConfig3 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.0-config.json5");
             File oldConfig4 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.2-config.json5");
+            File oldConfig5 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.5-config.json5");
             if (oldConfig.exists()) {
                 if (oldConfig.delete()) {
                     TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
@@ -62,6 +63,12 @@ public class TGFileWriterReader {
 
             if (oldConfig4.exists()) {
                 if (oldConfig4.delete()) {
+                    TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
+                }
+            }
+
+            if (oldConfig5.exists()) {
+                if (oldConfig5.delete()) {
                     TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
                 }
             }

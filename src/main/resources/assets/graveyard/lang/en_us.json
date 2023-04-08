@@ -214,8 +214,10 @@
   "entity.graveyard.wraith": "Wraith",
   "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
   "entity.graveyard.lich": "Corrupted Champion",
+  "item.graveyard.lich_spawn_egg": "Corrupted Champion Spawn Egg",
   "entity.graveyard.ghouling": "Ghouling",
   "entity.graveyard.nameless_hanged": "Nameless Hanged",
+  "item.graveyard.nameless_hanged_spawn_egg": "Nameless Hanged Spawn Egg",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",

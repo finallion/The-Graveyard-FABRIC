@@ -202,6 +202,8 @@ public class TheGraveyard implements ModInitializer {
                 entries.add(TGItems.CORRUPTED_VINDICATOR_SPAWN_EGG);
                 entries.add(TGItems.CORRUPTED_PILLAGER_SPAWN_EGG);
                 entries.add(TGItems.WRAITH_SPAWN_EGG);
+                entries.add(TGItems.LICH_SPAWN_EGG);
+                entries.add(TGItems.NAMELESS_HANGED_SPAWN_EGG);
 
                 entries.add(TGItems.BONE_DAGGER);
                 entries.add(TGItems.WHITE_BONE_STAFF);
