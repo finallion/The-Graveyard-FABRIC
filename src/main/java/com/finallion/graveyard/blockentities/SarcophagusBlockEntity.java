@@ -3,6 +3,7 @@ package com.finallion.graveyard.blockentities;
 import com.finallion.graveyard.blockentities.animation.SarcophagusLidAnimator;
 import com.finallion.graveyard.blocks.SarcophagusBlock;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LidOpenable;
@@ -37,17 +38,17 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
                 if (state.get(SarcophagusBlock.IS_COFFIN)) { // internal property is_coffin
-                    SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_OPEN);
+                    SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.COFFIN_OPEN);
                 } else {
-                    SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
+                    SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.SARCOPHAGUS_USE);
                 }
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
                 if (state.get(SarcophagusBlock.IS_COFFIN)) {
-                    SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_CHEST_CLOSE);
+                    SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.COFFIN_CLOSE);
                 } else {
-                    SarcophagusBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_GRINDSTONE_USE);
+                    SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.SARCOPHAGUS_USE);
                 }
             }
 

@@ -194,6 +194,11 @@
   "subtitles.entity.graveyard.nameless_hanged.ambient": "Rope creaks",
   "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
   "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
+  "subtitles.block.graveyard.coffin.open": "Coffin creaks open",
+  "subtitles.block.graveyard.coffin.close": "Coffin closes",
+  "subtitles.block.graveyard.urn.open": "Urn opens",
+  "subtitles.block.graveyard.urn.close": "Urn closes",
+  "subtitles.block.graveyard.sarcophagus.use": "Sarcophagus lid drags",
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",

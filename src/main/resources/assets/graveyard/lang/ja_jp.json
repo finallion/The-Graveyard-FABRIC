@@ -208,6 +208,11 @@
   "subtitles.block.graveyard.bone.placed": "Bone Staff echoes",
   "subtitles.block.graveyard.bone.ambient": "Bone Staff whispers",
   "subtitles.item.graveyard.vial.splash": "Blood drips",
+  "subtitles.block.graveyard.coffin.open": "Coffin creaks open",
+  "subtitles.block.graveyard.coffin.close": "Coffin closes",
+  "subtitles.block.graveyard.urn.open": "Urn opens",
+  "subtitles.block.graveyard.urn.close": "Urn closes",
+  "subtitles.block.graveyard.sarcophagus.use": "Sarcophagus lid drags",
 
   "advancements.graveyard.crypt.title": "闇の中へ",
   "advancements.graveyard.crypt.description": "地下納骨堂を見つける",
