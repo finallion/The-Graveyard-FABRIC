@@ -26,6 +26,7 @@ import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -370,7 +371,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     protected void mobTick() {
         if (homePos == null) {
-            homePos = new BlockPos(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
+            homePos = BlockPos.ofFloored(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
         }
 
         if (idleSoundAge <= 0) {
@@ -429,7 +430,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                     PlayerEntity player = iterator.next();
                     if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                         for (int i = 0; i <= 5; i++) {
-                            BlockPos targetPos = new BlockPos(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
+                            BlockPos targetPos = BlockPos.ofFloored(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
 
                             if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir() && world.getBlockState(targetPos.down()).isSolidBlock(world, targetPos.down())) {
                                 player.teleport(targetPos.getX(), targetPos.getY(), targetPos.getZ());
@@ -620,7 +621,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     public void onSummoned(Direction direction, BlockPos altarPos) {
         this.setAnimationState(ANIMATION_SPAWN);
         applyInvulAndResetBossBar(SPAWN_INVUL_TIMER);
-        this.homePos = new BlockPos(altarPos.getX() + 0.5D, altarPos.getY(), altarPos.getZ() + 0.5D);
+        this.homePos = BlockPos.ofFloored(altarPos.getX() + 0.5D, altarPos.getY(), altarPos.getZ() + 0.5D);
         this.spawnDirection = direction;
         playSpawnSound();
     }
@@ -695,10 +696,10 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && source != DamageSource.OUT_OF_WORLD) {
+            if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && !source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
                 return false;
             } else {
-                if (amount > this.getHealth() && getPhase() < 5 && source != DamageSource.OUT_OF_WORLD && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isMultiphaseFight) {
+                if (amount > this.getHealth() && getPhase() < 5 && !source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isMultiphaseFight) {
                     //amount = this.getHealth() - 1;
                     respawn();
                     return false;
@@ -1460,7 +1461,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         private void conjureFangs(double x, double z, double maxY, double y, float yaw, int warmup) {
-            BlockPos blockPos = new BlockPos(x, y, z);
+            BlockPos blockPos = BlockPos.ofFloored(x, y, z);
             boolean bl = false;
             double d = 0.0D;
 

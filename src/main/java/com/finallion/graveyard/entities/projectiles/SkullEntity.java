@@ -16,8 +16,8 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -70,7 +70,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
             boolean bl;
             if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
-                bl = entity.damage(DamageSource.magic(this, livingEntity), 10.0F);
+                bl = entity.damage(this.getDamageSources().indirectMagic(this, livingEntity), 10.0F);
                 if (bl) {
                     if (entity.isAlive()) {
                         this.applyDamageEffects(livingEntity, entity);

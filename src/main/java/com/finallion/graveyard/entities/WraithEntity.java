@@ -18,7 +18,6 @@ import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -37,6 +36,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -146,7 +146,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     public boolean damage(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (source instanceof ProjectileDamageSource) {
+        } else if (source.isIn(DamageTypeTags.IS_PROJECTILE)) {
             Entity entity = source.getSource();
             if (entity instanceof ArrowEntity) {
                return false;
@@ -281,14 +281,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public boolean isInvulnerableTo(DamageSource damageSource) {
-        if (damageSource == DamageSource.CACTUS ||
-                damageSource == DamageSource.DROWN ||
-                damageSource == DamageSource.SWEET_BERRY_BUSH ||
-                damageSource == DamageSource.HOT_FLOOR ||
-                damageSource == DamageSource.FLY_INTO_WALL ||
-                damageSource == DamageSource.STALAGMITE ||
-                damageSource == DamageSource.FALL ||
-                damageSource == DamageSource.IN_WALL)
+        if (damageSource.isIn(DamageTypeTags.BYPASSES_ARMOR) ||
+                damageSource.isIn(DamageTypeTags.BYPASSES_EFFECTS) ||
+                damageSource.isIn(DamageTypeTags.BYPASSES_SHIELD))
             return true;
 
         return super.isInvulnerableTo(damageSource);
@@ -529,7 +524,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         public void start() {
             Vec3d vec3d = this.getRandomLocation();
             if (vec3d != null) {
-                WraithEntity.this.navigation.startMovingAlong(WraithEntity.this.navigation.findPathTo(new BlockPos(vec3d), 1), 1.0D);
+                WraithEntity.this.navigation.startMovingAlong(WraithEntity.this.navigation.findPathTo(BlockPos.ofFloored(vec3d), 1), 1.0D);
             }
 
         }

@@ -3,6 +3,7 @@ package com.finallion.graveyard.blockentities;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blocks.UrnBlock;
 import com.finallion.graveyard.init.TGBlocks;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -40,11 +41,11 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                UrnBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_BARREL_OPEN);
+                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_OPEN);
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                UrnBlockEntity.playSound(world, pos, state, SoundEvents.BLOCK_BARREL_CLOSE);
+                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_CLOSE);
             }
 
             protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {

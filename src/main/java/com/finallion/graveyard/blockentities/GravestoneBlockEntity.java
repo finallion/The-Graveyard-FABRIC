@@ -7,8 +7,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -110,9 +112,8 @@ public class GravestoneBlockEntity extends BlockEntity {
         } catch (Exception var3) {
         }
 
-        return Text.empty();
+        return ScreenTexts.EMPTY;
     }
-
 
     public Text getTextOnRow(int row, boolean filtered) {
         return this.getTexts(filtered)[row];
@@ -133,7 +134,6 @@ public class GravestoneBlockEntity extends BlockEntity {
             this.filterText = filterText;
             this.textsBeingEdited = new OrderedText[4];
 
-
             for(int i = 0; i < 4; ++i) {
                 this.textsBeingEdited[i] = (OrderedText)textOrderingFunction.apply(this.getTextOnRow(i, filterText));
             }
@@ -141,19 +141,6 @@ public class GravestoneBlockEntity extends BlockEntity {
 
         return this.textsBeingEdited;
     }
-
-
-    @Nullable
-    @Environment(EnvType.CLIENT)
-    public OrderedText getTextBeingEditedOnRow(int row, Function<Text, OrderedText> function) {
-        if (this.textsBeingEdited[row] == null && this.texts[row] != null) {
-            this.textsBeingEdited[row] = (OrderedText) function.apply(this.texts[row]);
-        }
-
-        return this.textsBeingEdited[row];
-    }
-
-
 
     private Text[] getTexts(boolean filtered) {
         return filtered ? this.filteredTexts : this.texts;
@@ -166,6 +153,7 @@ public class GravestoneBlockEntity extends BlockEntity {
     public NbtCompound toInitialChunkDataNbt() {
         return this.createNbt();
     }
+
     public boolean copyItemDataRequiresOperator() {
         return true;
     }
@@ -189,6 +177,22 @@ public class GravestoneBlockEntity extends BlockEntity {
     @Nullable
     public UUID getEditor() {
         return this.editor;
+    }
+
+    public boolean shouldRunCommand(PlayerEntity player) {
+        Text[] var2 = this.getTexts(player.shouldFilterText());
+        int var3 = var2.length;
+
+        for(int var4 = 0; var4 < var3; ++var4) {
+            Text text = var2[var4];
+            Style style = text.getStyle();
+            ClickEvent clickEvent = style.getClickEvent();
+            if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean onActivate(ServerPlayerEntity player) {
@@ -240,7 +244,6 @@ public class GravestoneBlockEntity extends BlockEntity {
             return false;
         }
     }
-
 
     private void updateListeners() {
         this.markDirty();

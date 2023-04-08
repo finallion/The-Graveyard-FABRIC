@@ -8,6 +8,7 @@ import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -15,6 +16,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +64,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     }
 
     public boolean damage(DamageSource source, float amount) {
-        if (source == DamageSource.OUT_OF_WORLD) {
+        if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
         }
         return false;
@@ -153,7 +155,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         if (!hasCollided() && isFalling()) {
-            player.damage(DamageSource.GENERIC, DAMAGE);
+            player.damage(this.getDamageSources().fall(), DAMAGE);
             setHasCollided(true);
         }
         super.onPlayerCollision(player);

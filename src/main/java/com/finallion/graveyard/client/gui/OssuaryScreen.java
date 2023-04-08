@@ -10,6 +10,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -50,7 +51,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
         int m = this.y + 14;
         int n = this.scrollOffset + 12;
         this.renderRecipeBackground(matrices, mouseX, mouseY, l, m, n);
-        this.renderRecipeIcons(l, m, n);
+        this.renderRecipeIcons(matrices, l, m, n);
     }
 
     protected void drawMouseoverTooltip(MatrixStack matrices, int x, int y) {
@@ -91,7 +92,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
 
     }
 
-    private void renderRecipeIcons(int x, int y, int scrollOffset) {
+    private void renderRecipeIcons(MatrixStack matrices, int x, int y, int scrollOffset) {
         List<OssuaryRecipe> list = ((OssuaryScreenHandler)this.handler).getAvailableRecipes();
 
         for(int i = this.scrollOffset; i < scrollOffset && i < ((OssuaryScreenHandler)this.handler).getAvailableRecipeCount(); ++i) {
@@ -99,7 +100,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
             int k = x + j % 4 * 16;
             int l = j / 4;
             int m = y + l * 18 + 2;
-            this.client.getItemRenderer().renderInGuiWithOverrides(((OssuaryRecipe)list.get(i)).getOutput(), k, m);
+            this.client.getItemRenderer().renderInGuiWithOverrides(matrices, ((OssuaryRecipe)list.get(i)).getOutput(this.client.world.getRegistryManager()), k, m);
         }
 
     }

@@ -11,6 +11,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
@@ -56,7 +57,7 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
             //stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(bone.getRotationZ()));
             poseStack.translate(1.3D, 0.86D, 0.0D);
             poseStack.scale(2.0F, 2.0F, 2.0F);
-            MinecraftClient.getInstance().getItemRenderer().renderItem(ghouling.getEquippedStack(EquipmentSlot.OFFHAND), ModelTransformation.Mode.THIRD_PERSON_LEFT_HAND, packedLight, packedOverlay, poseStack, bufferSource, 0);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(ghouling.getEquippedStack(EquipmentSlot.OFFHAND), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, packedLight, packedOverlay, poseStack, bufferSource, animatable.world, 0);
             poseStack.pop();
             buffer = bufferSource.getBuffer(RenderLayer.getEntityTranslucent(getTexture(animatable)));
         }

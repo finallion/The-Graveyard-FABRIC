@@ -13,7 +13,6 @@ import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -25,6 +24,7 @@ import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -77,7 +77,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     public NightmareEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world, "nightmare");
-        this.stepHeight = 1.0F;
+        this.setStepHeight(1.0F);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public boolean damage(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (source instanceof ProjectileDamageSource) {
+        } else if (source.isIn(DamageTypeTags.IS_PROJECTILE)) {
             return false;
         } else {
             return super.damage(source, amount);

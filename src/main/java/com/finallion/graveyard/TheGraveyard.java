@@ -97,7 +97,7 @@ public class TheGraveyard implements ModInitializer {
     public static ItemGroup GROUP = FabricItemGroup.builder(new Identifier(MOD_ID, "group"))
             .displayName(Text.literal("The Graveyard"))
             .icon(() -> new ItemStack(Items.SKELETON_SKULL))
-            .entries((enabledFeatures, entries, operatorEnabled) -> {
+            .entries((enabledFeatures, entries) -> {
                 entries.add(TGItems.CORRUPTION);
                 entries.add(TGItems.DARK_IRON_BLOCK);
                 entries.add(TGItems.DARK_IRON_INGOT);

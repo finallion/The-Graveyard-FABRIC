@@ -25,6 +25,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.TickDurationMonitor;
 import net.minecraft.util.math.BlockPos;
@@ -172,7 +173,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source == DamageSource.CRAMMING ||source == DamageSource.IN_WALL || source == DamageSource.STARVE || source == DamageSource.OUT_OF_WORLD) {
+        if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || source.isIn(DamageTypeTags.IS_FIRE)) {
             setCanReanimate(false);
             setReanimateAnimTimer(0);
         }

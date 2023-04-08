@@ -9,6 +9,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -61,8 +62,12 @@ public abstract class CarvingRecipe implements Recipe<Inventory> {
         return true;
     }
 
-    public ItemStack craft(Inventory inventory) {
+    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
         return this.output.copy();
+    }
+
+    public ItemStack getOutput(DynamicRegistryManager registryManager) {
+        return this.output;
     }
 
     public static class Serializer<T extends CarvingRecipe> implements RecipeSerializer<T> {

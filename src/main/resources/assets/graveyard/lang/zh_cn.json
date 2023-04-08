@@ -199,6 +199,11 @@
   "subtitles.block.graveyard.bone.placed": "Bone Staff echoes",
   "subtitles.block.graveyard.bone.ambient": "Bone Staff whispers",
   "subtitles.item.graveyard.vial.splash": "Blood drips",
+  "subtitles.block.graveyard.coffin.open": "Coffin creaks open",
+  "subtitles.block.graveyard.coffin.close": "Coffin closes",
+  "subtitles.block.graveyard.urn.open": "Urn opens",
+  "subtitles.block.graveyard.urn.close": "Urn closes",
+  "subtitles.block.graveyard.sarcophagus.use": "Sarcophagus lid drags",
 
   "entity.graveyard.skeleton_creeper": "骷髅苦力怕",
   "entity.graveyard.acolyte": "守灵人",
@@ -227,7 +232,7 @@
   "biome.graveyard.eroded_haunted_forest": "侵蚀中的闹鬼森林",
   "biome.graveyard.ancient_dead_coral_reef": "远古死珊瑚礁",
 
-  "itemGroup.graveyard_group": "墓园",
+  "itemGroup.graveyard.group": "墓园",
   "gravestone.edit": "编辑墓碑",
 
   "advancements.graveyard.crypt.title": "进入黑暗",

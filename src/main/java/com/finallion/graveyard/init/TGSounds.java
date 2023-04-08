@@ -80,6 +80,19 @@ public class TGSounds {
     public static final Identifier ALTAR_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "block.altar.ambient");
     public static SoundEvent ALTAR_AMBIENT = SoundEvent.of(ALTAR_AMBIENT_ID);
 
+    public static final Identifier COFFIN_OPEN_ID = new Identifier(TheGraveyard.MOD_ID, "block.coffin.open");
+    public static SoundEvent COFFIN_OPEN = SoundEvent.of(COFFIN_OPEN_ID);
+    public static final Identifier COFFIN_CLOSE_ID = new Identifier(TheGraveyard.MOD_ID, "block.coffin.close");
+    public static SoundEvent COFFIN_CLOSE = SoundEvent.of(COFFIN_CLOSE_ID);
+
+    public static final Identifier URN_OPEN_ID = new Identifier(TheGraveyard.MOD_ID, "block.urn.open");
+    public static SoundEvent URN_OPEN = SoundEvent.of(URN_OPEN_ID);
+    public static final Identifier URN_CLOSE_ID = new Identifier(TheGraveyard.MOD_ID, "block.urn.close");
+    public static SoundEvent URN_CLOSE = SoundEvent.of(URN_CLOSE_ID);
+
+    public static final Identifier SARCOPHAGUS_USE_ID = new Identifier(TheGraveyard.MOD_ID, "block.sarcophagus.use");
+    public static SoundEvent SARCOPHAGUS_USE = SoundEvent.of(SARCOPHAGUS_USE_ID);
+
     public static final Identifier BONE_PLACED_ID = new Identifier(TheGraveyard.MOD_ID, "block.bone.placed");
     public static final Identifier BONE_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "block.bone.ambient");
     public static SoundEvent BONE_PLACED = SoundEvent.of(BONE_PLACED_ID);
@@ -161,6 +174,12 @@ public class TGSounds {
         Registry.register(Registries.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);
         Registry.register(Registries.SOUND_EVENT, BONE_AMBIENT_ID, BONE_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, VIAL_SPLASH_ID, VIAL_SPLASH);
+
+        Registry.register(Registries.SOUND_EVENT, COFFIN_CLOSE_ID, COFFIN_CLOSE);
+        Registry.register(Registries.SOUND_EVENT, COFFIN_OPEN_ID, COFFIN_OPEN);
+        Registry.register(Registries.SOUND_EVENT, SARCOPHAGUS_USE_ID, SARCOPHAGUS_USE);
+        Registry.register(Registries.SOUND_EVENT, URN_CLOSE_ID, URN_CLOSE);
+        Registry.register(Registries.SOUND_EVENT, URN_OPEN_ID, URN_OPEN);
 
         Registry.register(Registries.SOUND_EVENT, LICH_CORPSE_SPELL_ID, LICH_CORPSE_SPELL);
         Registry.register(Registries.SOUND_EVENT, LICH_DEATH_ID, LICH_DEATH);

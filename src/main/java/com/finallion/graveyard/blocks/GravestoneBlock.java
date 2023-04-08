@@ -48,7 +48,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
     private final Identifier texture;
 
     public GravestoneBlock(Identifier texture) {
-        super(FabricBlockSettings.of(Material.STONE).noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F), SignType.OAK);
+        super(FabricBlockSettings.of(Material.STONE).noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F), WoodType.OAK);
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(FLOOR, true).with(WATERLOGGED, false));
         this.texture = texture;
     }
@@ -134,7 +134,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
             GravestoneBlockEntity sign = (GravestoneBlockEntity) world.getBlockEntity(pos);
             if (!world.isClient) {
                 sign.setEditor(placer.getUuid());
-                ((ServerPlayerEntity) placer).networkHandler.connection.send(new SignEditorOpenS2CPacket(pos));
+                ((ServerPlayerEntity) placer).networkHandler.sendPacket(new SignEditorOpenS2CPacket(pos));
             }
             else
                 sign.setEditable(true);
@@ -145,7 +145,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        Direction direction = ctx.getPlayerFacing();
+        Direction direction = ctx.getHorizontalPlayerFacing();
         return (BlockState)((BlockState)this.getDefaultState().with(FACING, direction.getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER));
     }
 

@@ -384,5 +384,41 @@
       "graveyard:entity/lich/heal"
     ],
     "subtitle": "subtitles.entity.graveyard.lich.heal"
+  },
+
+  "block.coffin.open": {
+    "sounds": [
+      "minecraft:block/chest/open"
+    ],
+    "subtitle": "subtitles.block.graveyard.coffin.open"
+  },
+  "block.coffin.close": {
+    "sounds": [
+      "minecraft:block/chest/close1",
+      "minecraft:block/chest/close2",
+      "minecraft:block/chest/close3"
+    ],
+    "subtitle": "subtitles.block.graveyard.coffin.close"
+  },
+  "block.sarcophagus.use": {
+    "sounds": [
+      "minecraft:block/grindstone/grindstone1",
+      "minecraft:block/grindstone/grindstone2",
+      "minecraft:block/grindstone/grindstone3"
+    ],
+    "subtitle": "subtitles.block.graveyard.sarcophagus.use"
+  },
+  "block.urn.open": {
+    "sounds": [
+      "minecraft:block/barrel/open1",
+      "minecraft:block/barrel/open2"
+    ],
+    "subtitle": "subtitles.block.graveyard.urn.open"
+  },
+  "block.urn.close": {
+    "sounds": [
+      "minecraft:block/barrel/close"
+    ],
+    "subtitle": "subtitles.block.graveyard.urn.close"
   }
 }

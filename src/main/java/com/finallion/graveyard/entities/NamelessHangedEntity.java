@@ -17,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -85,7 +86,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        return source == DamageSource.OUT_OF_WORLD || source == DamageSource.CRAMMING;
+        return source.isIn(DamageTypeTags.BYPASSES_RESISTANCE);
     }
 
     public boolean isImmuneToExplosion() {

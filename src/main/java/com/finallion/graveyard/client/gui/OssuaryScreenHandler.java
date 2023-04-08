@@ -152,7 +152,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
     void populateResult() {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             OssuaryRecipe carvingRecipe = (OssuaryRecipe)this.availableRecipes.get(this.selectedRecipe.get());
-            ItemStack itemStack = carvingRecipe.craft(this.input);
+            ItemStack itemStack = carvingRecipe.craft(this.input, this.world.getRegistryManager());
             if (itemStack.isItemEnabled(this.world.getEnabledFeatures())) {
                 this.output.setLastRecipe(carvingRecipe);
                 this.outputSlot.setStack(itemStack);
@@ -224,8 +224,8 @@ public class OssuaryScreenHandler extends ScreenHandler {
         return itemStack;
     }
 
-    public void close(PlayerEntity player) {
-        super.close(player);
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
         this.output.removeStack(1);
         this.context.run((world, pos) -> {
             this.dropInventory(player, this.input);
