@@ -1,0 +1,41 @@
+{
+  "parent": "graveyard:graveyard/corruption",
+  "display": {
+    "icon": {
+      "item": "graveyard:hanged_skeleton"
+    },
+    "title": {
+      "translate": "advancements.graveyard.dead_tree.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.dead_tree.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dead_tree": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "graveyard:dead_tree"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "requirements": [
+    [
+      "dead_tree"
+    ]
+  ]
+}

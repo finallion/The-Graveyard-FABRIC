@@ -52,6 +52,11 @@ public class TGItems {
     public static final Item MOSSY_STONE_BRICKS_GRAVESTONE = new BlockItem(TGBlocks.MOSSY_STONE_BRICKS_GRAVESTONE, new FabricItemSettings());
     public static final Item BRICKS_GRAVESTONE = new BlockItem(TGBlocks.BRICKS_GRAVESTONE, new FabricItemSettings());
 
+    public static final Item GILDED_BLACKSTONE_GRAVESTONE = new BlockItem(TGBlocks.GILDED_BLACKSTONE_GRAVESTONE, new FabricItemSettings());
+    public static final Item SANDSTONE_GRAVESTONE = new BlockItem(TGBlocks.SANDSTONE_GRAVESTONE, new FabricItemSettings());
+    public static final Item RED_SANDSTONE_GRAVESTONE = new BlockItem(TGBlocks.RED_SANDSTONE_GRAVESTONE, new FabricItemSettings());
+    public static final Item QUARTZ_BRICKS_GRAVESTONE = new BlockItem(TGBlocks.QUARTZ_BRICKS_GRAVESTONE, new FabricItemSettings());
+
     public static final Item SKULL_WITH_RIB_CAGE = new BlockItem(TGBlocks.SKULL_WITH_RIB_CAGE, new FabricItemSettings());
     public static final Item LEANING_SKELETON = new BlockItem(TGBlocks.LEANING_SKELETON, new FabricItemSettings());
     public static final Item SKULL_PILE = new BlockItem(TGBlocks.SKULL_PILE, new FabricItemSettings());
@@ -71,7 +76,8 @@ public class TGItems {
     public static final Item WITHER_BONE_REMAINS = new BlockItem(TGBlocks.WITHER_BONE_REMAINS, new FabricItemSettings());
     public static final Item LATERALLY_LYING_SKELETON = new BlockItem(TGBlocks.LATERALLY_LYING_SKELETON, new FabricItemSettings());
     public static final Item LATERALLY_LYING_WITHER_SKELETON = new BlockItem(TGBlocks.LATERALLY_LYING_WITHER_SKELETON, new FabricItemSettings());
-
+    public static final Item HANGED_SKELETON = new BlockItem(TGBlocks.HANGED_SKELETON, new FabricItemSettings());
+    public static final Item HANGED_WITHER_SKELETON = new BlockItem(TGBlocks.HANGED_WITHER_SKELETON, new FabricItemSettings());
 
     public static final Item BLACK_URN = new BlockItem(TGBlocks.BLACK_URN, new FabricItemSettings());
     public static final Item GRAY_URN = new BlockItem(TGBlocks.GRAY_URN, new FabricItemSettings());
@@ -182,6 +188,10 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "stone_bricks_gravestone"), STONE_BRICKS_GRAVESTONE);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "mossy_stone_bricks_gravestone"), MOSSY_STONE_BRICKS_GRAVESTONE);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "bricks_gravestone"), BRICKS_GRAVESTONE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "gilded_blackstone_gravestone"), GILDED_BLACKSTONE_GRAVESTONE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "sandstone_gravestone"), SANDSTONE_GRAVESTONE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "red_sandstone_gravestone"), RED_SANDSTONE_GRAVESTONE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "quartz_bricks_gravestone"), QUARTZ_BRICKS_GRAVESTONE);
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "skull_with_rib_cage"), SKULL_WITH_RIB_CAGE);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "leaning_skeleton"), LEANING_SKELETON);
@@ -202,7 +212,8 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "wither_bone_remains"), WITHER_BONE_REMAINS);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_skeleton"), LATERALLY_LYING_SKELETON);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "laterally_lying_wither_skeleton"), LATERALLY_LYING_WITHER_SKELETON);
-
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "hanged_skeleton"), HANGED_SKELETON);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "hanged_wither_skeleton"), HANGED_WITHER_SKELETON);
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "gray_urn"), GRAY_URN);

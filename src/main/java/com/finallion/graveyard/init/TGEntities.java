@@ -113,7 +113,7 @@ public class TGEntities {
     public static final EntityType<NamelessHangedEntity> NAMELESS_HANGED = FabricEntityTypeBuilder.create()
             .spawnGroup(SpawnGroup.CREATURE)
             .entityFactory(NamelessHangedEntity::new)
-            .dimensions(EntityDimensions.fixed(0.8F, 1.2F))
+            .dimensions(EntityDimensions.fixed(0.8F, 2.5F))
             .build();
 
     private static void register(String name, EntityType<?> type) {

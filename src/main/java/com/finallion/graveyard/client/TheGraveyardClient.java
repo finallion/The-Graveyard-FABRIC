@@ -84,6 +84,8 @@ public class TheGraveyardClient implements ClientModInitializer {
                 TGBlocks.WITHER_BONE_REMAINS,
                 TGBlocks.WITHER_SKULL_ON_PIKE,
                 TGBlocks.LATERALLY_LYING_WITHER_SKELETON,
+                TGBlocks.HANGED_SKELETON,
+                TGBlocks.HANGED_WITHER_SKELETON,
                 TGBlocks.WITHER_TORSO_PILE,
                 TGBlocks.DARK_IRON_BARS,
                 TGBlocks.TG_GRASS_BLOCK,

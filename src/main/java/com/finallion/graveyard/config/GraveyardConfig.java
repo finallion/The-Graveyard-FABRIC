@@ -127,6 +127,7 @@ public class GraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("small_savanna_grave", StructureConfigEntry.of());
         structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of());
         structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("dead_tree", StructureConfigEntry.of());
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false));
         mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false));

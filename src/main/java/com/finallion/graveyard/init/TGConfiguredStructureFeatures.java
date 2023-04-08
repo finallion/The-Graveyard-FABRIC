@@ -26,6 +26,7 @@ public class TGConfiguredStructureFeatures {
     public static List<Structure> structures = new ArrayList<>();
 
     public static StructureType<TGJigsawStructure> ALTAR;
+    public static StructureType<TGJigsawStructure> DEAD_TREE;
     public static StructureType<TGJigsawStructure> CRYPT;
     public static StructureType<TGJigsawStructure> GIANT_MUSHROOM;
     public static StructureType<TGJigsawStructure> HAUNTED_HOUSE;
@@ -59,6 +60,7 @@ public class TGConfiguredStructureFeatures {
         SMALL_GRAVEYARD = Registry.register(Registries.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_graveyard"), () -> TGJigsawStructure.CODEC);
         SMALL_MOUNTAIN_GRAVE = Registry.register(Registries.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_mountain_grave"), () -> TGJigsawStructure.CODEC);
         SMALL_SAVANNA_GRAVE = Registry.register(Registries.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_savanna_grave"), () -> TGJigsawStructure.CODEC);
+        DEAD_TREE = Registry.register(Registries.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "dead_tree"), () -> TGJigsawStructure.CODEC);
 
     }
 

@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.Item;
@@ -35,35 +36,72 @@ public class NamelessHangedTradeOffers {
     static {
         NAMELESS_HANGED_TRADES = copyToFastUtilMap(ImmutableMap.of(1,
                 new TradeOffers.Factory[]{
-                        new SellItemFactory(TGItems.SKELETON_HAND, 2, 1, 5, 1),
-                        new SellItemFactory(TGItems.SKULL_ON_PIKE, 4, 1, 5, 1),
-                        new SellItemFactory(TGItems.SKULL_PILE, 2, 1, 5, 1),
-                        new SellItemFactory(TGItems.LATERALLY_LYING_SKELETON, 5, 1, 5, 1),
-                        new SellItemFactory(TGItems.LYING_SKELETON, 1, 1, 12, 1),
-                        new SellItemFactory(TGItems.LEANING_SKELETON, 1, 1, 8, 1),
-                        new SellItemFactory(TGItems.SKULL_WITH_RIB_CAGE, 1, 1, 4, 1),
-                        new SellItemFactory(TGItems.BONE_REMAINS, 3, 1, 12, 1),
-                        new SellItemFactory(TGItems.TORSO_PILE, 3, 1, 8, 1),
-                        new SellItemFactory(TGItems.WITHER_SKELETON_HAND, 2, 1, 5, 1),
-                        new SellItemFactory(TGItems.WITHER_SKULL_ON_PIKE, 4, 1, 5, 1),
-                        new SellItemFactory(TGItems.WITHER_SKULL_PILE, 2, 1, 5, 1),
-                        new SellItemFactory(TGItems.LATERALLY_LYING_WITHER_SKELETON, 5, 1, 5, 1),
-                        new SellItemFactory(TGItems.LYING_WITHER_SKELETON, 1, 1, 12, 1),
-                        new SellItemFactory(TGItems.LEANING_WITHER_SKELETON, 1, 1, 8, 1),
-                        new SellItemFactory(TGItems.WITHER_SKULL_WITH_RIB_CAGE, 1, 1, 4, 1),
-                        new SellItemFactory(TGItems.WITHER_BONE_REMAINS, 3, 1, 12, 1),
-                        new SellItemFactory(TGItems.WITHER_TORSO_PILE, 3, 1, 8, 1),
-                        new SellItemFactory(TGItems.DARK_IRON_INGOT, 1, 1, 12, 1),
-                        new SellItemFactory(Items.MOSS_BLOCK, 1, 2, 5, 1)}, 2,
+                        new SellItemFactory(Items.CANDLE, 2, 1, 12, 1),
+                        new SellItemFactory(Items.BLACK_CANDLE, 2, 1, 12, 1),
+                        new SellItemFactory(Items.WHITE_CANDLE, 2, 1, 12, 1),
+                        new SellItemFactory(Items.RED_CANDLE, 2, 1, 12, 1),
+                        new SellItemFactory(Items.TINTED_GLASS, 4, 2, 12, 1),
+                        new SellItemFactory(Items.NETHER_WART, 2, 1, 12, 1),
+                        new SellItemFactory(Items.GHAST_TEAR, 4, 1, 8, 1),
+                        new SellItemFactory(Items.SPECTRAL_ARROW, 6, 4, 8, 1),
+                        new SellItemFactory(Items.SOUL_LANTERN, 4, 1, 12, 1),
+                        new SellItemFactory(Items.TOTEM_OF_UNDYING, 12, 1, 1, 1),
+                        new SellItemFactory(Items.WITHER_ROSE, 8, 2, 8, 1),
+                        new SellItemFactory(Items.BONE, 2, 1, 12, 1),
+                        new SellItemFactory(Items.EMERALD, 1, 1, 12, 1),
+                        new SellItemFactory(Items.BOOK, 2, 1, 12, 1),
+                        new SellItemFactory(Items.COBBLED_DEEPSLATE, 12, 32, 6, 1),
+                        new SellItemFactory(Items.BLACKSTONE, 12, 32, 6, 1),
+                        new SellItemFactory(Items.GILDED_BLACKSTONE, 8, 2, 6, 1),
+                        new SellItemFactory(Items.CLOCK, 6, 1, 6, 1),
+                        new SellItemFactory(Items.RECOVERY_COMPASS, 6, 1, 6, 1),
+                        new SellItemFactory(Items.BLACK_SHULKER_BOX, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_BOOTS, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_CHESTPLATE, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_HELMET, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_LEGGINGS, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_SWORD, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.DIAMOND_AXE, 32, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_BOOTS, 12, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_CHESTPLATE, 12, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_HELMET, 12, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_LEGGINGS, 12, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_SWORD, 12, 1, 1, 1),
+                        new SellEnchantedToolFactory(Items.IRON_AXE, 12, 1, 1, 1),
+                        new SellItemFactory(TGItems.UPPER_BONE_STAFF, 64, 1, 1, 1),
+                        new SellItemFactory(TGItems.LOWER_BONE_STAFF, 64, 1, 1, 1),
+                        new SellItemFactory(TGItems.MIDDLE_BONE_STAFF, 64, 1, 1, 1),
+                        new SellItemFactory(Items.WITHER_SKELETON_SKULL, 48, 1, 1, 1),
+                        new SellItemFactory(Items.CHAIN, 3, 1, 12, 1),
+                        new SellItemFactory(Items.COBWEB, 2, 1, 12, 1),
+                        new SellItemFactory(Items.SKELETON_SKULL, 5, 1, 6, 1),
+                        new SellItemFactory(Items.ROTTEN_FLESH, 1, 1, 12, 1),
+                        new SellItemFactory(Items.GUNPOWDER, 1, 1, 12, 1),
+                        new SellItemFactory(Items.GLOW_BERRIES, 2, 1, 12, 1),
+                        new SellItemFactory(Items.ENDER_PEARL, 4, 1, 12, 1),
+                        new SellItemFactory(Items.STRING, 1, 1, 12, 1),
+                        new SellItemFactory(Items.SLIME_BALL, 2, 1, 12, 1),
+                        new SellItemFactory(Items.TNT, 8, 1, 6, 1),
+                        new SellItemFactory(Items.WARPED_FUNGUS, 2, 1, 12, 1),
+                        new SellItemFactory(Items.CRIMSON_FUNGUS, 2, 1, 12, 1),
+                        new SellItemFactory(Items.DARK_OAK_LOG, 12, 32, 6, 1),
+                        new SellItemFactory(Items.ANCIENT_DEBRIS, 16, 1, 1, 1),
+                        new SellItemFactory(Items.MUD, 8, 32, 6, 1),
+                        new SellItemFactory(Items.SOUL_SAND, 8, 16, 6, 1),
+                        new SellItemFactory(Items.SOUL_SOIL, 8, 16, 6, 1),
+                        new SellItemFactory(Items.NETHER_BRICK, 1, 1, 24, 1),
+                        new SellItemFactory(Items.POISONOUS_POTATO, 10, 1, 1, 1),
+                        new SellItemFactory(TGItems.DARK_IRON_INGOT, 4, 1, 6, 1),
+                        new SellItemFactory(TGItems.SOUL_FIRE_BRAZIER, 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.FIRE_BRAZIER, 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.PEDESTAL, 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.CANDLE_HOLDER, 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.OSSUARY, 6, 1, 1, 1),
+                        new SellItemFactory(Items.MOSS_BLOCK, 10, 32, 6, 1)}, 2,
                 new TradeOffers.Factory[]{
-                        new SellItemFactory(TGItems.SOUL_FIRE_BRAZIER, 5, 1, 4, 1),
-                        new SellItemFactory(TGItems.FIRE_BRAZIER, 5, 1, 4, 1),
-                        new SellItemFactory(TGItems.PEDESTAL, 3, 1, 6, 1),
-                        new SellItemFactory(TGItems.CANDLE_HOLDER, 6, 1, 6, 1),
-                        new SellMapFactory(13, TGTags.ON_RUINS_EXPLORER_MAPS, "filled_map.ruins", MapIcon.Type.TARGET_X, 12, 5),
-                        new SellItemFactory(TGItems.CREEPER_SKELETON, 3, 3, 6, 1)}));
-
-
+                        new SellMapFactory(4, TGTags.ON_RUINS_EXPLORER_MAPS, "filled_map.ruins", MapIcon.Type.TARGET_X, 1, 5),
+                }
+        ));
     }
 
     public static class SellItemFactory implements TradeOffers.Factory {
@@ -140,4 +178,33 @@ public class NamelessHangedTradeOffers {
             }
         }
     }
+
+    public static class SellEnchantedToolFactory implements TradeOffers.Factory {
+        private final ItemStack tool;
+        private final int basePrice;
+        private final int maxUses;
+        private final int experience;
+        private final float multiplier;
+
+        public SellEnchantedToolFactory(Item item, int basePrice, int maxUses, int experience) {
+            this(item, basePrice, maxUses, experience, 0.05F);
+        }
+
+        public SellEnchantedToolFactory(Item item, int basePrice, int maxUses, int experience, float multiplier) {
+            this.tool = new ItemStack(item);
+            this.basePrice = basePrice;
+            this.maxUses = maxUses;
+            this.experience = experience;
+            this.multiplier = multiplier;
+        }
+
+        public TradeOffer create(Entity entity, Random random) {
+            int i = 5 + random.nextInt(15);
+            ItemStack itemStack = EnchantmentHelper.enchant(random, new ItemStack(this.tool.getItem()), i, false);
+            int j = Math.min(this.basePrice, 64);
+            ItemStack itemStack2 = new ItemStack(TGItems.CORRUPTION, j);
+            return new TradeOffer(itemStack2, itemStack, this.maxUses, this.experience, this.multiplier);
+        }
+    }
+
 }

@@ -1,4 +1,16 @@
 {
+  "container.ossuary": "Ossuary",
+  "block.graveyard.ossuary": "Ossuary",
+  "block.graveyard.gilded_blackstone_gravestone": "Gilded Blackstone Gravestone",
+  "block.graveyard.sandstone_gravestone": "Sandstone Gravestone",
+  "block.graveyard.red_sandstone_gravestone": "Red Sandstone Gravestone",
+  "block.graveyard.quartz_bricks_gravestone": "Quartz Bricks Gravestone",
+  "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
+  "subtitles.entity.graveyard.nameless_hanged.ambient": "Rope creaks",
+  "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
+  "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
+  "entity.graveyard.nameless_hanged": "Nameless Hanged",
+
   "block.graveyard.tg_grass_block": "Трав'яний блок",
   "block.graveyard.tg_moss_block": "Моховий блок",
   "block.graveyard.tg_podzol": "Підзол",
@@ -63,6 +75,8 @@
   "block.graveyard.torso_pile": "Купа тулубів",
   "block.graveyard.bone_remains": "Переможений скелет",
   "block.graveyard.skull_on_pike": "Черепи на піках",
+  "block.graveyard.hanged_skeleton": "Hanged Skeleton",
+  "block.graveyard.hanged_wither_skeleton": "Hanged Wither Skeleton",
 
   "block.graveyard.lying_wither_skeleton": "Лежачий візер-скелет",
   "block.graveyard.leaning_wither_skeleton": "Нахилений візер-скелет",
@@ -218,6 +232,8 @@
   "advancements.graveyard.cyan_bone_staff.description": "Отримайте посох гуля Мінакта.",
   "advancements.graveyard.equip_coffin.title": "Мертві будуть служити",
   "advancements.graveyard.equip_coffin.description": "Обладнайте гулінга труною або саркофагом.",
+  "advancements.graveyard.dead_tree.title": "Hanging Tree",
+  "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree.",
 
   "entity.graveyard.ghouling.wait": "I shall stay here.",
   "entity.graveyard.ghouling.nowait": "I follow.",
@@ -268,6 +284,7 @@
   "subtitles.block.graveyard.bone.placed": "Bone Staff echoes",
   "subtitles.block.graveyard.bone.ambient": "Bone Staff whispers",
   "subtitles.item.graveyard.vial.splash": "Blood drips",
+
 
   "itemGroup.graveyard_group": "Кладовище",
   "gravestone.edit": "Редагування тексту надгробку"

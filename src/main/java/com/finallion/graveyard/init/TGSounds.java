@@ -7,6 +7,13 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class TGSounds {
+    public static final Identifier NAMELESS_HANGED_BREATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nameless_hanged.breath");
+    public static SoundEvent NAMELESS_HANGED_BREATH = SoundEvent.of(NAMELESS_HANGED_BREATH_ID);
+    public static final Identifier NAMELESS_HANGED_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nameless_hanged.ambient");
+    public static SoundEvent NAMELESS_HANGED_AMBIENT = SoundEvent.of(NAMELESS_HANGED_AMBIENT_ID);
+    public static final Identifier NAMELESS_HANGED_INTERACT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.nameless_hanged.interact");
+    public static SoundEvent NAMELESS_HANGED_INTERACT = SoundEvent.of(NAMELESS_HANGED_INTERACT_ID);
+
     public static final Identifier CORRUPTED_ILLAGER_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.ambient");
     public static SoundEvent CORRUPTED_ILLAGER_AMBIENT = SoundEvent.of(CORRUPTED_ILLAGER_AMBIENT_ID);
     public static final Identifier CORRUPTED_ILLAGER_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.corrupted_illager.hurt");
@@ -104,6 +111,10 @@ public class TGSounds {
     public static SoundEvent LICH_PHASE_03_ATTACK = SoundEvent.of(LICH_PHASE_03_ATTACK_ID);
 
     public static void init() {
+        Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_BREATH_ID, NAMELESS_HANGED_BREATH);
+        Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_INTERACT_ID, NAMELESS_HANGED_INTERACT);
+        Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_AMBIENT_ID, NAMELESS_HANGED_AMBIENT);
+
         Registry.register(Registries.SOUND_EVENT, GHOUL_ROAR_ID, GHOUL_ROAR);
         Registry.register(Registries.SOUND_EVENT, GHOUL_AMBIENT_ID, GHOUL_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, GHOUL_HURT_ID, GHOUL_HURT);

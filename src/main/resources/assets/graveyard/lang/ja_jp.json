@@ -74,6 +74,8 @@
   "block.graveyard.wither_bone_remains": "敗れたウィザースケルトン",
   "block.graveyard.wither_skull_on_pike": "串刺しのウィザースケルトンの頭蓋",
   "block.graveyard.creeper_skeleton": "クリーパーの骨",
+  "block.graveyard.hanged_skeleton": "Hanged Skeleton",
+  "block.graveyard.hanged_wither_skeleton": "Hanged Wither Skeleton",
 
   "block.graveyard.dark_iron_bars": "ダークアイアンの格子",
   "block.graveyard.soul_fire_brazier": "魂の火鉢",
@@ -268,6 +270,19 @@
   "advancements.graveyard.equip_coffin.title": "死者は仕えるもの",
   "advancements.graveyard.equip_coffin.description": "グーリングに石棺や棺を装備させる",
 
-  "itemGroup.graveyard_group": "The Graveyard",
-  "gravestone.edit": "Edit Gravestone"
+  "gravestone.edit": "Edit Gravestone",
+  "container.ossuary": "Ossuary",
+  "block.graveyard.ossuary": "Ossuary",
+  "block.graveyard.gilded_blackstone_gravestone": "Gilded Blackstone Gravestone",
+  "block.graveyard.sandstone_gravestone": "Sandstone Gravestone",
+  "block.graveyard.red_sandstone_gravestone": "Red Sandstone Gravestone",
+  "block.graveyard.quartz_bricks_gravestone": "Quartz Bricks Gravestone",
+  "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
+  "subtitles.entity.graveyard.nameless_hanged.ambient": "Rope creaks",
+  "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
+  "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
+  "entity.graveyard.nameless_hanged": "Nameless Hanged",
+  "advancements.graveyard.dead_tree.title": "Hanging Tree",
+  "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree.",
+  "itemGroup.graveyard.group": "The Graveyard"
 }

@@ -75,6 +75,8 @@
   "block.graveyard.wither_bone_remains": "Defeated Wither Skeleton",
   "block.graveyard.wither_skull_on_pike": "Wither Skull on Pike",
   "block.graveyard.creeper_skeleton": "Creeper Skeleton",
+  "block.graveyard.hanged_skeleton": "Hanged Skeleton",
+  "block.graveyard.hanged_wither_skeleton": "Hanged Wither Skeleton",
 
   "block.graveyard.dark_iron_bars": "Dark Iron Bars",
   "block.graveyard.soul_fire_brazier": "Soul Fire Brazier",
@@ -93,6 +95,10 @@
   "block.graveyard.stone_bricks_gravestone": "Stone Bricks Gravestone",
   "block.graveyard.mossy_stone_bricks_gravestone": "Mossy Stone Bricks Gravestone",
   "block.graveyard.bricks_gravestone": "Bricks Gravestone",
+  "block.graveyard.gilded_blackstone_gravestone": "Gilded Blackstone Gravestone",
+  "block.graveyard.sandstone_gravestone": "Sandstone Gravestone",
+  "block.graveyard.red_sandstone_gravestone": "Red Sandstone Gravestone",
+  "block.graveyard.quartz_bricks_gravestone": "Quartz Bricks Gravestone",
 
   "item.graveyard.bone_dagger": "Bone Dagger",
   "item.graveyard.dark_iron_ingot": "Dark Iron Ingot",
@@ -137,7 +143,7 @@
   "entity.graveyard.ghouling.spawn": "I hear and obey...",
   "entity.graveyard.ghouling.respawn": "Death... is a mere inconvenience.",
   "entity.graveyard.ghouling.obey": "I don't obey your orders, you are no master of mine!",
-  "entity.graveyard.nameless_hanged.wait": "Yes, you can see me, I feel your presence. But let me enjoy the sun for once. Come back at night.",
+  "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
 
   "subtitles.entity.graveyard.ghouling.spawn": "Ghouling emerges",
   "subtitles.entity.graveyard.ghouling.death": "Ghouling dies",
@@ -182,6 +188,9 @@
   "subtitles.block.graveyard.bone.placed": "Bone Staff echoes",
   "subtitles.block.graveyard.bone.ambient": "Bone Staff whispers",
   "subtitles.item.graveyard.vial.splash": "Blood drips",
+  "subtitles.entity.graveyard.nameless_hanged.ambient": "Rope creaks",
+  "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
+  "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
 
   "entity.graveyard.skeleton_creeper": "Skeleton Creeper",
   "item.graveyard.skeleton_creeper_spawn_egg": "Skeleton Creeper Spawn Egg",
@@ -203,6 +212,7 @@
   "item.graveyard.wraith_spawn_egg": "Wraith Spawn Egg",
   "entity.graveyard.lich": "Corrupted Champion",
   "entity.graveyard.ghouling": "Ghouling",
+  "entity.graveyard.nameless_hanged": "Nameless Hanged",
 
   "biome.graveyard.haunted_forest": "Haunted Forest",
   "biome.graveyard.haunted_lakes": "Haunted Lakes",
@@ -270,6 +280,8 @@
   "advancements.graveyard.cyan_bone_staff.description": "Attain the Staff of Mynakta'gul.",
   "advancements.graveyard.equip_coffin.title": "The dead shall serve",
   "advancements.graveyard.equip_coffin.description": "Equip a Ghouling with a coffin or sarcophagus.",
+  "advancements.graveyard.dead_tree.title": "Hanging Tree",
+  "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree.",
 
   "itemGroup.graveyard.group": "The Graveyard",
   "gravestone.edit": "Edit Gravestone"

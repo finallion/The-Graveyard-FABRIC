@@ -1,4 +1,24 @@
 {
+  "entity.nameless_hanged.breath": {
+    "sounds": [
+      "graveyard:entity/nameless_hanged/breath1",
+      "graveyard:entity/nameless_hanged/breath2",
+      "graveyard:entity/nameless_hanged/breath3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.nameless_hanged.breath"
+  },
+  "entity.nameless_hanged.interact": {
+    "sounds": [
+      "graveyard:entity/nameless_hanged/interact"
+    ],
+    "subtitle": "subtitles.entity.graveyard.nameless_hanged.interact"
+  },
+  "entity.nameless_hanged.ambient": {
+    "sounds": [
+      "graveyard:entity/nameless_hanged/ambient"
+    ],
+    "subtitle": "subtitles.entity.graveyard.nameless_hanged.ambient"
+  },
   "entity.ghoul.roar": {
     "sounds": [
       "graveyard:entity/ghoul/roar"

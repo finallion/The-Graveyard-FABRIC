@@ -1,10 +1,8 @@
 package com.finallion.graveyard.entities;
 
+import com.finallion.graveyard.init.TGSounds;
 import com.finallion.graveyard.trades.NamelessHangedTradeOffers;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ExperienceOrbEntity;
-import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -20,6 +18,8 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
@@ -128,6 +128,8 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         if (world.isDay() && !this.world.isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
+            world.playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+            //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
         }
 
         if (this.isAlive() && !this.hasCustomer() && world.isNight()) {
@@ -135,6 +137,8 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                 if (!this.world.isClient) {
                     this.setCustomer(player);
                     this.sendOffers(player, this.getDisplayName(), 1);
+                    world.playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+                    //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
                 }
             }
             return ActionResult.success(this.world.isClient);
@@ -145,16 +149,19 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     protected void fillRecipes() {
         TradeOffers.Factory[] factorys = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(1);
-        TradeOffers.Factory[] factorys2 = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(2);
-        if (factorys != null && factorys2 != null) {
+        //TradeOffers.Factory[] factorys2 = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(2);
+        if (factorys != null /*&& factorys2 != null*/) {
             TradeOfferList tradeOfferList = this.getOffers();
-            this.fillRecipesFromPool(tradeOfferList, factorys, 6);
-            int i = this.random.nextInt(factorys2.length);
-            TradeOffers.Factory factory = factorys2[i];
+            int offers = random.nextInt(3) + 7;
+            this.fillRecipesFromPool(tradeOfferList, factorys, offers);
+            /*
+            TradeOffers.Factory factory = factorys2[0];
             TradeOffer tradeOffer = factory.create(this, this.random);
             if (tradeOffer != null) {
                 tradeOfferList.add(tradeOffer);
             }
+
+             */
         }
     }
 
@@ -170,31 +177,29 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         return false;
     }
 
-    /*
+    @Override
+    public void playAmbientSound() {
+        this.playSound(TGSounds.NAMELESS_HANGED_AMBIENT, 0.3F, 1.0F);
 
-
-        protected SoundEvent getAmbientSound() {
-        return this.hasCustomer() ? SoundEvents.ENTITY_WANDERING_TRADER_TRADE : SoundEvents.ENTITY_WANDERING_TRADER_AMBIENT;
+        if (this.random.nextBoolean()) {
+            this.playSound(TGSounds.NAMELESS_HANGED_BREATH, 0.5F, 1.0F);
+        }
     }
 
-    protected SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_WANDERING_TRADER_HURT;
+    @Override
+    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+        return 2.0F;
     }
 
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_WANDERING_TRADER_DEATH;
-    }
-
-    protected SoundEvent getDrinkSound(ItemStack stack) {
-        return stack.isOf(Items.MILK_BUCKET) ? SoundEvents.ENTITY_WANDERING_TRADER_DRINK_MILK : SoundEvents.ENTITY_WANDERING_TRADER_DRINK_POTION;
-    }
-
-    protected SoundEvent getTradingSound(boolean sold) {
-        return sold ? SoundEvents.ENTITY_WANDERING_TRADER_YES : SoundEvents.ENTITY_WANDERING_TRADER_NO;
-    }
-
+    @Override
     public SoundEvent getYesSound() {
-        return SoundEvents.ENTITY_WANDERING_TRADER_YES;
+        return null;
     }
-     */
+
+    @Override
+    protected SoundEvent getTradingSound(boolean sold) {
+        return null;
+    }
+
+
 }

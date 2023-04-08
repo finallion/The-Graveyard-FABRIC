@@ -1,4 +1,16 @@
 {
+  "container.ossuary": "Ossuary",
+  "block.graveyard.ossuary": "Ossuary",
+  "block.graveyard.gilded_blackstone_gravestone": "Gilded Blackstone Gravestone",
+  "block.graveyard.sandstone_gravestone": "Sandstone Gravestone",
+  "block.graveyard.red_sandstone_gravestone": "Red Sandstone Gravestone",
+  "block.graveyard.quartz_bricks_gravestone": "Quartz Bricks Gravestone",
+  "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
+  "subtitles.entity.graveyard.nameless_hanged.ambient": "Rope creaks",
+  "subtitles.entity.graveyard.nameless_hanged.breath": "Nameless Hanged struggles for breath",
+  "subtitles.entity.graveyard.nameless_hanged.interact": "Nameless Hanged sees through you...",
+  "entity.graveyard.nameless_hanged": "Nameless Hanged",
+
   "block.graveyard.tg_stone": "墓园石",
   "block.graveyard.tg_granite": "墓园花岗岩",
   "block.graveyard.tg_diorite": "墓园闪长岩",
@@ -63,6 +75,8 @@
   "block.graveyard.torso_pile": "骷髅躯干堆",
   "block.graveyard.bone_remains": "不甘的骷髅",
   "block.graveyard.skull_on_pike": "矛上的骷髅",
+  "block.graveyard.hanged_skeleton": "Hanged Skeleton",
+  "block.graveyard.hanged_wither_skeleton": "Hanged Wither Skeleton",
 
   "block.graveyard.lying_wither_skeleton": "卧倒的凋零骷髅",
   "block.graveyard.leaning_wither_skeleton": "倾斜凋零骷髅",
@@ -270,5 +284,7 @@
   "advancements.graveyard.cyan_bone_staff.title": "米纳克塔·古尔之杖",
   "advancements.graveyard.cyan_bone_staff.description": "获得米纳克塔·古尔之杖。",
   "advancements.graveyard.equip_coffin.title": "为死者服务",
-  "advancements.graveyard.equip_coffin.description": "为食尸鬼配备合适的棺材。"
+  "advancements.graveyard.equip_coffin.description": "为食尸鬼配备合适的棺材。",
+  "advancements.graveyard.dead_tree.title": "Hanging Tree",
+  "advancements.graveyard.dead_tree.description": "Discover the truth about the dead tree."
 }

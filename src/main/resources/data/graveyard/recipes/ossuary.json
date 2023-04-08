@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "YYY",
+    "XYX"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bone"
+    },
+    "Y": {
+      "item": "graveyard:corruption"
+    },
+    "X": {
+      "item": "graveyard:dark_iron_ingot"
+    }
+  },
+  "result": {
+    "item": "graveyard:black_urn"
+  }
+}

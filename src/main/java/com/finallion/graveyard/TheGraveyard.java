@@ -113,10 +113,14 @@ public class TheGraveyard implements ModInitializer {
                 entries.add(TGItems.MOSSY_COBBLESTONE_GRAVESTONE);
                 entries.add(TGItems.DEEPSLATE_GRAVESTONE);
                 entries.add(TGItems.BLACKSTONE_GRAVESTONE);
+                entries.add(TGItems.GILDED_BLACKSTONE_GRAVESTONE);
                 entries.add(TGItems.CRACKED_BLACKSTONE_GRAVESTONE);
                 entries.add(TGItems.STONE_BRICKS_GRAVESTONE);
                 entries.add(TGItems.MOSSY_STONE_BRICKS_GRAVESTONE);
                 entries.add(TGItems.BRICKS_GRAVESTONE);
+                entries.add(TGItems.QUARTZ_BRICKS_GRAVESTONE);
+                entries.add(TGItems.RED_SANDSTONE_GRAVESTONE);
+                entries.add(TGItems.SANDSTONE_GRAVESTONE);
 
                 entries.add(TGItems.SKULL_WITH_RIB_CAGE);
                 entries.add(TGItems.LEANING_SKELETON);
@@ -137,6 +141,8 @@ public class TheGraveyard implements ModInitializer {
                 entries.add(TGItems.WITHER_BONE_REMAINS);
                 entries.add(TGItems.LATERALLY_LYING_SKELETON);
                 entries.add(TGItems.LATERALLY_LYING_WITHER_SKELETON);
+                entries.add(TGItems.HANGED_SKELETON);
+                entries.add(TGItems.HANGED_WITHER_SKELETON);
 
                 entries.add(TGItems.OSSUARY);
 
