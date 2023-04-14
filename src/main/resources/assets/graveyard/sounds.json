@@ -211,6 +211,30 @@
     "subtitle": "subtitles.entity.graveyard.acolyte.death"
   },
 
+  "entity.reaper.ambient": {
+    "sounds": [
+      "minecraft:mob/vex/idle1",
+      "minecraft:mob/vex/idle2",
+      "minecraft:mob/vex/idle3",
+      "minecraft:mob/vex/idle4"
+    ],
+    "subtitle": "subtitles.entity.graveyard.reaper.ambient"
+  },
+  "entity.reaper.hurt": {
+    "sounds": [
+      "minecraft:mob/vex/hurt1",
+      "minecraft:mob/vex/hurt2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.reaper.hurt"
+  },
+  "entity.reaper.death": {
+    "sounds": [
+      "minecraft:mob/vex/death1",
+      "minecraft:mob/vex/death2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.reaper.death"
+  },
+
   "entity.nightmare.ambient": {
     "sounds": [
       "minecraft:mob/endermen/idle1",

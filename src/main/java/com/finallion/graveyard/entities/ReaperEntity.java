@@ -1,6 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -209,18 +210,18 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_VEX_AMBIENT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_AMBIENT, 1.0F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_VEX_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_HURT, 1.0F, -10.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_VEX_DEATH, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_DEATH, 1.0F, -10.0F);
     }
 
     private class ReaperMoveControl extends MoveControl {

@@ -30,6 +30,13 @@ public class TGSounds {
     public static final Identifier ACOLYTE_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.acolyte.death");
     public static SoundEvent ACOLYTE_DEATH = SoundEvent.of(ACOLYTE_DEATH_ID);
 
+    public static final Identifier REAPER_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.reaper.ambient");
+    public static SoundEvent REAPER_AMBIENT = SoundEvent.of(REAPER_AMBIENT_ID);
+    public static final Identifier REAPER_HURT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.reaper.hurt");
+    public static SoundEvent REAPER_HURT = SoundEvent.of(REAPER_HURT_ID);
+    public static final Identifier REAPER_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.reaper.death");
+    public static SoundEvent REAPER_DEATH = SoundEvent.of(REAPER_DEATH_ID);
+
     public static final Identifier GHOUL_ROAR_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.roar");
     public static SoundEvent GHOUL_ROAR = SoundEvent.of(GHOUL_ROAR_ID);
     public static final Identifier GHOUL_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.ambient");
@@ -169,6 +176,10 @@ public class TGSounds {
         Registry.register(Registries.SOUND_EVENT, ACOLYTE_AMBIENT_ID, ACOLYTE_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, ACOLYTE_HURT_ID, ACOLYTE_HURT);
         Registry.register(Registries.SOUND_EVENT, ACOLYTE_DEATH_ID, ACOLYTE_DEATH);
+
+        Registry.register(Registries.SOUND_EVENT, REAPER_AMBIENT_ID, REAPER_AMBIENT);
+        Registry.register(Registries.SOUND_EVENT, REAPER_HURT_ID, REAPER_HURT);
+        Registry.register(Registries.SOUND_EVENT, REAPER_DEATH_ID, REAPER_DEATH);
 
         Registry.register(Registries.SOUND_EVENT, ALTAR_AMBIENT_ID, ALTAR_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);
