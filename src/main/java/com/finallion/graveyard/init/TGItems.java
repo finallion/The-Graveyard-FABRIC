@@ -8,8 +8,11 @@ import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 
 public class TGItems {
+    public static final Item INCARNATED_EVIL_MUSIC_DISC = new MusicDiscItem(15, TGSounds.LICH_THEME_01, new FabricItemSettings().maxCount(1).rarity(Rarity.RARE), 270);
+
     public static final Item SARCOPHAGUS_LID = new Item(new FabricItemSettings());
     public static final Item SARCOPHAGUS_BASE = new Item(new FabricItemSettings());
     public static final Item DARK_OAK_COFFIN_LID = new Item(new FabricItemSettings());
@@ -158,6 +161,8 @@ public class TGItems {
 
 
     public static void registerItems() {
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "incarnated_evil_music_disc"), INCARNATED_EVIL_MUSIC_DISC);
+
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_deepslate"), new BlockItem(TGBlocks.TG_DEEPSLATE, new FabricItemSettings()));
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_grass_block"), new BlockItem(TGBlocks.TG_GRASS_BLOCK, new FabricItemSettings()));
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "tg_moss_block"), new BlockItem(TGBlocks.TG_MOSS_BLOCK, new FabricItemSettings()));

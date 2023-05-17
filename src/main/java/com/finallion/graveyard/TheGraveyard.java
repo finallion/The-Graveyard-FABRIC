@@ -98,6 +98,8 @@ public class TheGraveyard implements ModInitializer {
             .displayName(Text.literal("The Graveyard"))
             .icon(() -> new ItemStack(Items.SKELETON_SKULL))
             .entries((enabledFeatures, entries) -> {
+                entries.add(TGItems.INCARNATED_EVIL_MUSIC_DISC);
+
                 entries.add(TGItems.CORRUPTION);
                 entries.add(TGItems.DARK_IRON_BLOCK);
                 entries.add(TGItems.DARK_IRON_INGOT);

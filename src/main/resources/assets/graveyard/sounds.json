@@ -234,6 +234,14 @@
     ],
     "subtitle": "subtitles.entity.graveyard.reaper.death"
   },
+  "entity.reaper.charge": {
+    "sounds": [
+      "minecraft:mob/vex/charge1",
+      "minecraft:mob/vex/charge2",
+      "minecraft:mob/vex/charge3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.reaper.charge"
+  },
 
   "entity.nightmare.ambient": {
     "sounds": [
@@ -314,6 +322,50 @@
     ],
     "subtitle": "subtitles.block.graveyard.bone.ambient"
   },
+  "block.coffin.open": {
+    "sounds": [
+      "minecraft:block/chest/open"
+    ],
+    "subtitle": "subtitles.block.graveyard.coffin.open"
+  },
+  "block.coffin.close": {
+    "sounds": [
+      "minecraft:block/chest/close1",
+      "minecraft:block/chest/close2",
+      "minecraft:block/chest/close3"
+    ],
+    "subtitle": "subtitles.block.graveyard.coffin.close"
+  },
+
+  "block.ossuary.open": {
+    "sounds": [
+      "minecraft:block/enderchest/open"
+    ],
+    "subtitle": "subtitles.block.graveyard.ossuary.open"
+  },
+
+  "block.urn.open": {
+    "sounds": [
+      "minecraft:block/barrel/open1",
+      "minecraft:block/barrel/open2"
+    ],
+    "subtitle": "subtitles.block.graveyard.urn.open"
+  },
+  "block.urn.close": {
+    "sounds": [
+      "minecraft:block/barrel/close"
+    ],
+    "subtitle": "subtitles.block.graveyard.urn.close"
+  },
+  "block.sarcophagus.use": {
+    "sounds": [
+      "minecraft:block/grindstone/grindstone1",
+      "minecraft:block/grindstone/grindstone2",
+      "minecraft:block/grindstone/grindstone3"
+    ],
+    "subtitle": "subtitles.block.graveyard.sarcophagus.use"
+  },
+
   "item.vial.splash": {
     "sounds": [
       "graveyard:item/vial/splash"
@@ -410,39 +462,12 @@
     "subtitle": "subtitles.entity.graveyard.lich.heal"
   },
 
-  "block.coffin.open": {
+  "entity.lich.theme_01": {
     "sounds": [
-      "minecraft:block/chest/open"
+      "graveyard:entity/lich/theme_01"
     ],
-    "subtitle": "subtitles.block.graveyard.coffin.open"
-  },
-  "block.coffin.close": {
-    "sounds": [
-      "minecraft:block/chest/close1",
-      "minecraft:block/chest/close2",
-      "minecraft:block/chest/close3"
-    ],
-    "subtitle": "subtitles.block.graveyard.coffin.close"
-  },
-  "block.sarcophagus.use": {
-    "sounds": [
-      "minecraft:block/grindstone/grindstone1",
-      "minecraft:block/grindstone/grindstone2",
-      "minecraft:block/grindstone/grindstone3"
-    ],
-    "subtitle": "subtitles.block.graveyard.sarcophagus.use"
-  },
-  "block.urn.open": {
-    "sounds": [
-      "minecraft:block/barrel/open1",
-      "minecraft:block/barrel/open2"
-    ],
-    "subtitle": "subtitles.block.graveyard.urn.open"
-  },
-  "block.urn.close": {
-    "sounds": [
-      "minecraft:block/barrel/close"
-    ],
-    "subtitle": "subtitles.block.graveyard.urn.close"
+    "stream": "true",
+    "subtitle": "subtitles.entity.graveyard.lich.theme_01"
   }
+
 }

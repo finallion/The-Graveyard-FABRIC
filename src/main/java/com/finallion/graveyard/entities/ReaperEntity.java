@@ -276,7 +276,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             Vec3d vec3d = livingEntity.getEyePos();
             ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
             ReaperEntity.this.setCharging(true);
-            ReaperEntity.this.playSound(SoundEvents.ENTITY_VEX_CHARGE, 1.0F, -10.0F);
+            ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE, 1.0F, -10.0F);
         }
 
         public void stop() {

@@ -36,6 +36,8 @@ public class TGSounds {
     public static SoundEvent REAPER_HURT = SoundEvent.of(REAPER_HURT_ID);
     public static final Identifier REAPER_DEATH_ID = new Identifier(TheGraveyard.MOD_ID, "entity.reaper.death");
     public static SoundEvent REAPER_DEATH = SoundEvent.of(REAPER_DEATH_ID);
+    public static final Identifier REAPER_CHARGE_ID = new Identifier(TheGraveyard.MOD_ID, "entity.reaper.charge");
+    public static SoundEvent REAPER_CHARGE = SoundEvent.of(REAPER_CHARGE_ID);
 
     public static final Identifier GHOUL_ROAR_ID = new Identifier(TheGraveyard.MOD_ID, "entity.ghoul.roar");
     public static SoundEvent GHOUL_ROAR = SoundEvent.of(GHOUL_ROAR_ID);
@@ -100,6 +102,9 @@ public class TGSounds {
     public static final Identifier SARCOPHAGUS_USE_ID = new Identifier(TheGraveyard.MOD_ID, "block.sarcophagus.use");
     public static SoundEvent SARCOPHAGUS_USE = SoundEvent.of(SARCOPHAGUS_USE_ID);
 
+    public static final Identifier OSSUARY_OPEN_ID = new Identifier(TheGraveyard.MOD_ID, "block.ossuary.open");
+    public static SoundEvent OSSUARY_OPEN = SoundEvent.of(OSSUARY_OPEN_ID);
+
     public static final Identifier BONE_PLACED_ID = new Identifier(TheGraveyard.MOD_ID, "block.bone.placed");
     public static final Identifier BONE_AMBIENT_ID = new Identifier(TheGraveyard.MOD_ID, "block.bone.ambient");
     public static SoundEvent BONE_PLACED = SoundEvent.of(BONE_PLACED_ID);
@@ -137,7 +142,21 @@ public class TGSounds {
     public static SoundEvent LICH_CAST_TELEPORT = SoundEvent.of(LICH_CAST_TELEPORT_ID);
     public static SoundEvent LICH_PHASE_03_ATTACK = SoundEvent.of(LICH_PHASE_03_ATTACK_ID);
 
+    public static final SoundEvent LICH_THEME_01 = SoundEvent.of(new Identifier(TheGraveyard.MOD_ID, "entity.lich.theme_01"));
+
+    // better method to register, todo!
+    public void register() {
+        registerSoundEvent(LICH_THEME_01);
+    }
+
+    private static void registerSoundEvent(SoundEvent soundEvent) {
+        Registry.register(Registries.SOUND_EVENT, soundEvent.getId(), soundEvent);
+    }
+
+
     public static void init() {
+        registerSoundEvent(LICH_THEME_01);
+
         Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_BREATH_ID, NAMELESS_HANGED_BREATH);
         Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_INTERACT_ID, NAMELESS_HANGED_INTERACT);
         Registry.register(Registries.SOUND_EVENT, NAMELESS_HANGED_AMBIENT_ID, NAMELESS_HANGED_AMBIENT);
@@ -180,6 +199,7 @@ public class TGSounds {
         Registry.register(Registries.SOUND_EVENT, REAPER_AMBIENT_ID, REAPER_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, REAPER_HURT_ID, REAPER_HURT);
         Registry.register(Registries.SOUND_EVENT, REAPER_DEATH_ID, REAPER_DEATH);
+        Registry.register(Registries.SOUND_EVENT, REAPER_CHARGE_ID, REAPER_CHARGE);
 
         Registry.register(Registries.SOUND_EVENT, ALTAR_AMBIENT_ID, ALTAR_AMBIENT);
         Registry.register(Registries.SOUND_EVENT, BONE_PLACED_ID, BONE_PLACED);
@@ -206,7 +226,6 @@ public class TGSounds {
         Registry.register(Registries.SOUND_EVENT, LICH_CAST_SKULL_ID, LICH_CAST_SKULL);
         Registry.register(Registries.SOUND_EVENT, LICH_CAST_LEVITATION_ID, LICH_CAST_LEVITATION);
         Registry.register(Registries.SOUND_EVENT, LICH_CAST_TELEPORT_ID, LICH_CAST_TELEPORT);
-
 
     }
 

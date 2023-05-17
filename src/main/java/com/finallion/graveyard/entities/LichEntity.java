@@ -7,6 +7,7 @@ import com.finallion.graveyard.entities.projectiles.SkullEntity;
 import com.finallion.graveyard.init.TGEntities;
 import com.finallion.graveyard.init.TGParticles;
 import com.finallion.graveyard.init.TGSounds;
+import com.finallion.graveyard.sounds.BossMusicPlayer;
 import com.finallion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -104,6 +105,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private static final TrackedData<Integer> HUNT_TIMER;
     private static final TrackedData<Boolean> CAN_HUNT_START;
     private static final TrackedData<Boolean> CAN_MOVE;
+    private static final TrackedData<Integer> MUSIC_DELAY;
 
     // spell timer data tracker
     private static final TrackedData<Integer> CONJURE_FANG_TIMER;
@@ -112,6 +114,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private static final TrackedData<Integer> LEVITATION_DURATION_TIMER;
 
     // constants
+    private static final byte MUSIC_PLAY_ID = 67;
+    private static final byte MUSIC_STOP_ID = 68;
     private static final int SPAWN_INVUL_TIMER = 490;
     private static final int DEFAULT_INVUL_TIMER = 200;
     private final float HEALTH_PHASE_01 = TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").healthInCastingPhase;
@@ -290,6 +294,25 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0D);
     }
 
+    @Override
+    public void tick() {
+        if (!world.isClient && getBossMusic() != null) {
+            if (canPlayMusic() && deathTime == 0) {
+                this.world.sendEntityStatus(this, MUSIC_PLAY_ID);
+            } else {
+                this.world.sendEntityStatus(this, MUSIC_STOP_ID);
+            }
+        }
+        super.tick();
+    }
+
+    @Override
+    public void handleStatus(byte id) {
+        if (id == MUSIC_PLAY_ID && getMusicDelay() == 78) BossMusicPlayer.playBossMusic(this);
+        else if (id == MUSIC_STOP_ID) BossMusicPlayer.stopBossMusic(this);
+        else super.handleStatus(id);
+    }
+
 
     /* PARTICLE HANDLING */
     @Override
@@ -364,6 +387,10 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         if (!canHuntStart() && random.nextInt(5) == 0) {
             world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE, 4.0F, -10.0F);
+        }
+
+        if (getMusicDelay() < 78) {
+            setMusicDelay(getMusicDelay() + 1);
         }
 
         super.tickMovement();
@@ -953,6 +980,14 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         this.huntCooldownTicker = huntCooldownTicker;
     }
 
+    public int getMusicDelay() {
+        return (Integer) this.dataTracker.get(MUSIC_DELAY);
+    }
+
+    public void setMusicDelay(int time) {
+        this.dataTracker.set(MUSIC_DELAY, time);
+    }
+
     /* END GETTER AND SETTER */
 
     ///////////////////////
@@ -1015,12 +1050,25 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     protected SoundEvent getHurtSound(DamageSource source) {
         return TGSounds.LICH_HURT;
     }
+
+    public SoundEvent getBossMusic() {
+        return TGSounds.LICH_THEME_01;
+    }
+
+    protected boolean canPlayMusic() {
+        return !isSilent() /*&& getTarget() instanceof Player*/;
+    }
+
+    public boolean canPlayerHearMusic(PlayerEntity player) {
+        return player != null /*&& canAttack(player)*/ && distanceTo(player) < 2500;
+    }
     /* SOUNDS END */
 
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(CAN_MOVE, false);
         this.dataTracker.startTracking(INVUL_TIMER, 0);
+        this.dataTracker.startTracking(MUSIC_DELAY, 0);
         this.dataTracker.startTracking(HUNT_TIMER, 0);
         this.dataTracker.startTracking(FIGHT_DURATION_TIMER, 0);
         this.dataTracker.startTracking(HEAL_DURATION_TIMER, 0);
@@ -1110,6 +1158,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         PHASE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         CAN_HUNT_START = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         CAN_MOVE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        MUSIC_DELAY = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
         CAN_ATTACK_PREDICATE = Entity::isPlayer;
         HEAD_TARGET_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(20.0D).setPredicate(CAN_ATTACK_PREDICATE);
         CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F);
