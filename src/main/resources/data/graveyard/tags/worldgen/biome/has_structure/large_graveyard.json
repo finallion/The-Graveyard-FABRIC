@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:taiga",
+    "minecraft:snowy_taiga",
+    "#c:plains",
+    {"id": "terralith:forested_highlands", "required": false},
+    {"id": "terralith:lush_valley", "required": false},
+    {"id": "terralith:shield", "required": false},
+    {"id": "terralith:shield_clearing", "required": false},
+    {"id": "terralith:wintry_forest", "required": false},
+    {"id": "graveyard_biomes:haunted_forest", "required": false}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:forest",
+    "minecraft:flower_forest",
+    "minecraft:windswept_forest",
+    {"id": "terralith:brushland", "required": false},
+    {"id": "terralith:blooming_valley", "required": false},
+    {"id": "terralith:temperate_highlands", "required": false},
+    {"id": "graveyard_biomes:eroded_haunted_forest", "required": false}
+  ]
+}

@@ -2,6 +2,7 @@ package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.init.TGSounds;
 import com.finallion.graveyard.item.DaggerItem;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.NavigationConditions;
@@ -50,18 +51,18 @@ public class AcolyteEntity extends CorruptedIllager {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_VINDICATOR_AMBIENT, 1.0F, 1.0F);
+        this.playSound(TGSounds.ACOLYTE_AMBIENT, 1.0F, 0.75F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_VINDICATOR_HURT, 1.0F, 1.0F);
+        this.playSound(TGSounds.ACOLYTE_HURT, 1.0F, 0.75F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_VINDICATOR_DEATH, 1.0F, 1.0F);
+        this.playSound(TGSounds.ACOLYTE_DEATH, 1.0F, 0.75F);
     }
 
     @Override

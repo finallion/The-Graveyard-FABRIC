@@ -86,13 +86,13 @@ public class AltarBlock extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack stack = player.getMainHandStack();
+        ItemStack stack = player.getStackInHand(hand);
         float blood = 0.0F;
         if (stack.isOf(TGItems.VIAL_OF_BLOOD)) {
             blood = VialOfBlood.getBlood(stack);
         }
 
-        if (state.isOf(TGBlocks.ALTAR) && (blood >= 0.8F || TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && world.isNight()) {
+        if (state.isOf(TGBlocks.ALTAR) && (blood >= 0.8F || TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
 
             if (!state.get(AltarBlock.BLOODY) && (result != null || !TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {

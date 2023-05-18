@@ -34,43 +34,43 @@ public class TGBlocks {
     public static final Block TG_ROOTED_DIRT = new TGStoneBlock(() -> Blocks.ROOTED_DIRT, FabricBlockSettings.copyOf(Blocks.ROOTED_DIRT).drops(Blocks.ROOTED_DIRT.getLootTableId()));
     public static final Block TG_PODZOL = new TGStoneBlock(() -> Blocks.PODZOL, FabricBlockSettings.copyOf(Blocks.PODZOL).drops(Blocks.PODZOL.getLootTableId()));
 
-    public static final Identifier POLISHED_BASALT_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/polished_basalt_side");
-    public static final Identifier COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/cobblestone");
-    public static final Identifier MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/mossy_cobblestone");
-    public static final Identifier DEEPSLATE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier ANCHOR_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier ANDESITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier BLACKSTONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CHISELED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CHISELED_QUARTZ_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CHISELED_RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CHISELED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier CRACKED_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier DARK_PRISMARINE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier DIORITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier GILDED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier GRANITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier IRON_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier LODESTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier NETHERBRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier NETHERITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier POLISHED_ANDESITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier POLISHED_DIORITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier POLISHED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier POLISHED_GRANITE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier PRISMARINE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier QUARTZ_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier QUARTZ_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier QUARTZ_PILLAR_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier RED_NETHERBRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier SANDSTONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier STONE_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
-    public static final Identifier STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier("minecraft", "block/deepslate");
+    public static final Identifier POLISHED_BASALT_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_basalt.png");
+    public static final Identifier COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cobblestone.png");
+    public static final Identifier MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/mossy_cobblestone.png");
+    public static final Identifier DEEPSLATE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/deepslate.png");
+    public static final Identifier ANCHOR_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/anchor.png");
+    public static final Identifier ANDESITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/andesite.png");
+    public static final Identifier BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/blackstone.png");
+    public static final Identifier BLACKSTONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/blackstone_bricks.png");
+    public static final Identifier BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/bricks.png");
+    public static final Identifier CHISELED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/chiseled_blackstone.png");
+    public static final Identifier CHISELED_QUARTZ_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/chiseled_quarts.png");
+    public static final Identifier CHISELED_RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/chiseled_red_sandstone.png");
+    public static final Identifier CHISELED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/chiseled_sandstone.png");
+    public static final Identifier CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cracked_blackstoe.png");
+    public static final Identifier CRACKED_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/cracked_stone_bricks.png");
+    public static final Identifier DARK_PRISMARINE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/dark_prismarine.png");
+    public static final Identifier DIORITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/diorite.png");
+    public static final Identifier GILDED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/gilded_blackstone.png");
+    public static final Identifier GRANITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/granite.png");
+    public static final Identifier IRON_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/iron.png");
+    public static final Identifier LODESTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/lodestone.png");
+    public static final Identifier MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/mossy_stone_bricks.png");
+    public static final Identifier NETHERBRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/netherbricks.png");
+    public static final Identifier NETHERITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/netherite.png");
+    public static final Identifier POLISHED_ANDESITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_andesite.png");
+    public static final Identifier POLISHED_DIORITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_diorite.png");
+    public static final Identifier POLISHED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_blackstone.png");
+    public static final Identifier POLISHED_GRANITE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/polished_granite.png");
+    public static final Identifier PRISMARINE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/prismarine_bricks.png");
+    public static final Identifier QUARTZ_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/quartz.png");
+    public static final Identifier QUARTZ_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/quartz_bricks.png");
+    public static final Identifier QUARTZ_PILLAR_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/quartz_pillar.png");
+    public static final Identifier RED_NETHERBRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/red_netherbricks.png");
+    public static final Identifier RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/red_sandstone.png");
+    public static final Identifier SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/sandstone.png");
+    public static final Identifier STONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/stone.png");
+    public static final Identifier STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/stone_bricks.png");
 
     public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
     public static final Block SOUL_FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.SOUL_FIRE_FLAME);
@@ -99,6 +99,8 @@ public class TGBlocks {
     public static final Block WITHER_SKULL_ON_PIKE = new BoneDisplayBlock();
     public static final Block TORSO_PILE = new BoneDisplayBlock();
     public static final Block WITHER_TORSO_PILE = new BoneDisplayBlock();
+    public static final Block HANGED_SKELETON = new BoneDisplayBlock();
+    public static final Block HANGED_WITHER_SKELETON = new BoneDisplayBlock();
 
     public static final Block BLACK_URN = new UrnBlock();
     public static final Block WHITE_URN = new UrnBlock();
@@ -156,14 +158,20 @@ public class TGBlocks {
     public static final Block STONE_BRICKS_GRAVESTONE = new GravestoneBlock(STONE_BRICKS_GRAVESTONE_TEXTURE);
     public static final Block MOSSY_STONE_BRICKS_GRAVESTONE = new GravestoneBlock(MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE);
     public static final Block BRICKS_GRAVESTONE = new GravestoneBlock(BRICKS_GRAVESTONE_TEXTURE);
+    public static final Block SANDSTONE_GRAVESTONE = new GravestoneBlock(SANDSTONE_GRAVESTONE_TEXTURE);
+    public static final Block RED_SANDSTONE_GRAVESTONE = new GravestoneBlock(RED_SANDSTONE_GRAVESTONE_TEXTURE);
+    public static final Block GILDED_BLACKSTONE_GRAVESTONE = new GravestoneBlock(GILDED_BLACKSTONE_GRAVESTONE_TEXTURE);
+    public static final Block QUARTZ_BRICKS_GRAVESTONE = new GravestoneBlock(QUARTZ_BRICKS_GRAVESTONE_TEXTURE);
 
     public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
-    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
-    public static final Block ALTAR_CORNER = new AltarCornerBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
-    public static final Block ALTAR_CENTER = new AltarCenterBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CORNER = new AltarCornerBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CENTER = new AltarCenterBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
     public static final Block LOWER_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
+
+    public static final Block OSSUARY = new OssuaryBlock(FabricBlockSettings.of(Material.STONE).requiresTool().nonOpaque().strength(3.5F));
 
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -211,6 +219,8 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_skull_on_pike"), WITHER_SKULL_ON_PIKE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "torso_pile"), TORSO_PILE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "wither_torso_pile"), WITHER_TORSO_PILE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "hanged_skeleton"), HANGED_SKELETON);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "hanged_wither_skeleton"), HANGED_WITHER_SKELETON);
 
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "black_urn"), BLACK_URN);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "brown_urn"), BROWN_URN);
@@ -257,6 +267,10 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "stone_bricks_gravestone"), STONE_BRICKS_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mossy_stone_bricks_gravestone"), MOSSY_STONE_BRICKS_GRAVESTONE);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bricks_gravestone"), BRICKS_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "red_sandstone_gravestone"), RED_SANDSTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "sandstone_gravestone"), SANDSTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gilded_blackstone_gravestone"), GILDED_BLACKSTONE_GRAVESTONE);
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "quartz_bricks_gravestone"), QUARTZ_BRICKS_GRAVESTONE);
 
         /*
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), ROTTEN_SPRUCE_PLANKS);
@@ -284,6 +298,8 @@ public class TGBlocks {
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "middle_bone_staff"), MIDDLE_BONE_STAFF);
         Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "upper_bone_staff"), UPPER_BONE_STAFF);
 
+        Registry.register(Registry.BLOCK, new Identifier(TheGraveyard.MOD_ID, "ossuary"), OSSUARY);
+
 
         coffins.add(OAK_COFFIN);
         coffins.add(SPRUCE_COFFIN);
@@ -305,7 +321,12 @@ public class TGBlocks {
             CRACKED_BLACKSTONE_GRAVESTONE,
             MOSSY_STONE_BRICKS_GRAVESTONE,
             STONE_BRICKS_GRAVESTONE,
-            BRICKS_GRAVESTONE).build(null));
+            BRICKS_GRAVESTONE,
+            QUARTZ_BRICKS_GRAVESTONE,
+            RED_SANDSTONE_GRAVESTONE,
+            SANDSTONE_GRAVESTONE,
+            GILDED_BLACKSTONE_GRAVESTONE
+            ).build(null));
 
 
     public static BlockEntityType<UrnBlockEntity> URN_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "urn_block_entity"), FabricBlockEntityTypeBuilder.create(UrnBlockEntity::new,
@@ -341,5 +362,8 @@ public class TGBlocks {
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,
             SOUL_FIRE_BRAZIER,
             FIRE_BRAZIER).build(null));
+
+    public static final BlockEntityType<OssuaryBlockEntity> OSSUARY_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "ossuary_block_entity"), FabricBlockEntityTypeBuilder.create(OssuaryBlockEntity::new,
+            OSSUARY).build(null));
 
 }

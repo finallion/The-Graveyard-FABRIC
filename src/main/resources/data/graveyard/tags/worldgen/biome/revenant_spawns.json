@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:climate_cold",
+    "#c:snowy",
+    "#c:dead",
+    "#c:icy",
+    "minecraft:snowy_taiga"
+  ]
+}

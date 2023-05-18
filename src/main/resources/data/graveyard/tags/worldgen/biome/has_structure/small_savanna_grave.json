@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#c:badlands",
+    "#c:savanna",
+    {"id": "terralith:savanna_badlands", "required": false},
+    {"id": "terralith:savanna_slopes", "required": false},
+    {"id": "terralith:fractured_savanna", "required": false}
+  ]
+}

@@ -41,6 +41,8 @@ public class TGFileWriterReader {
             File oldConfig = new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-config.json5");
             File oldConfig2 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-1.19-config.json5");
             File oldConfig3 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.0-config.json5");
+            File oldConfig4 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.2-config.json5");
+            File oldConfig5 = new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.3-config.json5");
             if (oldConfig.exists()) {
                 if (oldConfig.delete()) {
                     TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
@@ -53,9 +55,20 @@ public class TGFileWriterReader {
                 }
             }
 
-
             if (oldConfig3.exists()) {
                 if (oldConfig3.delete()) {
+                    TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
+                }
+            }
+
+            if (oldConfig4.exists()) {
+                if (oldConfig4.delete()) {
+                    TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
+                }
+            }
+
+            if (oldConfig5.exists()) {
+                if (oldConfig5.delete()) {
                     TheGraveyard.LOGGER.info("Deleting old Graveyard Config file.");
                 }
             }
@@ -80,7 +93,7 @@ public class TGFileWriterReader {
             File file = new File(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
             if (file.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
-                    TheGraveyard.LOGGER.info("Reading Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
+                    //TheGraveyard.LOGGER.info("Reading Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
                     while ((line = reader.readLine()) != null) {
                         String[] keyValuePair = line.split(":", 2);
 
@@ -95,30 +108,6 @@ public class TGFileWriterReader {
                 }
             }
         }
-
-        /*
-        private void writeConfigToJSON(MinecraftServer server) {
-            //Optional<Resource> resource = server.getResourceManager().getResource(new Identifier(TheGraveyard.MOD_ID, "tags/entity_types/is_blood_collectable.json"));
-
-            System.out.println(FabricLoader.getInstance().getModContainer(TheGraveyard.MOD_ID).get());
-            System.out.println(FabricLoader.getInstance().getModContainer(TheGraveyard.MOD_ID).get().getRootPaths());
-            Path path = FabricLoader.getInstance().getModContainer(TheGraveyard.MOD_ID).get().findPath("resources/data/tags/entity_types/is_blood_collectable.json").get();
-
-            File file = path.toFile();
-            System.out.println(file.exists());
-
-            try {
-                String[] values = {"minecraft:sheep"};
-                Gson gson = new GsonBuilder().create();
-                gson.toJson(values, new FileWriter(file.getPath()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //FabricLoader.getInstance().getModContainer(TheGraveyard.MOD_ID).map(container -> container.findPath("data/graveyard/tags/entity_types/is_blood_collectable.json")).ifPresent(System.out::println);
-        }
-
-         */
-
     }
 
 
@@ -136,7 +125,7 @@ public class TGFileWriterReader {
             try {
                 FileWriter fileWriter = new FileWriter(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                TheGraveyard.LOGGER.info("Saving Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
+                //TheGraveyard.LOGGER.info("Saving Graveyard Ghouling UUIDs from graveyardGhoulingUUIDMapping.txt.");
 
                 for (Map.Entry<UUID, UUID> entry : BoneStaffItem.ownerGhoulingMapping.entrySet()) {
                     bufferedWriter.write(entry.getKey() + ":" + entry.getValue());

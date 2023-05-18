@@ -3,6 +3,7 @@ package com.finallion.graveyard.entities;
 import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.entities.ai.goals.NightmareMeleeAttackGoal;
 import com.finallion.graveyard.init.TGAdvancements;
+import com.finallion.graveyard.init.TGSounds;
 import com.finallion.graveyard.item.DaggerItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -261,18 +262,18 @@ public class NightmareEntity extends HostileGraveyardEntity implements IAnimatab
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_ENDERMAN_AMBIENT, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_AMBIENT, 1.0F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_ENDERMAN_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_HURT, 1.0F, -10.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_ENDERMAN_DEATH, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_DEATH, 1.0F, -10.0F);
     }
 
     boolean isPlayerStaring(PlayerEntity player) {

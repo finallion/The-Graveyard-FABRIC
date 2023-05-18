@@ -230,6 +230,11 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
 
     @Override
     public boolean damage(DamageSource source, float amount) {
+        if (source == DamageSource.OUT_OF_WORLD || source == DamageSource.ON_FIRE) {
+            setCanReanimate(false);
+            setReanimateAnimTimer(0);
+        }
+
         if (amount >= getHealth() && canReanimate() && random.nextInt(3) == 0) {
             setCanReanimate(false);
             setReanimateAnimTimer(REANIMATE_DURATION);
@@ -256,23 +261,23 @@ public class RevenantEntity extends AngerableGraveyardEntity implements IAnimata
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_WITHER_SKELETON_AMBIENT, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_AMBIENT, 1.0F, 1.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_WITHER_SKELETON_HURT, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_HURT, 1.0F, 1.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_WITHER_SKELETON_DEATH, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_DEATH, 1.0F, 1.0F);
     }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(SoundEvents.ENTITY_WITHER_SKELETON_STEP, 0.15F, 1.0F);
+        this.playSound(TGSounds.REVENANT_STEP, 0.15F, 1.0F);
     }
 
     public int getAnimationState() {

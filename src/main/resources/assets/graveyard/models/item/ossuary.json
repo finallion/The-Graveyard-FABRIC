@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "graveyard:item/ossuary",
+    "particle": "graveyard:block/corrupted_stone"
+  }
+}

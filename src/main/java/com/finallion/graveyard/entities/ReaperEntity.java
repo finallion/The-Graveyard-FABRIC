@@ -1,6 +1,7 @@
 package com.finallion.graveyard.entities;
 
 import com.finallion.graveyard.TheGraveyard;
+import com.finallion.graveyard.init.TGSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -212,18 +213,18 @@ public class ReaperEntity extends HostileGraveyardEntity implements IAnimatable 
 
     @Override
     public void playAmbientSound() {
-        this.playSound(SoundEvents.ENTITY_VEX_AMBIENT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_AMBIENT, 1.0F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(SoundEvents.ENTITY_VEX_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_HURT, 1.0F, -10.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(SoundEvents.ENTITY_VEX_DEATH, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_DEATH, 1.0F, -10.0F);
     }
 
     private class ReaperMoveControl extends MoveControl {
@@ -278,7 +279,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements IAnimatable 
             Vec3d vec3d = livingEntity.getEyePos();
             ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
             ReaperEntity.this.setCharging(true);
-            ReaperEntity.this.playSound(SoundEvents.ENTITY_VEX_CHARGE, 1.0F, -10.0F);
+            ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE, 1.0F, -10.0F);
         }
 
         public void stop() {

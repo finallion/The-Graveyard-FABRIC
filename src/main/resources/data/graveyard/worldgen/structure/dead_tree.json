@@ -1,0 +1,18 @@
+{
+  "type": "graveyard:dead_tree",
+  "start_pool": "graveyard:dead_tree/start_pool",
+  "size": 1,
+  "max_distance_from_center": 80,
+  "biomes": "#graveyard:has_structure/dead_tree",
+  "step": "surface_structures",
+  "use_expansion_hack": true,
+  "terrain_check_size": 15,
+  "max_height_difference": 3,
+  "terrain_adaptation": "beard_box",
+  "structure_name": "dead_tree",
+  "start_height": {
+    "absolute": 1
+  },
+  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "spawn_overrides": {}
+}

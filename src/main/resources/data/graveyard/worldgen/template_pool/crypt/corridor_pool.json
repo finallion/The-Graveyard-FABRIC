@@ -1,0 +1,294 @@
+{
+  "name": "graveyard:crypt/corridor_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/room_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/room_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/room_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/room_04",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corner_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corner_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corner_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_04",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_05",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_06",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_07",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_08",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_09",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_10",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_11",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_12",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/corridor_13",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/labyrinth_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/library_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/library_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/trap_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/trap_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/trap_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_02",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_04",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_05",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_06",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

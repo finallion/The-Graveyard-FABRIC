@@ -1,0 +1,15 @@
+{
+  "name": "graveyard:giant_mushroom/red_cap",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:giant_mushroom/red_cap/giant_red_mushroom_cap_01",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

@@ -20,8 +20,12 @@ import java.util.List;
 public class TGEntities {
     public static List<EntityType<?>> entities = new ArrayList<>();
 
-    //public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, AcolyteEntity::new).dimensions(EntityDimensions.fixed(0.6F, 1.9F)).build();
-    public static final EntityType<ReaperEntity> REAPER = FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ReaperEntity::new).dimensions(EntityDimensions.changing(0.5F, 1.4F)).build();
+    public static final EntityType<ReaperEntity> REAPER = FabricEntityTypeBuilder.createMob()
+            .spawnGroup(SpawnGroup.MONSTER)
+            .entityFactory(ReaperEntity::new)
+            .dimensions(EntityDimensions.changing(0.5F, 1.4F))
+            .spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileGraveyardEntity::canSpawnInDarkness)
+            .build();
 
     public static final EntityType<AcolyteEntity> ACOLYTE = FabricEntityTypeBuilder.createMob()
             .spawnGroup(SpawnGroup.MONSTER)
@@ -105,6 +109,12 @@ public class TGEntities {
                     .trackRangeBlocks(4).trackedUpdateRate(10)
                     .build();
 
+    public static final EntityType<NamelessHangedEntity> NAMELESS_HANGED = FabricEntityTypeBuilder.create()
+            .spawnGroup(SpawnGroup.CREATURE)
+            .entityFactory(NamelessHangedEntity::new)
+            .dimensions(EntityDimensions.fixed(0.8F, 2.5F))
+            .build();
+
     private static void register(String name, EntityType<?> type) {
         entities.add(type);
         Registry.register(Registry.ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, name), type);
@@ -125,6 +135,7 @@ public class TGEntities {
         register("falling_corpse", FALLING_CORPSE);
         register("skull", SKULL);
         register("ghouling", GHOULING);
+        register("nameless_hanged", NAMELESS_HANGED);
     }
 
 

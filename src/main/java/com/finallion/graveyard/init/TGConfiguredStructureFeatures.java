@@ -1,23 +1,14 @@
 package com.finallion.graveyard.init;
 
 import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.structureKeys.TGStructureTypeKeys;
 import com.finallion.graveyard.world.structures.*;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureSpawns;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.StructureTerrainAdaptation;
-import net.minecraft.world.gen.YOffset;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.heightprovider.ConstantHeightProvider;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.Structure.Config;
+import net.minecraft.world.gen.structure.StructureType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,220 +17,44 @@ import java.util.Map;
 public class TGConfiguredStructureFeatures {
     public static List<Structure> structures = new ArrayList<>();
 
-    public static final RegistryEntry<Structure> HAUNTED_HOUSE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.HAUNTED_HOUSE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("haunted_house"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    HauntedHouseStructure.HauntedHouseGenerator.STARTING_POOL, 2,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("haunted_house").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("haunted_house").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("haunted_house").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("haunted_house").biomeBlacklist,
-                    "haunted_house"
-            )
-    );
+    public static StructureType<TGJigsawStructure> ALTAR;
+    public static StructureType<TGJigsawStructure> DEAD_TREE;
+    public static StructureType<TGJigsawStructure> CRYPT;
+    public static StructureType<TGJigsawStructure> GIANT_MUSHROOM;
+    public static StructureType<TGJigsawStructure> HAUNTED_HOUSE;
+    public static StructureType<TGJigsawStructure> LARGE_GRAVEYARD;
+    public static StructureType<TGJigsawStructure> LICH_PRISON;
+    public static StructureType<TGJigsawStructure> MEDIUM_GRAVEYARD;
+    public static StructureType<TGJigsawStructure> MEMORIAL_TREE;
+    public static StructureType<TGJigsawStructure> MUSHROOM_GRAVE;
+    public static StructureType<TGJigsawStructure> RUINS;
+    public static StructureType<TGJigsawStructure> SMALL_DESERT_GRAVE;
+    public static StructureType<TGJigsawStructure> SMALL_DESERT_GRAVEYARD;
+    public static StructureType<TGJigsawStructure> SMALL_GRAVE;
+    public static StructureType<TGJigsawStructure> SMALL_GRAVEYARD;
+    public static StructureType<TGJigsawStructure> SMALL_MOUNTAIN_GRAVE;
+    public static StructureType<TGJigsawStructure> SMALL_SAVANNA_GRAVE;
 
-    public static final RegistryEntry<Structure> LARGE_GRAVEYARD_STRUCTURE_CONFIG = register(TGStructureTypeKeys.LARGE_GRAVEYARD,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("large_graveyard"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    LargeGraveyardStructure.LargeGraveyardGenerator.STARTING_POOL, 4,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("large_graveyard").biomeBlacklist,
-                    "large_graveyard"
-            )
-    );
+    public static void registerStructureFeatures() {
+        ALTAR = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "altar"), () -> TGJigsawStructure.CODEC);
+        CRYPT = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "crypt"), () -> TGJigsawStructure.CODEC);
+        GIANT_MUSHROOM = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "giant_mushroom"), () -> TGJigsawStructure.CODEC);
+        HAUNTED_HOUSE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "haunted_house"), () -> TGJigsawStructure.CODEC);
+        LARGE_GRAVEYARD = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "large_graveyard"), () -> TGJigsawStructure.CODEC);
+        LICH_PRISON = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "lich_prison"), () -> TGJigsawStructure.CODEC);
+        MEDIUM_GRAVEYARD = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "medium_graveyard"), () -> TGJigsawStructure.CODEC);
+        MEMORIAL_TREE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "memorial_tree"), () -> TGJigsawStructure.CODEC);
+        MUSHROOM_GRAVE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "mushroom_grave"), () -> TGJigsawStructure.CODEC);
+        RUINS = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "ruins"), () -> TGJigsawStructure.CODEC);
+        SMALL_DESERT_GRAVE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_desert_grave"), () -> TGJigsawStructure.CODEC);
+        SMALL_DESERT_GRAVEYARD = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_desert_graveyard"), () -> TGJigsawStructure.CODEC);
+        SMALL_GRAVE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_grave"), () -> TGJigsawStructure.CODEC);
+        SMALL_GRAVEYARD = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_graveyard"), () -> TGJigsawStructure.CODEC);
+        SMALL_MOUNTAIN_GRAVE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_mountain_grave"), () -> TGJigsawStructure.CODEC);
+        SMALL_SAVANNA_GRAVE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "small_savanna_grave"), () -> TGJigsawStructure.CODEC);
+        DEAD_TREE = Registry.register(Registry.STRUCTURE_TYPE, new Identifier(TheGraveyard.MOD_ID, "dead_tree"), () -> TGJigsawStructure.CODEC);
 
-    public static final RegistryEntry<Structure> ALTAR_STRUCTURE_CONFIG = register(TGStructureTypeKeys.ALTAR,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("altar"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    AltarStructure.AltarGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("altar").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("altar").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("altar").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("altar").biomeBlacklist,
-                    "altar"
-            )
-    );
-
-    public static final RegistryEntry<Structure> CRYPT_STRUCTURE_CONFIG = register(TGStructureTypeKeys.CRYPT,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("crypt"), GenerationStep.Feature.UNDERGROUND_STRUCTURES, StructureTerrainAdaptation.NONE),
-                    CryptStructure.CryptGenerator.STARTING_POOL, TheGraveyard.config.intEntries.get("cryptJigsawSize"),
-                    ConstantHeightProvider.create(YOffset.fixed(-10)), false,
-                    TheGraveyard.config.structureConfigEntries.get("crypt").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("crypt").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("crypt").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("crypt").biomeBlacklist,
-                    "crypt"
-            )
-    );
-
-    public static final RegistryEntry<Structure> GIANT_MUSHROOM_STRUCTURE_CONFIG = register(TGStructureTypeKeys.GIANT_MUSHROOM,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("giant_mushroom"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_THIN),
-                    GiantMushroomStructure.GiantMushroomGenerator.STARTING_POOL, 2,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("giant_mushroom").biomeBlacklist,
-                    "giant_mushroom"
-            )
-    );
-
-    public static final RegistryEntry<Structure> MEDIUM_GRAVEYARD_STRUCTURE_CONFIG = register(TGStructureTypeKeys.MEDIUM_GRAVEYARD,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("medium_graveyard"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    MediumGraveyardStructure.MediumGraveyardGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("medium_graveyard").biomeBlacklist,
-                    "medium_graveyard"
-            )
-    );
-
-    public static final RegistryEntry<Structure> SMALL_GRAVEYARD_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_GRAVEYARD,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_graveyard"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallGraveyardStructure.SmallGraveyardGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_graveyard").biomeBlacklist,
-                    "small_graveyard"
-            )
-    );
-
-    public static final RegistryEntry<Structure> SMALL_DESERT_GRAVEYARD_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_DESERT_GRAVEYARD,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_desert_graveyard"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallDesertGraveyardStructure.SmallDesertGraveyardGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_graveyard").biomeBlacklist,
-                    "small_desert_graveyard"
-            )
-    );
-
-    public static final RegistryEntry<Structure> SMALL_GRAVE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_GRAVE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_grave"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallGraveStructure.SmallGraveGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_grave").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_grave").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_grave").biomeBlacklist,
-                    "small_grave"
-            )
-    );
-
-    public static final RegistryEntry<Structure> SMALL_SAVANNA_GRAVE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_SAVANNA_GRAVE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_savanna_grave"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallSavannaGraveStructure.SmallSavannaGraveGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_savanna_grave").biomeBlacklist,
-                    "small_savanna_grave"
-            )
-    );
-
-    public static final RegistryEntry<Structure> SMALL_MOUNTAIN_GRAVE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_MOUNTAIN_GRAVE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_mountain_grave"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallMountainGraveStructure.SmallMountainGraveGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_mountain_grave").biomeBlacklist,
-                    "small_mountain_grave"
-            )
-    );
-
-
-    public static final RegistryEntry<Structure> SMALL_DESERT_GRAVE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.SMALL_DESERT_GRAVE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("small_desert_grave"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    SmallDesertGraveStructure.SmallDesertGraveGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("small_desert_grave").biomeBlacklist,
-                    "small_desert_grave"
-            )
-    );
-
-    public static final RegistryEntry<Structure> MEMORIAL_TREE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.MEMORIAL_TREE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("memorial_tree"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    MemorialTreeStructure.MemorialTreeGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("memorial_tree").biomeBlacklist,
-                    "memorial_tree"
-            )
-    );
-
-    public static final RegistryEntry<Structure> MUSHROOM_GRAVE_STRUCTURE_CONFIG = register(TGStructureTypeKeys.MUSHROOM_GRAVE,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("mushroom_grave"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    MushroomGraveStructure.MushroomGraveGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("mushroom_grave").biomeBlacklist,
-                    "mushroom_grave"
-            )
-    );
-
-    public static final RegistryEntry<Structure> LICH_PRISON_STRUCTURE_CONFIG = register(TGStructureTypeKeys.LICH_PRISON,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("lich_prison"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.NONE),
-                    LichPrisonStructure.LichPrisonGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("lich_prison").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("lich_prison").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("lich_prison").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("lich_prison").biomeBlacklist,
-                    "lich_prison"
-            )
-    );
-
-    public static final RegistryEntry<Structure> RUINS_STRUCTURE_CONFIG = register(TGStructureTypeKeys.RUINS,
-            new TGJigsawStructure(createConfig(ConventionalBiomeTags.IN_OVERWORLD, addMobSpawnsToStructure("ruins"), GenerationStep.Feature.SURFACE_STRUCTURES, StructureTerrainAdaptation.BEARD_BOX),
-                    RuinsStructure.RuinsGenerator.STARTING_POOL, 1,
-                    ConstantHeightProvider.create(YOffset.fixed(0)), true, Heightmap.Type.WORLD_SURFACE_WG,
-                    TheGraveyard.config.structureConfigEntries.get("ruins").terrainCheckRadius,
-                    TheGraveyard.config.structureConfigEntries.get("ruins").maxTerrainHeightDifference,
-                    TheGraveyard.config.structureConfigEntries.get("ruins").biomeWhitelist,
-                    TheGraveyard.config.structureConfigEntries.get("ruins").biomeBlacklist,
-                    "ruins"
-            )
-    );
-
-
-    private static Config createConfig(TagKey<Biome> biomeTag, Map<SpawnGroup, StructureSpawns> spawns, GenerationStep.Feature featureStep, StructureTerrainAdaptation terrainAdaptation) {
-        return new Config(BuiltinRegistries.BIOME.getOrCreateEntryList(biomeTag), spawns, featureStep, terrainAdaptation);
-    }
-
-    private static RegistryEntry<Structure> register(RegistryKey<Structure> key, Structure configuredStructureFeature) {
-        structures.add(configuredStructureFeature);
-        return BuiltinRegistries.add(BuiltinRegistries.STRUCTURE, key, configuredStructureFeature);
     }
 
     public static void init() {}
-
-    private static Map<SpawnGroup, StructureSpawns> addMobSpawnsToStructure(String name) {
-        if (TheGraveyard.config.structureConfigEntries.get(name).canSpawnGraveyardMobs) {
-            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.MONSTER_SPAWNS));
-        }
-
-        if (name.equals("small_desert_graveyard")) {
-            return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.ILLAGER_SPAWNS));
-        }
-
-        return Map.of(SpawnGroup.MONSTER, new StructureSpawns(StructureSpawns.BoundingBox.PIECE, TGJigsawStructure.EMPTY));
-    }
 }

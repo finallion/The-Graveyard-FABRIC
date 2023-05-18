@@ -5,6 +5,7 @@ import com.finallion.graveyard.entities.*;
 import com.finallion.graveyard.init.*;
 
 
+import com.finallion.graveyard.recipe.TGRecipeTypes;
 import com.finallion.graveyard.util.*;;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
@@ -45,26 +46,24 @@ public class TheGraveyard implements ModInitializer {
         }
 
         /* GENERAL INIT REGISTRY */
+        TGRecipeTypes.init();
+        TGScreens.init();
         TGParticles.init();
         TGAdvancements.init();
         TGSounds.init();
-        TGBlocks.registerBlocks();
         TGItems.registerItems();
+        TGBlocks.registerBlocks();
         TGEntities.registerEntities();
         TGProcessors.registerProcessors();
 
         /* FEATURE INIT REGISTRY */
         TGStructureType.init();
-        TGStructureSets.init();
-        TGConfiguredStructureFeatures.init();
+        //TGStructureSets.init();
+        TGConfiguredStructureFeatures.registerStructureFeatures();
 
         /* BIOME MODIFICATION */
         MobSpawningRules.addSpawnEntries();
 
-        /* COMPAT */
-        if (FabricLoader.getInstance().isModLoaded("graveyard_biomes")) {
-            BiomeModification.init();
-        }
 
         /* ENTITY ATTRIBUTES */
         FabricDefaultAttributeRegistry.register(TGEntities.LICH, LichEntity.createLichAttributes());
@@ -79,6 +78,7 @@ public class TheGraveyard implements ModInitializer {
         FabricDefaultAttributeRegistry.register(TGEntities.WRAITH, WraithEntity.createWraithAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.NIGHTMARE, NightmareEntity.createNightmareAttributes());
         FabricDefaultAttributeRegistry.register(TGEntities.GHOULING, GhoulingEntity.createGhoulingAttributes());
+        FabricDefaultAttributeRegistry.register(TGEntities.NAMELESS_HANGED, NamelessHangedEntity.createNamelessHangedAttributes());
 
         /* COMMANDS */
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(CommandManager.literal("horde").requires((source) -> {

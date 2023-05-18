@@ -9,23 +9,25 @@ public class MobConfigEntry {
     public final int maxGroup;
     public final boolean canBurnInSunlight;
     public final boolean canBeWithered;
-    public final List<String> whitelist;
-    public final List<String> blacklist;
-    public final List<String> modWhitelist;
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered, List<String> whitelist, List<String> blacklist, List<String> modWhitelist) {
+    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
         this.maxGroup = maxGroup;
         this.canBurnInSunlight = canBurnInSunlight;
         this.canBeWithered = canBeWithered;
-        this.whitelist = whitelist;
-        this.blacklist = blacklist;
-        this.modWhitelist = modWhitelist;
     }
 
-    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered, List<String> whitelist, List<String> blacklist, List<String> modWhitelist) {
-        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, whitelist, blacklist, modWhitelist);
+    private MobConfigEntry(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
+        this(enabled, 0, 0, 0, canBurnInSunlight, canBeWithered);
+    }
+
+
+    public static MobConfigEntry of(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
+        return new MobConfigEntry(enabled, canBurnInSunlight, canBeWithered);
+    }
+    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
+        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered);
     }
 }

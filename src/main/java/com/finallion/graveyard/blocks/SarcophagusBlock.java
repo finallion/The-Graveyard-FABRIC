@@ -142,10 +142,10 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
             spawnGhost(state, world, original, player, random);
 
-
             return ActionResult.CONSUME;
         }
     }
+
     public static void spawnGhost(BlockState state, World world, BlockPos pos, PlayerEntity player, Random random) {
         if (!state.get(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 62) {
             BlockPos entityPos = pos;

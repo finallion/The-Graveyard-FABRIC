@@ -13,6 +13,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
@@ -51,6 +52,24 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
 
     public void setCanBurnInSunlight(boolean bool) {
         dataTracker.set(CAN_BURN_IN_SUNLIGHT, bool);
+    }
+
+
+    // on game stop
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        nbt.putBoolean("canBurn", canBurnInSunlight());
+        super.writeCustomDataToNbt(nbt);
+    }
+
+    // on game load
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        if (!nbt.contains("canBurn")) {
+            this.setCanBurnInSunlight(canBurnInSunlight());
+        } else {
+            this.setCanBurnInSunlight(nbt.getBoolean("canBurn"));
+        }
+
+        super.readCustomDataFromNbt(nbt);
     }
 
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {

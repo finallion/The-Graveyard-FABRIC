@@ -1,0 +1,20 @@
+{
+  "type": "graveyard:haunted_house",
+  "start_pool": "graveyard:haunted_house/start_pool",
+  "size": 2,
+  "max_distance_from_center": 80,
+  "biomes": "#graveyard:has_structure/haunted_house",
+  "step": "surface_structures",
+  "use_expansion_hack": true,
+  "terrain_check_size": 30,
+  "max_height_difference": 3,
+  "terrain_adaptation": "beard_box",
+  "structure_name": "haunted_house",
+  "start_height": {
+    "absolute": 0
+  },
+  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "spawn_overrides": {
+
+  }
+}

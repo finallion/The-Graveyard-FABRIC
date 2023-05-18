@@ -14,7 +14,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
     GraveyardFogParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
         super(clientWorld, d, e, f, g, h, i);
         this.collidesWithWorld = false;
-        this.scale *= 6.0D;
+        this.scale *= 4.0D;
         this.velocityY *= 0.002999999552965164D;
         this.startY = y;
     }
@@ -33,7 +33,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
 
         this.move(0, this.velocityY, 0);
 
-        if (this.y >= startY + 1.0D + random.nextDouble()) {
+        if (this.y >= startY + 0.75D + random.nextDouble()) {
             this.markDead();
         }
 

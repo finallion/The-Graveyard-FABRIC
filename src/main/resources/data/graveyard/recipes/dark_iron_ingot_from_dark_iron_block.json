@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "graveyard:dark_iron_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "graveyard:dark_iron_ingot"
+  }
+}
