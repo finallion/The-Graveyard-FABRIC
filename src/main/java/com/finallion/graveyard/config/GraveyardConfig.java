@@ -32,7 +32,6 @@ public class GraveyardConfig implements Config {
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
-    public final Map<String, Integer> intEntries = new HashMap<>();
 
     @Override
     public String getName() {
