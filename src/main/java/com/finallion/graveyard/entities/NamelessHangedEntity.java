@@ -194,12 +194,12 @@ public class NamelessHangedEntity extends MerchantEntity implements IAnimatable 
 
     @Override
     public SoundEvent getYesSound() {
-        return null;
+        return SoundEvents.PARTICLE_SOUL_ESCAPE;
     }
 
     @Override
     protected SoundEvent getTradingSound(boolean sold) {
-        return null;
+        return SoundEvents.PARTICLE_SOUL_ESCAPE;
     }
 
 
