@@ -86,7 +86,13 @@ public class NamelessHangedEntity extends MerchantEntity implements IAnimatable 
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        return source == DamageSource.OUT_OF_WORLD;
+        if (!this.world.isClient && !this.isRemoved()) {
+            if (DamageSource.OUT_OF_WORLD.equals(source) || DamageSource.CRAMMING.equals(source)) {
+                this.remove(RemovalReason.DISCARDED);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isImmuneToExplosion() {
