@@ -86,7 +86,13 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        return source.isIn(DamageTypeTags.BYPASSES_RESISTANCE);
+        if (!this.world.isClient && !this.isRemoved()) {
+            if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+                this.remove(RemovalReason.DISCARDED);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isImmuneToExplosion() {
