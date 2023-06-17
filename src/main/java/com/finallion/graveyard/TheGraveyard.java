@@ -40,6 +40,7 @@ public class TheGraveyard implements ModInitializer {
     // TODO: templates
     // TODO: trades
     // TODO: sherds
+    // TODO: double deco
 
     @Override
     public void onInitialize() {
