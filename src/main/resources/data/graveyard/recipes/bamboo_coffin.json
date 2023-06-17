@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#Z#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bamboo_planks"
+    },
+    "Z": {
+      "item": "graveyard:dark_iron_ingot"
+    }
+  },
+  "result": {
+    "item": "graveyard:bamboo_coffin"
+  }
+}

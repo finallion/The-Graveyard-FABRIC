@@ -96,7 +96,7 @@ public class AltarBlock extends Block {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
 
             if (!state.get(AltarBlock.BLOODY) && (result != null || !TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
-                player.world.playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH, SoundCategory.BLOCKS, 5.0F, 1.0F);
+                player.getWorld().playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH, SoundCategory.BLOCKS, 5.0F, 1.0F);
                 world.setBlockState(pos, state.with(AltarBlock.BLOODY, true));
                 Direction direction;
 
@@ -153,7 +153,7 @@ public class AltarBlock extends Block {
                     return ActionResult.CONSUME;
                 }
 
-                return ActionResult.success(player.world.isClient);
+                return ActionResult.success(player.getWorld().isClient);
             }
         }
 

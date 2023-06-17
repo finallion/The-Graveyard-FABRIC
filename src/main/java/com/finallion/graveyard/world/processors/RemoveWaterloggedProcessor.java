@@ -26,11 +26,11 @@ public class RemoveWaterloggedProcessor extends StructureProcessor {
     @Nullable
     @Override
     public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlacementData data) {
-        ChunkPos currentChunkPos = new ChunkPos(structureBlockInfo2.pos);
-        if (structureBlockInfo2.state.getBlock() instanceof Waterloggable) {
+        ChunkPos currentChunkPos = new ChunkPos(structureBlockInfo2.pos());
+        if (structureBlockInfo2.state().getBlock() instanceof Waterloggable) {
             Chunk currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);
-            if (world.getFluidState(structureBlockInfo2.pos).isIn(FluidTags.WATER)) {
-                currentChunk.setBlockState(structureBlockInfo2.pos, structureBlockInfo2.state, false);
+            if (world.getFluidState(structureBlockInfo2.pos()).isIn(FluidTags.WATER)) {
+                currentChunk.setBlockState(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
             }
 
         }

@@ -161,10 +161,10 @@ public class NamelessHangedTradeOffers {
 
         @Nullable
         public TradeOffer create(Entity entity, Random random) {
-            if (!(entity.world instanceof ServerWorld)) {
+            if (!(entity.getEntityWorld() instanceof ServerWorld)) {
                 return null;
             } else {
-                ServerWorld serverWorld = (ServerWorld)entity.world;
+                ServerWorld serverWorld = (ServerWorld)entity.getEntityWorld();
                 BlockPos blockPos = serverWorld.locateStructure(this.structure, entity.getBlockPos(), 100, true);
                 if (blockPos != null) {
                     ItemStack itemStack = FilledMapItem.createMap(serverWorld, blockPos.getX(), blockPos.getZ(), (byte)2, true, true);

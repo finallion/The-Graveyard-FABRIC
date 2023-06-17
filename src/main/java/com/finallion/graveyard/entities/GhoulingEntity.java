@@ -166,20 +166,20 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public void tickMovement() {
         if (getSpawnTimer() == 50) {
-            world.playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN, SoundCategory.HOSTILE, 5.0F, 1.5F);
-            world.playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR, SoundCategory.HOSTILE, 1.0F, -2.0F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN, SoundCategory.HOSTILE, 5.0F, 1.5F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR, SoundCategory.HOSTILE, 1.0F, -2.0F);
         }
 
         if (isInSittingPose() && random.nextInt(5) == 0) {
-            MathUtil.createParticleCircle(world, this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, world.random, 0.5F);
+            MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getEntityWorld().random, 0.5F);
         }
 
         if (getTeleportTimer() > 0) {
             if (getTeleportTimer() == 10) {
                 playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 2.0F, -10.0F);
             }
-            MathUtil.createParticleCircle(world, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, world.random, 0.5F);
-            MathUtil.createParticleCircle(world, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, world.random, 0.5F);
+            MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getEntityWorld().random, 0.5F);
+            MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, getEntityWorld().random, 0.5F);
         }
 
         super.tickMovement();
@@ -187,8 +187,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     @Override
     public void tick() {
-        if (getSpawnTimer() > 0 && world != null) {
-            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+        if (getSpawnTimer() > 0 && getEntityWorld() != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), getEntityWorld().getBlockState(this.getBlockPos().down()));
             Random random = this.getRandom();
             BlockState blockState = this.getSteppingBlockState();
             if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
@@ -196,7 +196,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
                     double e = this.getY();
                     double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
-                    this.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                    this.getEntityWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
@@ -307,7 +307,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
 
-        if (!this.world.isClient() && isOwner(player)) {
+        if (!this.getEntityWorld().isClient() && isOwner(player)) {
             if (this.hasCoffin() && player.isSneaking()) {
                 player.openHandledScreen(this);
                 return ActionResult.SUCCESS;
@@ -360,8 +360,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected void updatePostDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == 44 && !this.world.isClient()) {
-            this.world.sendEntityStatus(this, (byte) 60);
+        if (this.deathTime == 44 && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
 
@@ -423,7 +423,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected void dropInventory() {
         super.dropInventory();
         if (this.hasCoffin()) {
-            if (!this.world.isClient) {
+            if (!this.getEntityWorld().isClient) {
                 this.dropItem(this.getOffHandStack().getItem());
                 if (this.inventory != null) {
                     for (int i = 0; i < this.inventory.size(); i++) {
@@ -440,7 +440,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     @Override
     public void onDeath(DamageSource damageSource) {
-        if (!world.isClient()) {
+        if (!getEntityWorld().isClient()) {
             BoneStaffItem.ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
         }
         super.onDeath(damageSource);

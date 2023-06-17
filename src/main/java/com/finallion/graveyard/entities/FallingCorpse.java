@@ -59,7 +59,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
 
     // I don't want the red overlay on death, so bypass landing effects and kill the mob after some ticks (in mobTick())
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        this.world.playSound(null, this.getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 1.0F);
         return false;
     }
 
@@ -109,12 +109,12 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     @Override
     public void tickMovement() {
         if (this.getBlockStateAtPos().isAir()) {
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 10; i++) {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
-                BlockState state = this.world.getBlockState(pos);
-                if (!state.isAir() && state.isSolidBlock(world, pos)) {
+                BlockState state = this.getEntityWorld().getBlockState(pos);
+                if (!state.isAir() && state.isSolidBlock(getEntityWorld(), pos)) {
                     //this.world.addParticle(ParticleTypes.SCULK_CHARGE_POP, pos.getX() + random.nextDouble() + random.nextDouble() - random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble() + random.nextDouble() - random.nextDouble(), 0.0D, 0.0D, 0.0D);
-                    MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
+                    MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
                     break;
                 }
             }
@@ -141,7 +141,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
             this.discard();
         }
 
-        if (!world.getBlockState(this.getBlockPos().down()).isAir()) {
+        if (!getEntityWorld().getBlockState(this.getBlockPos().down()).isAir()) {
             setIsFalling(false);
         }
 

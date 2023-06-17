@@ -31,7 +31,7 @@ public class FollowOwnerGoal extends Goal {
 
     public FollowOwnerGoal(GraveyardMinionEntity tameable, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
         this.tameable = tameable;
-        this.world = tameable.world;
+        this.world = tameable.getEntityWorld();
         this.speed = speed;
         this.navigation = tameable.getNavigation();
         this.minDistance = minDistance;

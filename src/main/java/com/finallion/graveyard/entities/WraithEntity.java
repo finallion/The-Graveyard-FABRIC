@@ -212,7 +212,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     public void tickMovement() {
         spawnTimer--;
-        if (world.isClient() && spawnTimer >= 0 && spawned) {
+        if (getEntityWorld().isClient() && spawnTimer >= 0 && spawned) {
             addParticles();
         }
 
@@ -247,20 +247,20 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 42 && !this.world.isClient()) {
-            this.world.sendEntityStatus(this, (byte) 60);
+        if (this.deathTime == 42 && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
 
 
     private void addParticles() {
-        world.addParticle(ParticleTypes.SOUL, this.getX() + (random.nextDouble() - random.nextDouble()), this.getY(), this.getZ() + (random.nextDouble() - random.nextDouble()), 0, 0.05F, 0);
+        getEntityWorld().addParticle(ParticleTypes.SOUL, this.getX() + (random.nextDouble() - random.nextDouble()), this.getY(), this.getZ() + (random.nextDouble() - random.nextDouble()), 0, 0.05F, 0);
     }
 
     private void addDeathParticles() {
         for (int i = 0; i < 10; i++) {
-            world.addParticle(ParticleTypes.SMOKE, this.getX() + (random.nextDouble() - random.nextDouble()), this.getY() + 1.0D, this.getZ() + (random.nextDouble() - random.nextDouble()), 0, 0.05F, 0);
+            getEntityWorld().addParticle(ParticleTypes.SMOKE, this.getX() + (random.nextDouble() - random.nextDouble()), this.getY() + 1.0D, this.getZ() + (random.nextDouble() - random.nextDouble()), 0, 0.05F, 0);
         }
     }
 
@@ -444,7 +444,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             if (WraithEntity.this.random.nextInt(this.getTickCount(10)) == 0) {
                 for (int i = 1; i <= 2; ++i) {
                     BlockPos blockPos = WraithEntity.this.getBlockPos().down(i);
-                    BlockState blockState = WraithEntity.this.world.getBlockState(blockPos);
+                    BlockState blockState = WraithEntity.this.getEntityWorld().getBlockState(blockPos);
                     Block block = blockState.getBlock();
                     boolean bl = false;
                     boolean torchAndLantern = false;
@@ -459,9 +459,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                             }
                         }
                         if (bl) {
-                            //WraithEntity.this.world.syncWorldEvent(1502, blockPos, 0);
-                            WraithEntity.this.world.playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            WraithEntity.this.world.setBlockState(blockPos, (BlockState) blockState.with(Properties.LIT, false));
+                            //WraithEntity.this.getEntityWorld().syncWorldEvent(1502, blockPos, 0);
+                            WraithEntity.this.getEntityWorld().playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            WraithEntity.this.getEntityWorld().setBlockState(blockPos, (BlockState) blockState.with(Properties.LIT, false));
                             WraithEntity.this.addExtinguishCounter();
                             triggerAdvancement(WraithEntity.this, bl);
                             return;
@@ -469,21 +469,21 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                     }
                     if (random.nextInt(10) == 0) {
                         if (blockState.isOf(Blocks.TORCH)) {
-                            WraithEntity.this.world.setBlockState(blockPos, Blocks.SOUL_TORCH.getDefaultState());
+                            WraithEntity.this.getEntityWorld().setBlockState(blockPos, Blocks.SOUL_TORCH.getDefaultState());
                             torchAndLantern = true;
                         } else if (blockState.isOf(Blocks.LANTERN)) {
-                            WraithEntity.this.world.setBlockState(blockPos, Blocks.SOUL_LANTERN.getDefaultState()
+                            WraithEntity.this.getEntityWorld().setBlockState(blockPos, Blocks.SOUL_LANTERN.getDefaultState()
                                     .with(Properties.HANGING, blockState.get(Properties.HANGING))
                                     .with(Properties.WATERLOGGED, blockState.get(Properties.WATERLOGGED)));
                             torchAndLantern = true;
                         } else if (blockState.isOf(Blocks.WALL_TORCH)) {
-                            WraithEntity.this.world.setBlockState(blockPos, Blocks.SOUL_WALL_TORCH.getDefaultState()
+                            WraithEntity.this.getEntityWorld().setBlockState(blockPos, Blocks.SOUL_WALL_TORCH.getDefaultState()
                                     .with(HorizontalFacingBlock.FACING, blockState.get(HorizontalFacingBlock.FACING)));
                             torchAndLantern = true;
                         }
 
                         if (torchAndLantern) {
-                            WraithEntity.this.world.playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            WraithEntity.this.getEntityWorld().playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             WraithEntity.this.addExtinguishCounter();
                             return;
                         }
@@ -496,7 +496,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private static void triggerAdvancement(WraithEntity wraith, boolean bool) {
         if (bool) {
-            PlayerEntity player = wraith.world.getClosestPlayer(wraith, 10.0D);
+            PlayerEntity player = wraith.getEntityWorld().getClosestPlayer(wraith, 10.0D);
             if (player instanceof ServerPlayerEntity) {
                 TGAdvancements.DIM_LIGHT.trigger((ServerPlayerEntity) player);
             }

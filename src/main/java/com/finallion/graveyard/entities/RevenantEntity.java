@@ -165,8 +165,8 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 30 && !this.world.isClient()) {
-            this.world.sendEntityStatus(this, (byte)60);
+        if (this.deathTime == 30 && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -178,7 +178,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             setReanimateAnimTimer(0);
         }
 
-        if (amount >= getHealth() && canReanimate() && random.nextInt(3) == 0) {
+        if (amount >= getHealth() && canReanimate() && random.nextInt(4) == 0) {
             setCanReanimate(false);
             setReanimateAnimTimer(REANIMATE_DURATION);
             return false;

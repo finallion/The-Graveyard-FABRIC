@@ -35,8 +35,8 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     }
 
     public void tickMovement() {
-        if (!this.world.isClient()) {
-            this.tickAngerLogic((ServerWorld)this.world, true);
+        if (!this.getEntityWorld().isClient()) {
+            this.tickAngerLogic((ServerWorld)this.getEntityWorld(), true);
         }
         super.tickMovement();
     }
@@ -56,7 +56,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.readAngerFromNbt(this.world, nbt);
+        this.readAngerFromNbt(this.getEntityWorld(), nbt);
     }
 
     @Override

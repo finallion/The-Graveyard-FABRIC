@@ -5,12 +5,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -32,30 +34,27 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
         --this.titleY;
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
-        this.drawMouseoverTooltip(matrices, mouseX, mouseY);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+        this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
-    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        this.renderBackground(matrices);
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+        this.renderBackground(context);
         int i = this.x;
         int j = this.y;
-        this.drawTexture(matrices, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        context.drawTexture(TEXTURE, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
         int k = (int)(41.0F * this.scrollAmount);
-        this.drawTexture(matrices, i + 119, j + 15 + k, 176 + (this.shouldScroll() ? 0 : 12), 0, 12, 15);
+        context.drawTexture(TEXTURE, i + 119, j + 15 + k, 176 + (this.shouldScroll() ? 0 : 12), 0, 12, 15);
         int l = this.x + 52;
         int m = this.y + 14;
         int n = this.scrollOffset + 12;
-        this.renderRecipeBackground(matrices, mouseX, mouseY, l, m, n);
-        this.renderRecipeIcons(matrices, l, m, n);
+        this.renderRecipeBackground(context, mouseX, mouseY, l, m, n);
+        this.renderRecipeIcons(context, l, m, n);
     }
 
-    protected void drawMouseoverTooltip(MatrixStack matrices, int x, int y) {
-        super.drawMouseoverTooltip(matrices, x, y);
+    protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
+        super.drawMouseoverTooltip(context, x, y);
         if (this.canCraft) {
             int i = this.x + 52;
             int j = this.y + 14;
@@ -67,14 +66,13 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
                 int n = i + m % 4 * 16;
                 int o = j + m / 4 * 18 + 2;
                 if (x >= n && x < n + 16 && y >= o && y < o + 18) {
-                    this.renderTooltip(matrices, ((OssuaryRecipe)list.get(l)).getOutput(), x, y);
+                    context.drawItemTooltip(this.textRenderer, ((OssuaryRecipe)list.get(l)).getOutput(this.client.world.getRegistryManager()), x, y);
                 }
             }
         }
 
     }
-
-    private void renderRecipeBackground(MatrixStack matrices, int mouseX, int mouseY, int x, int y, int scrollOffset) {
+    private void renderRecipeBackground(DrawContext context, int mouseX, int mouseY, int x, int y, int scrollOffset) {
         for(int i = this.scrollOffset; i < scrollOffset && i < ((OssuaryScreenHandler)this.handler).getAvailableRecipeCount(); ++i) {
             int j = i - this.scrollOffset;
             int k = x + j % 4 * 16;
@@ -87,12 +85,12 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
                 n += 36;
             }
 
-            this.drawTexture(matrices, k, m - 1, 0, n, 16, 18);
+            context.drawTexture(TEXTURE, k, m - 1, 0, n, 16, 18);
         }
 
     }
 
-    private void renderRecipeIcons(MatrixStack matrices, int x, int y, int scrollOffset) {
+    private void renderRecipeIcons(DrawContext context, int x, int y, int scrollOffset) {
         List<OssuaryRecipe> list = ((OssuaryScreenHandler)this.handler).getAvailableRecipes();
 
         for(int i = this.scrollOffset; i < scrollOffset && i < ((OssuaryScreenHandler)this.handler).getAvailableRecipeCount(); ++i) {
@@ -100,7 +98,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
             int k = x + j % 4 * 16;
             int l = j / 4;
             int m = y + l * 18 + 2;
-            this.client.getItemRenderer().renderInGuiWithOverrides(matrices, ((OssuaryRecipe)list.get(i)).getOutput(this.client.world.getRegistryManager()), k, m);
+            context.drawItem(((OssuaryRecipe)list.get(i)).getOutput(this.client.world.getRegistryManager()), k, m);
         }
 
     }

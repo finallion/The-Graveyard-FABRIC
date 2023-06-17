@@ -21,7 +21,7 @@ public class BoneDisplayBlock extends Block implements Waterloggable {
     public static final BooleanProperty WATERLOGGED;
 
     public BoneDisplayBlock() {
-        super(FabricBlockSettings.of(Material.SOIL).nonOpaque().noCollision().sounds(BlockSoundGroup.BONE));
+        super(FabricBlockSettings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
 

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "graveyard:item/cherry_coffin"
+    },
+    "facing=south": {
+      "y": 180,
+      "model": "graveyard:item/cherry_coffin"
+    },
+    "facing=east": {
+      "y": 90,
+      "model": "graveyard:item/cherry_coffin"
+    },
+    "facing=west": {
+      "y": 270,
+      "model": "graveyard:item/cherry_coffin"
+    }
+  }
+}

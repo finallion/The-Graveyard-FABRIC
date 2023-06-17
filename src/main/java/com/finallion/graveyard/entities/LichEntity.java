@@ -296,11 +296,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (!world.isClient && getBossMusic() != null) {
+        if (!getEntityWorld().isClient && getBossMusic() != null) {
             if (canPlayMusic() && deathTime == 0) {
-                this.world.sendEntityStatus(this, MUSIC_PLAY_ID);
+                this.getEntityWorld().sendEntityStatus(this, MUSIC_PLAY_ID);
             } else {
-                this.world.sendEntityStatus(this, MUSIC_STOP_ID);
+                this.getEntityWorld().sendEntityStatus(this, MUSIC_STOP_ID);
             }
         }
         super.tick();
@@ -386,7 +386,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         if (!canHuntStart() && random.nextInt(5) == 0) {
-            world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE, 4.0F, -10.0F);
+            getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE, 4.0F, -10.0F);
         }
 
         if (getMusicDelay() < 78) {
@@ -459,7 +459,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                         for (int i = 0; i <= 5; i++) {
                             BlockPos targetPos = BlockPos.ofFloored(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
 
-                            if (world.getBlockState(targetPos).isAir() && world.getBlockState(targetPos.up()).isAir() && world.getBlockState(targetPos.down()).isSolidBlock(world, targetPos.down())) {
+                            if (getEntityWorld().getBlockState(targetPos).isAir() && getEntityWorld().getBlockState(targetPos.up()).isAir() && getEntityWorld().getBlockState(targetPos.down()).isSolidBlock(getEntityWorld(), targetPos.down())) {
                                 player.teleport(targetPos.getX(), targetPos.getY(), targetPos.getZ());
                                 break;
                             }
@@ -666,8 +666,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             playDeathSound();
         }
 
-        if (this.deathTime == 160 && !this.world.isClient()) {
-            this.world.sendEntityStatus(this, (byte) 60);
+        if (this.deathTime == 160 && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -777,7 +777,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     public List<PlayerEntity> getPlayersInRange(double range) {
         Box box = (new Box(this.getBlockPos())).expand(range);
-        return world.getNonSpectatingEntities(PlayerEntity.class, box);
+        return getEntityWorld().getNonSpectatingEntities(PlayerEntity.class, box);
     }
 
     public boolean canMeeleAttack() {
@@ -818,21 +818,21 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             for (int i = 10; i > 0; i--) {
                 BlockPos pos = new BlockPos(this.getBlockX() + MathHelper.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + MathHelper.nextInt(random, -15, 15));
                 int amount = random.nextInt(TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxGroupSizeSummonedMobs) + 1;
-                if (world.getBlockState(pos).isAir() && world.getBlockState(pos.up()).isAir() && world.getBlockState(pos.up().up()).isAir() && !world.getBlockState(pos.down()).isAir()) {
+                if (getEntityWorld().getBlockState(pos).isAir() && getEntityWorld().getBlockState(pos.up()).isAir() && getEntityWorld().getBlockState(pos.up().up()).isAir() && !getEntityWorld().getBlockState(pos.down()).isAir()) {
                     if (!hard) {
                         for (int ii = 0; ii < amount; ++ii) {
-                            RevenantEntity revenant = TGEntities.REVENANT.create(world);
+                            RevenantEntity revenant = TGEntities.REVENANT.create(getEntityWorld());
                             revenant.setPosition(pos.getX(), pos.getY(), pos.getZ());
                             revenant.setCanBurnInSunlight(false);
-                            world.spawnEntity(revenant);
+                            getEntityWorld().spawnEntity(revenant);
                         }
                     } else {
                         for (int ii = 0; ii < amount - 1; ++ii) {
-                            GhoulEntity ghoul = TGEntities.GHOUL.create(world);
+                            GhoulEntity ghoul = TGEntities.GHOUL.create(getEntityWorld());
                             ghoul.setVariant((byte) 9);
                             ghoul.setPosition(pos.getX(), pos.getY(), pos.getZ());
                             ghoul.setCanBurnInSunlight(false);
-                            world.spawnEntity(ghoul);
+                            getEntityWorld().spawnEntity(ghoul);
                         }
                     }
                     return true;
@@ -994,56 +994,56 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     /* SOUNDS */
     ///////////////////////
     private void playSpawnSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_SPAWN, SoundCategory.HOSTILE, 15.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SPAWN, SoundCategory.HOSTILE, 15.0F, 1.0F);
     }
 
     public void playAttackSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_MELEE, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_MELEE, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playHealSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_TELEPORT, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_TELEPORT, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playCorpseSpellSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CORPSE_SPELL, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CORPSE_SPELL, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseTwoSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_02, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_02, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeAttackSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03_ATTACK, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03_ATTACK, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playDeathSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_DEATH, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_DEATH, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playScareSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playHuntSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_HUNT, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_HUNT, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playShootSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_SKULL, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_SKULL, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playLevitationSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_LEVITATION, SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_LEVITATION, SoundCategory.HOSTILE, 10.0F, 1.0F);
     }
 
     @Override
     public void playAmbientSound() {
-        this.world.playSound(null, this.getBlockPos(), TGSounds.LICH_IDLE, SoundCategory.HOSTILE, 15.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_IDLE, SoundCategory.HOSTILE, 15.0F, 1.0F);
     }
 
     @Override
@@ -1203,7 +1203,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             for (int i = -SQUARE_SIZE; i < SQUARE_SIZE; i++) {
                 for (int ii = -SQUARE_SIZE; ii < SQUARE_SIZE; ii++) {
                     BlockPos position = this.lich.homePos.down().down().add(i, 0, ii);
-                    if (world.getBlockState(position).isSolidBlock(world, position)) {
+                    if (getEntityWorld().getBlockState(position).isSolidBlock(getEntityWorld(), position)) {
                         positions.add(pos.add(i, FALL_HEIGHT, ii));
                     }
                 }
@@ -1246,7 +1246,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 return;
             }
 
-            ServerWorld serverWorld = (ServerWorld) LichEntity.this.world;
+            ServerWorld serverWorld = (ServerWorld) LichEntity.this.getEntityWorld();
             FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.create(serverWorld);
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
@@ -1295,7 +1295,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             LivingEntity livingEntity = this.mob.getTarget();
             if (livingEntity != null) {
                 if (livingEntity.squaredDistanceTo(this.mob) < 8000.0D && livingEntity.squaredDistanceTo(this.mob) > 16.0D) {
-                    World world = this.mob.world;
+                    World world = this.mob.getEntityWorld();
                     ++this.cooldown;
 
                     if (this.cooldown == 10) {
@@ -1310,13 +1310,13 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                         double e = livingEntity.getX() - this.mob.getX();
                         double f = livingEntity.getBodyY(0.5D) - this.mob.getBodyY(0.5D) - 1.25D;
                         double g = livingEntity.getZ() - this.mob.getZ();
-                        SkullEntity skull = new SkullEntity(this.mob.world, this.mob, e, f, g);
+                        SkullEntity skull = new SkullEntity(this.mob.getWorld(), this.mob, e, f, g);
                         skull.setPosition(this.mob.getX() - vec3d3.x * 0.5, this.mob.getBodyY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
                         world.spawnEntity(skull);
 
                         int amount = random.nextInt(TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").maxAmountSkullsInShootSkullSpell) + 2;
                         for (int i = 0; i < amount; ++i) {
-                            SkullEntity devSkull = new SkullEntity(this.mob.world, this.mob, this.mob.getRandom().nextTriangular(e, 2.297D * h), f, this.mob.getRandom().nextTriangular(g, 2.297D * h));
+                            SkullEntity devSkull = new SkullEntity(this.mob.getWorld(), this.mob, this.mob.getRandom().nextTriangular(e, 2.297D * h), f, this.mob.getRandom().nextTriangular(g, 2.297D * h));
                             devSkull.setPosition(this.mob.getX() - vec3d3.x * 0.5, this.mob.getBodyY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
                             world.spawnEntity(devSkull);
                         }
@@ -1344,9 +1344,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         public boolean canStart() {
             return this.mob.getHealth() <= 300.0F
-                    && random.nextInt(30) == 0
+                    && random.nextInt(40) == 0
                     && this.mob.getHealTimer() <= -TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").cooldownTeleportPlayerAndHeal
-                    && this.mob.getLevitationDurationTimer() <= -60
                     && canSpellCast();
         }
 
@@ -1515,11 +1514,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
             do {
                 BlockPos blockPos2 = blockPos.down();
-                BlockState blockState = this.mob.world.getBlockState(blockPos2);
-                if (blockState.isSideSolidFullSquare(this.mob.world, blockPos2, Direction.UP)) {
-                    if (!this.mob.world.isAir(blockPos)) {
-                        BlockState blockState2 = this.mob.world.getBlockState(blockPos);
-                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.world, blockPos);
+                BlockState blockState = this.mob.getEntityWorld().getBlockState(blockPos2);
+                if (blockState.isSideSolidFullSquare(this.mob.getEntityWorld(), blockPos2, Direction.UP)) {
+                    if (!this.mob.getEntityWorld().isAir(blockPos)) {
+                        BlockState blockState2 = this.mob.getEntityWorld().getBlockState(blockPos);
+                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.getEntityWorld(), blockPos);
                         if (!voxelShape.isEmpty()) {
                             d = voxelShape.getMax(Direction.Axis.Y);
                         }
@@ -1533,7 +1532,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             } while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
 
             if (bl) {
-                this.mob.world.spawnEntity(new EvokerFangsEntity(this.mob.world, x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
+                this.mob.getEntityWorld().spawnEntity(new EvokerFangsEntity(this.mob.getEntityWorld(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
             }
         }
     }

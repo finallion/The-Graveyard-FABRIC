@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 public class TGCommands {
 
     public static int executeSpawn(ServerCommandSource source) {
-        source.sendFeedback(Text.literal("Spawned a graveyard horde."), false);
+        source.sendFeedback(() -> Text.literal("Spawned a graveyard horde."), false);
         int o = TheGraveyard.config.getHorde(new Identifier(TheGraveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
         BlockPos.Mutable mutable = new BlockPos.Mutable(source.getPosition().getX(), source.getPosition().getY(), source.getPosition().getZ());
         ServerWorld world = source.getWorld();

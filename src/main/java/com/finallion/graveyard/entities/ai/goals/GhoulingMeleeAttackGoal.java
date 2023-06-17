@@ -46,7 +46,7 @@ public class GhoulingMeleeAttackGoal extends Goal {
     }
 
     public boolean canStart() {
-        long l = this.mob.world.getTime();
+        long l = this.mob.getEntityWorld().getTime();
         // for some reason if you time your attack good enough, and position yourself close enough to the mob, the mob will deadlock and do nothing while you're standing still
         // this is because l - this.lastUpdateTime < 20L is true and will only reset if you move away and close in again
         if (l - this.lastUpdateTime < 20L) {

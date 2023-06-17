@@ -2,22 +2,24 @@ package com.finallion.graveyard.client.gui;
 
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
-import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.AbstractSignBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.WoodType;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.client.util.SelectionManager;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.screen.ScreenTexts;
@@ -27,6 +29,7 @@ import org.joml.Matrix4f;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Environment(EnvType.CLIENT)
 public class GravestoneScreen extends Screen {
@@ -36,40 +39,46 @@ public class GravestoneScreen extends Screen {
     private SelectionManager selectionManager;
     private WoodType signType;
     private SignBlockEntityRenderer.SignModel model;
-    private final String[] text = (String[]) Util.make(new String[4], (strings) -> {
-        Arrays.fill(strings, "");
-    });
+    private String[] text;
+    private SignText signText;
 
-    public GravestoneScreen(GravestoneBlockEntity sign, boolean filtered) {
-        super(Text.translatable("gravestone.edit"));
-        this.sign = sign;
+    public GravestoneScreen(GravestoneBlockEntity blockEntity, boolean filtered) {
+        this(blockEntity, filtered, Text.translatable("gravestone.edit"));
     }
+
+    public GravestoneScreen(GravestoneBlockEntity blockEntity, boolean filtered, Text title) {
+        super(title);
+        this.sign = blockEntity;
+        this.signText = blockEntity.getText();
+        this.signType = AbstractSignBlock.getWoodType(blockEntity.getCachedState().getBlock());
+        this.text = IntStream.range(0, 4).mapToObj((line) -> this.signText.getMessage(line, filtered)).map(Text::getString).toArray(String[]::new);
+    }
+
 
     protected void init() {
         this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
             this.finishEditing();
-        }).dimensions(this.width / 2 - 100, this.height / 4 + 120, 200, 20).build());
-        this.sign.setEditable(false);
-        this.selectionManager = new SelectionManager(() -> {
-            return this.text[this.currentRow];
-        }, (text) -> {
-            this.text[this.currentRow] = text;
-            this.sign.setTextOnRow(this.currentRow, Text.literal(text));
-        }, SelectionManager.makeClipboardGetter(this.client), SelectionManager.makeClipboardSetter(this.client), (text) -> {
-            return this.client.textRenderer.getWidth(text) <= 90;
-        });
+        }).dimensions(this.width / 2 - 100, this.height / 4 + 144, 200, 20).build());
+        this.selectionManager = new SelectionManager(
+                () -> this.text[this.currentRow], this::setCurrentRowMessage, SelectionManager.makeClipboardGetter(this.client), SelectionManager.makeClipboardSetter(this.client),
+                (string) -> this.client.textRenderer.getWidth(string) <= this.sign.getMaxTextWidth());
 
         this.signType = WoodType.OAK;
         this.model = GravestoneBlockEntityRenderer.createSignModel(this.client.getEntityModelLoader(), this.signType);
     }
 
+    private void setCurrentRowMessage(String message) {
+        this.text[this.currentRow] = message;
+        this.signText = this.signText.withMessage(this.currentRow, Text.literal(message));
+        this.sign.setText(this.signText);
+    }
+
     public void removed() {
         ClientPlayNetworkHandler clientPlayNetworkHandler = this.client.getNetworkHandler();
         if (clientPlayNetworkHandler != null) {
-            clientPlayNetworkHandler.sendPacket(new UpdateSignC2SPacket(this.sign.getPos(), this.text[0], this.text[1], this.text[2], this.text[3]));
+            clientPlayNetworkHandler.sendPacket(new UpdateSignC2SPacket(this.sign.getPos(), true, this.text[0], this.text[1], this.text[2], this.text[3]));
         }
 
-        this.sign.setEditable(true);
     }
 
     public void tick() {
@@ -82,7 +91,7 @@ public class GravestoneScreen extends Screen {
 
     private void finishEditing() {
         this.sign.markDirty();
-        this.client.setScreen((Screen)null);
+        this.client.setScreen(null);
     }
 
     public boolean charTyped(char chr, int modifiers) {
@@ -100,7 +109,7 @@ public class GravestoneScreen extends Screen {
             this.selectionManager.putCursorAtEnd();
             return true;
         } else if (keyCode != 264 && keyCode != 257 && keyCode != 335) {
-            return this.selectionManager.handleSpecialKey(keyCode) ? true : super.keyPressed(keyCode, scanCode, modifiers);
+            return this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
         } else {
             this.currentRow = this.currentRow + 1 & 3;
             this.selectionManager.putCursorAtEnd();
@@ -108,10 +117,12 @@ public class GravestoneScreen extends Screen {
         }
     }
 
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        MatrixStack matrices = context.getMatrices();
+
         DiffuseLighting.disableGuiDepthLighting();
-        this.renderBackground(matrices);
-        drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 40, 16777215);
+        this.renderBackground(context);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 40, 16777215);
         matrices.push();
         matrices.translate((double) (this.width / 2), 0.0D, 50.0D);
 
@@ -138,7 +149,7 @@ public class GravestoneScreen extends Screen {
 
         matrices.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
         matrices.scale(0.010416667F, -0.010416667F, 0.010416667F);
-        int i = this.sign.getTextColor().getSignColor();
+        int i = this.signText.getColor().getSignColor();
         int j = this.selectionManager.getSelectionStart();
         int k = this.selectionManager.getSelectionEnd();
         int l = this.text.length * 5;
@@ -159,7 +170,7 @@ public class GravestoneScreen extends Screen {
                 float f = (float)(-this.client.textRenderer.getWidth(string) / 2);
                 this.client.textRenderer.draw(string, f, (float)(n * 10 - l), i, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880, false);
                 if (n == this.currentRow && j >= 0 && bl) {
-                    o = this.client.textRenderer.getWidth(string.substring(0, Math.max(Math.min(j, string.length()), 0)));
+                    o = this.client.textRenderer.getWidth(string.substring(0, Math.min(j, string.length())));
                     p = o - this.client.textRenderer.getWidth(string) / 2;
                     if (j >= string.length()) {
                         this.client.textRenderer.draw("_", (float)p, (float)m, i, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880, false);
@@ -173,10 +184,10 @@ public class GravestoneScreen extends Screen {
         for(n = 0; n < this.text.length; ++n) {
             string = this.text[n];
             if (string != null && n == this.currentRow && j >= 0) {
-                int q = this.client.textRenderer.getWidth(string.substring(0, Math.max(Math.min(j, string.length()), 0)));
+                int q = this.client.textRenderer.getWidth(string.substring(0, Math.min(j, string.length())));
                 o = q - this.client.textRenderer.getWidth(string) / 2;
                 if (bl && j < string.length()) {
-                    fill(matrices, o, m - 1, o + 1, m + 10, -16777216 | i);
+                    context.fill(o, m - 1, o + 1, m + 10, -16777216 | i);
                 }
 
                 if (k != j) {
@@ -188,7 +199,7 @@ public class GravestoneScreen extends Screen {
                     int v = Math.max(s, t);
                     RenderSystem.enableColorLogicOp();
                     RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-                    fill(matrices, u, m, v, m + 10, -16776961);
+                    context.fill(u, m, v, m + 10, -16776961);
                     RenderSystem.disableColorLogicOp();
                 }
             }
@@ -196,6 +207,6 @@ public class GravestoneScreen extends Screen {
 
         matrices.pop();
         DiffuseLighting.enableGuiDepthLighting();
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
     }
 }

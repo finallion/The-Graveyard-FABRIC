@@ -29,7 +29,7 @@ public class VaseBlock extends Block implements Waterloggable {
 
 
     public VaseBlock() {
-        super(FabricBlockSettings.of(Material.GLASS).breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS).drops(new Identifier(TheGraveyard.MOD_ID, "chests/vase_loot")));
+        super(FabricBlockSettings.create().breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS).drops(new Identifier(TheGraveyard.MOD_ID, "chests/vase_loot")));
         this.setDefaultState(this.stateManager.getDefaultState().with(VASES, 1).with(WATERLOGGED, false));
     }
 

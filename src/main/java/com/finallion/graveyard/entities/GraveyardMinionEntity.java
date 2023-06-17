@@ -109,7 +109,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     public LivingEntity getOwner() {
         try {
             UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.world.getPlayerByUuid(uUID);
+            return uUID == null ? null : this.getEntityWorld().getPlayerByUuid(uUID);
         } catch (IllegalArgumentException var2) {
             return null;
         }

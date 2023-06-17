@@ -320,7 +320,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
             for(int i = 0; i < 3; ++i) {
                 BlockPos blockPos2 = blockPos.add(ReaperEntity.this.random.nextInt(15) - 7, ReaperEntity.this.random.nextInt(11) - 5, ReaperEntity.this.random.nextInt(15) - 7);
-                if (ReaperEntity.this.world.isAir(blockPos2)) {
+                if (ReaperEntity.this.getEntityWorld().isAir(blockPos2)) {
                     ReaperEntity.this.moveControl.moveTo((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 0.25D);
                     if (ReaperEntity.this.getTarget() == null) {
                         ReaperEntity.this.getLookControl().lookAt((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 180.0F, 20.0F);

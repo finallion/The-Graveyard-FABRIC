@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -30,7 +29,7 @@ public class OminousBoneStaffFragment extends Block {
     public static final BooleanProperty WATERLOGGED;
 
     public OminousBoneStaffFragment() {
-        super(FabricBlockSettings.of(Material.STONE).nonOpaque().noCollision().sounds(BlockSoundGroup.BONE).luminance((light) -> 7));
+        super(FabricBlockSettings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE).luminance((light) -> 7));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
     }
 

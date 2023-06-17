@@ -86,7 +86,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (!this.world.isClient && !this.isRemoved()) {
+        if (!this.getEntityWorld().isClient && !this.isRemoved()) {
             if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
@@ -116,8 +116,8 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     public void tickMovement() {
-        if (this.world.isClient) {
-            this.world.addParticle(ParticleTypes.ASH, this.getParticleX(0.5D), this.getY() + 1.75D, this.getParticleZ(0.5D), 0, 0, 0);
+        if (this.getEntityWorld().isClient) {
+            this.getEntityWorld().addParticle(ParticleTypes.ASH, this.getParticleX(0.5D), this.getY() + 1.75D, this.getParticleZ(0.5D), 0, 0, 0);
         }
 
         super.tickMovement();
@@ -125,7 +125,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (world.isDay() && this.offers != null) {
+        if (getEntityWorld().isDay() && this.offers != null) {
             this.offers = null;
         }
 
@@ -133,22 +133,22 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        if (world.isDay() && !this.world.isClient) {
+        if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            world.playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
             //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
         }
 
-        if (this.isAlive() && !this.hasCustomer() && world.isNight()) {
+        if (this.isAlive() && !this.hasCustomer() && getEntityWorld().isNight()) {
             if (!this.getOffers().isEmpty()) {
-                if (!this.world.isClient) {
+                if (!this.getEntityWorld().isClient) {
                     this.setCustomer(player);
                     this.sendOffers(player, this.getDisplayName(), 1);
-                    world.playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
                     //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
                 }
             }
-            return ActionResult.success(this.world.isClient);
+            return ActionResult.success(this.getEntityWorld().isClient);
         } else {
             return super.interactMob(player, hand);
         }
@@ -175,7 +175,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     protected void afterUsing(TradeOffer offer) {
         if (offer.shouldRewardPlayerExperience()) {
             int i = 3 + this.random.nextInt(4);
-            this.world.spawnEntity(new ExperienceOrbEntity(this.world, this.getX(), this.getY() + 0.5D, this.getZ(), i));
+            this.getEntityWorld().spawnEntity(new ExperienceOrbEntity(this.getEntityWorld(), this.getX(), this.getY() + 0.5D, this.getZ(), i));
         }
 
     }

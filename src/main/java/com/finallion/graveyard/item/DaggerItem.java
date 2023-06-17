@@ -23,8 +23,7 @@ public class DaggerItem extends SwordItem {
         if (state.isOf(Blocks.COBWEB) || state.getBlock() instanceof GlassBlock || state.getBlock() instanceof PaneBlock || state.getBlock() instanceof StainedGlassBlock || state.getBlock() instanceof StainedGlassPaneBlock) {
             return 30.0F;
         } else {
-            Material material = state.getMaterial();
-            return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && !state.isIn(BlockTags.LEAVES) && material != Material.GOURD ? 1.0F : 1.5F;
+            return state.isIn(BlockTags.SWORD_EFFICIENT) ? 1.5F : 1.0F;
         }
     }
 

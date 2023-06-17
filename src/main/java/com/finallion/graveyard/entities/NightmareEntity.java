@@ -121,9 +121,9 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             this.setAttackAnimTimer(animTimer);
         }
 
-        if (this.world.isDay() && this.age >= this.ageWhenTargetSet + 600) {
+        if (this.getEntityWorld().isDay() && this.age >= this.ageWhenTargetSet + 600) {
             float f = this.getBrightnessAtEyes();
-            if (f > 0.5F && this.world.isSkyVisible(this.getBlockPos()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+            if (f > 0.5F && this.getEntityWorld().isSkyVisible(this.getBlockPos()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
                 this.setTarget((LivingEntity)null);
                 this.teleportRandomly();
             }
@@ -136,13 +136,13 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public void tickMovement() {
         this.jumping = false;
 
-        if (!this.world.isClient) {
+        if (!this.getEntityWorld().isClient) {
             if (this.getTarget() != null) {
                 if (this.getTarget().squaredDistanceTo(this) >= 1024.0D) {
                     stopAnger();
                 }
             }
-            this.tickAngerLogic((ServerWorld)this.world, true);
+            this.tickAngerLogic((ServerWorld)this.getEntityWorld(), true);
         }
 
         super.tickMovement();
@@ -155,7 +155,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.readAngerFromNbt(this.world, nbt);
+        this.readAngerFromNbt(this.getEntityWorld(), nbt);
     }
 
 
@@ -171,8 +171,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 28 && !this.world.isClient()) {
-            this.world.sendEntityStatus(this, (byte)60);
+        if (this.deathTime == 28 && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -308,17 +308,17 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     private boolean teleportTo(double x, double y, double z) {
         BlockPos.Mutable mutable = new BlockPos.Mutable(x, y, z);
 
-        while(mutable.getY() > this.world.getBottomY() && !this.world.getBlockState(mutable).getMaterial().blocksMovement()) {
+        while(mutable.getY() > this.getEntityWorld().getBottomY() && !this.getEntityWorld().getBlockState(mutable).blocksMovement()) {
             mutable.move(Direction.DOWN);
         }
 
-        BlockState blockState = this.world.getBlockState(mutable);
-        boolean bl = blockState.getMaterial().blocksMovement();
+        BlockState blockState = this.getEntityWorld().getBlockState(mutable);
+        boolean bl = blockState.blocksMovement();
         boolean bl2 = blockState.getFluidState().isIn(FluidTags.WATER);
         if (bl && !bl2) {
             boolean bl3 = this.teleport(x, y, z, false);
             if (bl3 && !this.isSilent()) {
-                //this.world.playSound((PlayerEntity)null, this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+                //this.getEntityWorld().playSound((PlayerEntity)null, this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
                 this.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, -10.0F);
             }
 
@@ -329,7 +329,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     protected boolean teleportRandomly() {
-        if (!this.world.isClient() && this.isAlive()) {
+        if (!this.getEntityWorld().isClient() && this.isAlive()) {
             double d = this.getX() + (this.random.nextDouble() - 0.5D) * 64.0D;
             double e = this.getY() + (double)(this.random.nextInt(64) - 32);
             double f = this.getZ() + (this.random.nextDouble() - 0.5D) * 64.0D;
@@ -451,7 +451,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         }
 
         public boolean canStart() {
-            this.targetPlayer = this.nightmare.world.getClosestPlayer(this.staringPlayerPredicate, this.nightmare);
+            this.targetPlayer = this.nightmare.getEntityWorld().getClosestPlayer(this.staringPlayerPredicate, this.nightmare);
             return this.targetPlayer != null;
         }
 

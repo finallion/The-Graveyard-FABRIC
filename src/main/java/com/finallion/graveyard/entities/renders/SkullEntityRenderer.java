@@ -35,7 +35,7 @@ public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
     public void render(SkullEntity skullEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         matrixStack.push();
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        float h = MathHelper.lerpAngleDegrees(skullEntity.prevYaw, skullEntity.getYaw(), g);
+        float h = MathHelper.lerpAngleDegrees(g, skullEntity.prevYaw, skullEntity.getYaw());
         float j = MathHelper.lerp(g, skullEntity.prevPitch, skullEntity.getPitch());
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.getLayer(this.getTexture(skullEntity)));
         this.model.setHeadRotation(0.0F, h, j);

@@ -73,14 +73,14 @@ public class TGBlocks {
     public static final Identifier STONE_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/stone.png");
     public static final Identifier STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(TheGraveyard.MOD_ID, "textures/entity/gravestone/stone_bricks.png");
 
-    public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
-    public static final Block SOUL_FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.SOUL_FIRE_FLAME);
-    public static final Block FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.FLAME);
-    public static final Block PEDESTAL = new PedestalBlock(FabricBlockSettings.of(Material.STONE).strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE));
-    public static final Block CANDLE_HOLDER = new CandleHolderBlock(FabricBlockSettings.of(Material.METAL).strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
-    public static final Block DARK_IRON_TRAPDOOR = new TGTrapDoorBlock(FabricBlockSettings.of(Material.WOOD).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
-    public static final Block DARK_IRON_DOOR = new TGDoorBlock(FabricBlockSettings.of(Material.WOOD, MapColor.IRON_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
-    public static final Block DARK_IRON_BLOCK = new Block(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
+    public static final Block DARK_IRON_BARS = new DarkIronBars(FabricBlockSettings.create().strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
+    public static final Block SOUL_FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.create().strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.SOUL_FIRE_FLAME);
+    public static final Block FIRE_BRAZIER = new BrazierBlock(FabricBlockSettings.create().strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.FLAME);
+    public static final Block PEDESTAL = new PedestalBlock(FabricBlockSettings.create().strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE));
+    public static final Block CANDLE_HOLDER = new CandleHolderBlock(FabricBlockSettings.create().strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL));
+    public static final Block DARK_IRON_TRAPDOOR = new TGTrapDoorBlock(FabricBlockSettings.create().requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
+    public static final Block DARK_IRON_DOOR = new TGDoorBlock(FabricBlockSettings.create().requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque());
+    public static final Block DARK_IRON_BLOCK = new Block(FabricBlockSettings.create().requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
     public static final Block SKULL_WITH_RIB_CAGE = new BoneDisplayBlock();
     public static final Block LEANING_SKELETON = new BoneDisplayBlock();
     public static final Block SKULL_PILE = new BoneDisplayBlock();
@@ -120,16 +120,18 @@ public class TGBlocks {
     public static final Block GREEN_URN = new UrnBlock();
     public static final Block LIME_URN = new UrnBlock();
 
-    public static final Block SARCOPHAGUS = new SarcophagusBlock(FabricBlockSettings.of(Material.STONE).nonOpaque().strength(1.5F), false, TGItems.SARCOPHAGUS_LID, TGItems.SARCOPHAGUS_BASE);
-    public static final Block OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.OAK_COFFIN_LID, TGItems.OAK_COFFIN_BASE);
-    public static final Block SPRUCE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.SPRUCE_COFFIN_LID, TGItems.SPRUCE_COFFIN_BASE);
-    public static final Block BIRCH_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.BIRCH_COFFIN_LID, TGItems.BIRCH_COFFIN_BASE);
-    public static final Block DARK_OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.DARK_OAK_COFFIN_LID, TGItems.DARK_OAK_COFFIN_BASE);
-    public static final Block JUNGLE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.JUNGLE_COFFIN_LID, TGItems.JUNGLE_COFFIN_BASE);
-    public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.ACACIA_COFFIN_LID, TGItems.ACACIA_COFFIN_BASE);
-    public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.WARPED_COFFIN_LID, TGItems.WARPED_COFFIN_BASE);
-    public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.CRIMSON_COFFIN_LID, TGItems.CRIMSON_COFFIN_BASE);
-    public static final Block MANGROVE_COFFIN = new SarcophagusBlock(FabricBlockSettings.of(Material.WOOD).nonOpaque().strength(1.0F), true, TGItems.MANGROVE_COFFIN_LID, TGItems.MANGROVE_COFFIN_BASE);
+    public static final Block SARCOPHAGUS = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.5F), false, TGItems.SARCOPHAGUS_LID, TGItems.SARCOPHAGUS_BASE);
+    public static final Block OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.OAK_COFFIN_LID, TGItems.OAK_COFFIN_BASE);
+    public static final Block SPRUCE_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.SPRUCE_COFFIN_LID, TGItems.SPRUCE_COFFIN_BASE);
+    public static final Block BIRCH_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.BIRCH_COFFIN_LID, TGItems.BIRCH_COFFIN_BASE);
+    public static final Block DARK_OAK_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.DARK_OAK_COFFIN_LID, TGItems.DARK_OAK_COFFIN_BASE);
+    public static final Block JUNGLE_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.JUNGLE_COFFIN_LID, TGItems.JUNGLE_COFFIN_BASE);
+    public static final Block ACACIA_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.ACACIA_COFFIN_LID, TGItems.ACACIA_COFFIN_BASE);
+    public static final Block WARPED_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.WARPED_COFFIN_LID, TGItems.WARPED_COFFIN_BASE);
+    public static final Block CRIMSON_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.CRIMSON_COFFIN_LID, TGItems.CRIMSON_COFFIN_BASE);
+    public static final Block MANGROVE_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.MANGROVE_COFFIN_LID, TGItems.MANGROVE_COFFIN_BASE);
+    public static final Block BAMBOO_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.BAMBOO_COFFIN_LID, TGItems.BAMBOO_COFFIN_BASE);
+    public static final Block CHERRY_COFFIN = new SarcophagusBlock(FabricBlockSettings.create().nonOpaque().strength(1.0F).burnable(), true, TGItems.CHERRY_COFFIN_LID, TGItems.CHERRY_COFFIN_BASE);
 
     public static final Block SMALL_BLACK_URN = new UrnBlock();
     public static final Block SMALL_WHITE_URN = new UrnBlock();
@@ -164,15 +166,15 @@ public class TGBlocks {
     public static final Block GILDED_BLACKSTONE_GRAVESTONE = new GravestoneBlock(GILDED_BLACKSTONE_GRAVESTONE_TEXTURE);
     public static final Block QUARTZ_BRICKS_GRAVESTONE = new GravestoneBlock(QUARTZ_BRICKS_GRAVESTONE_TEXTURE);
 
-    public static final Block ALTAR = new AltarBlock(FabricBlockSettings.of(Material.STONE).strength(-1.0F, 3600000.0F).dropsNothing());
-    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
-    public static final Block ALTAR_CORNER = new AltarCornerBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
-    public static final Block ALTAR_CENTER = new AltarCenterBlock(FabricBlockSettings.of(Material.STONE).strength(50.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR = new AltarBlock(FabricBlockSettings.create().strength(-1.0F, 3600000.0F).dropsNothing());
+    public static final Block ALTAR_SIDE = new AltarSideBlock(FabricBlockSettings.create().strength(50.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CORNER = new AltarCornerBlock(FabricBlockSettings.create().strength(50.0F, 1200.0F).dropsNothing());
+    public static final Block ALTAR_CENTER = new AltarCenterBlock(FabricBlockSettings.create().strength(50.0F, 1200.0F).dropsNothing());
     public static final Block LOWER_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block MIDDLE_BONE_STAFF = new OminousBoneStaffFragment();
     public static final Block UPPER_BONE_STAFF = new OminousBoneStaffFragment();
 
-    public static final Block OSSUARY = new OssuaryBlock(FabricBlockSettings.of(Material.STONE).requiresTool().nonOpaque().strength(3.5F));
+    public static final Block OSSUARY = new OssuaryBlock(FabricBlockSettings.create().requiresTool().nonOpaque().strength(3.5F));
 
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -290,6 +292,8 @@ public class TGBlocks {
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "bamboo_coffin"), BAMBOO_COFFIN);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "cherry_coffin"), CHERRY_COFFIN);
 
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);
@@ -311,6 +315,8 @@ public class TGBlocks {
         coffins.add(CRIMSON_COFFIN);
         coffins.add(WARPED_COFFIN);
         coffins.add(MANGROVE_COFFIN);
+        coffins.add(CHERRY_COFFIN);
+        coffins.add(BAMBOO_COFFIN);
     }
 
     public static final BlockEntityType<GravestoneBlockEntity> GRAVESTONE_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "gravestone_block_entity"), FabricBlockEntityTypeBuilder.create(GravestoneBlockEntity::new,
@@ -358,6 +364,8 @@ public class TGBlocks {
             CRIMSON_COFFIN,
             WARPED_COFFIN,
             SPRUCE_COFFIN,
+            CHERRY_COFFIN,
+            BAMBOO_COFFIN,
             MANGROVE_COFFIN).build(null));
 
     public static final BlockEntityType<BrazierBlockEntity> BRAZIER_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(TheGraveyard.MOD_ID, "brazier_block_entity"), FabricBlockEntityTypeBuilder.create(BrazierBlockEntity::new,

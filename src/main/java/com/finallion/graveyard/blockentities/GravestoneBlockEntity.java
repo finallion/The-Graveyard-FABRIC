@@ -2,148 +2,186 @@ package com.finallion.graveyard.blockentities;
 
 import com.finallion.graveyard.init.TGBlocks;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.DataResult;
+import net.minecraft.block.AbstractSignBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.*;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class GravestoneBlockEntity extends BlockEntity {
-    private static final String[] TEXT_KEYS = new String[]{"Text1", "Text2", "Text3", "Text4"};
-    private static final String[] FILTERED_TEXT_KEYS = new String[]{"FilteredText1", "FilteredText2", "FilteredText3", "FilteredText4"};
-    private final Text[] texts;
-    private final Text[] filteredTexts;
-    private boolean editable;
+    private static final Logger LOGGER = LogUtils.getLogger();
     @Nullable
     private UUID editor;
-    @Nullable
-    private OrderedText[] textsBeingEdited;
-    private boolean filterText;
-    private DyeColor textColor;
-    private boolean glowingText;
+    private SignText text;
+    private boolean waxed;
 
 	public GravestoneBlockEntity(BlockPos pos, BlockState state) {
-        super(TGBlocks.GRAVESTONE_BLOCK_ENTITY, pos, state);
-        this.editable = true;
-        this.textsBeingEdited = null;
-        this.glowingText = false;
-        this.texts = new Text[]{Text.empty(), Text.empty(), Text.empty(), Text.empty()};
-        this.filteredTexts = new Text[]{Text.empty(), Text.empty(), Text.empty(), Text.empty()};
-        this.editable = true;
-        this.textColor = DyeColor.BLACK;
+        this(TGBlocks.GRAVESTONE_BLOCK_ENTITY, pos, state);
     }
 
+    public GravestoneBlockEntity(BlockEntityType blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
+        this.text = this.createText();
+    }
+
+    protected SignText createText() {
+        return new SignText();
+    }
+
+    public SignText getText() {
+        return this.text;
+    }
+
+    public int getTextLineHeight() {
+        return 10;
+    }
+
+    public int getMaxTextWidth() {
+        return 90;
+    }
 
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-
-        for(int i = 0; i < 4; ++i) {
-            Text text = this.texts[i];
-            String string = Text.Serializer.toJson(text);
-            nbt.putString(TEXT_KEYS[i], string);
-            Text text2 = this.filteredTexts[i];
-            if (!text2.equals(text)) {
-                nbt.putString(FILTERED_TEXT_KEYS[i], Text.Serializer.toJson(text2));
-            }
-        }
-
-        nbt.putString("Color", this.textColor.getName());
-        nbt.putBoolean("GlowingText", this.glowingText);
+        DataResult<NbtElement> var10000 = SignText.CODEC.encodeStart(NbtOps.INSTANCE, this.text);
+        Logger var10001 = LOGGER;
+        Objects.requireNonNull(var10001);
+        var10000.resultOrPartial(var10001::error).ifPresent((frontText) -> {
+            nbt.put("front_text", frontText);
+        });
+        nbt.putBoolean("is_waxed", this.waxed);
     }
-
 
     public void readNbt(NbtCompound nbt) {
-        this.editable = false;
         super.readNbt(nbt);
-        this.textColor = DyeColor.byName(nbt.getString("Color"), DyeColor.BLACK);
-
-        for(int i = 0; i < 4; ++i) {
-            String string = nbt.getString(TEXT_KEYS[i]);
-            Text text = this.parseTextFromJson(string);
-            this.texts[i] = text;
-            String string2 = FILTERED_TEXT_KEYS[i];
-            if (nbt.contains(string2, 8)) {
-                this.filteredTexts[i] = this.parseTextFromJson(nbt.getString(string2));
-            } else {
-                this.filteredTexts[i] = text;
-            }
+        DataResult<SignText> var10000;
+        Logger var10001;
+        if (nbt.contains("front_text")) {
+            var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
+            var10001 = LOGGER;
+            Objects.requireNonNull(var10001);
+            var10000.resultOrPartial(var10001::error).ifPresent((signText) -> {
+                this.text = this.parseLines(signText);
+            });
         }
 
-        this.textsBeingEdited = null;
-        this.glowingText = nbt.getBoolean("GlowingText");
+        this.waxed = nbt.getBoolean("is_waxed");
     }
 
+    private SignText parseLines(SignText signText) {
+        for(int i = 0; i < 4; ++i) {
+            Text text = this.parseLine(signText.getMessage(i, false));
+            Text text2 = this.parseLine(signText.getMessage(i, true));
+            signText = signText.withMessage(i, text, text2);
+        }
 
-    private Text parseTextFromJson(String json) {
-        Text text = this.unparsedTextFromJson(json);
-        if (this.world instanceof ServerWorld) {
+        return signText;
+    }
+
+    private Text parseLine(Text text) {
+        World var3 = this.world;
+        if (var3 instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld)var3;
+
             try {
-                return Texts.parse(this.getCommandSource((ServerPlayerEntity)null), text, (Entity)null, 0);
-            } catch (CommandSyntaxException var4) {
+                return Texts.parse(createCommandSource((PlayerEntity)null, serverWorld, this.pos), text, (Entity)null, 0);
+            } catch (CommandSyntaxException ignored) {
             }
         }
 
         return text;
     }
 
-    private Text unparsedTextFromJson(String json) {
-        try {
-            Text text = Text.Serializer.fromJson(json);
-            if (text != null) {
-                return text;
-            }
-        } catch (Exception var3) {
+    public void tryChangeText(PlayerEntity player, List<FilteredMessage> messages) {
+        if (!this.isWaxed() && player.getUuid().equals(this.getEditor()) && this.world != null) {
+            this.changeText((text) -> {
+                return this.getTextWithMessages(player, messages, text);
+            });
+            this.setEditor((UUID)null);
+            this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
+        } else {
+            LOGGER.warn("Player {} just tried to change non-editable sign", player.getName().getString());
         }
-
-        return ScreenTexts.EMPTY;
     }
 
-    public Text getTextOnRow(int row, boolean filtered) {
-        return this.getTexts(filtered)[row];
+    public boolean changeText(UnaryOperator<SignText> textChanger) {
+        SignText signText = this.getText();
+        return this.setText((SignText)textChanger.apply(signText));
     }
 
-    public void setTextOnRow(int row, Text text) {
-        this.setTextOnRow(row, text, text);
-    }
-
-    public void setTextOnRow(int row, Text text, Text filteredText) {
-        this.texts[row] = text;
-        this.filteredTexts[row] = filteredText;
-        this.textsBeingEdited = null;
-    }
-
-    public OrderedText[] updateSign(boolean filterText, Function<Text, OrderedText> textOrderingFunction) {
-        if (this.textsBeingEdited == null || this.filterText != filterText) {
-            this.filterText = filterText;
-            this.textsBeingEdited = new OrderedText[4];
-
-            for(int i = 0; i < 4; ++i) {
-                this.textsBeingEdited[i] = (OrderedText)textOrderingFunction.apply(this.getTextOnRow(i, filterText));
+    private SignText getTextWithMessages(PlayerEntity player, List<FilteredMessage> messages, SignText text) {
+        for(int i = 0; i < messages.size(); ++i) {
+            FilteredMessage filteredMessage = (FilteredMessage)messages.get(i);
+            Style style = text.getMessage(i, player.shouldFilterText()).getStyle();
+            if (player.shouldFilterText()) {
+                text = text.withMessage(i, Text.literal(filteredMessage.getString()).setStyle(style));
+            } else {
+                text = text.withMessage(i, Text.literal(filteredMessage.raw()).setStyle(style), Text.literal(filteredMessage.getString()).setStyle(style));
             }
         }
 
-        return this.textsBeingEdited;
+        return text;
     }
 
-    private Text[] getTexts(boolean filtered) {
-        return filtered ? this.filteredTexts : this.texts;
+    public boolean setText(SignText text) {
+        return this.setFrontText(text);
+    }
+
+    private boolean setFrontText(SignText frontText) {
+        if (frontText != this.text) {
+            this.text = frontText;
+            this.updateListeners();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean runCommandClickEvent(PlayerEntity player, World world, BlockPos pos) {
+        boolean bl = false;
+        Text[] var6 = this.getText().getMessages(player.shouldFilterText());
+
+        for (Text text : var6) {
+            Style style = text.getStyle();
+            ClickEvent clickEvent = style.getClickEvent();
+            if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
+                player.getServer().getCommandManager().executeWithPrefix(createCommandSource(player, world, pos), clickEvent.getValue());
+                bl = true;
+            }
+        }
+
+        return bl;
+    }
+
+    private static ServerCommandSource createCommandSource(@Nullable PlayerEntity player, World world, BlockPos pos) {
+        String string = player == null ? "Sign" : player.getName().getString();
+        Text text = player == null ? Text.literal("Sign") : player.getDisplayName();
+        return new ServerCommandSource(CommandOutput.DUMMY, Vec3d.ofCenter(pos), Vec2f.ZERO, (ServerWorld)world, 2, string, (Text)text, world.getServer(), player);
     }
 
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
@@ -158,19 +196,7 @@ public class GravestoneBlockEntity extends BlockEntity {
         return true;
     }
 
-    public boolean isEditable() {
-        return this.editable;
-    }
-
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-        if (!editable) {
-            this.editor = null;
-        }
-
-    }
-
-    public void setEditor(UUID editor) {
+    public void setEditor(@Nullable UUID editor) {
         this.editor = editor;
     }
 
@@ -179,76 +205,40 @@ public class GravestoneBlockEntity extends BlockEntity {
         return this.editor;
     }
 
-    public boolean shouldRunCommand(PlayerEntity player) {
-        Text[] var2 = this.getTexts(player.shouldFilterText());
-        int var3 = var2.length;
-
-        for(int var4 = 0; var4 < var3; ++var4) {
-            Text text = var2[var4];
-            Style style = text.getStyle();
-            ClickEvent clickEvent = style.getClickEvent();
-            if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean onActivate(ServerPlayerEntity player) {
-        Text[] var2 = this.getTexts(player.shouldFilterText());
-        int var3 = var2.length;
-
-        for(int var4 = 0; var4 < var3; ++var4) {
-            Text text = var2[var4];
-            Style style = text.getStyle();
-            ClickEvent clickEvent = style.getClickEvent();
-            if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                player.getServer().getCommandManager().executeWithPrefix(this.getCommandSource(player), clickEvent.getValue());
-            }
-        }
-
-        return true;
-    }
-
-    public ServerCommandSource getCommandSource(@Nullable ServerPlayerEntity player) {
-        String string = player == null ? "Sign" : player.getName().getString();
-        Text text = player == null ? Text.literal("Sign") : player.getDisplayName();
-        return new ServerCommandSource(CommandOutput.DUMMY, Vec3d.ofCenter(this.pos), Vec2f.ZERO, (ServerWorld)this.world, 2, string, (Text)text, this.world.getServer(), player);
-    }
-
-    public DyeColor getTextColor() {
-        return this.textColor;
-    }
-
-    public boolean setTextColor(DyeColor value) {
-        if (value != this.getTextColor()) {
-            this.textColor = value;
-            this.updateListeners();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isGlowingText() {
-        return this.glowingText;
-    }
-
-    public boolean setGlowingText(boolean glowingText) {
-        if (this.glowingText != glowingText) {
-            this.glowingText = glowingText;
-            this.updateListeners();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     private void updateListeners() {
         this.markDirty();
         this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
     }
 
+    public boolean isWaxed() {
+        return this.waxed;
+    }
 
+    public boolean setWaxed(boolean waxed) {
+        if (this.waxed != waxed) {
+            this.waxed = waxed;
+            this.updateListeners();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isPlayerTooFarToEdit(UUID uuid) {
+        PlayerEntity playerEntity = this.world.getPlayerByUuid(uuid);
+        return playerEntity == null || playerEntity.squaredDistanceTo((double)this.getPos().getX(), (double)this.getPos().getY(), (double)this.getPos().getZ()) > 64.0D;
+    }
+
+    public static void tick(World world, BlockPos pos, BlockState state, GravestoneBlockEntity blockEntity) {
+        UUID uUID = blockEntity.getEditor();
+        if (uUID != null) {
+            blockEntity.tryClearInvalidEditor(blockEntity, world, uUID);
+        }
+    }
+
+    private void tryClearInvalidEditor(GravestoneBlockEntity blockEntity, World world, UUID uuid) {
+        if (blockEntity.isPlayerTooFarToEdit(uuid)) {
+            blockEntity.setEditor((UUID)null);
+        }
+    }
 }

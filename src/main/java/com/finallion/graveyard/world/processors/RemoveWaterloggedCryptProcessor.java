@@ -35,10 +35,10 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
 
     @Override
     public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pos2, StructureTemplate.StructureBlockInfo infoIn1, StructureTemplate.StructureBlockInfo infoIn2, StructurePlacementData settings) {
-        if (infoIn2.state.contains(Properties.WATERLOGGED) && !infoIn2.state.get(Properties.WATERLOGGED)) {
-            ChunkPos currentChunkPos = new ChunkPos(infoIn2.pos);
+        if (infoIn2.state().contains(Properties.WATERLOGGED) && !infoIn2.state().get(Properties.WATERLOGGED)) {
+            ChunkPos currentChunkPos = new ChunkPos(infoIn2.pos());
             Chunk currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);
-            int sectionYIndex = currentChunk.getSectionIndex(infoIn2.pos.getY());
+            int sectionYIndex = currentChunk.getSectionIndex(infoIn2.pos().getY());
 
             if (sectionYIndex < 0) {
                 return infoIn2;
@@ -46,13 +46,13 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
 
             ChunkSection currChunkSection = currentChunk.getSection(sectionYIndex);
 
-            if (getFluidState(world, infoIn2.pos).isIn(FluidTags.WATER)) {
-                setBlockState(currChunkSection, infoIn2.pos, infoIn2.state);
+            if (getFluidState(world, infoIn2.pos()).isIn(FluidTags.WATER)) {
+                setBlockState(currChunkSection, infoIn2.pos(), infoIn2.state());
             }
 
             BlockPos.Mutable mutable = new BlockPos.Mutable();
             for (Direction direction : Direction.values()) {
-                mutable.set(infoIn2.pos).move(direction);
+                mutable.set(infoIn2.pos()).move(direction);
                 if (currentChunkPos.x != mutable.getX() >> 4 || currentChunkPos.z != mutable.getZ() >> 4) {
                     currentChunkPos = new ChunkPos(mutable);
                     currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);

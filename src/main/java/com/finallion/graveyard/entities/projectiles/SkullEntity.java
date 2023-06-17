@@ -64,7 +64,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
-        if (!this.world.isClient) {
+        if (!this.getEntityWorld().isClient) {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean bl;
@@ -90,10 +90,10 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
-        if (!this.world.isClient) {
+        if (!this.getEntityWorld().isClient) {
             Explosion.DestructionType destructionType = Explosion.DestructionType.KEEP;
             World.ExplosionSourceType sourceType = World.ExplosionSourceType.NONE;
-            this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, sourceType);
+            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, sourceType);
             this.discard();
         }
 

@@ -56,7 +56,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         };
         this.output = new CraftingResultInventory();
         this.context = context;
-        this.world = playerInventory.player.world;
+        this.world = playerInventory.player.getWorld();
         this.inputSlot = this.addSlot(new Slot(this.input, 0, 20, 33));
         this.outputSlot = this.addSlot(new Slot(this.output, 1, 143, 33) {
             public boolean canInsert(ItemStack stack) {
@@ -64,8 +64,8 @@ public class OssuaryScreenHandler extends ScreenHandler {
             }
 
             public void onTakeItem(PlayerEntity player, ItemStack stack) {
-                stack.onCraft(player.world, player, stack.getCount());
-                OssuaryScreenHandler.this.output.unlockLastRecipe(player);
+                stack.onCraft(player.getWorld(), player, stack.getCount());
+                OssuaryScreenHandler.this.output.unlockLastRecipe(player, this.getInputStacks());
                 ItemStack itemStack = OssuaryScreenHandler.this.inputSlot.takeStack(1);
                 if (!itemStack.isEmpty()) {
                     OssuaryScreenHandler.this.populateResult();
@@ -80,6 +80,10 @@ public class OssuaryScreenHandler extends ScreenHandler {
 
                 });
                 super.onTakeItem(player, stack);
+            }
+
+            private List<ItemStack> getInputStacks() {
+                return List.of(OssuaryScreenHandler.this.inputSlot.getStack());
             }
         });
 
@@ -186,7 +190,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
             if (slot == 1) {
-                item.onCraft(itemStack2, player.world, player);
+                item.onCraft(itemStack2, player.getWorld(), player);
                 if (!this.insertItem(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }

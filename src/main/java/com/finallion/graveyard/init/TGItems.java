@@ -33,6 +33,11 @@ public class TGItems {
     public static final Item CRIMSON_COFFIN_BASE = new Item(new FabricItemSettings());
     public static final Item MANGROVE_COFFIN_LID = new Item(new FabricItemSettings());
     public static final Item MANGROVE_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item BAMBOO_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item BAMBOO_COFFIN_BASE = new Item(new FabricItemSettings());
+    public static final Item CHERRY_COFFIN_LID = new Item(new FabricItemSettings());
+    public static final Item CHERRY_COFFIN_BASE = new Item(new FabricItemSettings());
+
     public static final Item VIAL_OF_BLOOD = new VialOfBlood();
 
     public static final Item CORRUPTION = new Item(new FabricItemSettings());
@@ -129,6 +134,8 @@ public class TGItems {
     public static final Item WARPED_COFFIN = new SarcophagusItem(new FabricItemSettings(), TGBlocks.WARPED_COFFIN);
     public static final Item CRIMSON_COFFIN = new SarcophagusItem(new FabricItemSettings(), TGBlocks.CRIMSON_COFFIN);
     public static final Item MANGROVE_COFFIN = new SarcophagusItem(new FabricItemSettings(), TGBlocks.MANGROVE_COFFIN);
+    public static final Item BAMBOO_COFFIN = new SarcophagusItem(new FabricItemSettings(), TGBlocks.BAMBOO_COFFIN);
+    public static final Item CHERRY_COFFIN = new SarcophagusItem(new FabricItemSettings(), TGBlocks.CHERRY_COFFIN);
 
     public static final Item SKELETON_CREEPER_SPAWN_EGG = new SpawnEggItem(TGEntities.SKELETON_CREEPER, 7960171, 15263976, new FabricItemSettings());
     public static final Item ACOLYTE_SPAWN_EGG = new SpawnEggItem(TGEntities.ACOLYTE, 2688830, 5898240, new FabricItemSettings());
@@ -269,6 +276,8 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "warped_coffin"), WARPED_COFFIN);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin"), CRIMSON_COFFIN);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin"), MANGROVE_COFFIN);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "bamboo_coffin"), BAMBOO_COFFIN);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "cherry_coffin"), CHERRY_COFFIN);
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "skeleton_creeper_spawn_egg"), SKELETON_CREEPER_SPAWN_EGG);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "acolyte_spawn_egg"), ACOLYTE_SPAWN_EGG);
@@ -310,6 +319,10 @@ public class TGItems {
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "crimson_coffin_base"), CRIMSON_COFFIN_BASE);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin_lid"), MANGROVE_COFFIN_LID);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "mangrove_coffin_base"), MANGROVE_COFFIN_BASE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "bamboo_coffin_lid"), BAMBOO_COFFIN_LID);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "bamboo_coffin_base"), BAMBOO_COFFIN_BASE);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "cherry_coffin_lid"), CHERRY_COFFIN_LID);
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "cherry_coffin_base"), CHERRY_COFFIN_BASE);
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar"), ALTAR);
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "altar_side"), ALTAR_SIDE);

@@ -219,8 +219,8 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (getSpawnTimer() > 0 && world != null) {
-            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), world.getBlockState(this.getBlockPos().down()));
+        if (getSpawnTimer() > 0 && getEntityWorld() != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), getEntityWorld().getBlockState(this.getBlockPos().down()));
             Random random = this.getRandom();
             BlockState blockState = this.getSteppingBlockState();
             if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
@@ -228,7 +228,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
                     double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
                     double e = this.getY();
                     double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
-                    this.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                    this.getEntityWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
@@ -249,7 +249,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     private void aggroMobs() {
         if (getTarget() != null) {
-            List<HordeGraveyardEntity> monster = world.getEntitiesByClass(HordeGraveyardEntity.class, new Box(getBlockPos()).expand(45.0D), this::canSee);
+            List<HordeGraveyardEntity> monster = getEntityWorld().getEntitiesByClass(HordeGraveyardEntity.class, new Box(getBlockPos()).expand(45.0D), this::canSee);
             for (HordeGraveyardEntity entity : monster) {
                 entity.setTarget(getTarget());
             }

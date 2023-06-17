@@ -56,7 +56,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
 
     protected void mobTick() {
         if (!this.isAiDisabled() && NavigationConditions.hasMobNavigation(this)) {
-            boolean bl = ((ServerWorld)this.world).hasRaidAt(this.getBlockPos());
+            boolean bl = ((ServerWorld)this.getEntityWorld()).hasRaidAt(this.getBlockPos());
             ((MobNavigation)this.getNavigation()).setCanPathThroughDoors(bl);
         }
 

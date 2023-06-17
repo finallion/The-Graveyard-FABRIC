@@ -1,6 +1,5 @@
 package com.finallion.graveyard.blockentities.renders;
 
-import com.finallion.graveyard.TheGraveyard;
 import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
 import com.finallion.graveyard.blocks.GravestoneBlock;
 import com.finallion.graveyard.init.TGBlocks;
@@ -8,10 +7,8 @@ import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -21,10 +18,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -36,7 +30,6 @@ import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<GravestoneBlockEntity> {
@@ -44,8 +37,6 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     private final TextRenderer textRenderer;
     private static final HashMap<Block, RenderLayer> LAYERS = Maps.newHashMap();
     private static RenderLayer defaultLayer;
-
-    private static ItemStack stack = new ItemStack(TGBlocks.GRAVESTONE.asItem(), 1);
 
     public GravestoneBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.textRenderer = ctx.getTextRenderer();
@@ -61,29 +52,27 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.translate(0.5D, 0.25D, 0.5D);
 
         float rotation = -blockState.get(GravestoneBlock.FACING).asRotation();
-        //float h = -((float)((Integer)blockState.getStructure(SignBlock.ROTATION) * 360) / 16.0F);
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
         matrixStack.push();
-        // size
+
+        // size of block
         matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
         matrixStack.pop();
         matrixStack.translate(0.0D, 0.3333333432674408D, 0.23);
         matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
 
-
         int m = getColor(signBlockEntity);
 
-        OrderedText[] orderedTexts = signBlockEntity.updateSign(MinecraftClient.getInstance().shouldFilterText(), (text) -> {
-            List<OrderedText> list = this.textRenderer.wrapLines(text, 90);
+        OrderedText[] orderedTexts = signBlockEntity.getText().getOrderedMessages(MinecraftClient.getInstance().shouldFilterText(), (text) -> {
+            List<OrderedText> list = this.textRenderer.wrapLines(text, signBlockEntity.getMaxTextWidth());
             return list.isEmpty() ? OrderedText.EMPTY : (OrderedText)list.get(0);
         });
-
 
         int q;
         boolean bl2;
         int r;
-        if (signBlockEntity.isGlowingText()) {
-            q = signBlockEntity.getTextColor().getSignColor();
+        if (signBlockEntity.getText().isGlowing()) {
+            q = signBlockEntity.getText().getColor().getSignColor();
             bl2 = shouldRender(signBlockEntity, q);
             r = 15728880;
         } else {
@@ -91,7 +80,6 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
             bl2 = false;
             r = i;
         }
-
 
         for(int s = 0; s < 4; ++s) {
             OrderedText orderedText = orderedTexts[s];
@@ -104,10 +92,8 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
 
         }
 
-
         matrixStack.pop();
         renderGrave(blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
-
     }
 
     public void renderGrave(BlockState state, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, World world) {
@@ -116,12 +102,9 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.scale(2.28F, 2.15F, 2.28F);
         float rotation = state.get(GravestoneBlock.FACING).asRotation();
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
-        //MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.GROUND, i, j, matrixStack, vertexConsumerProvider, 2);
         MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(state.getBlock().asItem(), 1), ModelTransformationMode.GROUND, i, j, matrixStack, vertexConsumerProvider, world, 2);
         matrixStack.pop();
     }
-
-
 
     private static boolean shouldRender(GravestoneBlockEntity sign, int signColor) {
         if (signColor == DyeColor.BLACK.getSignColor()) {
@@ -139,14 +122,14 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     }
 
     static int getColor(GravestoneBlockEntity sign) {
-        int i = sign.getTextColor().getSignColor();
-        if (i == DyeColor.BLACK.getSignColor() && sign.isGlowingText()) {
+        int i = sign.getText().getColor().getSignColor();
+        if (i == DyeColor.BLACK.getSignColor() && sign.getText().isGlowing()) {
             return -988212;
         } else {
             double d = 0.4D;
-            int j = (int)((double) ColorHelper.Argb.getRed(i) * 0.4D);
-            int k = (int)((double) ColorHelper.Argb.getGreen(i) * 0.4D);
-            int l = (int)((double) ColorHelper.Argb.getBlue(i) * 0.4D);
+            int j = (int)((double) ColorHelper.Argb.getRed(i) * d);
+            int k = (int)((double) ColorHelper.Argb.getGreen(i) * d);
+            int l = (int)((double) ColorHelper.Argb.getBlue(i) * d);
             return ColorHelper.Argb.getArgb(0, j, k, l);
         }
     }
@@ -154,7 +137,6 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     public static SignBlockEntityRenderer.SignModel createSignModel(EntityModelLoader entityModelLoader, WoodType type) {
         return new SignBlockEntityRenderer.SignModel(entityModelLoader.getModelPart(EntityModelLayers.createSign(type)));
     }
-
 
     static {
         defaultLayer = RenderLayer.getEntitySolid(new Identifier("textures/entity/signs/oak.png"));
@@ -186,8 +168,6 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         LAYERS.put(TGBlocks.QUARTZ_BRICKS_GRAVESTONE, layer13);
 
     }
-
-
 
     public static VertexConsumer getConsumer(VertexConsumerProvider provider, Block block) {
         return provider.getBuffer(LAYERS.getOrDefault(block, defaultLayer));

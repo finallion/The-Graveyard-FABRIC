@@ -36,7 +36,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     private static final VoxelShape LARGE_URN = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     private static final VoxelShape SMALL_URN = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 10.0D, 13.0D);
     public UrnBlock() {
-        super(FabricBlockSettings.of(Material.GLASS).nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(0.3F));
+        super(FabricBlockSettings.create().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(0.3F));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(OPEN, false));
     }
 
