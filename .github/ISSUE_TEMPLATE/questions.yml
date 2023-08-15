@@ -1,4 +1,4 @@
-name: 1.19 Question
+name: Question
 description: Ask a question
 body:
   - type: markdown
