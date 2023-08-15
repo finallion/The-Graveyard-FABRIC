@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Feature requests for Minecraft 1.19. Older versions are not supported.
+        Feature requests for the current Minecraft version. Older versions are not supported.
         If any section does not apply, replace its contents with "N/A".
         
         Please search for existing feature requests before you make your own request.
