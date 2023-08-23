@@ -1,0 +1,6 @@
+{
+  "parent": "graveyard:block/multi_cross_4",
+  "textures": {
+    "cross": "graveyard:block/scarlet_heart"
+  }
+}

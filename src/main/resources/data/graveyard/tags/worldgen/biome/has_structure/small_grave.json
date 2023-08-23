@@ -1,10 +1,8 @@
 {
   "replace": false,
   "values": [
-    "minecraft:forest",
-    "#c:plains",
-    "#c:forest",
-    {"id": "terralith:blooming_plateau", "required": false},
-    {"id": "terralith:blooming_valley", "required": false}
+    {"id": "minecraft:forest", "required": false},
+    {"id": "#c:plains", "required": false},
+    {"id": "#forge:is_plains", "required": false}
   ]
 }

@@ -335,6 +335,12 @@ public class TGItems {
 
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "ossuary"), OSSUARY);
 
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "soil"), new BlockItem(TGBlocks.SOIL, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "turf"), new BlockItem(TGBlocks.TURF, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "gloom_stone"), new BlockItem(TGBlocks.GLOOM_STONE, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "scarlet_heart"), new BlockItem(TGBlocks.SCARLET_HEART, new FabricItemSettings()));
+        Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "great_scarlet_heart"), new BlockItem(TGBlocks.GREAT_SCARLET_HEART, new FabricItemSettings()));
+
 
         /*
         Registry.register(Registries.ITEM, new Identifier(TheGraveyard.MOD_ID, "rotten_spruce_planks"), new BlockItem(TGBlocks.ROTTEN_SPRUCE_PLANKS, new FabricItemSettings().group(TheGraveyard.GROUP)));

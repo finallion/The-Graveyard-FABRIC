@@ -1,12 +1,10 @@
 {
   "replace": false,
   "values": [
-    "minecraft:dark_forest",
-    "#c:swamp",
-    "minecraft:old_growth_pine_taiga",
-    "minecraft:old_growth_spruce_taiga",
-    {"id": "terralith:moonlight_valley", "required": false},
-    {"id": "terralith:cloud_forest", "required": false},
-    {"id": "graveyard_biomes:haunted_lakes", "required": false}
+    {"id": "minecraft:dark_forest", "required": false},
+    {"id": "#c:swamp", "required": false},
+    {"id": "#forge:is_swamp", "required": false},
+    {"id": "minecraft:old_growth_pine_taiga", "required": false},
+    {"id": "minecraft:old_growth_spruce_taiga", "required": false}
   ]
 }

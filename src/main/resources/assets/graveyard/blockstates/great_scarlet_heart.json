@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "graveyard:block/great_scarlet_heart_bottom"
+    },
+    "half=upper": {
+      "model": "graveyard:block/great_scarlet_heart_top"
+    }
+  }
+}

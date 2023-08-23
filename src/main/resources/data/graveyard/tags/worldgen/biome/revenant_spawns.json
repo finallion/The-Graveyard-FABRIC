@@ -1,10 +1,8 @@
 {
   "replace": false,
   "values": [
-    "#c:climate_cold",
-    "#c:snowy",
-    "#c:dead",
-    "#c:icy",
-    "minecraft:snowy_taiga"
+    {"id": "minecraft:snowy_plains", "required": false},
+    {"id": "minecraft:ice_spikes", "required": false},
+    {"id": "minecraft:snowy_taiga", "required": false}
   ]
 }

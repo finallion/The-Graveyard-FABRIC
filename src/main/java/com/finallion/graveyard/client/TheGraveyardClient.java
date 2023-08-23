@@ -96,7 +96,11 @@ public class TheGraveyardClient implements ClientModInitializer {
                 TGBlocks.CANDLE_HOLDER,
                 TGBlocks.DARK_IRON_DOOR,
                 TGBlocks.DARK_IRON_TRAPDOOR,
-                TGBlocks.OSSUARY
+                TGBlocks.OSSUARY,
+
+                TGBlocks.TURF,
+                TGBlocks.SCARLET_HEART,
+                TGBlocks.GREAT_SCARLET_HEART
         );
 
         BlockEntityRendererRegistry.register(TGBlocks.GRAVESTONE_BLOCK_ENTITY, GravestoneBlockEntityRenderer::new);
@@ -105,19 +109,13 @@ public class TheGraveyardClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(TGBlocks.OSSUARY_BLOCK_ENTITY, (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new OssuaryBlockEntityRenderer());
 
         // coloring of tg_grass_block depending on biome
-        ColorProviderRegistry.BLOCK.register(new BlockColorProvider() {
-            @Override
-            public int getColor(BlockState state, @Nullable BlockRenderView world, @Nullable BlockPos pos, int tintIndex) {
-                return world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.getColor(0.5D, 1.0D);
-            }
-        }, TGBlocks.TG_GRASS_BLOCK);
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.getColor(0.5D, 1.0D),
+                TGBlocks.TG_GRASS_BLOCK,
+                TGBlocks.TURF);
 
-        ColorProviderRegistry.ITEM.register(new ItemColorProvider() {
-            @Override
-            public int getColor(ItemStack stack, int tintIndex) {
-                return GrassColors.getColor(0.5D, 1.0D);
-            }
-        }, TGBlocks.TG_GRASS_BLOCK);
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> GrassColors.getColor(0.5D, 1.0D),
+                TGBlocks.TG_GRASS_BLOCK,
+                TGBlocks.TURF);
 
 
         // entities

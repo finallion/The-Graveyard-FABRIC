@@ -1,0 +1,68 @@
+{
+  "variants": {
+    "flower_amount=1,facing=north": {
+      "model": "graveyard:block/scarlet_heart_1",
+      "y": 0
+    },
+    "flower_amount=2,facing=north": {
+      "model": "graveyard:block/scarlet_heart_2",
+      "y": 0
+    },
+    "flower_amount=3,facing=north": {
+      "model": "graveyard:block/scarlet_heart_3",
+      "y": 0
+    },
+    "flower_amount=4,facing=north": {
+      "model": "graveyard:block/scarlet_heart_4",
+      "y": 0
+    },
+    "flower_amount=1,facing=east": {
+      "model": "graveyard:block/scarlet_heart_1",
+      "y": 90
+    },
+    "flower_amount=2,facing=east": {
+      "model": "graveyard:block/scarlet_heart_2",
+      "y": 90
+    },
+    "flower_amount=3,facing=east": {
+      "model": "graveyard:block/scarlet_heart_3",
+      "y": 90
+    },
+    "flower_amount=4,facing=east": {
+      "model": "graveyard:block/scarlet_heart_4",
+      "y": 90
+    },
+    "flower_amount=1,facing=south": {
+      "model": "graveyard:block/scarlet_heart_1",
+      "y": 180
+    },
+    "flower_amount=2,facing=south": {
+      "model": "graveyard:block/scarlet_heart_2",
+      "y": 180
+    },
+    "flower_amount=3,facing=south": {
+      "model": "graveyard:block/scarlet_heart_3",
+      "y": 180
+    },
+    "flower_amount=4,facing=south": {
+      "model": "graveyard:block/scarlet_heart_4",
+      "y": 180
+    },
+    "flower_amount=1,facing=west": {
+      "model": "graveyard:block/scarlet_heart_1",
+      "y": 270
+    },
+    "flower_amount=2,facing=west": {
+      "model": "graveyard:block/scarlet_heart_2",
+      "y": 270
+    },
+    "flower_amount=3,facing=west": {
+      "model": "graveyard:block/scarlet_heart_3",
+      "y": 270
+    },
+    "flower_amount=4,facing=west": {
+      "model": "graveyard:block/scarlet_heart_4",
+      "y": 270
+    }
+  }
+}

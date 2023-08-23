@@ -1,0 +1,18 @@
+{
+  "type": "graveyard:boulder",
+  "config": {
+    "first_state": {
+      "Name": "minecraft:moss_block"
+    },
+    "second_state": {
+      "Name": "minecraft:mossy_cobblestone"
+    },
+    "third_state": {
+      "Name": "minecraft:cobblestone"
+    },
+    "forth_state": {
+      "Name": "minecraft:andesite"
+    },
+    "radius": 4
+  }
+}

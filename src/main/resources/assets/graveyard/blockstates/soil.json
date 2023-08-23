@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "graveyard:block/soil"
+      },
+      {
+        "model": "graveyard:block/soil",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/soil",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/soil",
+        "y": 270
+      }
+    ]
+  }
+}

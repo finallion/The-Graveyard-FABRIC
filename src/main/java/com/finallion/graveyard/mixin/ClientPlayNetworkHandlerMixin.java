@@ -38,14 +38,12 @@ public class ClientPlayNetworkHandlerMixin {
 
         BlockEntity var4 = this.world.getBlockEntity(blockPos);
         if (var4 instanceof GravestoneBlockEntity) {
-            MinecraftClient.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
-        } else {
             BlockState blockState = this.world.getBlockState(blockPos);
             GravestoneBlockEntity signBlockEntity2 = new GravestoneBlockEntity(blockPos, blockState);
             signBlockEntity2.setWorld(this.world);
             MinecraftClient.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
+            info.cancel();
         }
-        info.cancel();
     }
 
     @Inject(method = "onBlockEntityUpdate", at = @At(value = "HEAD"), cancellable = true)

@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:desert"
+    {"id": "minecraft:desert", "required": false}
   ]
 }

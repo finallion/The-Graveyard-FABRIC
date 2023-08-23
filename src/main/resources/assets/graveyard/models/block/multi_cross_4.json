@@ -1,0 +1,97 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"particle": "#cross"
+	},
+	"elements": [
+		{
+			"name": "flower1_a",
+			"from": [7, 0, 6.8],
+			"to": [7, 17.5, 21.2],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower1_b",
+			"from": [-0.2, 0, 14],
+			"to": [14.2, 17.5, 14],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower2_a",
+			"from": [2.8, -0.5, 8],
+			"to": [17.2, 13.5, 8],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower2_b",
+			"from": [10, -0.5, 0.8],
+			"to": [10, 13.5, 15.2],
+			"shade": false,
+			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower3_a",
+			"from": [13, 0, 2.8],
+			"to": [13, 16, 17.2],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower3_b",
+			"from": [5.8, 0, 10],
+			"to": [20.2, 16, 10],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower4_a",
+			"from": [3, 0, -2.2],
+			"to": [3, 16, 12.2],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"east": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		},
+		{
+			"name": "flower4_b",
+			"from": [-4.2, 0, 5],
+			"to": [10.2, 16, 5],
+			"shade": false,
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [8, 8, 8], "rescale": true},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#cross"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#cross"}
+			}
+		}
+	]
+}

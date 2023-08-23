@@ -9,12 +9,15 @@ import com.finallion.graveyard.recipe.TGRecipeTypes;
 import com.finallion.graveyard.util.*;;
 import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -26,9 +29,13 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.gen.GenerationStep;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
+
+import java.io.IOException;
 
 
 public class TheGraveyard implements ModInitializer {
@@ -46,6 +53,17 @@ public class TheGraveyard implements ModInitializer {
     public void onInitialize() {
         GeckoLib.initialize();
 
+        try {
+            NBTParser.parseNBTFiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.foundInOverworld(),
+                GenerationStep.Feature.VEGETAL_DECORATION,
+                RegistryKey.of(RegistryKeys.PLACED_FEATURE, new Identifier(TheGraveyard.MOD_ID, "boulder")));
+
         /* HORDE TICK EVENT */
         if (config.getHorde(new Identifier(MOD_ID, "horde_spawn")).enabled) {
             ServerWorldEvents.LOAD.register(new TGSpawner.WorldLoad());
@@ -61,6 +79,8 @@ public class TheGraveyard implements ModInitializer {
         TGSounds.init();
         TGItems.registerItems();
         TGBlocks.registerBlocks();
+        TGTrunkPlacer.init();
+        TGFeatures.register();
         TGEntities.registerEntities();
         TGProcessors.registerProcessors();
 

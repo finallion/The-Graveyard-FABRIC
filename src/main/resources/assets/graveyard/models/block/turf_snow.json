@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "graveyard:block/soil",
+    "particle": "graveyard:block/soil",
+    "side": "graveyard:block/turf_snow",
+    "top": "minecraft:block/snow"
+  }
+}

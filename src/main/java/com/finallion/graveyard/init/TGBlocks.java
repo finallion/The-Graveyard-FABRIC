@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.Instrument;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -176,6 +178,20 @@ public class TGBlocks {
 
     public static final Block OSSUARY = new OssuaryBlock(FabricBlockSettings.create().requiresTool().nonOpaque().strength(3.5F));
 
+    public static final Block SOIL = new Block(FabricBlockSettings.create().strength(0.5F).sounds(BlockSoundGroup.GRAVEL));
+    public static final Block TURF = new TGTurfBlock(FabricBlockSettings.create().mapColor(MapColor.PALE_GREEN).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS));
+    public static final Block GLOOM_STONE = new Block(FabricBlockSettings.create().mapColor(MapColor.DEEPSLATE_GRAY).requiresTool().strength(1.5F, 6.0F));
+    public static final Block SCARLET_HEART = new FlowerbedBlock(FabricBlockSettings.create().mapColor(MapColor.DARK_GREEN).noCollision().sounds(BlockSoundGroup.PINK_PETALS).pistonBehavior(PistonBehavior.DESTROY).luminance((state) -> {
+        if (state.get(FlowerbedBlock.FLOWER_AMOUNT) <= 2) {
+            return 5;
+        } else if (state.get(FlowerbedBlock.FLOWER_AMOUNT) == 3) {
+            return 7;
+        } else {
+            return 10;
+        }
+    }));
+    public static final Block GREAT_SCARLET_HEART = new TallFlowerBlock(FabricBlockSettings.create().mapColor(MapColor.DARK_GREEN).noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS).offset(AbstractBlock.OffsetType.XZ).burnable().pistonBehavior(PistonBehavior.DESTROY).luminance((state) -> 10));
+
     //public static final Block ROTTEN_SPRUCE_PLANKS = new Block(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_STAIRS = new TGStairsBlock(TGBlocks.ROTTEN_SPRUCE_PLANKS.getDefaultState() ,FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
     //public static final Block ROTTEN_SPRUCE_SLAB = new SlabBlock(FabricBlockSettings.of(Material.WOOD, MapColor.SPRUCE_BROWN).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
@@ -305,6 +321,11 @@ public class TGBlocks {
 
         Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "ossuary"), OSSUARY);
 
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "soil"), SOIL);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "turf"), TURF);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "gloom_stone"), GLOOM_STONE);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "scarlet_heart"), SCARLET_HEART);
+        Registry.register(Registries.BLOCK, new Identifier(TheGraveyard.MOD_ID, "great_scarlet_heart"), GREAT_SCARLET_HEART);
 
         coffins.add(OAK_COFFIN);
         coffins.add(SPRUCE_COFFIN);

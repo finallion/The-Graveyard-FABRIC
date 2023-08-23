@@ -1,9 +1,9 @@
 {
   "replace": false,
   "values": [
-    "#c:dead",
-    "#c:forest",
-    "#c:wasteland",
-    "#c:swamp"
+    {"id": "minecraft:forest", "required": false},
+    {"id": "minecraft:taiga", "required": false},
+    {"id": "minecraft:swamp", "required": false},
+    {"id": "minecraft:dark_forest", "required": false}
   ]
 }

@@ -1,8 +1,13 @@
 {
   "replace": false,
   "values": [
-    "#c:mushroom",
-    "#c:jungle",
-    "#c:swamp"
+    {"id": "#c:mushroom", "required": false},
+    {"id": "#c:jungle", "required": false},
+    {"id": "#c:swamp", "required": false},
+    {"id": "#forge:is_mushroom", "required": false},
+    {"id": "#forge:is_swamp", "required": false},
+    {"id": "minecraft:jungle", "required": false},
+    {"id": "minecraft:sparse_jungle", "required": false},
+    {"id": "minecraft:bamboo_jungle", "required": false}
   ]
 }

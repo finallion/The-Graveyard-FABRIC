@@ -1,10 +1,12 @@
 {
   "replace": false,
   "values": [
-    "#c:mountain",
-    {"id": "terralith:painted_mountains", "required": false},
-    {"id": "terralith:rocky_mountains", "required": false},
-    {"id": "terralith:haze_mountain", "required": false},
-    {"id": "terralith:mountain_steppe", "required": false}
+    {"id": "minecraft:jagged_peaks", "required": false},
+    {"id": "minecraft:frozen_peaks", "required": false},
+    {"id": "minecraft:stony_peaks", "required": false},
+    {"id": "minecraft:cherry_grove", "required": false},
+    {"id": "minecraft:snowy_slopes", "required": false},
+    {"id": "minecraft:grove", "required": false},
+    {"id": "minecraft:meadow", "required": false}
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "snowy=false": [
+      {
+        "model": "graveyard:block/turf"
+      },
+      {
+        "model": "graveyard:block/turf",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/turf",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/turf",
+        "y": 270
+      }
+    ],
+    "snowy=true": {
+      "model": "graveyard:block/turf_snow"
+    }
+  }
+}

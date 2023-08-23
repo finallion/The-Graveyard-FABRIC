@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "graveyard",
-  "version": "2.9",
+  "version": "2.9.1",
 
   "name": "The Graveyard",
   "description": "Adds new bosses, structures, mobs and blocks themed around the graveyard.",
@@ -23,6 +23,9 @@
     ],
     "client": [
       "com.finallion.graveyard.client.TheGraveyardClient"
+    ],
+    "fabric-datagen": [
+      "com.finallion.graveyard.datagen.DataGeneration"
     ]
   },
   "mixins": [
