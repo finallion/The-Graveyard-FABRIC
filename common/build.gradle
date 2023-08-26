@@ -1,0 +1,19 @@
+dependencies {
+	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+	modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.20:${rootProject.geckolib_version_fabric}"
+	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${rootProject.config_version}")
+}
+
+architectury {
+	common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/graveyard.accesswidener")
+}
+
+repositories {
+	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+}
