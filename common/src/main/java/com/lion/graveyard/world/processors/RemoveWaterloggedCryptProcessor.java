@@ -1,6 +1,6 @@
-package main.java.com.lion.graveyard.world.processors;
+package com.lion.graveyard.world.processors;
 
-import com.finallion.graveyard.init.TGProcessors;
+import com.lion.graveyard.init.TGProcessors;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

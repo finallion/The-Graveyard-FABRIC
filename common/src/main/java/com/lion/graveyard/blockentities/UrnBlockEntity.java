@@ -32,11 +32,11 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.stateManager = new ViewerCountManager() {
             protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
-                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_OPEN);
+                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_OPEN.get());
             }
 
             protected void onContainerClose(World world, BlockPos pos, BlockState state) {
-                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_CLOSE);
+                UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_CLOSE.get());
             }
 
             protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {

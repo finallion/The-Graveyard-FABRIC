@@ -1,17 +1,16 @@
 package com.lion.graveyard.util;
 
-import net.minecraft.world.entity.monster.Creeper;
+import com.lion.graveyard.entities.SkeletonCreeper;
+import net.minecraft.entity.mob.CreeperEntity;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class CreeperExplosionAccessor {
 
     // helper class to access the private explode method of the creeper entity
-    // needed if more creeper like-mobs getadded
-
-    public static void explode(Creeper creeperEntity, CallbackInfo info) {
-        if (creeperEntity instanceof main.java.com.lion.graveyard.entities.SkeletonCreeper) {
+    public static void explode(CreeperEntity creeperEntity, CallbackInfo info) {
+        if (creeperEntity instanceof SkeletonCreeper) {
             if (!creeperEntity.getEntityWorld().isClient()) {
-                ((main.java.com.lion.graveyard.entities.SkeletonCreeper) creeperEntity).explode();
+                ((SkeletonCreeper) creeperEntity).explode();
                 info.cancel();
             }
 

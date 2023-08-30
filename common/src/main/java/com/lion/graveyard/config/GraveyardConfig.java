@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.config;
+package com.lion.graveyard.config;
 
 
 import draylar.omegaconfig.api.Comment;

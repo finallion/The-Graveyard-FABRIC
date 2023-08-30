@@ -1,7 +1,8 @@
-package main.java.com.lion.graveyard.entities.projectiles;
+package com.lion.graveyard.entities.projectiles;
 
-import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.network.GraveyardEntitySpawnPacket;
+import com.lion.graveyard.GraveyardClient;
+import com.lion.graveyard.init.TGEntities;
+import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -14,19 +15,38 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
 public class SkullEntity extends ExplosiveProjectileEntity {
+
+    public static Packet<ClientPlayPacketListener> createPacket(Entity entity) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeVarInt(Registries.ENTITY_TYPE.getRawId(entity.getType()));
+        buf.writeUuid(entity.getUuid());
+        buf.writeVarInt(entity.getId());
+        buf.writeDouble(entity.getX());
+        buf.writeDouble(entity.getY());
+        buf.writeDouble(entity.getZ());
+        buf.writeByte(MathHelper.floor(entity.getPitch() * 256.0F / 360.0F));
+        buf.writeByte(MathHelper.floor(entity.getYaw() * 256.0F / 360.0F));
+        buf.writeFloat(entity.getPitch());
+        buf.writeFloat(entity.getYaw());
+        return new EntitySpawnS2CPacket(entity, buf.arrayOffset());
+    }
+
     private static final TrackedData<Boolean> CHARGED;
 
     public SkullEntity(EntityType<? extends SkullEntity> entityType, World world) {
@@ -34,12 +54,12 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     }
 
     public SkullEntity(World world, LivingEntity owner, double directionX, double directionY, double directionZ) {
-        super(TGEntities.SKULL, owner, directionX, directionY, directionZ, world);
+        super(TGEntities.SKULL.get(), owner, directionX, directionY, directionZ, world);
     }
 
     @Override
     public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return GraveyardEntitySpawnPacket.createPacket(this);
+        return createPacket(this);
     }
 
 

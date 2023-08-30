@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.NightmareEntity;
-import main.java.com.lion.graveyard.entities.models.NightmareModel;
+import com.lion.graveyard.entities.NightmareEntity;
+import com.lion.graveyard.entities.models.NightmareModel;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 

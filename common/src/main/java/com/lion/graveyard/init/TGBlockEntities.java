@@ -67,7 +67,7 @@ public class TGBlockEntities {
             TGBlocks.OSSUARY.get()
     ).build(null));
 
-    public static void init() {
+    public static void postInit() {
 
     }
 

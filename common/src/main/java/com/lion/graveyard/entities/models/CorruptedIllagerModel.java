@@ -1,11 +1,6 @@
-package main.java.com.lion.graveyard.entities.models;
+package com.lion.graveyard.entities.models;
 
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
-import main.java.com.lion.graveyard.entities.CorruptedIllager;
+import com.lion.graveyard.entities.CorruptedIllager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.Dilation;

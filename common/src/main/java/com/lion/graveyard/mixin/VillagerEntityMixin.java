@@ -1,7 +1,6 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
-import com.finallion.graveyard.entities.HordeGraveyardEntity;
-import com.finallion.graveyard.entities.HostileGraveyardEntity;
+import com.lion.graveyard.entities.HostileGraveyardEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.FleeEntityGoal;
 import net.minecraft.entity.passive.MerchantEntity;

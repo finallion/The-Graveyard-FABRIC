@@ -1,8 +1,7 @@
-package main.java.com.lion.graveyard.entities.renders.features;
+package com.lion.graveyard.entities.renders.features;
 
-
-import com.finallion.graveyard.TheGraveyard;
-import main.java.com.lion.graveyard.entities.LichEntity;
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -13,9 +12,8 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-
 public class LichEyesFeatureRenderer extends GeoRenderLayer<LichEntity> {
-    private RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(TheGraveyard.MOD_ID, "textures/entity/lich_eye_texture.png"));;
+    private RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID, "textures/entity/lich_eye_texture.png"));;
     private final GeoRenderer<LichEntity> renderer;
 
     public LichEyesFeatureRenderer(GeoRenderer<LichEntity> entityRendererIn) {

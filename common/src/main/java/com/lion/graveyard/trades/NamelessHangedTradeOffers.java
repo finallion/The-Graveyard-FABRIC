@@ -1,8 +1,8 @@
-package main.java.com.lion.graveyard.trades;
+package com.lion.graveyard.trades;
 
-import com.finallion.graveyard.init.TGItems;
-import com.finallion.graveyard.init.TGTags;
 import com.google.common.collect.ImmutableMap;
+import com.lion.graveyard.init.TGItems;
+import com.lion.graveyard.init.TGTags;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
@@ -67,9 +67,9 @@ public class NamelessHangedTradeOffers {
                         new SellEnchantedToolFactory(Items.IRON_LEGGINGS, 12, 1, 1, 1),
                         new SellEnchantedToolFactory(Items.IRON_SWORD, 12, 1, 1, 1),
                         new SellEnchantedToolFactory(Items.IRON_AXE, 12, 1, 1, 1),
-                        new SellItemFactory(TGItems.UPPER_BONE_STAFF, 64, 1, 1, 1),
-                        new SellItemFactory(TGItems.LOWER_BONE_STAFF, 64, 1, 1, 1),
-                        new SellItemFactory(TGItems.MIDDLE_BONE_STAFF, 64, 1, 1, 1),
+                        new SellItemFactory(TGItems.UPPER_BONE_STAFF.get(), 64, 1, 1, 1),
+                        new SellItemFactory(TGItems.LOWER_BONE_STAFF.get(), 64, 1, 1, 1),
+                        new SellItemFactory(TGItems.MIDDLE_BONE_STAFF.get(), 64, 1, 1, 1),
                         new SellItemFactory(Items.WITHER_SKELETON_SKULL, 48, 1, 1, 1),
                         new SellItemFactory(Items.CHAIN, 3, 1, 12, 1),
                         new SellItemFactory(Items.COBWEB, 2, 1, 12, 1),
@@ -90,12 +90,12 @@ public class NamelessHangedTradeOffers {
                         new SellItemFactory(Items.SOUL_SOIL, 8, 16, 6, 1),
                         new SellItemFactory(Items.NETHER_BRICK, 1, 1, 24, 1),
                         new SellItemFactory(Items.POISONOUS_POTATO, 10, 1, 1, 1),
-                        new SellItemFactory(TGItems.DARK_IRON_INGOT, 4, 1, 6, 1),
-                        new SellItemFactory(TGItems.SOUL_FIRE_BRAZIER, 6, 1, 4, 1),
-                        new SellItemFactory(TGItems.FIRE_BRAZIER, 6, 1, 4, 1),
-                        new SellItemFactory(TGItems.PEDESTAL, 6, 1, 4, 1),
-                        new SellItemFactory(TGItems.CANDLE_HOLDER, 6, 1, 4, 1),
-                        new SellItemFactory(TGItems.OSSUARY, 6, 1, 1, 1),
+                        new SellItemFactory(TGItems.DARK_IRON_INGOT.get(), 4, 1, 6, 1),
+                        new SellItemFactory(TGItems.SOUL_FIRE_BRAZIER.get(), 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.FIRE_BRAZIER.get(), 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.PILLAR.get(), 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.CANDLE_HOLDER.get(), 6, 1, 4, 1),
+                        new SellItemFactory(TGItems.OSSUARY.get(), 6, 1, 1, 1),
                         new SellItemFactory(Items.MOSS_BLOCK, 10, 32, 6, 1)}, 2,
                 new TradeOffers.Factory[]{
                         new SellMapFactory(4, TGTags.ON_RUINS_EXPLORER_MAPS, "filled_map.ruins", MapIcon.Type.TARGET_X, 1, 5),
@@ -137,7 +137,7 @@ public class NamelessHangedTradeOffers {
         }
 
         public TradeOffer create(Entity entity, Random random) {
-            return new TradeOffer(new ItemStack(TGItems.CORRUPTION, this.price), new ItemStack(this.sell.getItem(), this.count), this.maxUses, this.experience, this.multiplier);
+            return new TradeOffer(new ItemStack(TGItems.CORRUPTION.get(), this.price), new ItemStack(this.sell.getItem(), this.count), this.maxUses, this.experience, this.multiplier);
         }
     }
 
@@ -170,7 +170,7 @@ public class NamelessHangedTradeOffers {
                     FilledMapItem.fillExplorationMap(serverWorld, itemStack);
                     MapState.addDecorationsNbt(itemStack, blockPos, "+", this.iconType);
                     itemStack.setCustomName(Text.translatable(this.nameKey));
-                    return new TradeOffer(new ItemStack(TGItems.CORRUPTION, this.price), new ItemStack(Items.COMPASS), itemStack, this.maxUses, this.experience, 0.2F);
+                    return new TradeOffer(new ItemStack(TGItems.CORRUPTION.get(), this.price), new ItemStack(Items.COMPASS), itemStack, this.maxUses, this.experience, 0.2F);
                 } else {
                     return null;
                 }
@@ -201,7 +201,7 @@ public class NamelessHangedTradeOffers {
             int i = 5 + random.nextInt(15);
             ItemStack itemStack = EnchantmentHelper.enchant(random, new ItemStack(this.tool.getItem()), i, false);
             int j = Math.min(this.basePrice, 64);
-            ItemStack itemStack2 = new ItemStack(TGItems.CORRUPTION, j);
+            ItemStack itemStack2 = new ItemStack(TGItems.CORRUPTION.get(), j);
             return new TradeOffer(itemStack2, itemStack, this.maxUses, this.experience, this.multiplier);
         }
     }

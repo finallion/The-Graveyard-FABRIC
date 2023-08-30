@@ -1,18 +1,18 @@
 package com.lion.graveyard.init;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.client.gui.OssuaryScreenHandler;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import com.lion.graveyard.gui.OssuaryScreenHandler;
+import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
 
 public class TGScreens {
 
     public static void init() {}
 
-    public final static ScreenHandlerType<OssuaryScreenHandler> OSSUARY_SCREEN_HANDLER =
-            Registry.register(Registries.SCREEN_HANDLER, new Identifier(TheGraveyard.MOD_ID, "ossuary_screen_handler"), new ScreenHandlerType<>(OssuaryScreenHandler::new, FeatureFlags.VANILLA_FEATURES));
+    public static final ScreenHandlerType<OssuaryScreenHandler> OSSUARY_SCREEN_HANDLER = new ScreenHandlerType<>(OssuaryScreenHandler::new, FeatureFlags.VANILLA_FEATURES);
+
+    static {
+        RegistryHelper.registerScreenHandlerType("ossuary_screen_handler", OSSUARY_SCREEN_HANDLER);
+    }
 
 }

@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.particles;
+package com.lion.graveyard.particles;
 
 
 import net.minecraft.client.particle.*;

@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.recipe;
+package com.lion.graveyard.recipe;
 
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.Inventory;

@@ -1,9 +1,7 @@
-package main.java.com.lion.graveyard.item;
+package com.lion.graveyard.item;
 
-
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.TGAdvancements;
-import com.finallion.graveyard.init.TGItems;
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.init.TGItems;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,14 +25,14 @@ public class DaggerItem extends SwordItem {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (target.isDead() && TheGraveyard.config.corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof PlayerEntity playerEntity) {
+        if (target.isDead() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof PlayerEntity playerEntity) {
             ItemStack stackOffhand = attacker.getOffHandStack();
-            if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD)) {
+            if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                 float blood = VialOfBlood.getBlood(stackOffhand);
                 VialOfBlood.setBlood(stackOffhand, blood + 0.1F);
             } else if (stackOffhand.isOf(Items.GLASS_BOTTLE)) {
                 stackOffhand.decrement(1);
-                ItemStack vial = new ItemStack(TGItems.VIAL_OF_BLOOD);
+                ItemStack vial = new ItemStack(TGItems.VIAL_OF_BLOOD.get());
                 if (stackOffhand.isEmpty()) {
                     playerEntity.getInventory().insertStack(40, vial);
                 } else {

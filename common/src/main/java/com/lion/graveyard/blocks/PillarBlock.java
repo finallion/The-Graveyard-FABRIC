@@ -15,11 +15,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class PedestalBlock extends Block implements Waterloggable {
+public class PillarBlock extends Block implements Waterloggable {
     protected static final VoxelShape SHAPE = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     public static final BooleanProperty WATERLOGGED;
 
-    public PedestalBlock(Settings settings) {
+    public PillarBlock(Settings settings) {
         super(settings);
         this.setDefaultState((BlockState)((BlockState)((BlockState)((BlockState)((BlockState)this.stateManager.getDefaultState()).with(WATERLOGGED, false)))));
     }

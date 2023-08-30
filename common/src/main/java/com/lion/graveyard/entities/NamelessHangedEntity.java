@@ -1,28 +1,21 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.init.TGSounds;
-import com.finallion.graveyard.trades.NamelessHangedTradeOffers;
+import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.trades.NamelessHangedTradeOffers;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -135,7 +128,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.6F, 1.0F);
             //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
         }
 
@@ -144,7 +137,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                 if (!this.getEntityWorld().isClient) {
                     this.setCustomer(player);
                     this.sendOffers(player, this.getDisplayName(), 1);
-                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT, SoundCategory.HOSTILE, 0.6F, 1.0F);
+                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.6F, 1.0F);
                     //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
                 }
             }
@@ -156,19 +149,10 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     protected void fillRecipes() {
         TradeOffers.Factory[] factorys = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(1);
-        //TradeOffers.Factory[] factorys2 = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(2);
         if (factorys != null /*&& factorys2 != null*/) {
             TradeOfferList tradeOfferList = this.getOffers();
             int offers = random.nextInt(3) + 7;
             this.fillRecipesFromPool(tradeOfferList, factorys, offers);
-            /*
-            TradeOffers.Factory factory = factorys2[0];
-            TradeOffer tradeOffer = factory.create(this, this.random);
-            if (tradeOffer != null) {
-                tradeOfferList.add(tradeOffer);
-            }
-
-             */
         }
     }
 
@@ -186,10 +170,10 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.NAMELESS_HANGED_AMBIENT, 0.3F, 1.0F);
+        this.playSound(TGSounds.NAMELESS_HANGED_AMBIENT.get(), 0.3F, 1.0F);
 
         if (this.random.nextBoolean()) {
-            this.playSound(TGSounds.NAMELESS_HANGED_BREATH, 0.5F, 1.0F);
+            this.playSound(TGSounds.NAMELESS_HANGED_BREATH.get(), 0.5F, 1.0F);
         }
     }
 

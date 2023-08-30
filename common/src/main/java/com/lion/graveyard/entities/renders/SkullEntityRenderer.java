@@ -1,19 +1,16 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.projectiles.SkullEntity;
+import com.lion.graveyard.entities.projectiles.SkullEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.*;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.SkullEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;

@@ -5,7 +5,6 @@ import com.lion.graveyard.blockentities.OssuaryBlockEntity;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 
-
 public class OssuaryModel extends GeoModel<OssuaryBlockEntity> {
     @Override
     public Identifier getAnimationResource(OssuaryBlockEntity entity) {
@@ -21,8 +20,4 @@ public class OssuaryModel extends GeoModel<OssuaryBlockEntity> {
     public Identifier getTextureResource(OssuaryBlockEntity entity) {
         return new Identifier(Graveyard.MOD_ID, "textures/block/ossuary.png");
     }
-
-
-
-
 }

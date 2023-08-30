@@ -1,24 +1,21 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
+import com.lion.graveyard.Graveyard;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
 public abstract class HostileGraveyardEntity extends HostileEntity {
     private String name;
@@ -72,11 +69,7 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
 
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
         if (effect.getEffectType() == StatusEffects.WITHER) {
-            if (TheGraveyard.config.mobConfigEntries.get(name).canBeWithered) {
-                return true;
-            } else {
-                return false;
-            }
+            return Graveyard.getConfig().mobConfigEntries.get(name).canBeWithered;
         }
 
         return super.canHaveStatusEffect(effect);
@@ -85,7 +78,7 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
     @Override
     public void tickMovement() {
         if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && TheGraveyard.config.mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
+            boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && Graveyard.getConfig().mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
                 if (!itemStack.isEmpty()) {
@@ -110,6 +103,10 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
 
 
     public static boolean canSpawnInDarkness(EntityType<? extends HostileEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, net.minecraft.util.math.random.Random random) {
+        if (world.getBiome(pos).isIn(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
+            return false;
+        }
+
         return HostileEntity.isSpawnDark(world, pos, random);
     }
 

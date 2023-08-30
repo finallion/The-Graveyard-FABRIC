@@ -1,6 +1,5 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.item.BoneStaffItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -13,9 +12,7 @@ import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.world.World;
@@ -101,9 +98,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
         } else {
             this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -2));
         }
-
     }
-
 
     @Nullable
     public LivingEntity getOwner() {

@@ -14,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 
-
 public class BoneDisplayBlock extends Block implements Waterloggable {
     public static final DirectionProperty FACING;
     public static final BooleanProperty WATERLOGGED;
@@ -28,7 +27,6 @@ public class BoneDisplayBlock extends Block implements Waterloggable {
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
     }
-
 
     @Override
     public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
@@ -51,7 +49,6 @@ public class BoneDisplayBlock extends Block implements Waterloggable {
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
     }
-
 
     @Override
     public boolean isShapeFullCube(BlockState state, BlockView world, BlockPos pos) {

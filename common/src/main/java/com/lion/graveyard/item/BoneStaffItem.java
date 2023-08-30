@@ -1,9 +1,8 @@
-package main.java.com.lion.graveyard.item;
+package com.lion.graveyard.item;
 
-import com.finallion.graveyard.entities.GhoulingEntity;
-import com.finallion.graveyard.entities.GraveyardMinionEntity;
-import com.finallion.graveyard.init.TGEntities;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import com.lion.graveyard.entities.GhoulingEntity;
+import com.lion.graveyard.entities.GraveyardMinionEntity;
+import com.lion.graveyard.init.TGEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -32,7 +31,7 @@ public class BoneStaffItem extends Item {
     public static Map<UUID, UUID> ownerGhoulingMapping = new HashMap<>();
 
     public BoneStaffItem(byte ghoulVariant) {
-        super(new FabricItemSettings().maxCount(1));
+        super(new Item.Settings().maxCount(1));
         this.ghoulVariant = ghoulVariant;
     }
 
@@ -80,7 +79,7 @@ public class BoneStaffItem extends Item {
             - Pass data to Ghouling
             - Save Owner-Ghouling in Map
              */
-            GhoulingEntity ghouling = TGEntities.GHOULING.create(world);
+            GhoulingEntity ghouling = TGEntities.GHOULING.get().create(world);
             ghouling.refreshPositionAndAngles(blockPos.up(), 0.0F, 0.0F);
             ghouling.setOwner(player);
             ghouling.setVariant(ghoulVariant);

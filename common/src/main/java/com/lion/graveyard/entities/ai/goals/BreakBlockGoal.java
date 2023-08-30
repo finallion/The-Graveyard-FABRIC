@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.entities.ai.goals;
+package com.lion.graveyard.entities.ai.goals;
 
 import com.google.common.collect.AbstractIterator;
 import net.minecraft.block.Block;

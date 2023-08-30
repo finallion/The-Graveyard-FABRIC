@@ -1,6 +1,6 @@
-package main.java.com.lion.graveyard.entities.ai.goals;
+package com.lion.graveyard.entities.ai.goals;
 
-import main.java.com.lion.graveyard.entities.GhoulEntity;
+import com.lion.graveyard.entities.GhoulEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;

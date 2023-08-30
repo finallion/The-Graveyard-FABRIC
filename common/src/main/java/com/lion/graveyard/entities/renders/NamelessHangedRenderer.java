@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.NamelessHangedEntity;
-import main.java.com.lion.graveyard.entities.models.NamelessHangedModel;
+import com.lion.graveyard.entities.NamelessHangedEntity;
+import com.lion.graveyard.entities.models.NamelessHangedModel;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;

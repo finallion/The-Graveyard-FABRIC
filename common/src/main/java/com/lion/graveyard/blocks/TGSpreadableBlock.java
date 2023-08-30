@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SnowBlock;
@@ -38,14 +39,14 @@ public abstract class TGSpreadableBlock extends SnowyBlock {
 
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         if (!canSurvive(state, world, pos)) {
-            world.setBlockState(pos, main.java.com.lion.graveyard.init.TGBlocks.SOIL.getDefaultState());
+            world.setBlockState(pos, TGBlocks.SOIL.get().getDefaultState());
         } else {
             if (world.getLightLevel(pos.up()) >= 9) {
                 BlockState blockState = this.getDefaultState();
 
                 for(int i = 0; i < 4; ++i) {
                     BlockPos blockPos = pos.add(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-                    if (world.getBlockState(blockPos).isOf(main.java.com.lion.graveyard.init.TGBlocks.SOIL) && canSpread(blockState, world, blockPos)) {
+                    if (world.getBlockState(blockPos).isOf(TGBlocks.SOIL.get()) && canSpread(blockState, world, blockPos)) {
                         world.setBlockState(blockPos, (BlockState)blockState.with(SnowyBlock.SNOWY, world.getBlockState(blockPos.up()).isOf(Blocks.SNOW)));
                     }
                 }

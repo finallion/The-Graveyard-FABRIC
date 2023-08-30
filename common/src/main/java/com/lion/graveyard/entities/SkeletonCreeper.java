@@ -1,10 +1,7 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -13,16 +10,11 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Random;
 
 public class SkeletonCreeper extends CreeperEntity {
@@ -33,13 +25,10 @@ public class SkeletonCreeper extends CreeperEntity {
         super(entityType, world);
     }
 
-
     public static DefaultAttributeContainer.Builder createSkeletonCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.29D);
     }
-
-
 
     public boolean canStart() {
         this.closestPlayer = this.getEntityWorld().getClosestPlayer(this, 8.0D);
@@ -56,7 +45,7 @@ public class SkeletonCreeper extends CreeperEntity {
             CreeperEntity creeperEntity = (CreeperEntity)entity;
             // changed from onHeadsDropped so every skeleton creeper will drop its skeleton instead of only one per charged creeper
             if (creeperEntity.shouldRenderOverlay() && random.nextBoolean()) {
-                this.dropItem(TGBlocks.CREEPER_SKELETON.asItem());
+                this.dropItem(TGBlocks.CREEPER_SKELETON.get().asItem());
             }
         } else {
             super.dropEquipment(source, lootingMultiplier, allowDrops);
@@ -79,7 +68,6 @@ public class SkeletonCreeper extends CreeperEntity {
             this.discard();
             this.spawnEffectsCloud();
         }
-
     }
 
     private void spawnEffectsCloud() {
@@ -91,10 +79,8 @@ public class SkeletonCreeper extends CreeperEntity {
             areaEffectCloudEntity.setWaitTime(10);
             areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
             areaEffectCloudEntity.setRadiusGrowth(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
-            Iterator var3 = collection.iterator();
 
-            while(var3.hasNext()) {
-                StatusEffectInstance statusEffectInstance = (StatusEffectInstance)var3.next();
+            for (StatusEffectInstance statusEffectInstance : collection) {
                 areaEffectCloudEntity.addEffect(new StatusEffectInstance(statusEffectInstance));
             }
 

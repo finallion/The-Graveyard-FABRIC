@@ -1,10 +1,9 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import main.java.com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
-import com.finallion.graveyard.init.TGSounds;
+import com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.*;
@@ -19,7 +18,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -174,7 +172,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
         // RAGE TIMER
         if (this.getRageAnimTimer() == RAGE_ANIMATION_DURATION) {
-            this.playSound(TGSounds.GHOUL_ROAR, 1.0F, 1.0F);
+            this.playSound(TGSounds.GHOUL_ROAR.get(), 1.0F, 1.0F);
             setIsRaging(true);
             setAnimationState(ANIMATION_RAGE);
             aggroMobs();
@@ -333,23 +331,23 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.GHOUL_AMBIENT, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_AMBIENT.get(), 1.0F, -5.0F);
     }
 
     @Override
     public void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(TGSounds.GHOUL_STEP, 0.5F, -1.0F);
+        this.playSound(TGSounds.GHOUL_STEP.get(), 0.5F, -1.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.GHOUL_HURT, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_HURT.get(), 1.0F, -5.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(TGSounds.GHOUL_DEATH, 1.0F, -5.0F);
+        this.playSound(TGSounds.GHOUL_DEATH.get(), 1.0F, -5.0F);
     }
 
     static {

@@ -1,11 +1,10 @@
-package main.java.com.lion.graveyard.client.gui;
+package com.lion.graveyard.gui;
 
-import com.finallion.graveyard.init.TGBlocks;
-import com.finallion.graveyard.recipe.TGRecipeTypes;
-import com.finallion.graveyard.init.TGScreens;
-import com.finallion.graveyard.recipe.OssuaryRecipe;
-import com.finallion.graveyard.util.MathUtil;
 import com.google.common.collect.Lists;
+import com.lion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGScreens;
+import com.lion.graveyard.recipe.OssuaryRecipe;
+import com.lion.graveyard.init.TGRecipeTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -13,12 +12,10 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -118,7 +115,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
     }
 
     public boolean canUse(PlayerEntity player) {
-        return ScreenHandler.canUse(this.context, player, TGBlocks.OSSUARY);
+        return ScreenHandler.canUse(this.context, player, TGBlocks.OSSUARY.get());
     }
 
     public boolean onButtonClick(PlayerEntity player, int id) {
@@ -148,7 +145,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         this.selectedRecipe.set(-1);
         this.outputSlot.setStack(ItemStack.EMPTY);
         if (!stack.isEmpty()) {
-            this.availableRecipes = this.world.getRecipeManager().getAllMatches(TGRecipeTypes.OSSUARY_CARVING, input, this.world);
+            this.availableRecipes = this.world.getRecipeManager().getAllMatches(TGRecipeTypes.OSSUARY_CARVING.get(), input, this.world);
         }
 
     }
@@ -200,7 +197,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
                 if (!this.insertItem(itemStack2, 2, 38, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.world.getRecipeManager().getFirstMatch(TGRecipeTypes.OSSUARY_CARVING, new SimpleInventory(new ItemStack[]{itemStack2}), this.world).isPresent()) {
+            } else if (this.world.getRecipeManager().getFirstMatch(TGRecipeTypes.OSSUARY_CARVING.get(), new SimpleInventory(itemStack2), this.world).isPresent()) {
                 if (!this.insertItem(itemStack2, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }

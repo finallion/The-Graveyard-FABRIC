@@ -1,15 +1,12 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
-import main.java.com.lion.graveyard.entities.ai.goals.NightmareMeleeAttackGoal;
-import com.finallion.graveyard.init.TGAdvancements;
-import com.finallion.graveyard.init.TGSounds;
-import com.finallion.graveyard.item.DaggerItem;
+import com.lion.graveyard.entities.ai.goals.NightmareMeleeAttackGoal;
+import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -20,8 +17,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.PotionEntity;
-import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
@@ -32,11 +27,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.TimeHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -258,18 +250,18 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.NIGHTMARE_AMBIENT, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_AMBIENT.get(), 1.0F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.NIGHTMARE_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_HURT.get(), 1.0F, -10.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(TGSounds.NIGHTMARE_DEATH, 1.0F, -10.0F);
+        this.playSound(TGSounds.NIGHTMARE_DEATH.get(), 1.0F, -10.0F);
     }
 
     boolean isPlayerStaring(PlayerEntity player) {

@@ -1,11 +1,12 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.renders.features.SkeletonCreeperEyes;
+import com.lion.graveyard.entities.SkeletonCreeper;
+import com.lion.graveyard.entities.renders.features.SkeletonCreeperChargeFeatureRenderer;
+import com.lion.graveyard.entities.renders.features.SkeletonCreeperEyes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.CreeperChargeFeatureRenderer;
 import net.minecraft.client.render.entity.model.CreeperEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,16 +15,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class SkeletonCreeperRender extends MobEntityRenderer<CreeperEntity, CreeperEntityModel<CreeperEntity>> {
+public class SkeletonCreeperRender extends MobEntityRenderer<SkeletonCreeper, CreeperEntityModel<SkeletonCreeper>> {
 
     private static final Identifier TEXTURE = new Identifier("graveyard:textures/entity/skeleton_creeper.png");
 
     public SkeletonCreeperRender(EntityRendererFactory.Context context) {
         super(context, new CreeperEntityModel<>(context.getPart(EntityModelLayers.CREEPER)), 0.5F);
-        this.addFeature(new CreeperChargeFeatureRenderer(this, context.getModelLoader()));
+        this.addFeature(new SkeletonCreeperChargeFeatureRenderer<>(this, context.getModelLoader()));
         this.addFeature(new SkeletonCreeperEyes(this));
     }
-
 
     protected void scale(CreeperEntity creeperEntity, MatrixStack matrixStack, float f) {
         float g = creeperEntity.getClientFuseTime(f);
@@ -36,13 +36,13 @@ public class SkeletonCreeperRender extends MobEntityRenderer<CreeperEntity, Cree
         matrixStack.scale(i, j, i);
     }
 
-    protected float getAnimationCounter(CreeperEntity creeperEntity, float f) {
+    protected float getAnimationCounter(SkeletonCreeper creeperEntity, float f) {
         float g = creeperEntity.getClientFuseTime(f);
         return (int)(g * 10.0F) % 2 == 0 ? 0.0F : MathHelper.clamp(g, 0.5F, 1.0F);
     }
 
     @Override
-    public Identifier getTexture(CreeperEntity creeperEntity) {
+    public Identifier getTexture(SkeletonCreeper creeperEntity) {
         return TEXTURE;
     }
 }

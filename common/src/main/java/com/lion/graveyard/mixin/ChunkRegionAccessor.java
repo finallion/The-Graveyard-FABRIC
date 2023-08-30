@@ -1,5 +1,4 @@
-package main.java.com.lion.graveyard.mixin;
-
+package com.lion.graveyard.mixin;
 
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.gen.StructureAccessor;

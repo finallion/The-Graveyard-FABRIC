@@ -1,11 +1,10 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGAdvancements;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -134,7 +133,6 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
 
     public static class PatrolGoal<T extends HordeGraveyardEntity> extends Goal {
-        private static final int field_30474 = 200;
         private final T entity;
         private final double leaderSpeed;
         private final double followSpeed;

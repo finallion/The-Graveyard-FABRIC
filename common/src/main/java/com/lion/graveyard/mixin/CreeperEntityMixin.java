@@ -1,7 +1,6 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
-
-import com.finallion.graveyard.util.CreeperExplosionAccessor;
+import com.lion.graveyard.util.CreeperExplosionAccessor;
 import net.minecraft.entity.mob.CreeperEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

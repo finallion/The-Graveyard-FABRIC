@@ -8,7 +8,7 @@ public enum SarcophagusPart implements StringIdentifiable {
 
     private final String name;
 
-    private SarcophagusPart(String name) {
+    SarcophagusPart(String name) {
         this.name = name;
     }
 

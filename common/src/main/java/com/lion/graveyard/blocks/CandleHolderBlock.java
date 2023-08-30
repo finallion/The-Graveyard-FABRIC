@@ -31,13 +31,13 @@ public class CandleHolderBlock extends Block implements Waterloggable {
 
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         switch (state.get(FACING)) {
-            case Direction.SOUTH -> {
+            case SOUTH -> {
                 return SHAPE_SOUTH;
             }
-            case Direction.EAST -> {
+            case EAST -> {
                 return SHAPE_EAST;
             }
-            case Direction.WEST -> {
+            case WEST -> {
                 return SHAPE_WEST;
             }
             default -> {

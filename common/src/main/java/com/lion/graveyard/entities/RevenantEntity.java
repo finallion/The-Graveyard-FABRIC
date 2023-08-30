@@ -1,11 +1,8 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
-import main.java.com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
-import com.finallion.graveyard.init.TGEntities;
-import com.finallion.graveyard.init.TGSounds;
+import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.*;
@@ -13,26 +10,14 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
+import net.minecraft.entity.mob.HostileEntity;;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.TickDurationMonitor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -261,23 +246,23 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.REVENANT_AMBIENT, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_AMBIENT.get(), 1.0F, 1.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.REVENANT_HURT, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_HURT.get(), 1.0F, 1.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(TGSounds.REVENANT_DEATH, 1.0F, 1.0F);
+        this.playSound(TGSounds.REVENANT_DEATH.get(), 1.0F, 1.0F);
     }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(TGSounds.REVENANT_STEP, 0.15F, 1.0F);
+        this.playSound(TGSounds.REVENANT_STEP.get(), 0.15F, 1.0F);
     }
 
     public int getAnimationState() {

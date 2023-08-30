@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.world.features;
+package com.lion.graveyard.world.features;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

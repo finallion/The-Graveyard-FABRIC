@@ -1,8 +1,5 @@
-package main.java.com.lion.graveyard.item;
+package com.lion.graveyard.item;
 
-import com.finallion.graveyard.blocks.AltarBlock;
-import com.finallion.graveyard.blocks.OminousBoneStaffFragment;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
@@ -17,7 +14,7 @@ public class VialOfBlood extends Item {
     private static final String BlOOD_KEY = "Blood";
 
     public VialOfBlood() {
-        super(new FabricItemSettings().maxCount(1));
+        super(new Item.Settings().maxCount(1));
     }
 
     public static float getBlood(ItemStack stack) {

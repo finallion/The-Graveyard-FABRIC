@@ -1,6 +1,6 @@
-package com.lion.graveyard.init;
+package com.lion.graveyard.platform.fabric;
 
-import com.finallion.graveyard.entities.horde.GraveyardHordeSpawner;
+import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TGSpawner {
+public class HordeSpawner {
     private static Map<Identifier, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
     private static boolean loaded = false;
 
-    public TGSpawner(){}
+    public HordeSpawner(){}
 
     public static class WorldLoad implements ServerWorldEvents.Load {
         public WorldLoad() {}

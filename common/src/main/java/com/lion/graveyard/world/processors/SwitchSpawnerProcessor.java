@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.world.processors;
+package com.lion.graveyard.world.processors;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.TGProcessors;
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.init.TGProcessors;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.SpawnerBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -23,7 +23,7 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
     @Nullable
     @Override
     public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlacementData data) {
-        if (structureBlockInfo2.state().getBlock() instanceof SpawnerBlock && TheGraveyard.config.booleanEntries.get("disableWitherSkeletonSpawner")) {
+        if (structureBlockInfo2.state().getBlock() instanceof SpawnerBlock && Graveyard.getConfig().booleanEntries.get("disableWitherSkeletonSpawner")) {
             BlockPos worldPos = structureBlockInfo2.pos();
             BlockEntity blockEntity = world.getBlockEntity(worldPos);
             if (blockEntity instanceof MobSpawnerBlockEntity) {
@@ -32,8 +32,6 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
                     NbtCompound nbtCompound = nbt.getCompound("SpawnData");
                     if (nbtCompound.toString().contains("wither_skeleton")) {
                         ((MobSpawnerBlockEntity) blockEntity).setEntityType(EntityType.SKELETON, data.getRandom(worldPos));
-                        //((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.SKELETON, (World) world, data.getRandom(worldPos), worldPos);
-                        //TheGraveyard.LOGGER.error("The Graveyard Config: Wither Skeleton Spawner switched to Skeleton Spawner at " + worldPos);
                     }
                 }
             }

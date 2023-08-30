@@ -1,12 +1,10 @@
-package main.java.com.lion.graveyard.world.features;
+package com.lion.graveyard.world.features;
 
-import com.finallion.graveyard.util.NBTParser;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
@@ -26,20 +24,6 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
         Random random = context.getRandom();
         BlockPos startPos = context.getOrigin();
 
-        int startX = startPos.getX();
-        int startY = startPos.getY();
-        int startZ = startPos.getZ();
-
-        for (int i = 0; i < trunkStates.size() - 3; i += 3) {
-            BlockPos newPos = new BlockPos(startX + trunkStates.get(i), startY + trunkStates.get(i + 1), startZ + trunkStates.get(i + 2));
-            world.setBlockState(newPos, Blocks.OAK_LOG.getDefaultState(), 3);
-        }
-
-        for (int i = 0; i < leavesStates.size() - 4; i += 4) {
-            BlockPos newPos = new BlockPos(startX + leavesStates.get(i), startY + leavesStates.get(i + 1), startZ + leavesStates.get(i + 2));
-            world.setBlockState(newPos, Blocks.BIRCH_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, leavesStates.get(i + 3)), 3);
-        }
-        /*
         int radius = context.getConfig().radius();
 
         int startY = world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, startPos.getX(), startPos.getZ());
@@ -59,8 +43,6 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
                 }
             }
         }
-
-         */
 
         return true;
     }

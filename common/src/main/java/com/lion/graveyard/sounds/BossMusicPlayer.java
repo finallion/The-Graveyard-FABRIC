@@ -1,8 +1,7 @@
-package main.java.com.lion.graveyard.sounds;
+package com.lion.graveyard.sounds;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.config.GraveyardConfig;
-import com.finallion.graveyard.entities.LichEntity;
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -13,7 +12,7 @@ public class BossMusicPlayer {
     public static LichBossMusic music;
 
     public static void playBossMusic(LichEntity entity) {
-        if (!TheGraveyard.config.booleanEntries.get("enableBossMusic")) return;
+        if (!Graveyard.getConfig().booleanEntries.get("enableBossMusic")) return;
         SoundEvent soundEvent = entity.getBossMusic();
 
         if (soundEvent != null && entity.isAlive()) {

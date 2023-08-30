@@ -1,0 +1,10 @@
+{
+  "type": "graveyard:mobspawns",
+  "biomes": "#graveyard:ghoul_spawns",
+  "spawn": {
+    "type": "graveyard:ghoul",
+    "maxCount": 5,
+    "minCount": 2,
+    "weight": 25
+  }
+}

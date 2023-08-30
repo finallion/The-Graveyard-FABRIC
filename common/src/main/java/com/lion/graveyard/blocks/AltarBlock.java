@@ -1,29 +1,26 @@
 package com.lion.graveyard.blocks;
 
-
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.entities.LichEntity;
+import com.lion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGEntities;
+import com.lion.graveyard.init.TGItems;
+import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.item.VialOfBlood;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.block.pattern.BlockPatternBuilder;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.predicate.block.BlockStatePredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.*;
 import net.minecraft.util.ActionResult;
@@ -32,12 +29,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import net.minecraft.world.event.listener.GameEventListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
@@ -48,7 +41,7 @@ public class AltarBlock extends Block {
 
     public AltarBlock(Settings settings) {
         super(settings);
-        this.setDefaultState((BlockState)((BlockState)((BlockState)this.stateManager.getDefaultState()).with(BLOODY, false)));
+        this.setDefaultState(this.stateManager.getDefaultState().with(BLOODY, false));
     }
 
     @Override
@@ -61,7 +54,7 @@ public class AltarBlock extends Block {
         super.randomDisplayTick(state, world, pos, random);
         if (state.get(BLOODY)) {
             if (random.nextInt(10) == 0) {
-                world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, main.java.com.lion.graveyard.init.TGSounds.ALTAR_AMBIENT, SoundCategory.BLOCKS, 0.05F, random.nextFloat() * 0.4F + 0.8F, true);
+                world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.ALTAR_AMBIENT.get(), SoundCategory.BLOCKS, 0.05F, random.nextFloat() * 0.4F + 0.8F, true);
             }
         }
 
@@ -71,10 +64,10 @@ public class AltarBlock extends Block {
         if (COMPLETED_ALTAR == null) {
             COMPLETED_ALTAR = BlockPatternBuilder.start().aisle("???x???", "???????", "???????", "???????", "???????", "???????", "???????", "a??b??c")
                     .where('?', CachedBlockPosition.matchesBlockState(BlockStatePredicate.ANY))
-                    .where('a', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.LOWER_BONE_STAFF).or(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.UPPER_BONE_STAFF))))
-                    .where('b', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.MIDDLE_BONE_STAFF)))
-                    .where('c', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.UPPER_BONE_STAFF).or(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.LOWER_BONE_STAFF))))
-                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(main.java.com.lion.graveyard.init.TGBlocks.ALTAR)))
+                    .where('a', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()))))
+                    .where('b', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF.get())))
+                    .where('c', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()))))
+                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
                     .build();
         }
 
@@ -85,15 +78,15 @@ public class AltarBlock extends Block {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack stack = player.getStackInHand(hand);
         float blood = 0.0F;
-        if (stack.isOf(main.java.com.lion.graveyard.init.TGItems.VIAL_OF_BLOOD)) {
-            blood = main.java.com.lion.graveyard.item.VialOfBlood.getBlood(stack);
+        if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
+            blood = VialOfBlood.getBlood(stack);
         }
 
-        if (state.isOf(main.java.com.lion.graveyard.init.TGBlocks.ALTAR) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
+        if (state.isOf(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
 
             if (!state.get(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
-                player.getWorld().playSound(null, player.getBlockPos(), main.java.com.lion.graveyard.init.TGSounds.VIAL_SPLASH, SoundCategory.BLOCKS, 5.0F, 1.0F);
+                player.getWorld().playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH.get(), SoundCategory.BLOCKS, 5.0F, 1.0F);
                 world.setBlockState(pos, state.with(AltarBlock.BLOODY, true));
                 Direction direction;
 
@@ -121,14 +114,14 @@ public class AltarBlock extends Block {
                                 BlockPos iteratorPos = new BlockPos(corner.add(i, k, j));
                                 BlockState blockState = world.getBlockState(iteratorPos);
 
-                                if (blockState.getBlock() instanceof main.java.com.lion.graveyard.blocks.OminousBoneStaffFragment) {
+                                if (blockState.getBlock() instanceof OminousBoneStaffFragment) {
                                     world.setBlockState(iteratorPos, Blocks.AIR.getDefaultState());
                                 }
                             }
                         }
                     }
 
-                    main.java.com.lion.graveyard.entities.LichEntity lich = (main.java.com.lion.graveyard.entities.LichEntity) main.java.com.lion.graveyard.init.TGEntities.LICH.create(world);
+                    LichEntity lich = (LichEntity) TGEntities.LICH.get().create(world);
                     BlockPos blockPos = pos.up();
                     lich.setYaw(direction.getOpposite().asRotation());
                     lich.setBodyYaw(direction.getOpposite().asRotation());

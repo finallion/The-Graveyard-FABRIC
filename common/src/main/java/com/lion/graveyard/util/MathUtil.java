@@ -1,9 +1,6 @@
-package main.java.com.lion.graveyard.util;
-
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.DustParticleEffect;
+package com.lion.graveyard.util;
+;
 import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;

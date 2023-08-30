@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.world.trunk_placer;
+package com.lion.graveyard.world.trunk_placer;
 
-import com.finallion.graveyard.init.TGTrunkPlacer;
-import com.finallion.graveyard.util.NBTParser;
+import com.lion.graveyard.init.TGTrunkPlacer;
+import com.lion.graveyard.util.NBTParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.*;

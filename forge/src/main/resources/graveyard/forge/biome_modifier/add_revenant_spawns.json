@@ -1,0 +1,10 @@
+{
+  "type": "graveyard:mobspawns",
+  "biomes": "#graveyard:revenant_spawns",
+  "spawn": {
+    "type": "graveyard:revenant",
+    "maxCount": 5,
+    "minCount": 3,
+    "weight": 25
+  }
+}

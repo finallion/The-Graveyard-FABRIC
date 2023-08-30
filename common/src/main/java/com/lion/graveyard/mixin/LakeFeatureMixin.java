@@ -1,6 +1,6 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
-import com.finallion.graveyard.init.TGConfiguredStructureFeatures;
+import com.lion.graveyard.init.TGStructures;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.StructureHolder;
@@ -24,7 +24,7 @@ public class LakeFeatureMixin {
 
         StructureAccessor structureAccessor = ((ChunkRegionAccessor)context.getWorld()).getStructureAccessor();
 
-        for (Structure structure : TGConfiguredStructureFeatures.structures) {
+        for (Structure structure : TGStructures.structures) {
             StructureStart structureStart = structureAccessor.getStructureStart(chunkPos, structure, structureHolder);
 
             if (structureStart != null && structureStart.hasChildren()) {

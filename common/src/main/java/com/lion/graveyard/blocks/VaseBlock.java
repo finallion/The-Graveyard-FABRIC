@@ -1,7 +1,4 @@
 package com.lion.graveyard.blocks;
-
-import com.finallion.graveyard.TheGraveyard;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -11,13 +8,11 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.classic.Abs;
 
 public class VaseBlock extends Block implements Waterloggable {
     public static final IntProperty VASES;
@@ -28,7 +23,7 @@ public class VaseBlock extends Block implements Waterloggable {
     private static final VoxelShape VASE_SHAPE_FOUR;
 
     public VaseBlock() {
-        super(AbstractBlock.Settings.create().breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS).drops(new Identifier(TheGraveyard.MOD_ID, "chests/vase_loot")));
+        super(AbstractBlock.Settings.create().breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS));
         this.setDefaultState(this.stateManager.getDefaultState().with(VASES, 1).with(WATERLOGGED, false));
     }
 
@@ -69,12 +64,9 @@ public class VaseBlock extends Block implements Waterloggable {
         }
     }
 
-
-
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return Block.sideCoversSmallSquare(world, pos.down(), Direction.UP);
     }
-
 
     static {
         VASES = Properties.CANDLES;

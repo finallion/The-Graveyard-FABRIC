@@ -1,9 +1,8 @@
 package com.lion.graveyard.blocks;
 
-import com.finallion.graveyard.blockentities.OssuaryBlockEntity;
-import com.finallion.graveyard.blockentities.SarcophagusBlockEntity;
-import com.finallion.graveyard.client.gui.OssuaryScreenHandler;
-import com.finallion.graveyard.init.TGBlocks;
+import com.lion.graveyard.blockentities.OssuaryBlockEntity;
+import com.lion.graveyard.gui.OssuaryScreenHandler;
+import com.lion.graveyard.init.TGBlockEntities;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -47,7 +46,7 @@ public class OssuaryBlock extends BlockWithEntity implements BlockEntityProvider
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return BlockWithEntity.checkType(type, TGBlocks.OSSUARY_BLOCK_ENTITY, OssuaryBlockEntity::tick);
+        return BlockWithEntity.checkType(type, TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntity::tick);
     }
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {

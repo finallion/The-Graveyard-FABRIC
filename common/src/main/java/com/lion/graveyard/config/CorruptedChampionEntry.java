@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.config;
+package com.lion.graveyard.config;
 
 import java.util.List;
 
@@ -31,8 +31,7 @@ public class CorruptedChampionEntry {
 
     private CorruptedChampionEntry(float healthInCastingPhase, float healthInHuntingPhase, double damageCastingPhase, double damageHuntingPhaseAddition, double armor, double armorToughness, double speedInHuntPhase, int durationHuntingPhase, int durationFallingCorpseSpell,
                                    int durationHealingSpell, int durationLevitationSpell, int maxAmountSkullsInShootSkullSpell, int maxSummonedMobs, int maxGroupSizeSummonedMobs, int ghoulSpawnTimerInFight, List<String> isBloodCollectableEntity, List<String> isBossSummonableItem, boolean isMultiphaseFight, boolean isInvulnerableDuringSpells, boolean summoningNeedsStaffFragments,
-                                   int cooldownCorpseSpell, int cooldownTeleportPlayerAndHeal, int cooldownLevitationSpell, int playerTeleportYOffset
-                                   ) {
+                                   int cooldownCorpseSpell, int cooldownTeleportPlayerAndHeal, int cooldownLevitationSpell, int playerTeleportYOffset) {
         this.healthInCastingPhase = healthInCastingPhase;
         this.healthInHuntingPhase = healthInHuntingPhase;
         this.damageCastingPhase = damageCastingPhase;

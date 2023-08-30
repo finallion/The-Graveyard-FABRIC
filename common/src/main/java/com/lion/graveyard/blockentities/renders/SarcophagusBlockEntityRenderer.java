@@ -24,8 +24,11 @@ import net.minecraft.util.math.random.Random;
 
 @Environment(EnvType.CLIENT)
 public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable> implements BlockEntityRenderer<SarcophagusBlockEntity> {
+    private MinecraftClient client;
 
-    public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {}
+    public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
+        this.client = MinecraftClient.getInstance();
+    }
 
     @Override
     public int getRenderDistance() {
@@ -40,25 +43,20 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         g = 1.0F - g;
         g = 1.0F - g * g * g;
 
-        Item baseItem = ((SarcophagusBlock)blockState.getBlock()).getBase();
-        BakedModel base = getModel(baseItem);
-
-        Item lidItem = ((SarcophagusBlock)blockState.getBlock()).getLid();
-        BakedModel lid = getModel(lidItem);
+        BakedModel base = getModel(((SarcophagusBlock)blockState.getBlock()).getBase());
+        BakedModel lid = getModel(((SarcophagusBlock)blockState.getBlock()).getLid());
 
         if (entity.getWorld() != null && entity.getCachedState().get(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
-            Random random = entity.getWorld().random;
-            render(entity, matrixStack, vertexConsumers, light, g, random, lid, true);
-            render(entity, matrixStack, vertexConsumers, light, g, random, base, false);
+            render(entity, matrixStack, vertexConsumers, light, overlay, g, lid, true);
+            render(entity, matrixStack, vertexConsumers, light, overlay, g, base, false);
         }
     }
 
 
 
-    private void render(SarcophagusBlockEntity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, float g, Random random, BakedModel model, boolean isLid) {
+    private void render(SarcophagusBlockEntity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, int overlay, float g, BakedModel model, boolean isLid) {
         matrixStack.push();
 
-        VertexConsumer vertices = vertexConsumer.getBuffer(RenderLayers.getEntityBlockLayer(entity.getCachedState(), false));
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
         float f = direction.asRotation();
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-f));
@@ -71,21 +69,16 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
         if (isLid) {
             matrixStack.multiply(RotationAxis.NEGATIVE_Z.rotationDegrees(g * 45)); // lid rotation, originally 70
-            //matrices.translate(isFoot ? -(openFactor * 0.25) : openFactor * 0.25, openFactor * 0.25, 0.0F);
             matrixStack.translate(g * 0.3, g * 0.3, 0.0F); // moves lid away from body
         }
 
-        for (int i = 0; i <= 6; i++) {
-            for (BakedQuad q : model.getQuads(null, ModelHelper.faceFromIndex(i), random)) {
-                vertices.quad(matrixStack.peek(), q, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
-            }
-        }
+        client.getBlockRenderManager().getModelRenderer().render(matrixStack.peek(), vertexConsumer.getBuffer(RenderLayers.getEntityBlockLayer(entity.getCachedState(), false)), entity.getCachedState(), model, 1.0F, 1.0F, 1.0F, light, overlay);
 
         matrixStack.pop();
     }
 
-    public static BakedModel getModel(Item item) {
-        return MinecraftClient.getInstance().getItemRenderer().getModel(item.getDefaultStack(), null, null, 0);
+    public BakedModel getModel(Item item) {
+        return client.getItemRenderer().getModel(item.getDefaultStack(), null, null, 0);
     }
 }
 

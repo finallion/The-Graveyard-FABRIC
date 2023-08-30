@@ -1,15 +1,13 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.CorruptedIllager;
-import main.java.com.lion.graveyard.entities.models.CorruptedIllagerModel;
+import com.lion.graveyard.entities.CorruptedIllager;
+import com.lion.graveyard.entities.models.CorruptedIllagerModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.render.entity.model.IllagerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.IllagerEntity;
 
 @Environment(EnvType.CLIENT)
 public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> extends MobEntityRenderer<T, CorruptedIllagerModel<T>> {
@@ -19,7 +17,6 @@ public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> exten
     }
 
     protected void scale(T illagerEntity, MatrixStack matrixStack, float f) {
-        float g = 0.9375F;
         matrixStack.scale(0.9375F, 0.9375F, 0.9375F);
     }
 }

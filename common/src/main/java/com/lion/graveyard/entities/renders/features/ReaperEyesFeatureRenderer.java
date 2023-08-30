@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.entities.renders.features;
+package com.lion.graveyard.entities.renders.features;
 
-
-import main.java.com.lion.graveyard.entities.ReaperEntity;
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.entities.ReaperEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -12,10 +12,8 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-
-
 public class ReaperEyesFeatureRenderer extends GeoRenderLayer<ReaperEntity> {
-    private final RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier("graveyard:textures/entity/reaper_eyes.png"));
+    private final RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID,"textures/entity/reaper_eyes.png"));
     private final GeoRenderer<ReaperEntity> renderer;
 
     public ReaperEyesFeatureRenderer(GeoRenderer<ReaperEntity> entityRendererIn) {

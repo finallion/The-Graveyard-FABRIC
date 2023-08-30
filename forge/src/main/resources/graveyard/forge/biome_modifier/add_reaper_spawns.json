@@ -1,0 +1,10 @@
+{
+  "type": "graveyard:mobspawns",
+  "biomes": "#graveyard:reaper_spawns",
+  "spawn": {
+    "type": "graveyard:reaper",
+    "maxCount": 3,
+    "minCount": 2,
+    "weight": 10
+  }
+}

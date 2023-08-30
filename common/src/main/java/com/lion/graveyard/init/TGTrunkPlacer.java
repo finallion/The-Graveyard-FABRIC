@@ -1,9 +1,8 @@
 package com.lion.graveyard.init;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.mixin.TrunkPlacerTypeInvoker;
-import com.finallion.graveyard.world.trunk_placer.BasicTreeTrunkPlacer;
-import net.minecraft.util.Identifier;
+
+import com.lion.graveyard.mixin.TrunkPlacerTypeInvoker;
+import com.lion.graveyard.world.trunk_placer.BasicTreeTrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
 public class TGTrunkPlacer {

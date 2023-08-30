@@ -1,8 +1,8 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.blocks.BrazierBlock;
-import com.finallion.graveyard.init.TGAdvancements;
-import com.finallion.graveyard.init.TGSounds;
+import com.lion.graveyard.blocks.BrazierBlock;
+import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.AboveGroundTargeting;
@@ -343,12 +343,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.WRAITH_AMBIENT, 1.5F, -10.0F);
+        this.playSound(TGSounds.WRAITH_AMBIENT.get(), 1.5F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.WRAITH_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.WRAITH_HURT.get(), 1.0F, -10.0F);
     }
 
     @Override
@@ -359,7 +359,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private void playDeathSound() {
         for (int i = 0; i < 10; i++) {
-            this.playSound(TGSounds.WRAITH_AMBIENT, 2.5F, -10.0F);
+            this.playSound(TGSounds.WRAITH_AMBIENT.get(), 2.5F, -10.0F);
         }
     }
 

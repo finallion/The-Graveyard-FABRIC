@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.config;
+package com.lion.graveyard.config;
 
 public class ParticleConfigEntry {
     public final boolean canGenerate;

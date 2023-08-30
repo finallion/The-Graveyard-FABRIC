@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
-import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
-import com.finallion.graveyard.client.gui.GravestoneScreen;
+import com.lion.graveyard.blockentities.GravestoneBlockEntity;
+import com.lion.graveyard.gui.GravestoneScreen;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

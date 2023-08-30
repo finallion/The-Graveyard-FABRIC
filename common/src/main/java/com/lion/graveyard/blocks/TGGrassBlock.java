@@ -9,7 +9,6 @@ import net.minecraft.world.BlockView;
 
 public class TGGrassBlock extends GrassBlock {
 
-
     public TGGrassBlock(Settings settings) {
         super(settings);
     }

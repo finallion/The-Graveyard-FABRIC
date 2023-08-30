@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,13 +35,13 @@ public class OminousBoneStaffFragment extends Block {
 
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (world.getTime() % 25 == 0) { // synchronized whisper
-            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, main.java.com.lion.graveyard.init.TGSounds.BONE_AMBIENT, SoundCategory.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
+            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_AMBIENT.get(), SoundCategory.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
         }
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, main.java.com.lion.graveyard.init.TGSounds.BONE_PLACED, SoundCategory.BLOCKS, 15.0F,1.5F, true);
+        world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_PLACED.get(), SoundCategory.BLOCKS, 15.0F,1.5F, true);
         super.onPlaced(world, pos, state, placer, itemStack);
     }
 

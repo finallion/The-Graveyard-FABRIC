@@ -136,6 +136,10 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         }
     }
 
+    public static SignBlockEntityRenderer.SignModel createSignModel(EntityModelLoader entityModelLoader, WoodType type) {
+        return new SignBlockEntityRenderer.SignModel(entityModelLoader.getModelPart(EntityModelLayers.createSign(type)));
+    }
+
     static {
         defaultLayer = RenderLayer.getEntitySolid(new Identifier("textures/entity/signs/oak.png"));
         LAYERS.put(TGBlocks.GRAVESTONE.get(), RenderLayer.getEntitySolid(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));

@@ -1,6 +1,6 @@
-package main.java.com.lion.graveyard.sounds;
+package com.lion.graveyard.sounds;
 
-import com.finallion.graveyard.entities.LichEntity;
+import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;

@@ -1,10 +1,9 @@
-package main.java.com.lion.graveyard.entities.ai.goals;
+package com.lion.graveyard.entities.ai.goals;
 
-import main.java.com.lion.graveyard.entities.GraveyardMinionEntity;
+import com.lion.graveyard.entities.GraveyardMinionEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.TrackTargetGoal;
-import net.minecraft.entity.passive.TameableEntity;
 
 import java.util.EnumSet;
 

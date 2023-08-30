@@ -1,6 +1,12 @@
 package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.SarcophagusBlockEntity;
+import com.lion.graveyard.blockentities.enums.SarcophagusPart;
+import com.lion.graveyard.entities.WraithEntity;
+import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGBlockEntities;
+import com.lion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -57,13 +63,13 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
-    public static final EnumProperty<main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart> PART = EnumProperty.of("part", main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.class);
+    public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
     private final Item lid;
     private final Item base;
 
     public SarcophagusBlock(Settings settings, boolean isCoffin, Item lid, Item base) {
-        super(settings, () -> main.java.com.lion.graveyard.init.TGBlocks.SARCOPHAGUS_BLOCK_ENTITY);
-        this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
+        super(settings, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY::get);
+        this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
         this.base = base;
         this.lid = lid;
     }
@@ -83,27 +89,27 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     }
 
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (direction == getDirectionTowardsOtherPart((main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart) state.get(PART), (Direction) state.get(FACING))) {
+        if (direction == getDirectionTowardsOtherPart((SarcophagusPart) state.get(PART), (Direction) state.get(FACING))) {
             return neighborState.isOf(this) && neighborState.get(PART) != state.get(PART) ? (BlockState) state : Blocks.AIR.getDefaultState();
         } else {
             return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
         }
     }
 
-    private static Direction getDirectionTowardsOtherPart(main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart part, Direction direction) {
-        return part == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.FOOT ? direction : direction.getOpposite();
+    private static Direction getDirectionTowardsOtherPart(SarcophagusPart part, Direction direction) {
+        return part == SarcophagusPart.FOOT ? direction : direction.getOpposite();
     }
 
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         switch (state.get(FACING)) {
-            case Direction.NORTH:
+            case NORTH:
             default:
                 return DOUBLE_NORTH_SHAPE;
-            case Direction.SOUTH:
+            case SOUTH:
                 return DOUBLE_SOUTH_SHAPE;
-            case Direction.WEST:
+            case WEST:
                 return DOUBLE_WEST_SHAPE;
-            case Direction.EAST:
+            case EAST:
                 return DOUBLE_EAST_SHAPE;
         }
     }
@@ -116,7 +122,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         } else {
             BlockPos original = pos;
             // if part is head, offset to the blockentity of the foot
-            if (state.get(PART) == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD) {
+            if (state.get(PART) == SarcophagusPart.HEAD) {
                 pos = pos.offset((Direction) state.get(FACING).getOpposite());
             }
 
@@ -140,14 +146,14 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
                     break;
                 }
             }
-            main.java.com.lion.graveyard.entities.WraithEntity ghost = main.java.com.lion.graveyard.init.TGEntities.WRAITH.create(world);
+            WraithEntity ghost = TGEntities.WRAITH.get().create(world);
             ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
             world.spawnEntity(ghost);
             world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
             if (player instanceof ServerPlayerEntity) {
-                main.java.com.lion.graveyard.init.TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayerEntity) player);
+                TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayerEntity) player);
             }
             world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
         }
@@ -159,7 +165,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
         if (!world.isClient) {
             BlockPos blockPos = pos.offset((Direction) state.get(FACING));
             world.setBlockState(pos, state.with(PLAYER_PLACED, true));
-            world.setBlockState(blockPos, (BlockState) state.with(PART, main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD).with(PLAYER_PLACED, true), 3);
+            world.setBlockState(blockPos, (BlockState) state.with(PART, SarcophagusPart.HEAD).with(PLAYER_PLACED, true), 3);
             world.updateNeighbors(pos, Blocks.AIR);
             state.updateNeighbors(world, pos, 3);
         }
@@ -175,22 +181,22 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     }
 
     public long getRenderingSeed(BlockState state, BlockPos pos) {
-        BlockPos blockPos = pos.offset((Direction) state.get(FACING), state.get(PART) == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD ? 0 : 1);
+        BlockPos blockPos = pos.offset((Direction) state.get(FACING), state.get(PART) == SarcophagusPart.HEAD ? 0 : 1);
         return MathHelper.hashCode(blockPos.getX(), pos.getY(), blockPos.getZ());
     }
 
     public static DoubleBlockProperties.Type getSarcophagusPart(BlockState state) {
-        main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart bedPart = (main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart) state.get(PART);
-        return bedPart == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD ? DoubleBlockProperties.Type.FIRST : DoubleBlockProperties.Type.SECOND;
+        SarcophagusPart bedPart = (SarcophagusPart) state.get(PART);
+        return bedPart == SarcophagusPart.HEAD ? DoubleBlockProperties.Type.FIRST : DoubleBlockProperties.Type.SECOND;
     }
 
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient && player.isCreative()) {
-            main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart part = (main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart) state.get(PART);
-            if (part == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.FOOT) {
+            SarcophagusPart part = (SarcophagusPart) state.get(PART);
+            if (part == SarcophagusPart.FOOT) {
                 BlockPos blockPos = pos.offset(getDirectionTowardsOtherPart(part, (Direction) state.get(FACING)));
                 BlockState blockState = world.getBlockState(blockPos);
-                if (blockState.isOf(this) && blockState.get(PART) == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD) {
+                if (blockState.isOf(this) && blockState.get(PART) == SarcophagusPart.HEAD) {
                     world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 35);
                     world.syncWorldEvent(player, 2001, blockPos, Block.getRawIdFromState(blockState));
                 }
@@ -245,7 +251,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     public static Direction getOppositePartDirection(BlockState state) {
         Direction direction = (Direction) state.get(FACING);
-        return state.get(PART) == main.java.com.lion.graveyard.blockentities.enums.SarcophagusPart.HEAD ? direction.getOpposite() : direction;
+        return state.get(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
     }
 
     // ANIMATION STUFF
@@ -279,10 +285,7 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     @Override
     public DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> getBlockEntitySource(BlockState state, World world, BlockPos pos, boolean ignoreBlocked) {
-        BiPredicate biPredicate;
-        biPredicate = (worldx, posx) -> {
-            return false;
-        };
+        BiPredicate biPredicate = (worldx, posx) -> false;
 
         return DoubleBlockProperties.toPropertySource((BlockEntityType)this.entityTypeRetriever.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, FACING, state, world, pos, biPredicate);
     }

@@ -1,28 +1,22 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import com.finallion.graveyard.TheGraveyard;
-import com.finallion.graveyard.init.TGSounds;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.raid.RaiderEntity;;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -61,7 +55,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     @Nullable
     private BlockPos bounds;
 
-    public ReaperEntity(EntityType<? extends HostileEntity> entityType, World world) {
+    public ReaperEntity(EntityType<? extends ReaperEntity> entityType, World world) {
         super(entityType, world, "reaper");
         this.moveControl = new ReaperMoveControl(this);
     }
@@ -97,9 +91,9 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.goalSelector.add(8, new LookAtTargetGoal());
         this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
-        this.targetSelector.add(1, (new RevengeGoal(this, new Class[]{RaiderEntity.class})).setGroupRevenge(new Class[0]));
+        this.targetSelector.add(1, (new RevengeGoal(this, RaiderEntity.class)).setGroupRevenge());
         this.targetSelector.add(2, new TrackOwnerTargetGoal(this));
-        this.targetSelector.add(3, new ActiveTargetGoal(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
     }
 
     public EntityGroup getGroup() {
@@ -210,18 +204,18 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.REAPER_AMBIENT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_AMBIENT.get(), 1.0F, -10.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.REAPER_HURT, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_HURT.get(), 1.0F, -10.0F);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
-        this.playSound(TGSounds.REAPER_DEATH, 1.0F, -10.0F);
+        this.playSound(TGSounds.REAPER_DEATH.get(), 1.0F, -10.0F);
     }
 
     private class ReaperMoveControl extends MoveControl {
@@ -276,7 +270,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             Vec3d vec3d = livingEntity.getEyePos();
             ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
             ReaperEntity.this.setCharging(true);
-            ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE, 1.0F, -10.0F);
+            ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE.get(), 1.0F, -10.0F);
         }
 
         public void stop() {

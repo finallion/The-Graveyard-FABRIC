@@ -1,6 +1,5 @@
-package main.java.com.lion.graveyard.item;
+package com.lion.graveyard.item;
 
-import com.finallion.graveyard.init.TGBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;

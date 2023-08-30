@@ -1,6 +1,6 @@
-package main.java.com.lion.graveyard.world.processors;
+package com.lion.graveyard.world.processors;
 
-import com.finallion.graveyard.init.TGProcessors;
+import com.lion.graveyard.init.TGProcessors;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.registry.tag.FluidTags;
@@ -12,9 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.chunk.Chunk;
-
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class RemoveWaterloggedProcessor extends StructureProcessor {
     public static final RemoveWaterloggedProcessor INSTANCE = new RemoveWaterloggedProcessor();
@@ -30,7 +28,6 @@ public class RemoveWaterloggedProcessor extends StructureProcessor {
             if (world.getFluidState(structureBlockInfo2.pos()).isIn(FluidTags.WATER)) {
                 currentChunk.setBlockState(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
             }
-
         }
 
         return structureBlockInfo2;

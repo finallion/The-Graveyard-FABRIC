@@ -1,7 +1,6 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
-
-import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
+import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.server.filter.FilteredMessage;
@@ -39,12 +38,7 @@ public class ServerPlayNetworkHandlerMixin {
             GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)blockEntity;
             signBlockEntity.tryChangeText(this.player, signText);
         }
-
-
-
     }
-
-
 }
 
 

@@ -1,12 +1,11 @@
-package main.java.com.lion.graveyard.entities.ai.goals;
+package com.lion.graveyard.entities.ai.goals;
 
-import main.java.com.lion.graveyard.entities.LichEntity;
-import com.finallion.graveyard.init.TGParticles;
+import com.lion.graveyard.entities.LichEntity;
+import com.lion.graveyard.init.TGParticles;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;

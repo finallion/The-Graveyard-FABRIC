@@ -1,19 +1,19 @@
-package main.java.com.lion.graveyard.entities;
+package com.lion.graveyard.entities;
 
-import main.java.com.lion.graveyard.entities.ai.goals.AttackWithOwnerGoal;
-import main.java.com.lion.graveyard.entities.ai.goals.FollowOwnerGoal;
-import main.java.com.lion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
-import main.java.com.lion.graveyard.entities.ai.goals.SitGoal;
-import main.java.com.lion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
-import com.finallion.graveyard.init.*;
-import com.finallion.graveyard.item.BoneStaffItem;
-import com.finallion.graveyard.util.MathUtil;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import com.lion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
+import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGParticles;
+import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.item.BoneStaffItem;
+import com.lion.graveyard.util.MathUtil;
+import com.lion.graveyard.entities.ai.goals.SitGoal;
+import com.lion.graveyard.entities.ai.goals.FollowOwnerGoal;
+import com.lion.graveyard.entities.ai.goals.AttackWithOwnerGoal;
+import com.lion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
@@ -23,7 +23,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,7 +31,6 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
@@ -40,7 +38,6 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -48,10 +45,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -61,7 +56,6 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 
@@ -166,8 +160,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public void tickMovement() {
         if (getSpawnTimer() == 50) {
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN, SoundCategory.HOSTILE, 5.0F, 1.5F);
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR, SoundCategory.HOSTILE, 1.0F, -2.0F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundCategory.HOSTILE, 5.0F, 1.5F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
         }
 
         if (isInSittingPose() && random.nextInt(5) == 0) {
@@ -333,7 +327,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             if (itemStack.getItem() instanceof BoneStaffItem && !player.isSneaking()) {
                 ActionResult actionResult = super.interactMob(player, hand);
                 if (!actionResult.isAccepted()) {
-                    this.playSound(TGSounds.GHOULING_GROAN, 1.0F, -2.0F);
+                    this.playSound(TGSounds.GHOULING_GROAN.get(), 1.0F, -2.0F);
                     if (isInSittingPose()) {
                         player.sendMessage(Text.translatable("entity.graveyard.ghouling.nowait"), true);
                     } else {
@@ -444,22 +438,22 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             BoneStaffItem.ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
         }
         super.onDeath(damageSource);
-        this.playSound(TGSounds.GHOULING_DEATH, 1.0F, -2.0F);
+        this.playSound(TGSounds.GHOULING_DEATH.get(), 1.0F, -2.0F);
     }
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.GHOULING_AMBIENT, 1.0F, -1.0F);
+        this.playSound(TGSounds.GHOULING_AMBIENT.get(), 1.0F, -1.0F);
     }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(TGSounds.GHOULING_STEP, 0.3F, 0.0F);
+        this.playSound(TGSounds.GHOULING_STEP.get(), 0.3F, 0.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
-        this.playSound(TGSounds.GHOULING_HURT, 1.0F, -1.0F);
+        this.playSound(TGSounds.GHOULING_HURT.get(), 1.0F, -1.0F);
     }
 
     @Override
@@ -467,7 +461,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("CoffinGhouling", this.hasCoffin());
         nbt.putByte("ghoulVariant", getVariant());
-        //nbt.put("Ghouling", this.writeNbt(new NbtCompound()));
+
         if (getStaff() != null) {
             nbt.put("Staff", getStaff().writeNbt(new NbtCompound()));
         }
@@ -507,16 +501,10 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
 
     static {
-        GHOULING_HOLDABLE.add(TGBlocks.SARCOPHAGUS.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.OAK_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.DARK_OAK_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.SPRUCE_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.BIRCH_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.JUNGLE_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.ACACIA_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.MANGROVE_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.WARPED_COFFIN.asItem());
-        GHOULING_HOLDABLE.add(TGBlocks.CRIMSON_COFFIN.asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.SARCOPHAGUS.get().asItem());
+        for (Block coffin : TGBlocks.coffins) {
+            GHOULING_HOLDABLE.add(coffin.asItem());
+        }
 
         ATTACK_ANIM_TIMER = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);

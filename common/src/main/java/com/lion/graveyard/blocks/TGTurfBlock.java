@@ -3,6 +3,7 @@ package com.lion.graveyard.blocks;
 import java.util.List;
 import java.util.Optional;
 
+import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
 import net.minecraft.registry.RegistryKeys;
@@ -35,7 +36,7 @@ public class TGTurfBlock extends TGSpreadableBlock implements Fertilizable {
 
     public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
         BlockPos blockPos = pos.up();
-        BlockState blockState = main.java.com.lion.graveyard.init.TGBlocks.TURF.getDefaultState();
+        BlockState blockState = TGBlocks.TURF.get().getDefaultState();
         Optional<Reference<PlacedFeature>> optional = world.getRegistryManager().get(RegistryKeys.PLACED_FEATURE).getEntry(VegetationPlacedFeatures.GRASS_BONEMEAL);
 
         label49:
@@ -55,7 +56,7 @@ public class TGTurfBlock extends TGSpreadableBlock implements Fertilizable {
             }
 
             if (blockState2.isAir()) {
-                RegistryEntry registryEntry;
+                RegistryEntry<?> registryEntry;
                 if (random.nextInt(8) == 0) {
                     List<ConfiguredFeature<?, ?>> list = ((Biome)world.getBiome(blockPos2).value()).getGenerationSettings().getFlowerFeatures();
                     if (list.isEmpty()) {

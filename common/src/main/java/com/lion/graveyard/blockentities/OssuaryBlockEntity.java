@@ -37,7 +37,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
                     if (world != null && !playedSound) {
                         PlayerEntity playerEntity = world.getClosestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
                         if (playerEntity != null) {
-                            playerEntity.playSound(TGSounds.OSSUARY_OPEN, SoundCategory.BLOCKS, 1.0F, -2.0F);
+                            playerEntity.playSound(TGSounds.OSSUARY_OPEN.get(), SoundCategory.BLOCKS, 1.0F, -2.0F);
                             playedSound = true;
                         }
                     }

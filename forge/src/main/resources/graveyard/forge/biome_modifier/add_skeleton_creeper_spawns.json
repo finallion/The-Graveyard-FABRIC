@@ -1,0 +1,10 @@
+{
+  "type": "graveyard:mobspawns",
+  "biomes": "#graveyard:skeleton_creeper_spawns",
+  "spawn": {
+    "type": "graveyard:skeleton_creeper",
+    "maxCount": 4,
+    "minCount": 1,
+    "weight": 20
+  }
+}

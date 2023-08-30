@@ -1,4 +1,4 @@
-package main.java.com.lion.graveyard.mixin;
+package com.lion.graveyard.mixin;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.gen.trunk.TrunkPlacer;

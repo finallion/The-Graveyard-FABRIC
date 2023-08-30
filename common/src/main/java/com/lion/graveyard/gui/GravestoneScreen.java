@@ -1,7 +1,7 @@
-package main.java.com.lion.graveyard.client.gui;
+package com.lion.graveyard.gui;
 
-import com.finallion.graveyard.blockentities.GravestoneBlockEntity;
-import com.finallion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
+import com.lion.graveyard.blockentities.GravestoneBlockEntity;
+import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;

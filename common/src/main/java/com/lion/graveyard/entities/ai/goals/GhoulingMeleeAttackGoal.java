@@ -1,20 +1,13 @@
-package main.java.com.lion.graveyard.entities.ai.goals;
+package com.lion.graveyard.entities.ai.goals;
 
-import main.java.com.lion.graveyard.entities.GhoulingEntity;
-import com.finallion.graveyard.init.TGParticles;
-import com.finallion.graveyard.init.TGSounds;
+
+import com.lion.graveyard.entities.GhoulingEntity;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.EnumSet;
 
@@ -139,7 +132,7 @@ public class GhoulingMeleeAttackGoal extends Goal {
         if (squaredDistance <= d && this.cooldown <= 0) {
             this.resetCooldown(20);
             if (this.mob.getAttackAnimTimer() == 0) {
-                this.mob.playSound(TGSounds.GHOULING_ATTACK, 1.0F, -1.0F);
+                this.mob.playSound(TGSounds.GHOULING_ATTACK.get(), 1.0F, -1.0F);
                 this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
                 animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
                 canFinishAttack = true;

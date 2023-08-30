@@ -1,21 +1,22 @@
 {
   "required": true,
-  "package": "java.com.lion.graveyard.mixin",
+  "package": "com.lion.graveyard.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
-    "main.java.com.lion.graveyard.mixin.ChunkRegionAccessor",
-    "main.java.com.lion.graveyard.mixin.CreeperEntityMixin",
-    "main.java.com.lion.graveyard.mixin.LakeFeatureMixin",
-    "main.java.com.lion.graveyard.mixin.PlantBlockMixin",
-    "main.java.com.lion.graveyard.mixin.ServerPlayNetworkHandlerMixin",
-    "main.java.com.lion.graveyard.mixin.TreeFeatureMixin",
-    "main.java.com.lion.graveyard.mixin.TrunkPlacerTypeInvoker",
-    "main.java.com.lion.graveyard.mixin.VillagerEntityMixin",
-    "main.java.com.lion.graveyard.mixin.WanderingTraderEntityMixin"
+    "ChunkRegionAccessor",
+    "CreeperEntityMixin",
+    "LakeFeatureMixin",
+    "PlantBlockMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "TreeFeatureMixin",
+    "TrunkPlacerTypeInvoker",
+    "VillagerEntityMixin",
+    "WanderingTraderEntityMixin",
+    "SpawnRestrictionAccessor"
   ],
   "client": [
-    "main.java.com.lion.graveyard.mixin.ClientPlayNetworkHandlerMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

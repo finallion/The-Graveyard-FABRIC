@@ -1,23 +1,19 @@
 package com.lion.graveyard.world.structures;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.init.TGEntities;
-import com.lion.graveyard.init.TGStructureType;
+import com.lion.graveyard.init.TGStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.EntityType;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.heightprovider.HeightProvider;
@@ -28,16 +24,6 @@ import net.minecraft.world.gen.structure.StructureType;
 import java.util.Optional;
 
 public class TGJigsawStructure extends Structure {
-    public static final Pool<SpawnSettings.SpawnEntry> MONSTER_SPAWNS = Pool.of(
-            new SpawnSettings.SpawnEntry(TGEntities.SKELETON_CREEPER, 35, 1, 1),
-            new SpawnSettings.SpawnEntry(TGEntities.REVENANT, 45, 1, 3),
-            new SpawnSettings.SpawnEntry(TGEntities.GHOUL, 50, 1, 3));
-
-    public static final Pool<SpawnSettings.SpawnEntry> EMPTY = Pool.of();
-
-    public static final Pool<SpawnSettings.SpawnEntry> ILLAGER_SPAWNS = Pool.of(
-            new SpawnSettings.SpawnEntry(EntityType.PILLAGER, 10, 1, 1),
-            new SpawnSettings.SpawnEntry(EntityType.VINDICATOR, 1, 1, 1));
 
     public static final Codec<TGJigsawStructure> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -149,7 +135,6 @@ public class TGJigsawStructure extends Structure {
         VerticalBlockSample sample4 = generator.getColumnSample(chunkX, chunkZ - size, heightLimitView, noiseConfig);
         VerticalBlockSample sample5 = generator.getColumnSample(chunkX - size, chunkZ, heightLimitView, noiseConfig);
 
-
         // subtract -1 if getHeightOnGround
         if (!name.equals("haunted_house")) {
             if (sample1.getState(i1).getFluidState().isIn(FluidTags.WATER) || sample2.getState(j1).getFluidState().isIn(FluidTags.WATER) || sample3.getState(k1).getFluidState().isIn(FluidTags.WATER) || sample4.getState(o1).getFluidState().isIn(FluidTags.WATER) || sample5.getState(p1).getFluidState().isIn(FluidTags.WATER)) {
@@ -167,7 +152,6 @@ public class TGJigsawStructure extends Structure {
     }
 
     public StructureType<?> getType() {
-        return TGStructureType.TG_JIGSAW;
+        return TGStructures.TG_JIGSAW;
     }
-
 }

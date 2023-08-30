@@ -15,6 +15,7 @@ import java.util.List;
 public class TGStructures {
     public static List<Structure> structures = new ArrayList<>();
 
+    public static StructureType<TGJigsawStructure> TG_JIGSAW = () -> TGJigsawStructure.CODEC;
     public static StructureType<TGJigsawStructure> ALTAR = () -> TGJigsawStructure.CODEC;
     public static StructureType<TGJigsawStructure> DEAD_TREE = () -> TGJigsawStructure.CODEC;
     public static StructureType<TGJigsawStructure> CRYPT = () -> TGJigsawStructure.CODEC;
@@ -34,6 +35,8 @@ public class TGStructures {
     public static StructureType<TGJigsawStructure> SMALL_SAVANNA_GRAVE = () -> TGJigsawStructure.CODEC;
 
     static {
+        RegistryHelper.registerStructureType("tg_jigsaw", TG_JIGSAW);
+
         RegistryHelper.registerStructureType("altar", ALTAR);
         RegistryHelper.registerStructureType("crypt", CRYPT);
         RegistryHelper.registerStructureType("giant_mushroom", GIANT_MUSHROOM);

@@ -1,22 +1,18 @@
-package main.java.com.lion.graveyard.entities.renders;
+package com.lion.graveyard.entities.renders;
 
-import main.java.com.lion.graveyard.entities.GhoulingEntity;
-import main.java.com.lion.graveyard.entities.models.GhoulingModel;
+import com.lion.graveyard.entities.GhoulingEntity;
+import com.lion.graveyard.entities.models.GhoulingModel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
@@ -51,7 +47,6 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
             poseStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             poseStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
             poseStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-25));
-            //stack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(bone.getRotationZ()));
             poseStack.translate(1.3D, 0.86D, 0.0D);
             poseStack.scale(2.0F, 2.0F, 2.0F);
             MinecraftClient.getInstance().getItemRenderer().renderItem(ghouling.getEquippedStack(EquipmentSlot.OFFHAND), ModelTransformationMode.THIRD_PERSON_LEFT_HAND, packedLight, packedOverlay, poseStack, bufferSource, animatable.getEntityWorld(), 0);

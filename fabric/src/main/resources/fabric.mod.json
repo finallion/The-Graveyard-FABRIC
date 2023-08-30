@@ -19,10 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.lion.graveyard.GraveyardFabric"
+      "com.lion.graveyard.fabric.GraveyardFabric"
     ],
     "client": [
-      "com.lion.graveyard.GraveyardClientFabric"
+      "com.lion.graveyard.fabric.GraveyardClientFabric"
     ]
   },
   "mixins": [
@@ -33,7 +33,7 @@
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.20.x",
+    "minecraft": ">=1.20",
     "geckolib": ">=4.2",
     "java": ">=17"
   }
