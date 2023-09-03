@@ -3,6 +3,7 @@ package com.lion.graveyard.item;
 import com.lion.graveyard.entities.GhoulingEntity;
 import com.lion.graveyard.entities.GraveyardMinionEntity;
 import com.lion.graveyard.init.TGEntities;
+import com.lion.graveyard.init.TGSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -170,6 +171,8 @@ public class BoneStaffItem extends Item {
                             if (result != null && result.getType() == HitResult.Type.ENTITY) {
                                 Entity entity = ((EntityHitResult) result).getEntity();
                                 if (entity instanceof LivingEntity livingEntity) {
+                                    user.sendMessage(Text.translatable("entity.graveyard.ghouling.kill"), true);
+                                    ghouling.playAttackSound = true;
                                     ghouling.setTarget(livingEntity);
                                     ghouling.setAttacking(true);
                                     ghouling.setSitting(false);

@@ -86,6 +86,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected Inventory inventory;
     //private Goal collectGoal;
     private static final List<Item> GHOULING_HOLDABLE = new ArrayList<>();
+    public boolean playAttackSound = false;
 
     public GhoulingEntity(EntityType<? extends GhoulingEntity> entityType, World world) {
         super(entityType, world);
@@ -160,12 +161,17 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public void tickMovement() {
         if (getSpawnTimer() == 50) {
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundCategory.HOSTILE, 5.0F, 1.5F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundCategory.HOSTILE, 4.0F, 1.5F);
             getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
         }
 
         if (isInSittingPose() && random.nextInt(5) == 0) {
             MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getEntityWorld().random, 0.5F);
+        }
+
+        if (isAttacking() && playAttackSound) {
+            playAttackSound = false;
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_ATTACK.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
         }
 
         if (getTeleportTimer() > 0) {

@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "parent": "minecraft:block/template_orientable_trapdoor_open",
   "textures": {
     "texture": "graveyard:block/dark_iron_trapdoor"

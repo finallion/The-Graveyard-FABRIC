@@ -38,13 +38,6 @@ public class GraveyardClientFabric implements ClientModInitializer {
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
 
-        /*
-        BlockEntityRendererRegistry.register(TGBlockEntities.GRAVESTONE_BLOCK_ENTITY.get(), GravestoneBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(TGBlockEntities.BRAZIER_BLOCK_ENTITY.get(), (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new BrazierBlockEntityRenderer());
-        BlockEntityRendererRegistry.register(TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), (BlockEntityRendererFactory.Context rendererDispatcherIn) -> new OssuaryBlockEntityRenderer());
-         */
-
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);

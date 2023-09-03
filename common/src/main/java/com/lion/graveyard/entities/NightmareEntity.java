@@ -389,8 +389,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     static {
-        ANGRY = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        PROVOKED = DataTracker.registerData(EndermanEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        ANGRY = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        PROVOKED = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         ANGER_TIME = TimeHelper.betweenSeconds(20, 39);
     }
 

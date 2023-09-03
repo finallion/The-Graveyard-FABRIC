@@ -1,4 +1,5 @@
 {
+	"render_type": "cutout",
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
@@ -257,9 +258,9 @@
 			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {
-			"rotation": [90, 180, 0],
-			"translation": [0, 1.5, 0],
-			"scale": [0.5, 0.5, 0.5]
+			"rotation": [30, 135, 0],
+			"translation": [0.25, 1.75, 0],
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"head": {
 			"rotation": [-91, 0, 0],

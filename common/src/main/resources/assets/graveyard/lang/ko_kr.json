@@ -83,7 +83,7 @@
   "block.graveyard.dark_iron_bars": "검은 철창",
   "block.graveyard.soul_fire_brazier": "영혼 불 화로",
   "block.graveyard.fire_brazier": "불 화로",
-  "block.graveyard.pillar": "Small Pillar",
+  "block.graveyard.pedestal": "Small Pillar",
   "block.graveyard.dark_iron_block": "검은 철 블록",
   "block.graveyard.dark_iron_trapdoor": "검은 철 다락문",
   "block.graveyard.dark_iron_door": "검은 철문",
@@ -151,6 +151,7 @@
   "entity.graveyard.ghouling.spawn": "I hear and obey...",
   "entity.graveyard.ghouling.respawn": "Death... is a mere inconvenience.",
   "entity.graveyard.ghouling.obey": "I don't obey your orders, you are no master of mine!",
+  "entity.graveyard.ghouling.kill": "Me make it stop moving!",
   "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
   "entity.graveyard.nameless_hanged": "Nameless Hanged",
 

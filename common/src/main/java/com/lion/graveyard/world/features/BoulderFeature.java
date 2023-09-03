@@ -33,9 +33,8 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
                 for (int dz = -radius; dz <= radius; dz++) {
                     if (dx * dx + dy * dy + dz * dz <= radius * radius) {
                         int x = startPos.getX() + dx;
-                        int y = startPos.getY() + dy + startY;
                         int z = startPos.getZ() + dz;
-                        BlockPos pos = new BlockPos(x, y, z);
+                        BlockPos pos = new BlockPos(x, startY, z);
 
                         BlockState blockState = getBlockStateForPosition(dx, dy, dz, radius, random, context.getConfig());
                         world.setBlockState(pos, blockState, 3);

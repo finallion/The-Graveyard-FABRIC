@@ -2,6 +2,7 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTradeOffers;
+import com.lion.graveyard.trades.TradeOfferManager;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -32,6 +33,8 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
 
 public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
@@ -128,7 +131,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.6F, 1.0F);
+            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 1.0F);
             //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
         }
 
@@ -137,7 +140,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                 if (!this.getEntityWorld().isClient) {
                     this.setCustomer(player);
                     this.sendOffers(player, this.getDisplayName(), 1);
-                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.6F, 1.0F);
+                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 0.8F);
                     //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
                 }
             }
@@ -148,12 +151,10 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     protected void fillRecipes() {
-        TradeOffers.Factory[] factorys = NamelessHangedTradeOffers.NAMELESS_HANGED_TRADES.get(1);
-        if (factorys != null /*&& factorys2 != null*/) {
-            TradeOfferList tradeOfferList = this.getOffers();
-            int offers = random.nextInt(3) + 7;
-            this.fillRecipesFromPool(tradeOfferList, factorys, offers);
-        }
+        List<TradeOffers.Factory> factorys = TradeOfferManager.TRADES_REGISTRY;
+        TradeOfferList tradeOfferList = this.getOffers();
+        int offers = random.nextInt(3) + 7;
+        this.fillRecipesFromPool(tradeOfferList, factorys.toArray(new TradeOffers.Factory[0]), offers);
     }
 
     protected void afterUsing(TradeOffer offer) {

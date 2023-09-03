@@ -9,7 +9,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
-public class BiomeModificationImpl {
+public class BiomeModificationsImpl {
 
     public static void addMobSpawn(TagKey<Biome> tag, SpawnGroup spawnGroup, EntityType<?> entityType, int weight, int minGroupSize, int maxGroupSize) {
         // added via biome modifier json

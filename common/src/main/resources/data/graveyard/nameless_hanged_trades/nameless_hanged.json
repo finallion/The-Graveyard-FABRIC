@@ -1,0 +1,764 @@
+{
+  "profession": "graveyard:nameless_hanged",
+  "trades": {
+    "default": [
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "candle",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "black_candle",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "white_candle",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "red_candle",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "tinted_glass",
+          "count": 2
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 4
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "nether_wart",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "ghast_tear",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 4
+        },
+        "max_uses": 8
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "spectral_arrow",
+          "count": 4
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 8
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "soul_lantern",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 4
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "totem_of_undying",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "wither_rose",
+          "count": 2
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 8
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "bone",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "emerald",
+          "count": 2
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 1
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "book",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "cobbled_deepslate",
+          "count": 32
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "blackstone",
+          "count": 32
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "gilded_blackstone",
+          "count": 2
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "clock",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 4
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "recovery_compass",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 2
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "black_shulker_box",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_boots",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_chestplate",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_helmet",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_leggings",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_sword",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "diamond_axe",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 32
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_boots",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_chestplate",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_helmet",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_leggings",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_sword",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_enchanted_tool",
+        "sell": {
+          "item": "iron_axe",
+          "count": 1
+        },
+        "basePriceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "villager_experience": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:upper_bone_staff",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 64
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:middle_bone_staff",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 64
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:lower_bone_staff",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 64
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "wither_skeleton_skull",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 48
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "chain",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 3
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "cobweb",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "skeleton_skull",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 5
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "rotten_flesh",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 1
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "glow_berries",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "gunpowder",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 1
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "ender_pearl",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 4
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "string",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 1
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "slime_ball",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "tnt",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 8
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "warped_fungus",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "crimson_fungus",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 2
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "dark_oak_log",
+          "count": 32
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "ancient_debris",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 16
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "mud",
+          "count": 32
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "soul_sand",
+          "count": 16
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "soul_soil",
+          "count": 16
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 6
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "nether_brick",
+          "count": 4
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 1
+        },
+        "max_uses": 16
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "poisonous_potato",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 5
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:dark_iron_ingot",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 4
+        },
+        "max_uses": 12
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:soul_fire_brazier",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 4
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:fire_brazier",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 4
+      },
+
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:pedestal",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 4
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:candle_holder",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 6
+        },
+        "max_uses": 4
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "graveyard:ossuary",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 2
+      },
+      {
+        "type": "graveyard:sell_item",
+        "sell": {
+          "item": "moss_block",
+          "count": 32
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 10
+        },
+        "max_uses": 6
+      }
+    ]
+  }
+}

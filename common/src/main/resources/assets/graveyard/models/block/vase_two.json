@@ -1,4 +1,5 @@
 {
+	"render_type": "cutout",
 	"credit": "Made with Blockbench",
 	"textures": {
 		"1": "graveyard:block/tg_terracotta_one",
@@ -72,5 +73,13 @@
 			}
 		}
 	],
-	"display": {}
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 3, 0]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [0.25, 2.75, 0]
+		}
+	}
 }

@@ -25,3 +25,10 @@ mandatory = true
 versionRange = "[1.20,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.graveyard]]
+modId="geckolib"
+mandatory=true
+versionRange="[4.2,)"
+ordering="NONE"
+side="BOTH"

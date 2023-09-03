@@ -1,5 +1,7 @@
 package com.lion.graveyard.platform;
 
+import com.lion.graveyard.world.trunk_placer.TGOakTreeTrunkPlacer;
+import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -22,12 +24,15 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.gen.trunk.TrunkPlacer;
+import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
 import java.util.function.Supplier;
 
@@ -64,7 +69,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, SoundEvent event, Item.Settings props, int length) {
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Settings props, int length) {
         throw new AssertionError();
     }
 
@@ -138,4 +143,8 @@ public class RegistryHelper {
         throw new AssertionError();
     }
 
+    @ExpectPlatform
+    public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
+        throw new AssertionError();
+    }
 }

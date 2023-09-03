@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "parent": "minecraft:block/door_bottom_right",
   "textures": {
     "bottom": "graveyard:block/dark_iron_door_bottom",

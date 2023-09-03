@@ -9,8 +9,33 @@ import net.minecraft.item.*;
 import java.util.function.Supplier;
 
 public class TGItems {
+    public static final Supplier<Item> SARCOPHAGUS_LID = RegistryHelper.registerItem("sarcophagus_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> SARCOPHAGUS_BASE = RegistryHelper.registerItem("sarcophagus_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> DARK_OAK_COFFIN_LID = RegistryHelper.registerItem("dark_oak_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> DARK_OAK_COFFIN_BASE = RegistryHelper.registerItem("dark_oak_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> OAK_COFFIN_LID = RegistryHelper.registerItem("oak_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> OAK_COFFIN_BASE = RegistryHelper.registerItem("oak_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> BIRCH_COFFIN_LID = RegistryHelper.registerItem("birch_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> BIRCH_COFFIN_BASE = RegistryHelper.registerItem("birch_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> JUNGLE_COFFIN_LID = RegistryHelper.registerItem("jungle_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> JUNGLE_COFFIN_BASE = RegistryHelper.registerItem("jungle_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> ACACIA_COFFIN_LID = RegistryHelper.registerItem("acacia_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> ACACIA_COFFIN_BASE = RegistryHelper.registerItem("acacia_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> SPRUCE_COFFIN_LID = RegistryHelper.registerItem("spruce_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> SPRUCE_COFFIN_BASE = RegistryHelper.registerItem("spruce_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> WARPED_COFFIN_LID = RegistryHelper.registerItem("warped_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> WARPED_COFFIN_BASE = RegistryHelper.registerItem("warped_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> CRIMSON_COFFIN_LID = RegistryHelper.registerItem("crimson_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> CRIMSON_COFFIN_BASE = RegistryHelper.registerItem("crimson_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> MANGROVE_COFFIN_LID = RegistryHelper.registerItem("mangrove_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> MANGROVE_COFFIN_BASE = RegistryHelper.registerItem("mangrove_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> BAMBOO_COFFIN_LID = RegistryHelper.registerItem("bamboo_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> BAMBOO_COFFIN_BASE = RegistryHelper.registerItem("bamboo_coffin_base", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> CHERRY_COFFIN_LID = RegistryHelper.registerItem("cherry_coffin_lid", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> CHERRY_COFFIN_BASE = RegistryHelper.registerItem("cherry_coffin_base", () -> new Item(new Item.Settings()));
+
     public static final Supplier<Item> OSSUARY = RegistryHelper.registerItem("ossuary", () -> new BlockItem(TGBlocks.OSSUARY.get(), new Item.Settings()));
-    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01.get(), new Item.Settings().maxCount(1), 270);
+    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01, new Item.Settings().maxCount(1), 270);
 
     public static final Supplier<Item> SKELETON_CREEPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("skeleton_creeper_spawn_egg", TGEntities.SKELETON_CREEPER, 7960171, 15263976, new Item.Settings());
     public static final Supplier<Item> ACOLYTE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("acolyte_spawn_egg", TGEntities.ACOLYTE, 2688830, 5898240, new Item.Settings());
@@ -46,7 +71,7 @@ public class TGItems {
     public static final Supplier<Item> DARK_IRON_BARS = RegistryHelper.registerItem("dark_iron_bars", () -> new BlockItem(TGBlocks.DARK_IRON_BARS.get(), new Item.Settings()));
     public static final Supplier<Item> SOUL_FIRE_BRAZIER = RegistryHelper.registerItem("soul_fire_brazier", () -> new BlockItem(TGBlocks.SOUL_FIRE_BRAZIER.get(), new Item.Settings()));
     public static final Supplier<Item> FIRE_BRAZIER = RegistryHelper.registerItem("fire_brazier", () -> new BlockItem(TGBlocks.FIRE_BRAZIER.get(), new Item.Settings()));
-    public static final Supplier<Item> PILLAR = RegistryHelper.registerItem("pillar", () -> new BlockItem(TGBlocks.PILLAR.get(), new Item.Settings()));
+    public static final Supplier<Item> PEDESTAL = RegistryHelper.registerItem("pedestal", () -> new BlockItem(TGBlocks.PEDESTAL.get(), new Item.Settings()));
     public static final Supplier<Item> CANDLE_HOLDER = RegistryHelper.registerItem("candle_holder", () -> new BlockItem(TGBlocks.CANDLE_HOLDER.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_TRAPDOOR = RegistryHelper.registerItem("dark_iron_trapdoor", () -> new BlockItem(TGBlocks.DARK_IRON_TRAPDOOR.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_DOOR = RegistryHelper.registerItem("dark_iron_door", () -> new BlockItem(TGBlocks.DARK_IRON_DOOR.get(), new Item.Settings()));
@@ -169,7 +194,7 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_BARS.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SOUL_FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, FIRE_BRAZIER.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PILLAR.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PEDESTAL.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CANDLE_HOLDER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, COBBLESTONE_GRAVESTONE.get());

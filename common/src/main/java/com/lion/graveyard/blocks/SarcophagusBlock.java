@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 /*
 THINGS TO CHECK IF THE MODEL CASTS UNWANTED SHADOWS:
@@ -53,7 +54,7 @@ THINGS TO CHECK IF THE MODEL CASTS UNWANTED SHADOWS:
 - renderFlat in model renderer might help.
  */
 
-public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity> implements Waterloggable, BlockEntityProvider {
+public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, BlockEntityProvider {
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty OPEN;
     public static final BooleanProperty PLAYER_PLACED;
@@ -64,11 +65,11 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
-    private final Item lid;
-    private final Item base;
+    private final Supplier<Item> lid;
+    private final Supplier<Item> base;
 
-    public SarcophagusBlock(Settings settings, boolean isCoffin, Item lid, Item base) {
-        super(settings, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY::get);
+    public SarcophagusBlock(Settings settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
+        super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
         this.base = base;
         this.lid = lid;
@@ -76,12 +77,6 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, OPEN, FACING, PART, PLAYER_PLACED, IS_COFFIN);
-    }
-
-    @Nullable
-    public static Direction getDirection(BlockView world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        return blockState.getBlock() instanceof SarcophagusBlock ? (Direction) blockState.get(FACING) : null;
     }
 
     public FluidState getFluidState(BlockState state) {
@@ -258,11 +253,9 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
 
 
     public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidOpenable progress) {
-        return new DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction>() {
+        return new DoubleBlockProperties.PropertyRetriever<>() {
             public Float2FloatFunction getFromBoth(SarcophagusBlockEntity chestBlockEntity, SarcophagusBlockEntity chestBlockEntity2) {
-                return (tickDelta) -> {
-                    return Math.max(chestBlockEntity.getAnimationProgress(tickDelta), chestBlockEntity2.getAnimationProgress(tickDelta));
-                };
+                return (tickDelta) -> Math.max(chestBlockEntity.getAnimationProgress(tickDelta), chestBlockEntity2.getAnimationProgress(tickDelta));
             }
 
             public Float2FloatFunction getFrom(SarcophagusBlockEntity chestBlockEntity) {
@@ -271,35 +264,22 @@ public class SarcophagusBlock extends AbstractCoffinBlock<SarcophagusBlockEntity
             }
 
             public Float2FloatFunction getFallback() {
-                LidOpenable var10000 = progress;
-                Objects.requireNonNull(var10000);
-                return var10000::getAnimationProgress;
+                Objects.requireNonNull(progress);
+                return progress::getAnimationProgress;
             }
         };
     }
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return world.isClient ? checkType(type, this.getExpectedEntityType(), SarcophagusBlockEntity::clientTick) : null;
+        return world.isClient ? checkType(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
     }
 
-    @Override
-    public DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> getBlockEntitySource(BlockState state, World world, BlockPos pos, boolean ignoreBlocked) {
-        BiPredicate biPredicate = (worldx, posx) -> false;
-
-        return DoubleBlockProperties.toPropertySource((BlockEntityType)this.entityTypeRetriever.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, FACING, state, world, pos, biPredicate);
-    }
-
-
-    public BlockEntityType<? extends SarcophagusBlockEntity> getExpectedEntityType() {
-        return (BlockEntityType)this.entityTypeRetriever.get();
-    }
-
-    public Item getLid() {
+    public Supplier<Item> getLid() {
         return this.lid;
     }
 
-    public Item getBase() {
+    public Supplier<Item> getBase() {
         return this.base;
     }
 

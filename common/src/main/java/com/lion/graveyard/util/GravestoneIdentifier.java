@@ -18,7 +18,7 @@ public class GravestoneIdentifier {
     public static final Identifier CHISELED_QUARTZ_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/chiseled_quarts.png");
     public static final Identifier CHISELED_RED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/chiseled_red_sandstone.png");
     public static final Identifier CHISELED_SANDSTONE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/chiseled_sandstone.png");
-    public static final Identifier CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/cracked_blackstoe.png");
+    public static final Identifier CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/cracked_blackstone.png");
     public static final Identifier CRACKED_STONE_BRICKS_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/cracked_stone_bricks.png");
     public static final Identifier DARK_PRISMARINE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/dark_prismarine.png");
     public static final Identifier DIORITE_GRAVESTONE_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/entity/gravestone/diorite.png");

@@ -1,4 +1,5 @@
 {
+	"render_type": "cutout",
 	"ambientocclusion": false,
 	"textures": {
 		"0": "graveyard:block/creeper_skeleton_body",

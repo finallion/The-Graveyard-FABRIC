@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:in_overworld"
+    {"id": "#c:in_overworld", "required": false}
   ]
 }

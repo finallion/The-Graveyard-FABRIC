@@ -1,12 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#minecraft:sand",
-    "#minecraft:dirt",
-    "minecraft:bamboo",
-    "minecraft:bamboo_sapling",
-    "minecraft:gravel",
-
     "graveyard:tg_moss_block",
     "graveyard:tg_grass_block",
     "graveyard:tg_coarse_dirt",

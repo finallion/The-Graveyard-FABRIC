@@ -1,4 +1,4 @@
-package com.lion.graveyard.config;
+package com.lion.graveyard.config.entries;
 
 public class StructureConfigEntry {
     public final boolean enabled;

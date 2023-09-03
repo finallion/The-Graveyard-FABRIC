@@ -19,33 +19,6 @@ import java.util.function.Supplier;
 public class TGBlocks {
     public static List<Block> coffins = new ArrayList<>();
 
-    // EARLY ITEM LOADING
-    public static final Supplier<Item> SARCOPHAGUS_LID = RegistryHelper.registerItem("sarcophagus_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> SARCOPHAGUS_BASE = RegistryHelper.registerItem("sarcophagus_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> DARK_OAK_COFFIN_LID = RegistryHelper.registerItem("dark_oak_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> DARK_OAK_COFFIN_BASE = RegistryHelper.registerItem("dark_oak_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> OAK_COFFIN_LID = RegistryHelper.registerItem("oak_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> OAK_COFFIN_BASE = RegistryHelper.registerItem("oak_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> BIRCH_COFFIN_LID = RegistryHelper.registerItem("birch_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> BIRCH_COFFIN_BASE = RegistryHelper.registerItem("birch_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> JUNGLE_COFFIN_LID = RegistryHelper.registerItem("jungle_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> JUNGLE_COFFIN_BASE = RegistryHelper.registerItem("jungle_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> ACACIA_COFFIN_LID = RegistryHelper.registerItem("acacia_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> ACACIA_COFFIN_BASE = RegistryHelper.registerItem("acacia_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> SPRUCE_COFFIN_LID = RegistryHelper.registerItem("spruce_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> SPRUCE_COFFIN_BASE = RegistryHelper.registerItem("spruce_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> WARPED_COFFIN_LID = RegistryHelper.registerItem("warped_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> WARPED_COFFIN_BASE = RegistryHelper.registerItem("warped_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> CRIMSON_COFFIN_LID = RegistryHelper.registerItem("crimson_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> CRIMSON_COFFIN_BASE = RegistryHelper.registerItem("crimson_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> MANGROVE_COFFIN_LID = RegistryHelper.registerItem("mangrove_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> MANGROVE_COFFIN_BASE = RegistryHelper.registerItem("mangrove_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> BAMBOO_COFFIN_LID = RegistryHelper.registerItem("bamboo_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> BAMBOO_COFFIN_BASE = RegistryHelper.registerItem("bamboo_coffin_base", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> CHERRY_COFFIN_LID = RegistryHelper.registerItem("cherry_coffin_lid", () -> new Item(new Item.Settings()));
-    public static final Supplier<Item> CHERRY_COFFIN_BASE = RegistryHelper.registerItem("cherry_coffin_base", () -> new Item(new Item.Settings()));
-    // EARLY ITEM LOADING END
-
 
     public static final Supplier<Block> TG_ROOTED_DIRT = RegistryHelper.registerBlock("tg_rooted_dirt", () -> new Block(AbstractBlock.Settings.copy(Blocks.ROOTED_DIRT).dropsLike(Blocks.ROOTED_DIRT)));
     public static final Supplier<Block> TG_TUFF = RegistryHelper.registerBlock("tg_tuff", () -> new Block(AbstractBlock.Settings.copy(Blocks.TUFF).dropsLike(Blocks.TUFF)));
@@ -65,7 +38,7 @@ public class TGBlocks {
     public static final Supplier<Block> DARK_IRON_BARS = RegistryHelper.registerBlock("dark_iron_bars", () -> new DarkIronBars(AbstractBlock.Settings.create().strength(1.0F).nonOpaque()));
     public static final Supplier<Block> SOUL_FIRE_BRAZIER = RegistryHelper.registerBlock("soul_fire_brazier", () -> new BrazierBlock(AbstractBlock.Settings.create().strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.SOUL_FIRE_FLAME));
     public static final Supplier<Block> FIRE_BRAZIER = RegistryHelper.registerBlock("fire_brazier", () -> new BrazierBlock(AbstractBlock.Settings.create().strength(1.0F).nonOpaque().luminance(BrazierBlock.STATE_TO_LUMINANCE).sounds(BlockSoundGroup.METAL), ParticleTypes.FLAME));
-    public static final Supplier<Block> PILLAR = RegistryHelper.registerBlock("pillar", () -> new PillarBlock(AbstractBlock.Settings.create().strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE)));
+    public static final Supplier<Block> PEDESTAL = RegistryHelper.registerBlock("pedestal", () -> new PillarBlock(AbstractBlock.Settings.create().strength(1.0F).sounds(BlockSoundGroup.DEEPSLATE)));
     public static final Supplier<Block> CANDLE_HOLDER = RegistryHelper.registerBlock("candle_holder", () -> new CandleHolderBlock(AbstractBlock.Settings.create().strength(1.0F).nonOpaque().sounds(BlockSoundGroup.METAL)));
     public static final Supplier<Block> DARK_IRON_TRAPDOOR = RegistryHelper.registerBlock("dark_iron_trapdoor", () -> new TGTrapDoorBlock(AbstractBlock.Settings.create().requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque()));
     public static final Supplier<Block> DARK_IRON_DOOR = RegistryHelper.registerBlock("dark_iron_door", () -> new TGDoorBlock(AbstractBlock.Settings.create().requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque()));
@@ -126,18 +99,18 @@ public class TGBlocks {
     public static final Supplier<Block> SMALL_GREEN_URN = RegistryHelper.registerBlock("small_green_urn", UrnBlock::new);
     public static final Supplier<Block> SMALL_LIME_URN = RegistryHelper.registerBlock("small_lime_urn", UrnBlock::new);
 
-    public static final Supplier<Block> SARCOPHAGUS = RegistryHelper.registerBlock("sarcophagus", () -> new SarcophagusBlock(AbstractBlock.Settings.create().nonOpaque().strength(1.5F), false, SARCOPHAGUS_LID.get(), SARCOPHAGUS_BASE.get()));
-    public static final Supplier<Block> OAK_COFFIN = RegistryHelper.registerBlock("oak_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, OAK_COFFIN_LID.get(), OAK_COFFIN_BASE.get()));
-    public static final Supplier<Block> SPRUCE_COFFIN = RegistryHelper.registerBlock("spruce_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, SPRUCE_COFFIN_LID.get(), SPRUCE_COFFIN_BASE.get()));
-    public static final Supplier<Block> BIRCH_COFFIN = RegistryHelper.registerBlock("birch_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, BIRCH_COFFIN_LID.get(), BIRCH_COFFIN_BASE.get()));
-    public static final Supplier<Block> DARK_OAK_COFFIN = RegistryHelper.registerBlock("dark_oak_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, DARK_OAK_COFFIN_LID.get(), DARK_OAK_COFFIN_BASE.get()));
-    public static final Supplier<Block> JUNGLE_COFFIN = RegistryHelper.registerBlock("jungle_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, JUNGLE_COFFIN_LID.get(), JUNGLE_COFFIN_BASE.get()));
-    public static final Supplier<Block> ACACIA_COFFIN = RegistryHelper.registerBlock("acacia_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, ACACIA_COFFIN_LID.get(), ACACIA_COFFIN_BASE.get()));
-    public static final Supplier<Block> WARPED_COFFIN = RegistryHelper.registerBlock("warped_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, WARPED_COFFIN_LID.get(), WARPED_COFFIN_BASE.get()));
-    public static final Supplier<Block> CRIMSON_COFFIN = RegistryHelper.registerBlock("crimson_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, CRIMSON_COFFIN_LID.get(), CRIMSON_COFFIN_BASE.get()));
-    public static final Supplier<Block> MANGROVE_COFFIN = RegistryHelper.registerBlock("mangrove_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, MANGROVE_COFFIN_LID.get(), MANGROVE_COFFIN_BASE.get()));
-    public static final Supplier<Block> BAMBOO_COFFIN = RegistryHelper.registerBlock("bamboo_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, BAMBOO_COFFIN_LID.get(), BAMBOO_COFFIN_BASE.get()));
-    public static final Supplier<Block> CHERRY_COFFIN = RegistryHelper.registerBlock("cherry_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, CHERRY_COFFIN_LID.get(), CHERRY_COFFIN_BASE.get()));
+    public static final Supplier<Block> SARCOPHAGUS = RegistryHelper.registerBlock("sarcophagus", () -> new SarcophagusBlock(AbstractBlock.Settings.create().nonOpaque().strength(1.5F), false, TGItems.SARCOPHAGUS_LID, TGItems.SARCOPHAGUS_BASE));
+    public static final Supplier<Block> OAK_COFFIN = RegistryHelper.registerBlock("oak_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.OAK_COFFIN_LID, TGItems.OAK_COFFIN_BASE));
+    public static final Supplier<Block> SPRUCE_COFFIN = RegistryHelper.registerBlock("spruce_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.SPRUCE_COFFIN_LID, TGItems.SPRUCE_COFFIN_BASE));
+    public static final Supplier<Block> BIRCH_COFFIN = RegistryHelper.registerBlock("birch_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.BIRCH_COFFIN_LID, TGItems.BIRCH_COFFIN_BASE));
+    public static final Supplier<Block> DARK_OAK_COFFIN = RegistryHelper.registerBlock("dark_oak_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.DARK_OAK_COFFIN_LID, TGItems.DARK_OAK_COFFIN_BASE));
+    public static final Supplier<Block> JUNGLE_COFFIN = RegistryHelper.registerBlock("jungle_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.JUNGLE_COFFIN_LID, TGItems.JUNGLE_COFFIN_BASE));
+    public static final Supplier<Block> ACACIA_COFFIN = RegistryHelper.registerBlock("acacia_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.ACACIA_COFFIN_LID, TGItems.ACACIA_COFFIN_BASE));
+    public static final Supplier<Block> WARPED_COFFIN = RegistryHelper.registerBlock("warped_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.WARPED_COFFIN_LID, TGItems.WARPED_COFFIN_BASE));
+    public static final Supplier<Block> CRIMSON_COFFIN = RegistryHelper.registerBlock("crimson_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.CRIMSON_COFFIN_LID, TGItems.CRIMSON_COFFIN_BASE));
+    public static final Supplier<Block> MANGROVE_COFFIN = RegistryHelper.registerBlock("mangrove_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.MANGROVE_COFFIN_LID, TGItems.MANGROVE_COFFIN_BASE));
+    public static final Supplier<Block> BAMBOO_COFFIN = RegistryHelper.registerBlock("bamboo_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.BAMBOO_COFFIN_LID, TGItems.BAMBOO_COFFIN_BASE));
+    public static final Supplier<Block> CHERRY_COFFIN = RegistryHelper.registerBlock("cherry_coffin", () -> new SarcophagusBlock(AbstractBlock.Settings.create().burnable().nonOpaque().strength(1.0F), true, TGItems.CHERRY_COFFIN_LID, TGItems.CHERRY_COFFIN_BASE));
 
     public static final Supplier<Block> VASE_BLOCK = RegistryHelper.registerBlock("vase_block", VaseBlock::new);
 

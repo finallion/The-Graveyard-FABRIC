@@ -1,4 +1,4 @@
-package com.lion.graveyard.config;
+package com.lion.graveyard.config.entries;
 
 import java.util.List;
 

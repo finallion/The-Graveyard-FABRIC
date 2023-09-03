@@ -1,10 +1,13 @@
 package com.lion.graveyard;
 
 import com.lion.graveyard.config.GraveyardConfig;
+import com.lion.graveyard.config.OmegaConfig;
 import com.lion.graveyard.init.*;
+import com.lion.graveyard.trades.TradeOfferManager;
 import com.lion.graveyard.util.NBTParser;
-import draylar.omegaconfig.OmegaConfig;
 import net.fabricmc.loader.api.FabricLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
 
 import java.io.IOException;
@@ -13,6 +16,7 @@ public class Graveyard {
 
     public static final String MOD_ID = "graveyard";
     public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static GraveyardConfig getConfig() {
         return CONFIG;
@@ -21,19 +25,12 @@ public class Graveyard {
     public static void init() {
         GeckoLib.initialize();
 
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            try {
-                NBTParser.parseNBTFiles();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         TGAdvancements.init();
+        TGItems.init();
         TGBlocks.init();
         TGEntities.init();
-        TGItems.init();
         TGItemGroups.init();
+        TGBlockEntities.init();
         TGParticles.init();
         TGProcessors.init();
         TGScreens.init();
@@ -43,11 +40,11 @@ public class Graveyard {
         TGTrunkPlacer.init();
         TGFeatures.init();
 
+        TradeOfferManager.registerTradeOffers();
     }
 
     public static void postInit() {
         TGBlocks.postInit();
-        TGBlockEntities.postInit();
         TGEntities.postInit();
         TGItems.addItemsToGroup();
     }

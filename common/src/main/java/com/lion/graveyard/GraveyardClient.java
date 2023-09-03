@@ -1,8 +1,6 @@
 package com.lion.graveyard;
 
-import com.lion.graveyard.init.TGEntityModelLayers;
-import com.lion.graveyard.init.TGEntityRenderers;
-import com.lion.graveyard.init.TGRenderTypes;
+import com.lion.graveyard.init.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
@@ -19,6 +17,7 @@ public class GraveyardClient {
     @Environment(EnvType.CLIENT)
     public static void postInit() {
         TGEntityRenderers.postInit();
+        TGBlockEntityRenderers.postInit();
         TGRenderTypes.postInit();
     }
 }

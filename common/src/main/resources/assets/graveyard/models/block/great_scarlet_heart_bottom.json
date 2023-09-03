@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "graveyard:block/great_scarlet_heart_bottom"

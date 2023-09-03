@@ -6,6 +6,7 @@ import com.lion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
+import com.lion.graveyard.entities.renders.*;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.*;
 import com.lion.graveyard.item.VialOfBlood;
@@ -22,6 +23,8 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.particle.SonicBoomParticle;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.item.BlockItem;
@@ -42,43 +45,9 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Graveyard.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class GraveyardClientForge {
 
-    public GraveyardClientForge() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modEventBus.addListener(this::registerBlockEntityRenderers);
-        modEventBus.addListener(this::registerParticles);
-        modEventBus.addListener(this::registerScreens);
-        modEventBus.addListener(this::registerBlockColors);
-        modEventBus.addListener(this::registerItemColors);
-        modEventBus.addListener(this::registerLayerDefinitions);
-    }
 
     @SubscribeEvent
-    public void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        for (Map.Entry<EntityModelLayer, Supplier<TexturedModelData>> entry : RegistryHelperImpl.ENTITY_MODEL_LAYERS.entrySet()) {
-            event.registerLayerDefinition(entry.getKey(), entry.getValue());
-        }
-    }
-
-    @SubscribeEvent
-    public void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(TGBlockEntities.GRAVESTONE_BLOCK_ENTITY.get(), GravestoneBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(TGBlockEntities.BRAZIER_BLOCK_ENTITY.get(), (BlockEntityRendererFactory.Context in) -> new BrazierBlockEntityRenderer());
-        event.registerBlockEntityRenderer(TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), (BlockEntityRendererFactory.Context in) -> new OssuaryBlockEntityRenderer());
-    }
-
-    @SubscribeEvent
-    public void registerParticles(RegisterParticleProvidersEvent event){
-        event.registerSpriteSet(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
-        event.registerSpriteSet(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
-        event.registerSpriteSet(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
-        event.registerSpriteSet(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
-        event.registerSpriteSet(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
-    }
-
-    @SubscribeEvent
-    public void registerScreens(final FMLClientSetupEvent event) {
+    public static void clientInit(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             GraveyardClient.postInit();
 
@@ -90,11 +59,39 @@ public class GraveyardClientForge {
                 }
                 return 0.0F;
             });
+
+            RenderLayers.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), RenderLayer.getCutoutMipped());
+
         });
     }
 
+
     @SubscribeEvent
-    public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        for (Map.Entry<EntityModelLayer, Supplier<TexturedModelData>> entry : RegistryHelperImpl.ENTITY_MODEL_LAYERS.entrySet()) {
+            event.registerLayerDefinition(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(TGBlockEntities.GRAVESTONE_BLOCK_ENTITY.get(), GravestoneBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(TGBlockEntities.BRAZIER_BLOCK_ENTITY.get(), BrazierBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticles(RegisterParticleProvidersEvent event){
+        event.registerSpriteSet(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
+        event.registerSpriteSet(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
+        event.registerSpriteSet(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
+        event.registerSpriteSet(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
+        event.registerSpriteSet(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         final BlockColors blockColors = event.getBlockColors();
         blockColors.registerColorProvider((state, reader, pos, color) -> reader != null && pos != null ? BiomeColors.getGrassColor(reader, pos) : GrassColors.getColor(0.5D, 1.0D),
                 TGBlocks.TG_GRASS_BLOCK.get(),
@@ -103,7 +100,7 @@ public class GraveyardClientForge {
     }
 
     @SubscribeEvent
-    public void registerItemColors(RegisterColorHandlersEvent.Item event) {
+    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         final BlockColors blockColors = event.getBlockColors();
         final ItemColors itemColors = event.getItemColors();
 

@@ -1,4 +1,5 @@
 {
+  "render_type": "cutout",
   "parent": "graveyard:block/multi_cross_2",
   "textures": {
     "cross": "graveyard:block/scarlet_heart"

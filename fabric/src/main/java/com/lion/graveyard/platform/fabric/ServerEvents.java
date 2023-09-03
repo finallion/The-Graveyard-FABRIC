@@ -33,7 +33,11 @@ public class ServerEvents {
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-1.19-config.json5"));
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.0-config.json5"));
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.2-config.json5"));
+            oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.3-config.json5"));
+            oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.4-config.json5"));
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.5-config.json5"));
+            oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.6-config.json5"));
+            oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.7-config.json5"));
 
             for (File file : oldConfigs) {
                 if (file.exists()) file.delete();

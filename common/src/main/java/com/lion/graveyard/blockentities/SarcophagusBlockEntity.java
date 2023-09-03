@@ -149,6 +149,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         }
     }
 
+    @Override
     public float getAnimationProgress(float tickDelta) {
         return this.lidAnimator.getProgress(tickDelta);
     }

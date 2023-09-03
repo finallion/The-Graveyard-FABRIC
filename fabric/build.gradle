@@ -34,7 +34,6 @@ dependencies {
 	//modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
-	modImplementation include("com.github.Draylar.omega-config:omega-config-base:${rootProject.config_version}")
 
 	common(project(path: ":common", configuration: "namedElements")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

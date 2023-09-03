@@ -1,6 +1,7 @@
 package com.lion.graveyard.platform.forge;
 
 import com.lion.graveyard.Graveyard;
+import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -22,18 +23,16 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.gen.trunk.TrunkPlacer;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
@@ -70,7 +69,7 @@ public class RegistryHelperImpl {
         return BLOCKS.register(name, block);
     }
 
-    public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntities(String name, Supplier<T> blockEntity) {
+    public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
         return TILE_ENTITIES.register(name, blockEntity);
     }
 
@@ -97,8 +96,10 @@ public class RegistryHelperImpl {
         return (Supplier<T>) registerItem(name, () -> new ForgeSpawnEggItem(type, backgroundColor, highlightColor, props));
     }
 
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, SoundEvent event, Item.Settings props, int length) {
-        return (Supplier<T>) registerItem(name, () -> new MusicDiscItem(compOutput, () -> event, props, length * 20));
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Settings props, int length) {
+        Supplier<T> musicDisc = (Supplier<T>) registerItem(name, () ->
+                new MusicDiscItem(compOutput, event, props, length * 20));
+        return musicDisc;
     }
 
     public static <T extends Structure> void registerStructureType(String name, StructureType<T> structureType) {
@@ -110,7 +111,7 @@ public class RegistryHelperImpl {
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, name), processorType);
+        //Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, name), processorType);
     }
 
     public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
@@ -118,10 +119,7 @@ public class RegistryHelperImpl {
     }
 
     public static void registerRenderType(RenderLayer type, Block... blocks) {
-        // TODO done in JSON model
-        for (Block block : blocks) {
-            RenderLayers.setRenderLayer(block, type);
-        }
+        // done block model JSON
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {
@@ -156,11 +154,9 @@ public class RegistryHelperImpl {
         return RECIPE_SERIALIZERS.register(name, () -> serializer);
     }
 
-    /*
-    public static Supplier<TrunkPlacerType<?>> registerTrunkPlacer(String name, TrunkPlacerType<?> type) {
-        return TRUNK_PLACERS.register(name, () -> type);
+    public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
+        return TRUNK_PLACERS.register(name, () -> new TrunkPlacerType<>(codec));
     }
-     */
 
     public static Supplier<Feature<?>> registerFeature(String name, Feature<?> feature) {
         return FEATURES.register(name, () -> feature);

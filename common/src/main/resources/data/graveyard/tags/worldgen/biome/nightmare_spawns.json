@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "#c:dead",
-    "#c:plains",
-    "#c:snowy",
-    "#c:snowy_plains",
-    "#c:desert",
-    "#c:savanna",
-    "#c:badlands",
-    "#c:swamp"
+    {"id": "#c:dead", "required": false},
+    {"id": "#c:plains", "required": false},
+    {"id": "#c:snowy", "required": false},
+    {"id": "#c:snowy_plains", "required": false},
+    {"id": "#c:desert", "required": false},
+    {"id": "#c:savanna", "required": false},
+    {"id": "#c:badlands", "required": false},
+    {"id": "#c:swamp", "required": false}
   ]
 }

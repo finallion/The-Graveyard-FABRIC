@@ -1,14 +1,8 @@
 package com.lion.graveyard.config;
 
-
-import draylar.omegaconfig.api.Comment;
-import draylar.omegaconfig.api.Config;
-import net.minecraft.registry.RegistryKey;
+import com.lion.graveyard.config.annotations.Comment;
+import com.lion.graveyard.config.entries.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.OverworldBiomeCreator;
-
 
 import java.util.*;
 
@@ -37,11 +31,10 @@ public class GraveyardConfig implements Config {
     public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
     public final Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
     public final Map<String, Boolean> booleanEntries = new HashMap<>();
-    public final Map<String, Integer> intEntries = new HashMap<>();
 
     @Override
     public String getName() {
-        return "the-graveyard-2.6-config";
+        return "the-graveyard-3.0-config";
     }
 
     @Override
