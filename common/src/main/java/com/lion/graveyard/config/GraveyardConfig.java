@@ -1,21 +1,21 @@
 package com.lion.graveyard.config;
 
-import com.lion.graveyard.config.annotations.Comment;
+import com.lion.graveyard.config.annotations.Description;
 import com.lion.graveyard.config.entries.*;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
 
 public class GraveyardConfig implements Config {
-    @Comment("""
+    @Description("""
              Welcome to The Graveyard Config!
              
              Structures:
              Enable or disable structure spawns.
              
              Mobs:
-             Configure spawning weight and group size of the spawn (ghoul, revenant, reaper, nightmare, skeleton creeper).
-             Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect.
+             Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
+             Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect (all graveyard mobs).
 
              Additional:
              Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).

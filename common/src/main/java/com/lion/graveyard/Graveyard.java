@@ -4,22 +4,23 @@ import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.OmegaConfig;
 import com.lion.graveyard.init.*;
 import com.lion.graveyard.trades.TradeOfferManager;
-import com.lion.graveyard.util.NBTParser;
-import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
 
-import java.io.IOException;
 
 public class Graveyard {
 
     public static final String MOD_ID = "graveyard";
-    public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
 
     public static GraveyardConfig getConfig() {
         return CONFIG;
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
     public static void init() {

@@ -20,7 +20,7 @@ public class TradeOfferManager {
     public static final List<TradeOffers.Factory> TRADES_REGISTRY = new ArrayList<>();
 
     public static void registerTradeOffers() {
-        Graveyard.LOGGER.info("Registered JSON trade offer adapter.");
+        Graveyard.getLogger().info("Registered JSON trade offer adapter.");
         tradeOfferRegistry.put(new Identifier(Graveyard.MOD_ID,"sell_item"), new JsonSellItemTradeOffer());
         tradeOfferRegistry.put(new Identifier(Graveyard.MOD_ID,"buy_item"), new JsonBuyItemTradeOffer());
         tradeOfferRegistry.put(new Identifier(Graveyard.MOD_ID,"process_item"), new JsonProcessItemTradeOffer());
@@ -48,8 +48,8 @@ public class TradeOfferManager {
                 JsonTradeOffer adapter = tradeOfferRegistry.get(Identifier.tryParse(trade.get("type").getAsString()));
 
                 if (adapter == null) {
-                    Graveyard.LOGGER.error("Trade type: " + trade.get("type").getAsString() + " is broken.");
-                    Graveyard.LOGGER.error("Error in deserializing trades." +
+                    Graveyard.getLogger().error("Trade type: " + trade.get("type").getAsString() + " is broken.");
+                    Graveyard.getLogger().error("Error in deserializing trades." +
                             "Trade element: " + tradeElement + " and " +
                             "Trade: " + trade + " in " + tradesArray + " is broken. \n" +
                             "Sending faulty JSON: " + jsonRoot);

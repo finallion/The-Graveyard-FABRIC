@@ -3,8 +3,8 @@ package com.lion.graveyard.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.config.annotations.Description;
 import com.lion.graveyard.platform.ConfigDirectory;
-import jdk.jfr.Description;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -36,9 +36,9 @@ public class OmegaConfig {
                     object.save();
                     return object;
                 } catch (Exception e) {
-                    Graveyard.LOGGER.error(e.toString());
-                    Graveyard.LOGGER.info(String.format("Encountered an error while reading %s config, falling back to default values.", config.getName()));
-                    Graveyard.LOGGER.info(String.format("If this problem persists, delete the config file %s and try again.", config.getName() + "." + config.getExtension()));
+                    Graveyard.getLogger().error(e.toString());
+                    Graveyard.getLogger().info(String.format("Encountered an error while reading %s config, falling back to default values.", config.getName()));
+                    Graveyard.getLogger().info(String.format("If this problem persists, delete the config file %s and try again.", config.getName() + "." + config.getExtension()));
                 }
             }
 
@@ -58,12 +58,12 @@ public class OmegaConfig {
         Map<String, String> keyToComments = new HashMap<>();
 
         for (Field field : configClass.getDeclaredFields()) {
-            addFieldComments(field);
+            addFieldComments(field, keyToComments);
         }
 
         for (Class<?> innerClass : configClass.getDeclaredClasses()) {
             for (Field field : innerClass.getDeclaredFields()) {
-                addFieldComments(field);
+                addFieldComments(field, keyToComments);
             }
         }
 
@@ -75,7 +75,7 @@ public class OmegaConfig {
                 String comment = entry.getValue();
 
                 if (at.trim().startsWith(String.format("\"%s\"", key))) {
-                    insertions.put(i + insertions.size(), String.format("%s//%s", getStartingWhitespace(at), comment));
+                    insertions.put(i + insertions.size(), String.format("%s/*%s*/", getStartingWhitespace(at), comment));
                     break;
                 }
             }
@@ -95,21 +95,23 @@ public class OmegaConfig {
             configPath.toFile().getParentFile().mkdirs();
             Files.write(configPath, res.toString().getBytes());
         } catch (IOException ioException) {
-            Graveyard.LOGGER.error(ioException.toString());
-            Graveyard.LOGGER.info(String.format("Write error, using default values for config %s.", configClass));
+            Graveyard.getLogger().error(ioException.toString());
+            Graveyard.getLogger().info(String.format("Write error, using default values for config %s.", configClass));
         }
     }
 
-    private static void addFieldComments(Field field) {
+    private static void addFieldComments(Field field, Map<String, String> keyToComments) {
+        String fieldName = field.getName();
         Annotation[] annotations = field.getDeclaredAnnotations();
 
+        // Find comment
         for (Annotation annotation : annotations) {
             if (annotation instanceof Description) {
+                keyToComments.put(fieldName, ((Description) annotation).value());
                 break;
             }
         }
     }
-
     private static String getStartingWhitespace(String input) {
         int index = -1;
 
