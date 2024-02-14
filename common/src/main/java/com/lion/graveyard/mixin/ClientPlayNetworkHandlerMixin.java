@@ -26,13 +26,10 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
 
-    @Final
-    @Shadow
-    private MinecraftClient client;
-
     @Inject(method = "onSignEditorOpen", at = @At(value = "HEAD"), cancellable = true)
     public void openSignEditor(SignEditorOpenS2CPacket packet, CallbackInfo info) {
-        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, this.client);
+        MinecraftClient client = ((ClientCommonNetworkHandlerAccessor) this).getClient();
+        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, client);
         BlockPos blockPos = packet.getPos();
 
         BlockEntity var4 = this.world.getBlockEntity(blockPos);
@@ -47,7 +44,8 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onBlockEntityUpdate", at = @At(value = "HEAD"), cancellable = true)
     public void onEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo info) {
-        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, this.client);
+        MinecraftClient client = ((ClientCommonNetworkHandlerAccessor) this).getClient();
+        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, client);
         BlockPos blockPos = packet.getPos();
         BlockEntity blockEntity = this.world.getBlockEntity(blockPos);
         if (blockEntity instanceof GravestoneBlockEntity) {

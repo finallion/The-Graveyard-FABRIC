@@ -6,7 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ai.goal.BreakDoorGoal;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,7 +31,7 @@ public class BreakBlockGoal extends Goal {
         if (minion.canCollect() && minion.getTarget() == null && targetBlock != null && targetPos != null) {
             int counter = 0;
             for (BlockPos position : BlockPos.iterateOutwards(targetPos,  5, 3, 5)) {
-                BlockState blockState = minion.getWorld().getBlockState(position);
+                BlockState blockState = minion.getLevel().getBlockState(position);
                 if (blockState.isOf(targetBlock)) {
                     counter++;
                     if (minion.getNavigation().getCurrentPath() != null && minion.getNavigation().getCurrentPath().reachesTarget()) {

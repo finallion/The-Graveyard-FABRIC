@@ -10,20 +10,21 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.InteractionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -40,13 +41,13 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
 
-    public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, World world) {
+    public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     protected void initGoals() {
         this.goalSelector.add(1, new LookAtCustomerGoal(this));
-        this.goalSelector.add(9, new StopAndLookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+        this.goalSelector.add(9, new StopAndLookAtEntityGoal(this, Player.class, 3.0F, 1.0F));
     }
 
     public static DefaultAttributeContainer.Builder createNamelessHangedAttributes() {
@@ -91,7 +92,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         return false;
     }
 
-    public boolean isImmuneToExplosion() {
+    public boolean isImmuneToExplosion(Explosion explosion) {
         return true;
     }
 
@@ -128,10 +129,10 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         super.tick();
     }
 
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+    public InteractionResult interactMob(Player player, Hand hand) {
         if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 1.0F);
+            if (!this.isSilent()) getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
             //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
         }
 
@@ -140,11 +141,11 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                 if (!this.getEntityWorld().isClient) {
                     this.setCustomer(player);
                     this.sendOffers(player, this.getDisplayName(), 1);
-                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 0.8F);
+                    if (!this.isSilent()) getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
                     //player.playSound(TGSounds.NAMELESS_HANGED_INTERACT, 1.0F, 1.0F);
                 }
             }
-            return ActionResult.success(this.getEntityWorld().isClient);
+            return InteractionResult.success(this.getEntityWorld().isClient);
         } else {
             return super.interactMob(player, hand);
         }

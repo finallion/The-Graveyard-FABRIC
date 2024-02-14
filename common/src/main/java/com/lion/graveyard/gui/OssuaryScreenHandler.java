@@ -5,16 +5,18 @@ import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGScreens;
 import com.lion.graveyard.recipe.OssuaryRecipe;
 import com.lion.graveyard.init.TGRecipeTypes;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
 
@@ -23,8 +25,8 @@ import java.util.List;
 public class OssuaryScreenHandler extends ScreenHandler {
     private final ScreenHandlerContext context;
     private final Property selectedRecipe;
-    private final World world;
-    private List<OssuaryRecipe> availableRecipes;
+    private final Level world;
+    private List<RecipeEntry<OssuaryRecipe>> availableRecipes;
     private ItemStack inputStack;
     long lastTakeTime;
     final Slot inputSlot;
@@ -53,15 +55,15 @@ public class OssuaryScreenHandler extends ScreenHandler {
         };
         this.output = new CraftingResultInventory();
         this.context = context;
-        this.world = playerInventory.player.getWorld();
+        this.world = playerInventory.player.getLevel();
         this.inputSlot = this.addSlot(new Slot(this.input, 0, 20, 33));
         this.outputSlot = this.addSlot(new Slot(this.output, 1, 143, 33) {
             public boolean canInsert(ItemStack stack) {
                 return false;
             }
 
-            public void onTakeItem(PlayerEntity player, ItemStack stack) {
-                stack.onCraft(player.getWorld(), player, stack.getCount());
+            public void onTakeItem(Player player, ItemStack stack) {
+                stack.onCraftByPlayer(player.getLevel(), player, stack.getCount());
                 OssuaryScreenHandler.this.output.unlockLastRecipe(player, this.getInputStacks());
                 ItemStack itemStack = OssuaryScreenHandler.this.inputSlot.takeStack(1);
                 if (!itemStack.isEmpty()) {
@@ -71,7 +73,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
                 context.run((world, pos) -> {
                     long l = world.getTime();
                     if (OssuaryScreenHandler.this.lastTakeTime != l) {
-                        world.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0F, -3.0F);
+                        world.playSound((Player)null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundSource.BLOCKS, 1.0F, -3.0F);
                         OssuaryScreenHandler.this.lastTakeTime = l;
                     }
 
@@ -102,7 +104,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         return this.selectedRecipe.get();
     }
 
-    public List<OssuaryRecipe> getAvailableRecipes() {
+    public List<RecipeEntry<OssuaryRecipe>> getAvailableRecipes() {
         return this.availableRecipes;
     }
 
@@ -114,11 +116,11 @@ public class OssuaryScreenHandler extends ScreenHandler {
         return this.inputSlot.hasStack() && !this.availableRecipes.isEmpty();
     }
 
-    public boolean canUse(PlayerEntity player) {
+    public boolean canUse(Player player) {
         return ScreenHandler.canUse(this.context, player, TGBlocks.OSSUARY.get());
     }
 
-    public boolean onButtonClick(PlayerEntity player, int id) {
+    public boolean onButtonClick(Player player, int id) {
         if (this.isInBounds(id)) {
             this.selectedRecipe.set(id);
             this.populateResult();
@@ -152,8 +154,8 @@ public class OssuaryScreenHandler extends ScreenHandler {
 
     void populateResult() {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
-            OssuaryRecipe carvingRecipe = (OssuaryRecipe)this.availableRecipes.get(this.selectedRecipe.get());
-            ItemStack itemStack = carvingRecipe.craft(this.input, this.world.getRegistryManager());
+            RecipeEntry<OssuaryRecipe> carvingRecipe = this.availableRecipes.get(this.selectedRecipe.get());
+            ItemStack itemStack = carvingRecipe.value().craft(this.input, this.world.getRegistryManager());
             if (itemStack.isItemEnabled(this.world.getEnabledFeatures())) {
                 this.output.setLastRecipe(carvingRecipe);
                 this.outputSlot.setStack(itemStack);
@@ -179,7 +181,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         return slot.inventory != this.output && super.canInsertIntoSlot(stack, slot);
     }
 
-    public ItemStack quickMove(PlayerEntity player, int slot) {
+    public ItemStack quickMove(Player player, int slot) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot2 = (Slot)this.slots.get(slot);
         if (slot2 != null && slot2.hasStack()) {
@@ -187,7 +189,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
             if (slot == 1) {
-                item.onCraft(itemStack2, player.getWorld(), player);
+                item.onCraft(itemStack2, player.getLevel());
                 if (!this.insertItem(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -225,7 +227,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         return itemStack;
     }
 
-    public void onClosed(PlayerEntity player) {
+    public void onClosed(Player player) {
         super.onClosed(player);
         this.output.removeStack(1);
         this.context.run((world, pos) -> {

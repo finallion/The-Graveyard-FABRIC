@@ -1,10 +1,7 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.goals.GhoulingMeleeAttackGoal;
-import com.lion.graveyard.init.TGAdvancements;
-import com.lion.graveyard.init.TGBlocks;
-import com.lion.graveyard.init.TGParticles;
-import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.init.*;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.util.MathUtil;
 import com.lion.graveyard.entities.ai.goals.SitGoal;
@@ -24,7 +21,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
@@ -38,10 +35,10 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.InteractionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -88,7 +85,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     private static final List<Item> GHOULING_HOLDABLE = new ArrayList<>();
     public boolean playAttackSound = false;
 
-    public GhoulingEntity(EntityType<? extends GhoulingEntity> entityType, World world) {
+    public GhoulingEntity(EntityType<? extends GhoulingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -99,7 +96,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         //this.goalSelector.add(3, new WanderAroundGoal(this, 1.0F));
         this.goalSelector.add(5, new GhoulingMeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.add(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
-        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(9, new LookAtEntityGoal(this, Player.class, 8.0F));
         this.goalSelector.add(10, new LookAroundGoal(this));
         this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
         this.targetSelector.add(2, new AttackWithOwnerGoal(this));
@@ -161,8 +158,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public void tickMovement() {
         if (getSpawnTimer() == 50) {
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundCategory.HOSTILE, 4.0F, 1.5F);
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundSource.HOSTILE, 4.0F, 1.5F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
         }
 
         if (isInSittingPose() && random.nextInt(5) == 0) {
@@ -171,7 +168,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
         if (isAttacking() && playAttackSound) {
             playAttackSound = false;
-            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_ATTACK.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
+            getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_ATTACK.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
         }
 
         if (getTeleportTimer() > 0) {
@@ -304,13 +301,13 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
 
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+    public InteractionResult interactMob(Player player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
 
         if (!this.getEntityWorld().isClient() && isOwner(player)) {
             if (this.hasCoffin() && player.isSneaking()) {
                 player.openHandledScreen(this);
-                return ActionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
 
             if (!itemStack.isEmpty()) {
@@ -318,20 +315,20 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     this.equipStack(EquipmentSlot.OFFHAND, new ItemStack(itemStack.getItem()));
                     if (inventory == null) {
                         this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 1.0F, -5.0F);
-                        TGAdvancements.EQUIP_COFFIN.trigger((ServerPlayerEntity) player);
+                        TGCriteria.EQUIP_COFFIN.get().trigger((ServerPlayerEntity) player);
                         inventory = new SimpleInventory(54);
                         this.setHasCoffin(true);
                     }
                     if (!player.getAbilities().creativeMode) {
                         itemStack.decrement(1);
                     }
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
 
 
             if (itemStack.getItem() instanceof BoneStaffItem && !player.isSneaking()) {
-                ActionResult actionResult = super.interactMob(player, hand);
+                InteractionResult actionResult = super.interactMob(player, hand);
                 if (!actionResult.isAccepted()) {
                     this.playSound(TGSounds.GHOULING_GROAN.get(), 1.0F, -2.0F);
                     if (isInSittingPose()) {
@@ -345,7 +342,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     this.navigation.stop();
                     this.setTarget((LivingEntity) null);
 
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
 
                 return actionResult;
@@ -498,7 +495,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
     @Override
-    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, Player player) {
         if (inventory == null) {
             return null;
         }
@@ -508,9 +505,17 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     static {
         GHOULING_HOLDABLE.add(TGBlocks.SARCOPHAGUS.get().asItem());
-        for (Block coffin : TGBlocks.coffins) {
-            GHOULING_HOLDABLE.add(coffin.asItem());
-        }
+        GHOULING_HOLDABLE.add(TGBlocks.OAK_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.SPRUCE_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.DARK_OAK_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.BIRCH_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.JUNGLE_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.ACACIA_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.CRIMSON_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.WARPED_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.MANGROVE_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.CHERRY_COFFIN.get().asItem());
+        GHOULING_HOLDABLE.add(TGBlocks.BAMBOO_COFFIN.get().asItem());
 
         ATTACK_ANIM_TIMER = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(GhoulingEntity.class, TrackedDataHandlerRegistry.INTEGER);

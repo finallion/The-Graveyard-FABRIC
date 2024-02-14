@@ -3,11 +3,8 @@ package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.structures.TGJigsawStructure;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,36 +3,29 @@ package com.lion.graveyard.platform;
 import com.lion.graveyard.world.trunk_placer.TGOakTreeTrunkPlacer;
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 
 import java.util.function.Supplier;
 
@@ -49,7 +42,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerItemGroup(RegistryKey<ItemGroup> registryKey, String name, String literalName, Item item) {
+    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
         throw new AssertionError();
     }
 
@@ -59,7 +52,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void addToItemGroup(RegistryKey<ItemGroup> itemGroup, Item item) {
+    public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
         throw new AssertionError();
     }
 
@@ -69,7 +62,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Settings props, int length) {
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
         throw new AssertionError();
     }
 
@@ -79,7 +72,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerParticleType(String name, DefaultParticleType particleType) {
+    public static void registerParticleType(String name, SimpleParticleType particleType) {
         throw new AssertionError();
     }
 
@@ -89,12 +82,12 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerRenderType(RenderLayer type, Block... blocks) {
+    public static void registerRenderType(RenderType type, Block... blocks) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
+    public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {
         throw new AssertionError();
     }
 
@@ -114,7 +107,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerEntityModelLayer(EntityModelLayer location, Supplier<TexturedModelData> definition) {
+    public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<TexturedModelData> definition) {
         throw new AssertionError();
     }
 
@@ -145,6 +138,11 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <T extends Criterion<?>> Supplier<T> registerCriterion(String name, T criterion) {
         throw new AssertionError();
     }
 }

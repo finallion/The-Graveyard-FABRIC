@@ -36,7 +36,7 @@ public class ServerPlayNetworkHandlerMixin {
             }
 
             GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)blockEntity;
-            signBlockEntity.tryChangeText(this.player, signText);
+            signBlockEntity.updateSignText(this.player, signText);
         }
     }
 }

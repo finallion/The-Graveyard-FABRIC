@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 public class CorruptedVindicator extends CorruptedIllager {
 
-    public CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, World world) {
+    public CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, Level world) {
         super(entityType, world, "corrupted_vindicator");
     }
 

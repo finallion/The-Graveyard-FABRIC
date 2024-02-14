@@ -2,35 +2,35 @@ package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGParticles;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.MossBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.MossBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TGMossBlock extends MossBlock {
 
-    public TGMossBlock(Settings settings) {
+    public TGMossBlock(BlockBehaviour.Properties settings) {
         super(settings);
     }
 
-    @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
         return new ItemStack(Blocks.MOSS_BLOCK);
     }
 
     // graveyard fog
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        super.randomDisplayTick(state, world, pos, random);
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        super.animateTick(state, world, pos, random);
 
         // can spawn
-        if (Graveyard.getConfig().fogSpawn(new Identifier(Graveyard.MOD_ID, "graveyard_fog_particle"))) {
+        if (Graveyard.getConfig().fogSpawn(new ResourceLocation(Graveyard.MOD_ID, "graveyard_fog_particle"))) {
             // how much will spawn
-            if (random.nextInt(Graveyard.getConfig().getParticle(new Identifier(Graveyard.MOD_ID, "graveyard_fog_particle")).spawnChance) == 0) {
+            if (random.nextInt(Graveyard.getConfig().getParticle(new ResourceLocation(Graveyard.MOD_ID, "graveyard_fog_particle")).spawnChance) == 0) {
                 world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, (double) pos.getX() + random.nextDouble(), (double) pos.getY() + random.nextDouble(), (double) pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
             }
 

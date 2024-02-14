@@ -40,7 +40,7 @@ public class NBTParser {
 
                 if (nbtFile.exists()) {
                     try {
-                        NbtCompound nbt = NbtIo.readCompressed(nbtFile);
+                        NbtCompound nbt = NbtIo.readCompressed(nbtFile.toPath(), new NbtSizeTracker(Long.MAX_VALUE, 512));
 
                         NbtList sizeList = nbt.getList("size", NbtInt.INT_TYPE);
                         int sizeX = sizeList.getInt(0);

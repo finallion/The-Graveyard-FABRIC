@@ -1,7 +1,7 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGCriteria;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.DaggerItem;
 import net.minecraft.entity.*;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AcolyteEntity extends CorruptedIllager {
 
-    public AcolyteEntity(EntityType<? extends CorruptedIllager> entityType, World world) {
+    public AcolyteEntity(EntityType<? extends CorruptedIllager> entityType, Level world) {
         super(entityType, world, "acolyte");
     }
 
@@ -45,7 +45,7 @@ public class AcolyteEntity extends CorruptedIllager {
     protected void onKilledBy(@Nullable LivingEntity adversary) {
         if (adversary instanceof ServerPlayerEntity player) {
             if (player.getMainHandStack().getItem() instanceof DaggerItem) {
-                TGAdvancements.KILLED_BY_BONE_DAGGER.trigger(player);
+                TGCriteria.KILLED_BY_BONE_DAGGER.get().trigger(player);
             }
         }
 

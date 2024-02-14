@@ -3,7 +3,7 @@ package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.trunk_placer.TGOakTreeTrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 import java.util.function.Supplier;
 

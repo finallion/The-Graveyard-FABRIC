@@ -10,64 +10,51 @@ import net.minecraft.client.model.ModelPartBuilder;
 import net.minecraft.client.model.ModelPartData;
 import net.minecraft.client.model.ModelTransform;
 import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.CrossbowPosing;
-import net.minecraft.client.render.entity.model.ModelWithArms;
-import net.minecraft.client.render.entity.model.ModelWithHead;
-import net.minecraft.client.render.entity.model.SinglePartEntityModel;
+import net.minecraft.client.render.entity.model.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePartEntityModel<T> implements ModelWithArms, ModelWithHead {
-    private final ModelPart root;
-    private final ModelPart head;
-    private final ModelPart hat;
+public class CorruptedIllagerModel<T extends CorruptedIllager> extends BipedEntityModel<T> implements ModelWithArms, ModelWithHead {
     private final ModelPart arms;
-    private final ModelPart leftLeg;
-    private final ModelPart rightLeg;
-    private final ModelPart rightArm;
-    private final ModelPart leftArm;
-    private final ModelPart shortLeftArm;
-    private final ModelPart leftArmStomp;
+    private final ModelPart jacket;
+
 
     public CorruptedIllagerModel(ModelPart root) {
-        this.root = root;
-        this.head = root.getChild("head");
-        this.hat = this.head.getChild("hat");
-        this.hat.visible = false;
+        super(root);
+
         this.arms = root.getChild("arms");
-        this.leftLeg = root.getChild("left_leg");
-        this.rightLeg = root.getChild("right_leg");
-        this.leftArm = root.getChild("left_arm");
-        this.rightArm = root.getChild("right_arm");
-        this.shortLeftArm = root.getChild("short_left_arm");
-        this.leftArmStomp = root.getChild("left_arm_stomp");
+        this.jacket = this.body.getChild("jacket");
     }
 
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData modelPartData2 = modelPartData.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -10.0F, -4.0F, 8.0F, 10.0F, 8.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData modelPartData4 = modelPartData.addChild("hat", ModelPartBuilder.create(), ModelTransform.NONE);
         modelPartData2.addChild("hat", ModelPartBuilder.create().uv(32, 0).cuboid(-4.0F, -10.0F, -4.0F, 8.0F, 12.0F, 8.0F, new Dilation(0.45F)), ModelTransform.NONE);
         modelPartData2.addChild("nose", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -1.0F, -6.0F, 2.0F, 4.0F, 2.0F), ModelTransform.pivot(0.0F, -2.0F, 0.0F));
-        modelPartData.addChild("body", ModelPartBuilder.create().uv(16, 20).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F).uv(0, 38).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new Dilation(0.5F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData body = modelPartData.addChild("body", ModelPartBuilder.create().uv(16, 20).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        body.addChild("jacket", ModelPartBuilder.create().uv(0, 38).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new Dilation(0.5F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
         ModelPartData modelPartData3 = modelPartData.addChild("arms", ModelPartBuilder.create().uv(44, 22).cuboid(-8.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F).uv(40, 38).cuboid(-4.0F, 2.0F, -2.0F, 8.0F, 4.0F, 4.0F), ModelTransform.of(0.0F, 3.0F, -1.0F, -0.75F, 0.0F, 0.0F));
         modelPartData3.addChild("left_shoulder", ModelPartBuilder.create().uv(44, 22).mirrored().cuboid(4.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F), ModelTransform.NONE);
         modelPartData.addChild("right_leg", ModelPartBuilder.create().uv(0, 22).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(-2.0F, 12.0F, 0.0F));
         modelPartData.addChild("left_leg", ModelPartBuilder.create().uv(0, 22).mirrored().cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(2.0F, 12.0F, 0.0F));
         modelPartData.addChild("right_arm", ModelPartBuilder.create().uv(40, 46).cuboid(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(-5.0F, 2.0F, 0.0F));
         modelPartData.addChild("left_arm", ModelPartBuilder.create().uv(44, 22).mirrored().cuboid(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(5.0F, 2.0F, 0.0F));
-        modelPartData.addChild("short_left_arm", ModelPartBuilder.create().uv(44, 22).mirrored().cuboid(-1.0F, -2.0F, -2.0F, 4.0F, 7.0F, 4.0F), ModelTransform.pivot(5.0F, 2.0F, 0.0F));
-        modelPartData.addChild("left_arm_stomp", ModelPartBuilder.create().uv(48, 18).cuboid(0.0F, 5.0F, -1.0F, 2.0F, 2.0F, 2.0F), ModelTransform.pivot(5.0F, 2.0F, 0.0F));
         return TexturedModelData.of(modelData, 64, 64);
     }
 
-    public ModelPart getPart() {
-        return this.root;
-    }
+
 
     public void setAngles(T illagerEntity, float f, float g, float h, float i, float j) {
+        boolean wearsChestArmor = illagerEntity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof ArmorItem;
+        this.jacket.visible = !wearsChestArmor;
+
 
         this.head.yaw = i * 0.017453292F;
         this.head.pitch = j * 0.017453292F;
@@ -78,8 +65,8 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
             this.leftArm.pitch = -0.62831855F;
             this.leftArm.yaw = 0.0F;
             this.leftArm.roll = 0.0F;
-            this.shortLeftArm.pitch = -0.62831855F; // new
-            this.leftArmStomp.pitch = -0.62831855F; // new
+            //this.shortLeftArm.pitch = -0.62831855F; // new
+            //this.leftArmStomp.pitch = -0.62831855F; // new
             this.rightLeg.pitch = -1.4137167F;
             this.rightLeg.yaw = 0.31415927F;
             this.rightLeg.roll = 0.07853982F;
@@ -93,8 +80,8 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
             this.leftArm.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * g * 0.5F;
             this.leftArm.yaw = 0.0F;
             this.leftArm.roll = 0.0F;
-            this.shortLeftArm.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * g * 0.5F; // new
-            this.leftArmStomp.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * g * 0.5F; // new
+            //this.shortLeftArm.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * g * 0.5F; // new
+            //this.leftArmStomp.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * g * 0.5F; // new
             this.rightLeg.pitch = MathHelper.cos(f * 0.6662F) * 1.4F * g * 0.5F;
             this.rightLeg.yaw = 0.0F;
             this.rightLeg.roll = 0.0F;
@@ -104,8 +91,8 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
         }
 
         CorruptedIllager.State state = illagerEntity.getState();
-        this.leftArmStomp.visible = false;
-        this.shortLeftArm.visible = false;
+        //this.leftArmStomp.visible = false;
+        //this.shortLeftArm.visible = false;
 
         if (state == CorruptedIllager.State.ATTACKING) {
             if (illagerEntity.getMainHandStack().isEmpty()) {
@@ -145,27 +132,9 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
             this.leftArm.pitch = MathHelper.cos(h * 0.6662F) * 0.05F;
             this.leftArm.roll = -2.3561945F;
             this.leftArm.yaw = 0.0F;
-
-            this.shortLeftArm.pivotX = 5.0F; //new
-            this.shortLeftArm.pitch = MathHelper.cos(h * 0.6662F) * 0.05F;
-            this.shortLeftArm.roll = -2.3561945F;
-            this.leftArmStomp.pivotX = 5.0F; //new
-            this.leftArmStomp.pitch = MathHelper.cos(h * 0.6662F) * 0.05F;
-            this.leftArmStomp.roll = -2.3561945F;
         } else if (state == CorruptedIllager.State.UNDEAD) {
-            if (illagerEntity.isModelDamaged()) {
-                this.shortLeftArm.visible = true;
-                this.leftArmStomp.visible = true;
-                this.arms.visible = false;
-                this.leftArm.visible = false;
-            }
             CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, false, this.handSwingProgress, h);
         } else if (state == CorruptedIllager.State.UNDEAD_ATTACKING) {
-            if (illagerEntity.isModelDamaged()) {
-                this.shortLeftArm.visible = true;
-                this.leftArmStomp.visible = true;
-                this.leftArm.visible = false;
-            }
             CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, true, this.handSwingProgress, h);
         }
 

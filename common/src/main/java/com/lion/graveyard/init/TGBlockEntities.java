@@ -2,7 +2,7 @@ package com.lion.graveyard.init;
 
 import com.lion.graveyard.blockentities.*;
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Supplier;
 

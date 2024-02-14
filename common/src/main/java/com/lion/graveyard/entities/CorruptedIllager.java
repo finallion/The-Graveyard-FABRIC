@@ -11,8 +11,9 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.raid.RaiderEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.random.Random;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class CorruptedIllager extends HordeGraveyardEntity {
 
-    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
+    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 
@@ -31,18 +32,18 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         super.initGoals();
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(2, new PatrolApproachGoal(this, 10.0F));
-        this.goalSelector.add(3, new AttackGoal(this));
+        this.goalSelector.add(3, new MeleeAttackGoal(this,1.0, false));
         this.targetSelector.add(1, (new RevengeGoal(this, RaiderEntity.class)).setGroupRevenge());
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, Player.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
         this.goalSelector.add(8, new WanderAroundGoal(this, 0.6D));
-        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+        this.goalSelector.add(9, new LookAtEntityGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
     }
 
     public EntityGroup getGroup() {
-        return EntityGroup.ILLAGER;
+        return EntityGroup.UNDEAD;
     }
 
 
@@ -108,19 +109,14 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         return false;
     }
 
-    class AttackGoal extends MeleeAttackGoal {
-        public AttackGoal(CorruptedIllager illager) {
-            super(illager, 1.0D, false);
-        }
+    @Override
+    public boolean canPickUpLoot() {
+        return true;
+    }
 
-        protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-            if (this.mob.getVehicle() instanceof RavagerEntity) {
-                float f = this.mob.getVehicle().getWidth() - 0.1F;
-                return (double)(f * 2.0F * f * 2.0F + entity.getWidth());
-            } else {
-                return super.getSquaredMaxAttackDistance(entity);
-            }
-        }
+    @Override
+    public boolean canPickupItem(ItemStack stack) {
+        return true;
     }
 
     public enum State {

@@ -11,7 +11,7 @@ public class SarcophagusItem extends BlockItem {
     }
 
     protected boolean place(ItemPlacementContext context, BlockState state) {
-        return context.getWorld().setBlockState(context.getBlockPos(), state, 26);
+        return context.getLevel().setBlock(context.getBlockPos(), state, 26);
     }
 
 

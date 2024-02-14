@@ -2,7 +2,7 @@ package com.lion.graveyard.config;
 
 import com.lion.graveyard.config.annotations.Description;
 import com.lion.graveyard.config.entries.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
@@ -48,15 +48,15 @@ public class GraveyardConfig implements Config {
     }
 
     // generation booleans
-    public boolean enabled(Identifier id) {
+    public boolean enabled(ResourceLocation id) {
         return getStructure(id).enabled;
     }
-    public boolean fogSpawn(Identifier id) {
+    public boolean fogSpawn(ResourceLocation id) {
         return getParticle(id).canGenerate;
     }
 
     // structure config
-    public StructureConfigEntry getStructure(Identifier id) {
+    public StructureConfigEntry getStructure(ResourceLocation id) {
         for (Map.Entry<String, StructureConfigEntry> entry : structureConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -66,7 +66,7 @@ public class GraveyardConfig implements Config {
     }
 
     // moss particle config
-    public ParticleConfigEntry getParticle(Identifier id) {
+    public ParticleConfigEntry getParticle(ResourceLocation id) {
         for (Map.Entry<String, ParticleConfigEntry> entry : particleConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -76,7 +76,7 @@ public class GraveyardConfig implements Config {
     }
 
     // mob spawn config
-    public MobConfigEntry getMob(Identifier id) {
+    public MobConfigEntry getMob(ResourceLocation id) {
         for (Map.Entry<String, MobConfigEntry> entry : mobConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -86,7 +86,7 @@ public class GraveyardConfig implements Config {
     }
 
     // horde spawn config
-    public HordeConfigEntry getHorde(Identifier id) {
+    public HordeConfigEntry getHorde(ResourceLocation id) {
         for (Map.Entry<String, HordeConfigEntry> entry : hordeConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();

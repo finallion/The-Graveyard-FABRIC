@@ -4,28 +4,26 @@ import com.lion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.lion.graveyard.blockentities.enums.SarcophagusPart;
 import com.lion.graveyard.blocks.SarcophagusBlock;
 import com.lion.graveyard.init.TGBlockEntities;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.LidOpenable;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
-import net.minecraft.util.math.Direction;
-
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 @Environment(EnvType.CLIENT)
-public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable> implements BlockEntityRenderer<SarcophagusBlockEntity> {
-    private MinecraftClient client;
+public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<SarcophagusBlockEntity> {
+    private Minecraft client;
 
-    public SarcophagusBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        this.client = MinecraftClient.getInstance();
+    public SarcophagusBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+        this.client = Minecraft.getInstance();
     }
 
     @Override
@@ -34,9 +32,9 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
     }
 
     @Override
-    public void render(SarcophagusBlockEntity entity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(SarcophagusBlockEntity entity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumers, int light, int overlay) {
         BlockState blockState = entity.getCachedState();
-        DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getWorld(), entity.getPos(), (worldx, pos) -> false);
+        DoubleBlockProperties.PropertySource<? extends SarcophagusBlockEntity> propertySource = DoubleBlockProperties.toPropertySource(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getLevel(), entity.getPos(), (worldx, pos) -> false);
         float g = propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever(entity)).get(tickDelta);
         g = 1.0F - g;
         g = 1.0F - g * g * g;
@@ -44,7 +42,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
         BakedModel base = getModel(((SarcophagusBlock)blockState.getBlock()).getBase().get());
         BakedModel lid = getModel(((SarcophagusBlock)blockState.getBlock()).getLid().get());
 
-        if (entity.getWorld() != null && entity.getCachedState().get(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
+        if (entity.getLevel() != null && entity.getCachedState().get(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
             render(entity, matrixStack, vertexConsumers, light, overlay, g, lid, true);
             render(entity, matrixStack, vertexConsumers, light, overlay, g, base, false);
         }
@@ -52,8 +50,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidOpenable>
 
 
 
-    private void render(SarcophagusBlockEntity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumer, int light, int overlay, float g, BakedModel model, boolean isLid) {
-        matrixStack.push();
+    private void render(SarcophagusBlockEntity entity, PoseStack matrixStack, MultiBufferSource vertexConsumer, int light, int overlay, float g, BakedModel model, boolean isLid) {
+        matrixStack.pushPose();
 
         Direction direction = entity.getCachedState().get(SarcophagusBlock.FACING).getOpposite();
         float f = direction.asRotation();

@@ -13,7 +13,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +59,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public final int ATTACK_ANIMATION_DURATION = 9;
     public final int REANIMATE_DURATION = 120; // duration reanimation anim: 40 + duration death animation: 30 + waiting time: 30
 
-    public RevenantEntity(EntityType<? extends HostileEntity> entityType, World world) {
+    public RevenantEntity(EntityType<? extends HostileEntity> entityType, Level world) {
         super(entityType, world, "revenant");
     }
 
@@ -76,12 +76,12 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(6, new LookAtEntityGoal(this, Player.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
         this.goalSelector.add(2, new RevenantMeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
         this.targetSelector.add(1, new RevengeGoal(this, LichEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal(this, PlayerEntity.class, true));
+        this.targetSelector.add(2, new ActiveTargetGoal(this, Player.class, true));
         this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
     }
@@ -139,7 +139,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             }
         } else {
             if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
-                entityAttributeInstance.removeModifier(SLOWNESS_EFFECT);
+                entityAttributeInstance.removeModifier(SLOWNESS_EFFECT.getId());
             }
         }
 

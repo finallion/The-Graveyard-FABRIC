@@ -1,36 +1,41 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.*;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CandleHolderBlock extends Block implements Waterloggable {
-    protected static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(4.0D, 2.0D, 0.0D, 12.0D, 16.0D, 11.0D);
-    protected static final VoxelShape SHAPE_SOUTH = Block.createCuboidShape(4.0D, 2.0D, 5.0D, 12.0D, 16.0D, 16.0D);
-    protected static final VoxelShape SHAPE_EAST = Block.createCuboidShape(5.0D, 2.0D, 4.0D, 16.0D, 16.0D, 12.0D);
-    protected static final VoxelShape SHAPE_WEST = Block.createCuboidShape(0.0D, 2.0D, 4.0D, 11.0D, 16.0D, 12.0D);
+public class CandleHolderBlock extends Block implements SimpleWaterloggedBlock {
+    protected static final VoxelShape SHAPE_NORTH = Block.box(4.0D, 2.0D, 0.0D, 12.0D, 16.0D, 11.0D);
+    protected static final VoxelShape SHAPE_SOUTH = Block.box(4.0D, 2.0D, 5.0D, 12.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SHAPE_EAST = Block.box(5.0D, 2.0D, 4.0D, 16.0D, 16.0D, 12.0D);
+    protected static final VoxelShape SHAPE_WEST = Block.box(0.0D, 2.0D, 4.0D, 11.0D, 16.0D, 12.0D);
     public static final DirectionProperty FACING;
     public static final BooleanProperty WATERLOGGED;
 
-    public CandleHolderBlock(Settings settings) {
+    public CandleHolderBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch (state.get(FACING)) {
+    public VoxelShape getShape(BlockState p_51309_, BlockGetter p_51310_, BlockPos p_51311_, CollisionContext p_51312_) {
+        switch (p_51309_.getValue(FACING)) {
             case SOUTH -> {
                 return SHAPE_SOUTH;
             }
@@ -46,36 +51,36 @@ public class CandleHolderBlock extends Block implements Waterloggable {
         }
     }
 
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+        return (BlockState)this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection()).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
 
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean)state.get(WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    public BlockState updateShape(BlockState p_51298_, Direction p_51299_, BlockState p_51300_, LevelAccessor p_51301_, BlockPos p_51302_, BlockPos p_51303_) {
+        if (p_51298_.getValue(WATERLOGGED)) {
+            p_51301_.scheduleTick(p_51302_, Fluids.WATER, Fluids.WATER.getTickDelay(p_51301_));
         }
 
-        return direction == Direction.DOWN ? (BlockState)state: super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+        return p_51299_ == Direction.DOWN ? p_51298_ : super.updateShape(p_51298_, p_51299_, p_51300_, p_51301_, p_51302_, p_51303_);
     }
 
-    public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+    public FluidState getFluidState(BlockState p_51318_) {
+        return p_51318_.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(p_51318_);
     }
 
-
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, WATERLOGGED);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_51305_) {
+        p_51305_.add(WATERLOGGED, FACING);
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+    public BlockState rotate(BlockState p_51295_, Rotation p_51296_) {
+        return p_51295_.setValue(FACING, p_51296_.rotate(p_51295_.getValue(FACING)));
     }
-
 
     static {
-        FACING = HorizontalFacingBlock.FACING;
-        WATERLOGGED = Properties.WATERLOGGED;
+        FACING = HorizontalDirectionalBlock.FACING;
+        WATERLOGGED = BlockStateProperties.WATERLOGGED;
     }
 }

@@ -1,6 +1,7 @@
 package com.lion.graveyard.blockentities.animation;
 
-import net.minecraft.util.math.MathHelper;
+
+import net.minecraft.util.Mth;
 
 public class SarcophagusLidAnimator {
     private boolean open;
@@ -22,7 +23,7 @@ public class SarcophagusLidAnimator {
     }
 
     public float getProgress(float delta) {
-        return MathHelper.lerp(delta, this.lastProgress, this.progress);
+        return Mth.lerp(delta, this.lastProgress, this.progress);
     }
 
     public void setOpen(boolean open) {

@@ -4,7 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGItems;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.*;
 import net.minecraft.registry.tag.BlockTags;
 
@@ -16,7 +16,7 @@ public class DaggerItem extends SwordItem {
     }
 
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        if (state.isOf(Blocks.COBWEB) || state.getBlock() instanceof GlassBlock || state.getBlock() instanceof PaneBlock || state.getBlock() instanceof StainedGlassBlock || state.getBlock() instanceof StainedGlassPaneBlock) {
+        if (state.isOf(Blocks.COBWEB) || state.isOf(Blocks.GLASS) || state.getBlock() instanceof PaneBlock || state.getBlock() instanceof StainedGlassBlock || state.getBlock() instanceof StainedGlassPaneBlock || state.getBlock() instanceof TintedGlassBlock) {
             return 30.0F;
         } else {
             return state.isIn(BlockTags.SWORD_EFFICIENT) ? 1.5F : 1.0F;
@@ -25,7 +25,7 @@ public class DaggerItem extends SwordItem {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (target.isDead() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof PlayerEntity playerEntity) {
+        if (target.isDead() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof Player playerEntity) {
             ItemStack stackOffhand = attacker.getOffHandStack();
             if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                 float blood = VialOfBlood.getBlood(stackOffhand);

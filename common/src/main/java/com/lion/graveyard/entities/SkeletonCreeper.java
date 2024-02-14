@@ -5,11 +5,11 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.effect.MobEffectInstance;
+import net.minecraft.entity.effect.MobEffects;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.world.World;
@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.Random;
 
 public class SkeletonCreeper extends CreeperEntity {
-    private PlayerEntity closestPlayer;
+    private Player closestPlayer;
     private final double explosionRadius = 3.5D;
 
-    public SkeletonCreeper(EntityType<? extends CreeperEntity> entityType, World world) {
+    public SkeletonCreeper(EntityType<? extends CreeperEntity> entityType, Level world) {
         super(entityType, world);
     }
 
@@ -60,7 +60,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
             if (canStart()) {
                 this.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, 1.0F, 10.0F);
-                this.closestPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 125));
+                this.closestPlayer.addStatusEffect(new MobEffectInstance(MobEffects.BLINDNESS, 125));
             }
 
             this.dead = true;
@@ -71,7 +71,7 @@ public class SkeletonCreeper extends CreeperEntity {
     }
 
     private void spawnEffectsCloud() {
-        Collection<StatusEffectInstance> collection = this.getStatusEffects();
+        Collection<MobEffectInstance> collection = this.getStatusEffects();
         if (!collection.isEmpty()) {
             AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(this.getEntityWorld(), this.getX(), this.getY(), this.getZ());
             areaEffectCloudEntity.setRadius(2.5F);
@@ -80,8 +80,8 @@ public class SkeletonCreeper extends CreeperEntity {
             areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
             areaEffectCloudEntity.setRadiusGrowth(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
 
-            for (StatusEffectInstance statusEffectInstance : collection) {
-                areaEffectCloudEntity.addEffect(new StatusEffectInstance(statusEffectInstance));
+            for (MobEffectInstance statusEffectInstance : collection) {
+                areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
             }
 
             this.getEntityWorld().spawnEntity(areaEffectCloudEntity);

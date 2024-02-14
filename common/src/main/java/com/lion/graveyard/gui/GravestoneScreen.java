@@ -118,7 +118,7 @@ public class GravestoneScreen extends Screen {
         MatrixStack matrices = context.getMatrices();
 
         DiffuseLighting.disableGuiDepthLighting();
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 40, 16777215);
         matrices.push();
         matrices.translate((double) (this.width / 2), 0.0D, 50.0D);

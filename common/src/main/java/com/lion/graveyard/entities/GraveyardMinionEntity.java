@@ -12,7 +12,7 @@ import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.world.World;
@@ -26,7 +26,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     protected static final TrackedData<Byte> TAMEABLE_FLAGS;
     private boolean sitting;
 
-    public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, World world) {
+    public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, Level world) {
         super(entityType, world);
         this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0F);
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0F);
@@ -75,7 +75,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
         this.dataTracker.set(OWNER_UUID, Optional.ofNullable(uuid));
     }
 
-    public void setOwner(PlayerEntity player) {
+    public void setOwner(Player player) {
         this.setOwnerUuid(player.getUuid());
     }
 
@@ -136,7 +136,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
             if (target instanceof GraveyardMinionEntity) {
                 GraveyardMinionEntity minion = (GraveyardMinionEntity)target;
                 return minion.getOwner() != owner;
-            } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target)) {
+            } else if (target instanceof Player && owner instanceof Player && !((Player)owner).shouldDamagePlayer((Player)target)) {
                 return false;
             } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
                 return false;

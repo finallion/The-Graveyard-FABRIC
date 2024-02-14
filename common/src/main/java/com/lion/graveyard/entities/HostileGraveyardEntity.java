@@ -7,8 +7,8 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.effect.MobEffectInstance;
+import net.minecraft.entity.effect.MobEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -21,7 +21,7 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
     private String name;
     private static final TrackedData<Boolean> CAN_BURN_IN_SUNLIGHT;
 
-    public HostileGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
+    public HostileGraveyardEntity(EntityType<? extends HostileEntity> entityType, Level world, String name) {
         super(entityType, world);
         this.name = name;
     }
@@ -67,8 +67,8 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
         super.readCustomDataFromNbt(nbt);
     }
 
-    public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        if (effect.getEffectType() == StatusEffects.WITHER) {
+    public boolean canHaveStatusEffect(MobEffectInstance effect) {
+        if (effect.getEffectType() == MobEffects.WITHER) {
             return Graveyard.getConfig().mobConfigEntries.get(name).canBeWithered;
         }
 

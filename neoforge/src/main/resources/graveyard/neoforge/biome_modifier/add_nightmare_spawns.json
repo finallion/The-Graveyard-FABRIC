@@ -1,0 +1,11 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#graveyard:nightmare_spawns",
+  "spawn": {
+    "type": "graveyard:nightmare",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 7
+  },
+  "category": "creature"
+}

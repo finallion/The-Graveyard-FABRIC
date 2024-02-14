@@ -1,6 +1,6 @@
 package com.lion.graveyard.entities;
 
-import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGCriteria;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
@@ -27,7 +27,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     private boolean patrolling;
     private boolean patrolLeader;
 
-    protected HordeGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
+    protected HordeGraveyardEntity(EntityType<? extends HostileEntity> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 
@@ -124,7 +124,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     protected void onKilledBy(@Nullable LivingEntity adversary) {
         if (adversary instanceof ServerPlayerEntity player) {
             if (this.patrolLeader) {
-                TGAdvancements.KILL_HORDE.trigger(player);
+                TGCriteria.KILL_HORDE.get().trigger(player);
             }
         }
 

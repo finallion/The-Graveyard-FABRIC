@@ -1,10 +1,11 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Supplier;
 
@@ -12,13 +13,13 @@ public class TGStoneBlock extends Block {
 
     private final Supplier<Block> clickedBlock;
 
-    public TGStoneBlock(Supplier<Block> clickedBlock, Settings settings) {
+    public TGStoneBlock(Supplier<Block> clickedBlock, BlockBehaviour.Properties settings) {
         super(settings);
         this.clickedBlock = clickedBlock;
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
         return new ItemStack(clickedBlock.get());
     }
 

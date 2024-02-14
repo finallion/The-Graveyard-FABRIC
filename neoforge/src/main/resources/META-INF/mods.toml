@@ -1,0 +1,19 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "CC0-1.0"
+
+[[mods]]
+modId = "graveyard"
+version = "${version}"
+displayName = "The Graveyard"
+authors = "Lion"
+description = '''
+Adds new bosses, structures, mobs and blocks themed around the graveyard.
+'''
+logoFile = "graveyard_logo.png"
+
+
+[[dependencies.graveyard]]
+modId="geckolib"
+versionRange="[4.4,)"
+required=true

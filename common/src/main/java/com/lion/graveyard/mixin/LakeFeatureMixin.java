@@ -20,9 +20,9 @@ public class LakeFeatureMixin {
     @Inject(at = @At("HEAD"), method = "generate", cancellable = true)
     private void generateNoLakes(FeatureContext<LakeFeature.Config> context, CallbackInfoReturnable<Boolean> info) {
         ChunkSectionPos chunkPos = ChunkSectionPos.from(context.getOrigin());
-        StructureHolder structureHolder = context.getWorld().getChunk(context.getOrigin());
+        StructureHolder structureHolder = context.getLevel().getChunk(context.getOrigin());
 
-        StructureAccessor structureAccessor = ((ChunkRegionAccessor)context.getWorld()).getStructureAccessor();
+        StructureAccessor structureAccessor = ((ChunkRegionAccessor)context.getLevel()).getStructureAccessor();
 
         for (Structure structure : TGStructures.structures) {
             StructureStart structureStart = structureAccessor.getStructureStart(chunkPos, structure, structureHolder);

@@ -1,7 +1,7 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.goals.NightmareMeleeAttackGoal;
-import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGCriteria;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,10 +13,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.effect.MobEffectInstance;
+import net.minecraft.entity.effect.MobEffects;
 import net.minecraft.entity.mob.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
@@ -66,7 +66,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     private int angerTime;
     private int ageWhenTargetSet;
 
-    public NightmareEntity(EntityType<? extends HostileEntity> entityType, World world) {
+    public NightmareEntity(EntityType<? extends HostileEntity> entityType, Level world) {
         super(entityType, world, "nightmare");
         this.setStepHeight(1.0F);
     }
@@ -94,7 +94,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.goalSelector.add(1, new ChasePlayerGoal(this));
         this.goalSelector.add(2, new NightmareMeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0D, 0.0F));
-        this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(8, new LookAtEntityGoal(this, Player.class, 8.0F));
         this.goalSelector.add(8, new LookAroundGoal(this));
         this.targetSelector.add(1, new TeleportTowardsPlayerGoal(this, this::shouldAngerAt));
         this.targetSelector.add(2, new RevengeGoal(this, new Class[0]));
@@ -264,7 +264,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.playSound(TGSounds.NIGHTMARE_DEATH.get(), 1.0F, -10.0F);
     }
 
-    boolean isPlayerStaring(PlayerEntity player) {
+    boolean isPlayerStaring(Player player) {
         ItemStack itemStack = (ItemStack)player.getInventory().armor.get(3);
         if (itemStack.isOf(Blocks.CARVED_PUMPKIN.asItem())) {
             return false;
@@ -309,7 +309,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         if (bl && !bl2) {
             boolean bl3 = this.teleport(x, y, z, false);
             if (bl3 && !this.isSilent()) {
-                //this.getEntityWorld().playSound((PlayerEntity)null, this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+                //this.getEntityWorld().playSound((Player)null, this.prevX, this.prevY, this.prevZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
                 this.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, -10.0F);
             }
 
@@ -380,8 +380,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     @Override
     protected void onKilledBy(@Nullable LivingEntity adversary) {
         if (adversary instanceof ServerPlayerEntity player) {
-            if (player.hasStatusEffect(StatusEffects.BLINDNESS)) {
-                TGAdvancements.KILL_WHILE_BLINDED.trigger(player);
+            if (player.hasStatusEffect(MobEffects.BLINDNESS)) {
+                TGCriteria.KILL_WHILE_BLINDED.get().trigger(player);
             }
         }
 
@@ -407,11 +407,11 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
         public boolean canStart() {
             this.target = this.nightmare.getTarget();
-            if (!(this.target instanceof PlayerEntity)) {
+            if (!(this.target instanceof Player)) {
                 return false;
             } else {
                 double d = this.target.squaredDistanceTo(this.nightmare);
-                return d > 256.0D ? false : this.nightmare.isPlayerStaring((PlayerEntity)this.target);
+                return d > 256.0D ? false : this.nightmare.isPlayerStaring((Player)this.target);
             }
         }
 
@@ -424,20 +424,20 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         }
     }
 
-    static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<PlayerEntity> {
+    static class TeleportTowardsPlayerGoal extends ActiveTargetGoal<Player> {
         private final NightmareEntity nightmare;
         @Nullable
-        private PlayerEntity targetPlayer;
+        private Player targetPlayer;
         private int lookAtPlayerWarmup;
         private int ticksSinceUnseenTeleport;
         private final TargetPredicate staringPlayerPredicate;
         private final TargetPredicate validTargetPredicate = TargetPredicate.createAttackable().ignoreVisibility();
 
         public TeleportTowardsPlayerGoal(NightmareEntity nightmare, @Nullable Predicate<LivingEntity> targetPredicate) {
-            super(nightmare, PlayerEntity.class, 10, false, false, targetPredicate);
+            super(nightmare, Player.class, 10, false, false, targetPredicate);
             this.nightmare = nightmare;
             this.staringPlayerPredicate = TargetPredicate.createAttackable().setBaseMaxDistance(this.getFollowRange()).setPredicate((playerEntity) -> {
-                return nightmare.isPlayerStaring((PlayerEntity)playerEntity);
+                return nightmare.isPlayerStaring((Player)playerEntity);
             });
         }
 
@@ -484,10 +484,10 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             } else {
                 if (this.targetEntity != null && !this.nightmare.hasVehicle()) {
                     // custom teleport injection
-                    if (this.nightmare.isPlayerStaring((PlayerEntity)this.targetEntity)) {
+                    if (this.nightmare.isPlayerStaring((Player)this.targetEntity)) {
                         if (targetEntity.squaredDistanceTo(this.nightmare) <= 384.0D && targetEntity != null) {
                             if (targetEntity.squaredDistanceTo(this.nightmare) > 24.0D) {
-                                targetEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 100));
+                                targetEntity.addStatusEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                                 this.nightmare.teleportTo(targetEntity);
                             }
                         }

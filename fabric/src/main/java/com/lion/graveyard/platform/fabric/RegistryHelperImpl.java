@@ -11,6 +11,8 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -146,5 +148,10 @@ public class RegistryHelperImpl {
 
     public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
         return () -> TrunkPlacerTypeInvoker.callRegister(Graveyard.createStringID(name), codec);
+    }
+
+    public static <T extends Criterion<?>> Supplier<T> registerCriterion(String name, T criterion) {
+        var registry = Criteria.register(Graveyard.createStringID(name), criterion);
+        return () -> registry;
     }
 }

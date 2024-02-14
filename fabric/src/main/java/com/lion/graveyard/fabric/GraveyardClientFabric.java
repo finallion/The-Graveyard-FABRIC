@@ -74,7 +74,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
                     entity.setYaw(yaw);
                     entity.setId(entityID);
                     entity.setUuid(entityUUID);
-                    world.addEntity(entityID, entity);
+                    world.addEntity(entity);
                 }
             });
         });

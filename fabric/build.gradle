@@ -1,5 +1,5 @@
 plugins {
-	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 allprojects {
@@ -19,13 +19,6 @@ configurations {
 	developmentFabric.extendsFrom common
 }
 
-loom {
-	accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-repositories {
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-}
 
 dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
@@ -56,21 +49,19 @@ shadowJar {
 
 remapJar {
 	injectAccessWidener = true
-	input.set shadowJar.archiveFile
+	inputFile.set shadowJar.archiveFile
 	dependsOn shadowJar
-	classifier null
+	archiveClassifier.set(null)
 }
 
 jar {
-	classifier "dev"
-	setArchivesBaseName("graveyard-FABRIC");
+	archiveClassifier.set("dev")
 }
 
 sourcesJar {
 	def commonSources = project(":common").sourcesJar
 	dependsOn commonSources
 	from commonSources.archiveFile.map { zipTree(it) }
-	duplicatesStrategy 'exclude'
 }
 
 components.java {
@@ -79,16 +70,11 @@ components.java {
 	}
 }
 
-publishing {
-	publications {
-		mavenFabric(MavenPublication) {
-			artifactId = rootProject.archives_base_name + "-" + project.name
-			from components.java
-		}
+repositories {
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-	}
+	maven { url "https://www.cursemaven.com" }
 }

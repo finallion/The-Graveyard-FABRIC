@@ -11,6 +11,13 @@ import software.bernie.geckolib.GeckoLib;
 
 public class Graveyard {
 
+        /*
+    // TODO: templates
+    // TODO: trades
+    // TODO: sherds
+    // TODO: double deco
+     */
+
     public static final String MOD_ID = "graveyard";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
@@ -24,9 +31,7 @@ public class Graveyard {
     }
 
     public static void init() {
-        GeckoLib.initialize();
-
-        TGAdvancements.init();
+        TGCriteria.init();
         TGItems.init();
         TGBlocks.init();
         TGEntities.init();
@@ -53,11 +58,4 @@ public class Graveyard {
     public static String createStringID(String name) {
         return MOD_ID + ":" + name;
     }
-
-    /*
-    // TODO: templates
-    // TODO: trades
-    // TODO: sherds
-    // TODO: double deco
-     */
 }

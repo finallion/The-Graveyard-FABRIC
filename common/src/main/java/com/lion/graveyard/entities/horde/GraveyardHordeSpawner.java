@@ -7,7 +7,7 @@ import com.lion.graveyard.init.TGEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BiomeTags;
@@ -21,11 +21,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.spawner.Spawner;
+import net.minecraft.world.spawner.SpecialSpawner;
 
 
-
-public class GraveyardHordeSpawner implements Spawner {
+public class GraveyardHordeSpawner implements SpecialSpawner {
     private int ticksUntilNextSpawn;
 
     public GraveyardHordeSpawner() {}
@@ -51,7 +50,7 @@ public class GraveyardHordeSpawner implements Spawner {
                         if (i < 1) {
                             return 0;
                         } else {
-                            PlayerEntity playerEntity = (PlayerEntity)world.getPlayers().get(random.nextInt(i));
+                            Player playerEntity = (Player)world.getPlayers().get(random.nextInt(i));
                             if (playerEntity.isSpectator()) {
                                 return 0;
                             } else if (world.isNearOccupiedPointOfInterest(playerEntity.getBlockPos(), 2)) {

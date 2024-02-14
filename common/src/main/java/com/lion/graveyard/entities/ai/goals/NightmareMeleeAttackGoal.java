@@ -4,7 +4,7 @@ import com.lion.graveyard.entities.NightmareEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.predicate.entity.EntityPredicates;
 
 import java.util.EnumSet;
@@ -69,7 +69,7 @@ public class NightmareMeleeAttackGoal extends Goal {
         } else if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
             return false;
         } else {
-            return !(livingEntity instanceof PlayerEntity) || !livingEntity.isSpectator() && !((PlayerEntity) livingEntity).isCreative();
+            return !(livingEntity instanceof Player) || !livingEntity.isSpectator() && !((Player) livingEntity).isCreative();
         }
     }
 

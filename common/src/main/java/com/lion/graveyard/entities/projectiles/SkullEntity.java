@@ -49,11 +49,11 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     private static final TrackedData<Boolean> CHARGED;
 
-    public SkullEntity(EntityType<? extends SkullEntity> entityType, World world) {
+    public SkullEntity(EntityType<? extends SkullEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public SkullEntity(World world, LivingEntity owner, double directionX, double directionY, double directionZ) {
+    public SkullEntity(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
         super(TGEntities.SKULL.get(), owner, directionX, directionY, directionZ, world);
     }
 
@@ -103,7 +103,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     public void tick() {
         super.tick();
         Vec3d vec3d = this.getVelocity();
-        this.getWorld().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + vec3d.x * 0.4D, this.getY() + vec3d.y + 0.5D, this.getZ() + vec3d.z * 0.4D, 0.0D, 0.0D, 0.0D);
+        this.getLevel().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + vec3d.x * 0.4D, this.getY() + vec3d.y + 0.5D, this.getZ() + vec3d.z * 0.4D, 0.0D, 0.0D, 0.0D);
     }
 
     protected void onCollision(HitResult hitResult) {

@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 
 public class MathUtil {
 
-    public static <T extends ParticleEffect> void createParticleDisk(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, Random random) {
+    public static <T extends ParticleEffect> void createParticleDisk(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, Random random) {
         int surfaceArea = MathHelper.ceil(Math.PI * radius * radius); // circle surface area
         for (int j = 0; j < surfaceArea; ++j) {
             float h = random.nextFloat() * 6.2831855F; // two pi const (one period of sin and cos), returns value 0 to two pi
@@ -19,7 +19,7 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleEffect> void createParticleCircle(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, Random random, float thickness) {
+    public static <T extends ParticleEffect> void createParticleCircle(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, Random random, float thickness) {
         int surfaceArea = MathHelper.ceil(Math.PI * radius * radius); // circle surface area
         for (int i = 0; i < surfaceArea; ++i) {
             float h = random.nextFloat() * 6.2831855F;
@@ -30,7 +30,7 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleEffect> void createParticleSpiral(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, int length, T type, Random random) {
+    public static <T extends ParticleEffect> void createParticleSpiral(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, int length, T type, Random random) {
         double yCoord = y + 1.1D; // top of block
 
         for (int i = 0; i < length; i++) {
@@ -44,7 +44,7 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleEffect> void createParticleFlare(World world, double x, double y, double z, int length, T type, T type2, Random random, boolean inverted) {
+    public static <T extends ParticleEffect> void createParticleFlare(Level world, double x, double y, double z, int length, T type, T type2, Random random, boolean inverted) {
         double yCoord = y + 1.1D; // top of block
 
         double yDeviation = !inverted ? random.nextDouble() / 8 + 0.01 : -random.nextDouble() / 8 - 0.01; // pitch

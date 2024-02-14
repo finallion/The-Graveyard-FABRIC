@@ -6,6 +6,7 @@ import com.lion.graveyard.entities.models.CorruptedIllagerModel;
 import com.lion.graveyard.entities.renders.features.VindicatorEyes;
 import com.lion.graveyard.init.TGEntityModelLayers;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 
 public class CorruptedVindicatorRenderer extends CorruptedIllagerRenderer<CorruptedVindicator> {
@@ -14,7 +15,6 @@ public class CorruptedVindicatorRenderer extends CorruptedIllagerRenderer<Corrup
     public CorruptedVindicatorRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, new CorruptedIllagerModel<>(ctx.getPart(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
         this.addFeature(new VindicatorEyes(this));
-        this.model.getHat().visible = false;
     }
 
     @Override

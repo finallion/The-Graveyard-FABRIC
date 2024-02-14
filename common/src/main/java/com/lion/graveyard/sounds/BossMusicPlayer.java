@@ -3,8 +3,8 @@ package com.lion.graveyard.sounds;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.entity.player.Player;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvent;
 
 
@@ -16,9 +16,9 @@ public class BossMusicPlayer {
         SoundEvent soundEvent = entity.getBossMusic();
 
         if (soundEvent != null && entity.isAlive()) {
-            PlayerEntity player = MinecraftClient.getInstance().player;
+            Player player = MinecraftClient.getInstance().player;
             if (music != null) {
-                if (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MUSIC) <= 0) {
+                if (MinecraftClient.getInstance().options.getSoundVolume(SoundSource.MUSIC) <= 0) {
                     music = null;
                 } else if (music.boss == entity && !entity.canPlayerHearMusic(player)) {
                     music.boss = null;

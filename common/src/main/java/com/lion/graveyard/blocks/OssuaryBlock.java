@@ -3,108 +3,114 @@ package com.lion.graveyard.blocks;
 import com.lion.graveyard.blockentities.OssuaryBlockEntity;
 import com.lion.graveyard.gui.OssuaryScreenHandler;
 import com.lion.graveyard.init.TGBlockEntities;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class OssuaryBlock extends BlockWithEntity implements BlockEntityProvider {
-    private static final Text TITLE = Text.translatable("container.ossuary");
+public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
+    private static final Component TITLE = Component.translatable("container.ossuary");
     public static final DirectionProperty FACING;
     public static final BooleanProperty OPEN;
-
-    public OssuaryBlock(Settings settings) {
+    public OssuaryBlock(BlockBehaviour.Properties settings) {
         super(settings);
-        this.setDefaultState((BlockState)((BlockState)this.stateManager.getDefaultState()).with(FACING, Direction.NORTH).with(OPEN, false));
+        this.registerDefaultState((BlockState)((BlockState)stateDefinition.any()).setValue(FACING, Direction.NORTH).setValue(OPEN, false));
     }
 
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        return (BlockState)this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return BlockWithEntity.checkType(type, TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntity::tick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return BaseEntityBlock.createTickerHelper(type, TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntity::tick);
     }
 
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-            return ActionResult.CONSUME;
+            player.openMenu(state.getMenuProvider(world, pos));
+            return InteractionResult.CONSUME;
         }
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         for (int i = 0; i < 10; i++) {
-            world.addParticle(ParticleTypes.ASH, pos.getX() + random.nextBetween(-1, 1) + 0.5D, pos.getY() + 1.0D, pos.getZ() + random.nextBetween(-1, 1) + 0.5D, 0, 0, 0);
+            world.addParticle(ParticleTypes.ASH, pos.getX() + random.nextIntBetweenInclusive(-1, 1) + 0.5D, pos.getY() + 1.0D, pos.getZ() + random.nextIntBetweenInclusive(-1, 1) + 0.5D, 0, 0, 0);
 
         }
-
     }
 
     @Nullable
-    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
-        return new SimpleNamedScreenHandlerFactory((syncId, playerInventory, player) -> {
-            return new OssuaryScreenHandler(syncId, playerInventory, ScreenHandlerContext.create(world, pos));
+    public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos) {
+        return new SimpleMenuProvider((p_57074_, p_57075_, p_57076_) -> {
+            return new OssuaryScreenHandler(p_57074_, p_57075_, ContainerLevelAccess.create(world, pos));
         }, TITLE);
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
     }
 
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation((Direction)state.get(FACING)));
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation((Direction)state.getValue(FACING)));
     }
 
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, OPEN);
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_152840_) {
+        p_152840_.add(FACING, OPEN);
     }
 
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    @Override
+    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
         return false;
     }
 
-
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new OssuaryBlockEntity(pos, state);
     }
 
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+
+    public RenderShape getRenderShape(BlockState p_56255_) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     static {
-        FACING = HorizontalFacingBlock.FACING;
-        OPEN = BooleanProperty.of("open");
+        FACING = BlockStateProperties.FACING;
+        OPEN = BooleanProperty.create("open");
     }
 
 }

@@ -1,10 +1,10 @@
 package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.renderer.RenderType;
 
 public class TGRenderTypes {
-    private static final RenderLayer CUTOUT_MIPPED = RenderLayer.getCutoutMipped();
+    private static final RenderType CUTOUT_MIPPED = RenderType.cutoutMipped();
 
     public static void postInit() {
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SKULL_WITH_RIB_CAGE.get());

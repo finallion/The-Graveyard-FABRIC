@@ -5,11 +5,18 @@ import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.entity.player.Player;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.*;
@@ -32,12 +39,12 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController<>(this, "controller", 0, event -> {
             AnimationController.State state = event.getController().getAnimationState();
-            if (this.getCachedState().get(OssuaryBlock.OPEN)) {
+            if (this.getBlockState().getValue(OssuaryBlock.OPEN)) {
                 if (state == AnimationController.State.STOPPED || state == AnimationController.State.PAUSED)  {
-                    if (world != null && !playedSound) {
-                        PlayerEntity playerEntity = world.getClosestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
+                    if (level != null && !playedSound) {
+                        Player playerEntity = level.getNearestPlayer((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D, 4.0D, false);
                         if (playerEntity != null) {
-                            playerEntity.playSound(TGSounds.OSSUARY_OPEN.get(), SoundCategory.BLOCKS, 1.0F, -2.0F);
+                            playerEntity.playSound(TGSounds.OSSUARY_OPEN.get(), SoundSource.BLOCKS, 1.0F, -2.0F);
                             playedSound = true;
                         }
                     }
@@ -45,7 +52,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
                     event.getController().setAnimation(OPEN);
                 }
                 return PlayState.CONTINUE;
-            } else if (!this.getCachedState().get(OssuaryBlock.OPEN) && state == AnimationController.State.PAUSED) {
+            } else if (!this.getBlockState().getValue(OssuaryBlock.OPEN) && state == AnimationController.State.PAUSED) {
                 event.getController().setAnimation(CLOSE);
                 if (playedSound) playedSound = false;
 
@@ -61,16 +68,16 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
         return factory;
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, OssuaryBlockEntity blockEntity) {
+    public static void tick(Level world, BlockPos pos, BlockState state, OssuaryBlockEntity blockEntity) {
         if (world.random.nextInt(100) == 0) {
-            world.playSound(null, pos, SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.BLOCKS, 4.0F, -3.0F);
+            world.playSound(null, pos, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 4.0F, -3.0F);
         }
 
-        PlayerEntity playerEntity = world.getClosestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
-        if (playerEntity != null && !state.get(OssuaryBlock.OPEN)) {
-            world.setBlockState(pos, state.with(OssuaryBlock.OPEN, true), 3);
-        } else if (playerEntity == null && state.get(OssuaryBlock.OPEN)) {
-            world.setBlockState(pos, state.with(OssuaryBlock.OPEN, false), 3);
+        Player playerEntity = world.getNearestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
+        if (playerEntity != null && !state.getValue(OssuaryBlock.OPEN)) {
+            world.setBlock(pos, state.setValue(OssuaryBlock.OPEN, true), 3);
+        } else if (playerEntity == null && state.getValue(OssuaryBlock.OPEN)) {
+            world.setBlock(pos, state.setValue(OssuaryBlock.OPEN, false), 3);
         }
 
     }

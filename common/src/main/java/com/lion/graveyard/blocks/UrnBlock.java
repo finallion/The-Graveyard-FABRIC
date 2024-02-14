@@ -1,164 +1,173 @@
 package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.UrnBlockEntity;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.*;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import com.lion.graveyard.init.TGBlockEntities;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEntityProvider {
+import java.util.Random;
+
+public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, EntityBlock {
     public static final BooleanProperty WATERLOGGED;
     public static final DirectionProperty FACING;
     public static final BooleanProperty OPEN;
-    private static final VoxelShape LARGE_URN = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-    private static final VoxelShape SMALL_URN = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 10.0D, 13.0D);
+    private static final VoxelShape LARGE_URN = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+    private static final VoxelShape SMALL_URN = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 10.0D, 13.0D);
 
     public UrnBlock() {
-        super(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(0.3F));
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(OPEN, false));
+        super(BlockBehaviour.Properties.of().noOcclusion().sound(SoundType.METAL).strength(0.3F));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false).setValue(OPEN, false));
+    }
+    @Override
+    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
+        return false;
     }
 
     @Override
-    public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState p_49928_, BlockGetter p_49929_, BlockPos p_49930_) {
         return true;
     }
 
     @Override
-    public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
+    public float getShadeBrightness(BlockState p_60472_, BlockGetter p_60473_, BlockPos p_60474_) {
         return 1.0F;
     }
 
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED, FACING, OPEN);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_206840_1_) {
+        p_206840_1_.add(FACING, OPEN, WATERLOGGED);
     }
 
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        Direction direction = context.getHorizontalDirection();
+        return this.defaultBlockState().setValue(FACING, direction.getOpposite()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
     }
 
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (state.getBlock().toString().contains("small")) {
+    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
+        if (this.asBlock().toString().contains("small")) {
             return SMALL_URN;
-        } else {
-            return LARGE_URN;
         }
+        return LARGE_URN;
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (state.getBlock().toString().contains("small")) {
+    public VoxelShape getCollisionShape(BlockState p_220071_1_, BlockGetter p_220071_2_, BlockPos p_220071_3_, CollisionContext p_220071_4_) {
+        if (this.asBlock().toString().contains("small")) {
             return SMALL_URN;
-        } else {
-            return LARGE_URN;
         }
+        return LARGE_URN;
     }
-
     @Override
-    public boolean isShapeFullCube(BlockState state, BlockView world, BlockPos pos) {
+    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
     }
 
-
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState p_49069_, Level p_49070_, BlockPos p_49071_, Player p_49072_, InteractionHand p_49073_, BlockHitResult p_49074_) {
+        if (p_49070_.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof UrnBlockEntity) {
-                player.openHandledScreen((UrnBlockEntity)blockEntity);
+            BlockEntity blockentity = p_49070_.getBlockEntity(p_49071_);
+            if (blockentity instanceof UrnBlockEntity) {
+                p_49072_.openMenu((UrnBlockEntity)blockentity);
+                p_49072_.awardStat(Stats.OPEN_BARREL);
+                PiglinAi.angerNearbyPiglins(p_49072_, true);
             }
 
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof Inventory) {
-                ItemScatterer.spawn(world, pos, (Inventory)blockEntity);
+    public void onRemove(BlockState p_49076_, Level p_49077_, BlockPos p_49078_, BlockState p_49079_, boolean p_49080_) {
+        if (!p_49076_.is(p_49079_.getBlock())) {
+            BlockEntity blockentity = p_49077_.getBlockEntity(p_49078_);
+            if (blockentity instanceof Container) {
+                Containers.dropContents(p_49077_, p_49078_, (Container)blockentity);
+                p_49077_.updateNeighbourForOutputSignal(p_49078_, this);
             }
 
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onRemove(p_49076_, p_49077_, p_49078_, p_49079_, p_49080_);
         }
     }
 
-
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof UrnBlockEntity) {
-            ((UrnBlockEntity)blockEntity).onScheduledTick();
+    public void tick(BlockState p_49060_, ServerLevel p_49061_, BlockPos p_49062_, Random p_49063_) {
+        BlockEntity blockentity = p_49061_.getBlockEntity(p_49062_);
+        if (blockentity instanceof UrnBlockEntity) {
+            ((UrnBlockEntity)blockentity).onScheduledTick();
         }
-
     }
 
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
-        return false;
+    public BlockEntity newBlockEntity(BlockPos p_152102_, BlockState p_152103_) {
+        return TGBlockEntities.URN_BLOCK_ENTITY.get().create(p_152102_, p_152103_);
     }
 
-
-
-    @Nullable
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new UrnBlockEntity(pos, state);
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState p_49090_) {
+        return RenderShape.MODEL;
     }
 
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (itemStack.hasCustomName()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof UrnBlockEntity) {
-                ((UrnBlockEntity)blockEntity).setCustomName(itemStack.getName());
+    public void setPlacedBy(Level p_49052_, BlockPos p_49053_, BlockState p_49054_, @Nullable LivingEntity p_49055_, ItemStack p_49056_) {
+        if (p_49056_.hasCustomHoverName()) {
+            BlockEntity blockentity = p_49052_.getBlockEntity(p_49053_);
+            if (blockentity instanceof UrnBlockEntity) {
+                ((UrnBlockEntity)blockentity).setCustomName(p_49056_.getHoverName());
             }
         }
 
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+    public BlockState rotate(BlockState p_49085_, Rotation p_49086_) {
+        return p_49085_.setValue(FACING, p_49086_.rotate(p_49085_.getValue(FACING)));
     }
 
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation((Direction)state.get(FACING)));
+    public BlockState mirror(BlockState p_49082_, Mirror p_49083_) {
+        return p_49082_.rotate(p_49083_.getRotation(p_49082_.getValue(FACING)));
     }
 
-    public boolean hasComparatorOutput(BlockState state) {
-        return false;
+    public boolean hasAnalogOutputSignal(BlockState p_149740_1_) {
+        return true;
     }
 
 
     static {
-        FACING = HorizontalFacingBlock.FACING;
-        OPEN = Properties.OPEN;
-        WATERLOGGED = Properties.WATERLOGGED;
+        FACING = BlockStateProperties.HORIZONTAL_FACING;
+        OPEN = BlockStateProperties.OPEN;
+        WATERLOGGED = BlockStateProperties.WATERLOGGED;
     }
 }

@@ -20,7 +20,7 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
     }
 
     public boolean generate(FeatureContext<BoulderFeatureConfig> context) {
-        StructureWorldAccess world = context.getWorld();
+        StructureWorldAccess world = context.getLevel();
         Random random = context.getRandom();
         BlockPos startPos = context.getOrigin();
 
@@ -37,7 +37,7 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
                         BlockPos pos = new BlockPos(x, startY, z);
 
                         BlockState blockState = getBlockStateForPosition(dx, dy, dz, radius, random, context.getConfig());
-                        world.setBlockState(pos, blockState, 3);
+                        world.setBlock(pos, blockState, 3);
                     }
                 }
             }

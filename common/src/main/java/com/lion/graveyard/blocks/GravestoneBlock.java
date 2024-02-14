@@ -1,38 +1,44 @@
 package com.lion.graveyard.blocks;;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.SignText;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.*;
-import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.network.packet.s2c.play.SignEditorOpenS2CPacket;
-import net.minecraft.screen.*;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.LiteralTextContent;
-import net.minecraft.util.*;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.event.GameEvent;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -40,69 +46,73 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
-    public static final IntProperty ROTATION = Properties.ROTATION;
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    public static final BooleanProperty FLOOR = Properties.BOTTOM;
-    private static final VoxelShape SHAPE_FACING_EW = Block.createCuboidShape(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
-    private static final VoxelShape SHAPE_FACING_NS = Block.createCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
-    private final Identifier texture;
+public class GravestoneBlock extends SignBlock implements EntityBlock {
+    public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty FLOOR = BlockStateProperties.BOTTOM;
+    private static final VoxelShape SHAPE_FACING_EW = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
+    private static final VoxelShape SHAPE_FACING_NS = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
+    private final ResourceLocation texture;
 
-    public GravestoneBlock(Identifier texture) {
-        super(AbstractBlock.Settings.create().noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F), WoodType.OAK);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(FLOOR, true).with(AbstractSignBlock.WATERLOGGED, false));
+    public GravestoneBlock(ResourceLocation texture) {
+        super(WoodType.OAK, BlockBehaviour.Properties.of().noCollission().noOcclusion().sound(SoundType.BASALT).strength(1.5F));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(FLOOR, true).setValue(WATERLOGGED, false));
         this.texture = texture;
     }
 
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FLOOR, AbstractSignBlock.WATERLOGGED, ROTATION);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, FLOOR, WATERLOGGED, ROTATION);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (Direction.NORTH == state.get(FACING) || Direction.SOUTH == state.get(FACING)) {
+    protected MapCodec<? extends SignBlock> codec() {
+        return null;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
+        if (Direction.NORTH == state.getValue(FACING) || Direction.SOUTH == state.getValue(FACING)) {
             return SHAPE_FACING_NS;
         } else {
             return SHAPE_FACING_EW;
         }
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
-    @Nullable
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new GravestoneBlockEntity(pos, state);
     }
 
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack itemStack = player.getStackInHand(hand);
+
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack itemStack = player.getItemInHand(hand);
         Item item = itemStack.getItem();
         Item item2 = itemStack.getItem();
-        SignChangingItem signChangingItem;
-        if (item2 instanceof SignChangingItem) {
-            signChangingItem = (SignChangingItem)item2;
+        SignApplicator signChangingItem;
+        if (item2 instanceof SignApplicator) {
+            signChangingItem = (SignApplicator)item2;
         } else {
             signChangingItem = null;
         }
 
-        SignChangingItem signChangingItem2 = signChangingItem;
-        boolean bl = signChangingItem2 != null && player.canModifyBlocks();
+        SignApplicator signChangingItem2 = signChangingItem;
+        boolean bl = signChangingItem2 != null && player.mayBuild();
         BlockEntity var12 = world.getBlockEntity(pos);
         if (var12 instanceof GravestoneBlockEntity) {
             GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)var12;
-            if (!world.isClient) {
+            if (!world.isClientSide()) {
                 SignText signText = signBlockEntity.getText();
-                boolean bl3 = signBlockEntity.runCommandClickEvent(player, world, pos);
+                boolean bl3 = signBlockEntity.executeClickCommandsIfPresent(player, world, pos);
                 if (signBlockEntity.isWaxed()) {
-                    world.playSound(null, signBlockEntity.getPos(), SoundEvents.BLOCK_SIGN_WAXED_INTERACT_FAIL, SoundCategory.BLOCKS);
-                    return ActionResult.PASS;
-                } else if (bl && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canUseOnSignText(signText, player)) {
+                    world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS);
+                    return InteractionResult.PASS;
+                } else if (bl && !this.otherPlayerIsEditingSign(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, player)) {
                     boolean useOnSign = false;
                     if (signChangingItem2 instanceof DyeItem dyeItem) {
-                        useOnSign = useDyeOnSign(world, signBlockEntity, dyeItem.getColor());
+                        useOnSign = useDyeOnSign(world, signBlockEntity, dyeItem.getDyeColor());
                     } else if (signChangingItem2 instanceof InkSacItem) {
                         useOnSign = useInkOnSign(world, signBlockEntity);
                     } else if (signChangingItem2 instanceof HoneycombItem) {
@@ -113,131 +123,134 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
                     if (useOnSign) {
                         if (!player.isCreative()) {
-                            itemStack.decrement(1);
+                            itemStack.shrink(1);
                         }
 
-                        world.emitGameEvent(GameEvent.BLOCK_CHANGE, signBlockEntity.getPos(), GameEvent.Emitter.of(player, signBlockEntity.getCachedState()));
-                        player.incrementStat(Stats.USED.getOrCreateStat(item));
-                        return ActionResult.SUCCESS;
+                        world.gameEvent(GameEvent.BLOCK_CHANGE, signBlockEntity.getBlockPos(), GameEvent.Context.of(player, signBlockEntity.getBlockState()));
+                        player.awardStat(Stats.ITEM_USED.get(item));
+                        return InteractionResult.SUCCESS;
                     }
                 } else if (bl3) {
-                    return ActionResult.SUCCESS;
-                } else if (!this.isOtherPlayerEditing(player, signBlockEntity) && player.canModifyBlocks() && this.isTextLiteralOrEmpty(player, signBlockEntity)) {
+                    return InteractionResult.SUCCESS;
+                } else if (!this.otherPlayerIsEditingSign(player, signBlockEntity) && player.mayBuild() && this.isTextLiteralOrEmpty(player, signBlockEntity)) {
                     this.openEditScreen(player, signBlockEntity, world, pos, state);
-                    return ActionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 } else {
-                    return ActionResult.PASS;
+                    return InteractionResult.PASS;
                 }
             } else {
-                return !bl && !signBlockEntity.isWaxed() ? ActionResult.CONSUME : ActionResult.SUCCESS;
+                return !bl && !signBlockEntity.isWaxed() ? InteractionResult.CONSUME : InteractionResult.SUCCESS;
             }
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
-    public boolean useDyeOnSign(World world, GravestoneBlockEntity signBlockEntity, DyeColor color) {
-        if (signBlockEntity.changeText((text) -> text.withColor(color))) {
-            world.playSound(null, signBlockEntity.getPos(), SoundEvents.ITEM_DYE_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    @Override
+    public float getYRotationDegrees(BlockState state) {
+        return ((Direction)state.getValue(FACING)).toYRot();
+    }
+
+    public boolean useDyeOnSign(Level world, GravestoneBlockEntity signBlockEntity, DyeColor color) {
+        if (signBlockEntity.updateText((text) -> text.setColor(color))) {
+            world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean useInkOnSign(World world, GravestoneBlockEntity signBlockEntity) {
-        if (signBlockEntity.changeText((text) -> {
-            return text.withGlowing(false);
+    public boolean useInkOnSign(Level world, GravestoneBlockEntity signBlockEntity) {
+        if (signBlockEntity.updateText((text) -> {
+            return text.setHasGlowingText(false);
         })) {
-            world.playSound(null, signBlockEntity.getPos(), SoundEvents.ITEM_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.INK_SAC_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean useGlowInkOnSign(World world, GravestoneBlockEntity signBlockEntity) {
-        if (signBlockEntity.changeText((text) -> text.withGlowing(true))) {
-            world.playSound(null, signBlockEntity.getPos(), SoundEvents.ITEM_GLOW_INK_SAC_USE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    public boolean useGlowInkOnSign(Level world, GravestoneBlockEntity signBlockEntity) {
+        if (signBlockEntity.updateText((text) -> text.setHasGlowingText(true))) {
+            world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean useWaxOnSign(World world, GravestoneBlockEntity signBlockEntity) {
+    public boolean useWaxOnSign(Level world, GravestoneBlockEntity signBlockEntity) {
         if (signBlockEntity.setWaxed(true)) {
-            world.syncWorldEvent(null, 3003, signBlockEntity.getPos(), 0);
+            world.levelEvent((Player)null, 3003, signBlockEntity.getBlockPos(), 0);
             return true;
         } else {
             return false;
         }
     }
 
-    private boolean isTextLiteralOrEmpty(PlayerEntity player, GravestoneBlockEntity blockEntity) {
+    private boolean isTextLiteralOrEmpty(Player player, GravestoneBlockEntity blockEntity) {
         SignText signText = blockEntity.getText();
-        return Arrays.stream(signText.getMessages(player.shouldFilterText())).allMatch((message) -> message.equals(ScreenTexts.EMPTY) || message.getContent() instanceof LiteralTextContent);
+        return Arrays.stream(signText.getMessages(player.isTextFilteringEnabled())).allMatch((message) -> message.equals(CommonComponents.EMPTY) || message.getContents() instanceof PlainTextContents);
     }
 
-    public void openEditScreen(PlayerEntity player, GravestoneBlockEntity blockEntity, World world, BlockPos pos, BlockState state) {
-        blockEntity.setEditor(player.getUuid());
+    public void openEditScreen(Player player, GravestoneBlockEntity blockEntity, Level world, BlockPos pos, BlockState state) {
+        blockEntity.setAllowedPlayerEditor(player.getUUID());
         openScreen(world, pos, player);
     }
 
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (placer instanceof PlayerEntity player) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @org.jetbrains.annotations.Nullable LivingEntity placer, ItemStack p_49851_) {
+        if (placer instanceof Player player) {
             openScreen(world, pos, player);
         }
     }
 
-    private void openScreen(World world, BlockPos pos, PlayerEntity placer) {
+
+    private void openScreen(Level world, BlockPos pos, Player placer) {
         GravestoneBlockEntity sign = (GravestoneBlockEntity) world.getBlockEntity(pos);
-        if (!world.isClient) {
-            sign.setEditor(placer.getUuid());
-            ((ServerPlayerEntity) placer).networkHandler.sendPacket(new SignEditorOpenS2CPacket(pos, true));
+        if (!world.isClientSide) {
+            sign.setAllowedPlayerEditor(placer.getUUID());
+            ((ServerPlayer) placer).connection.send(new ClientboundOpenSignEditorPacket(pos, true));
         }
     }
 
-
-    private boolean isOtherPlayerEditing(PlayerEntity player, GravestoneBlockEntity blockEntity) {
-        UUID uUID = blockEntity.getEditor();
-        return uUID != null && !uUID.equals(player.getUuid());
+    private boolean otherPlayerIsEditingSign(Player player, GravestoneBlockEntity signEntity) {
+        UUID uUID = signEntity.getPlayerWhoMayEdit();
+        return uUID != null && !uUID.equals(player.getUUID());
     }
 
-
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        Direction direction = ctx.getHorizontalPlayerFacing();
-        return (BlockState)((BlockState)this.getDefaultState().with(FACING, direction.getOpposite()).with(AbstractSignBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER));
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
+        Direction direction = context.getHorizontalDirection();
+        return this.defaultBlockState().setValue(FACING, direction.getOpposite()).setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
     }
+
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         return Collections.singletonList(new ItemStack(this));
     }
 
-
-    public Identifier getTexture() {
+    public ResourceLocation getTexture() {
         return texture;
     }
 
 
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return world.getBlockState(pos.down()).isSolid();
+    public boolean canSurvive(BlockState p_196260_1_, LevelReader p_196260_2_, BlockPos p_196260_3_) {
+        return p_196260_2_.getBlockState(p_196260_3_.below()).isSolid();
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (Direction.NORTH == state.get(FACING) || Direction.SOUTH == state.get(FACING)) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter p_220071_2_, BlockPos p_220071_3_, CollisionContext p_220071_4_) {
+        if (Direction.NORTH == state.getValue(FACING) || Direction.SOUTH == state.getValue(FACING)) {
             return SHAPE_FACING_NS;
         } else {
             return SHAPE_FACING_EW;
         }
     }
 
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    @Override
+    public boolean isPathfindable(BlockState p_60475_, BlockGetter p_60476_, BlockPos p_60477_, PathComputationType p_60478_) {
         return false;
     }
-
-
 }

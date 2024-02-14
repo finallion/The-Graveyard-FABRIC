@@ -16,6 +16,7 @@
     "SpawnRestrictionAccessor"
   ],
   "client": [
+    "ClientCommonNetworkHandlerAccessor",
     "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {

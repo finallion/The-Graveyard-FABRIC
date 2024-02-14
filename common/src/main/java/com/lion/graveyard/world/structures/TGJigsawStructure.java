@@ -4,22 +4,8 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolBasedGenerator;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.VerticalBlockSample;
-import net.minecraft.world.gen.heightprovider.HeightProvider;
-import net.minecraft.world.gen.noise.NoiseConfig;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import java.util.Optional;
 
@@ -108,7 +94,8 @@ public class TGJigsawStructure extends Structure {
                 this.size, blockpos,
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
-                this.maxDistanceFromCenter);
+                this.maxDistanceFromCenter,
+                StructurePoolAliasLookup.EMPTY);
     }
 
 

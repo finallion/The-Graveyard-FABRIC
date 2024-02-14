@@ -14,7 +14,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.raid.RaiderEntity;;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -55,7 +55,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     @Nullable
     private BlockPos bounds;
 
-    public ReaperEntity(EntityType<? extends ReaperEntity> entityType, World world) {
+    public ReaperEntity(EntityType<? extends ReaperEntity> entityType, Level world) {
         super(entityType, world, "reaper");
         this.moveControl = new ReaperMoveControl(this);
     }
@@ -89,11 +89,11 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(4, new ChargeTargetGoal());
         this.goalSelector.add(8, new LookAtTargetGoal());
-        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+        this.goalSelector.add(9, new LookAtEntityGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
         this.targetSelector.add(1, (new RevengeGoal(this, RaiderEntity.class)).setGroupRevenge());
         this.targetSelector.add(2, new TrackOwnerTargetGoal(this));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, Player.class, true));
     }
 
     public EntityGroup getGroup() {

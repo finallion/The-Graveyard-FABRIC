@@ -1,6 +1,6 @@
 plugins {
 	id "architectury-plugin" version "3.4-SNAPSHOT"
-	id "dev.architectury.loom" version "1.1-SNAPSHOT" apply false
+	id "dev.architectury.loom" version "1.4-SNAPSHOT" apply false
 }
 
 architectury {
@@ -16,21 +16,42 @@ subprojects {
 
 	dependencies {
 		minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-		mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}"
+		//mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}"
+		//mappings loom.officialMojangMappings()
+		mappings loom.layered() {
+			officialMojangMappings()
+			parchment("org.parchmentmc.data:parchment-${mapping_version}@zip")
+		}
 	}
 }
 
 allprojects {
 	apply plugin: "java"
 	apply plugin: "architectury-plugin"
-	apply plugin: "maven-publish"
 
-	archivesBaseName = rootProject.archives_base_name
+	archivesBaseName = "${rootProject.mod_id}-mc${rootProject.minecraft_version}"
 	version = rootProject.mod_version
 	group = rootProject.maven_group
 
 	repositories {
-		maven { url 'https://jitpack.io' }
+		maven {
+			name "ParchmentMC"
+			url "https://maven.parchmentmc.org"
+		}
+
+		maven {
+			name = "Jitpack"
+			url 'https://jitpack.io/'
+		}
+
+		maven {
+			name = 'GeckoLib'
+			url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+			content {
+				includeGroupByRegex("software\\.bernie.*")
+				includeGroup("com.eliotlash.mclib")
+			}
+		}
 	}
 
 	tasks.withType(JavaCompile) {

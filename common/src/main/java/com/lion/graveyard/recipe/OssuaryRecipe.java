@@ -4,18 +4,17 @@ import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGRecipeTypes;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.CuttingRecipe;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-public class OssuaryRecipe extends CarvingRecipe {
+public class OssuaryRecipe extends CuttingRecipe {
 
-    public OssuaryRecipe(Identifier id, String group, Ingredient input, ItemStack output) {
-        super(TGRecipeTypes.OSSUARY_CARVING.get(), TGRecipeTypes.OSSUARY_CARVING_SERIALIZER.get(), id, group, input, output);
+    public OssuaryRecipe(String group, Ingredient input, ItemStack output) {
+        super(TGRecipeTypes.OSSUARY_CARVING.get(), TGRecipeTypes.OSSUARY_CARVING_SERIALIZER.get(), group, input, output);
     }
-
-    public boolean matches(Inventory inventory, World world) {
-        return this.input.test(inventory.getStack(0));
+    public boolean matches(Inventory inventory, Level world) {
+        return this.ingredient.test(inventory.getStack(0));
     }
 
     public ItemStack createIcon() {
@@ -25,5 +24,12 @@ public class OssuaryRecipe extends CarvingRecipe {
     @Override
     public boolean isIgnoredInRecipeBook() {
         return true;
+    }
+
+    public static class Serializer2<T extends CuttingRecipe> extends Serializer<T> {
+
+        public Serializer2(RecipeFactory<T> recipeFactory) {
+            super(recipeFactory);
+        }
     }
 }

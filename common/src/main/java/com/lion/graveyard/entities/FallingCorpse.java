@@ -10,10 +10,10 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundSource;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -38,7 +38,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     private int levitationCounter = 15;
     private float rotation;
 
-    public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
+    public FallingCorpse(EntityType<? extends HostileEntity> entityType, Level world) {
         super(entityType, world);
         experiencePoints = 0;
         setRotation(getRandom().nextInt(361));
@@ -54,7 +54,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
 
     // I don't want the red overlay on death, so bypass landing effects and kill the mob after some ticks (in mobTick())
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundSource.HOSTILE, 2.0F, 1.0F);
         return false;
     }
 
@@ -108,7 +108,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
                 BlockState state = this.getEntityWorld().getBlockState(pos);
                 if (!state.isAir() && state.isSolidBlock(getEntityWorld(), pos)) {
-                    MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
+                    MathUtil.createParticleDisk(this.getLevel(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
                     break;
                 }
             }
@@ -147,7 +147,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     }
 
     @Override
-    public void onPlayerCollision(PlayerEntity player) {
+    public void onPlayerCollision(Player player) {
         if (!hasCollided() && isFalling()) {
             player.damage(this.getDamageSources().fall(), DAMAGE);
             setHasCollided(true);

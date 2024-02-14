@@ -6,10 +6,16 @@ import java.util.Optional;
 import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntry.Reference;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
@@ -19,63 +25,73 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
 import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-public class TGTurfBlock extends TGSpreadableBlock implements Fertilizable {
+public class TGTurfBlock extends TGSpreadableBlock implements BonemealableBlock {
 
-    public TGTurfBlock(Settings settings) {
+    public TGTurfBlock(BlockBehaviour.Properties settings) {
         super(settings);
     }
 
-    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, boolean isClient) {
-        return world.getBlockState(pos.up()).isAir();
+    @Override
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
+        return level.getBlockState(pos.above()).isAir();
     }
 
-    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos pos, BlockState state) {
         return true;
     }
 
-    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
-        BlockPos blockPos = pos.up();
-        BlockState blockState = TGBlocks.TURF.get().getDefaultState();
-        Optional<Reference<PlacedFeature>> optional = world.getRegistryManager().get(RegistryKeys.PLACED_FEATURE).getEntry(VegetationPlacedFeatures.GRASS_BONEMEAL);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
+        BlockPos blockPos = pos.above();
+        BlockState blockState = TGBlocks.TURF.get().defaultBlockState();
+        Optional<Holder.Reference<PlacedFeature>> optional = level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).getHolder(VegetationPlacements.GRASS_BONEMEAL);
 
         label49:
         for(int i = 0; i < 128; ++i) {
             BlockPos blockPos2 = blockPos;
 
             for(int j = 0; j < i / 16; ++j) {
-                blockPos2 = blockPos2.add(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2, random.nextInt(3) - 1);
-                if (!world.getBlockState(blockPos2.down()).isOf(this) || world.getBlockState(blockPos2).isFullCube(world, blockPos2)) {
+                blockPos2 = blockPos2.offset(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2, random.nextInt(3) - 1);
+                if (!level.getBlockState(blockPos2.below()).is(this) || level.getBlockState(blockPos2).isCollisionShapeFullBlock(level, blockPos2)) {
                     continue label49;
                 }
             }
 
-            BlockState blockState2 = world.getBlockState(blockPos2);
-            if (blockState2.isOf(blockState.getBlock()) && random.nextInt(10) == 0) {
-                ((Fertilizable)blockState.getBlock()).grow(world, random, blockPos2, blockState2);
+            BlockState blockState2 = level.getBlockState(blockPos2);
+            if (blockState2.is(blockState.getBlock()) && random.nextInt(10) == 0) {
+                ((BonemealableBlock)blockState.getBlock()).performBonemeal(level, random, blockPos2, blockState2);
             }
 
             if (blockState2.isAir()) {
-                RegistryEntry<?> registryEntry;
+                Holder holder;
                 if (random.nextInt(8) == 0) {
-                    List<ConfiguredFeature<?, ?>> list = ((Biome)world.getBiome(blockPos2).value()).getGenerationSettings().getFlowerFeatures();
+                    List<ConfiguredFeature<?, ?>> list = ((Biome)level.getBiome(blockPos2).value()).getGenerationSettings().getFlowerFeatures();
                     if (list.isEmpty()) {
                         continue;
                     }
 
-                    registryEntry = ((RandomPatchFeatureConfig)((ConfiguredFeature)list.get(0)).config()).feature();
+                    holder = ((RandomPatchConfiguration)((ConfiguredFeature)list.get(0)).config()).feature();
                 } else {
                     if (!optional.isPresent()) {
                         continue;
                     }
 
-                    registryEntry = optional.get();
+                    holder = (Holder)optional.get();
                 }
 
-                ((PlacedFeature)registryEntry.value()).generateUnregistered(world, world.getChunkManager().getChunkGenerator(), random, blockPos2);
+                ((PlacedFeature)holder.value()).place(level, level.getChunkSource().getGenerator(), random, blockPos2);
             }
         }
-
     }
 }
 

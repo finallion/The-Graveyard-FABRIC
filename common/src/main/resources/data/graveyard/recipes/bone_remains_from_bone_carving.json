@@ -1,6 +1,7 @@
 {
   "type": "graveyard:ossuary_carving",
   "count": 1,
+  "group": "graveyard:ossuary_carving_blocks",
   "ingredient": {
     "item": "minecraft:bone_block"
   },

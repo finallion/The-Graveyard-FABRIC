@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WanderingTraderEntity.class)
 public abstract class WanderingTraderEntityMixin extends MerchantEntity {
 
-    public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, World world) {
+    public WanderingTraderEntityMixin(EntityType<? extends WanderingTraderEntity> entityType, Level world) {
         super(entityType, world);
     }
 

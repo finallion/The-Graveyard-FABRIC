@@ -7,14 +7,14 @@ import com.lion.graveyard.init.TGSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.Player;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.util.InteractionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -37,10 +37,10 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        World world = context.getWorld();
+    public InteractionResult useOnBlock(ItemUsageContext context) {
+        Level world = context.getLevel();
         BlockPos blockPos = context.getBlockPos();
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
         ItemStack stack = context.getStack();
 
         /*
@@ -63,14 +63,14 @@ public class BoneStaffItem extends Item {
             /* Does the OwnerUUID in the NBT match the user of the staff*/
             if (stack.getNbt() != null && stack.getNbt().contains("OwnerUUID")) {
                 if (stack.getNbt().getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
-                    return ActionResult.PASS;
+                    return InteractionResult.PASS;
                 }
             }
 
             /* Is the Ghouling with the UUID saved in the NBT still alive?*/
             if (stack.getNbt() != null && stack.getNbt().contains("GhoulingUUID")) {
                 if (ownerGhoulingMapping.containsKey(stack.getNbt().getUuid("GhoulingUUID"))) {
-                    return ActionResult.PASS;
+                    return InteractionResult.PASS;
                 }
             }
 
@@ -101,14 +101,14 @@ public class BoneStaffItem extends Item {
             ghouling.setStaff(stack); // pass stack to ghouling
             ghouling.onSummoned();
             world.spawnEntity(ghouling);
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
 
         //
         //if (!world.isClient && player != null && tag != null && tag.contains("GhoulingUUID") && tag.contains("OwnerUUID")) {
         //    if (tag.getUuid("OwnerUUID").compareTo(player.getUuid()) != 0) {
-        //        return ActionResult.PASS;
+        //        return InteractionResult.PASS;
         //    }
         //
         //    UUID ghoulingUUID = tag.getUuid("GhoulingUUID");
@@ -127,7 +127,7 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public TypedActionResult<ItemStack> use(Level world, Player user, Hand hand) {
         ItemStack stack = user.getMainHandStack();
         NbtCompound nbt = stack.getNbt();
         if (!world.isClient) {

@@ -45,7 +45,7 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
             ChunkSection currChunkSection = currentChunk.getSection(sectionYIndex);
 
             if (getFluidState(world, infoIn2.pos()).isIn(FluidTags.WATER)) {
-                setBlockState(currChunkSection, infoIn2.pos(), infoIn2.state());
+                setBlock(currChunkSection, infoIn2.pos(), infoIn2.state());
             }
 
             BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -64,7 +64,7 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
                 if (getFluidState(currChunkSection, mutable).isIn(FluidTags.WATER)) {
                     Optional<BlockState> blockState = getBlockState(currChunkSection, mutable);
                     if (blockState.isPresent() && !(blockState.get().contains(Properties.WATERLOGGED) && blockState.get().get(Properties.WATERLOGGED))) {
-                        setBlockState(currChunkSection, mutable, Blocks.DEEPSLATE.getDefaultState());
+                        setBlock(currChunkSection, mutable, Blocks.DEEPSLATE.getDefaultState());
                     }
                 }
             }
@@ -94,9 +94,9 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
                 ChunkSectionPos.getLocalCoord(pos.getZ()));
     }
 
-    private Optional<BlockState> setBlockState(ChunkSection chunkSection, BlockPos pos, BlockState state) {
+    private Optional<BlockState> setBlock(ChunkSection chunkSection, BlockPos pos, BlockState state) {
         if (chunkSection == null) return Optional.empty();
-        return Optional.of(chunkSection.setBlockState(
+        return Optional.of(chunkSection.setBlock(
                 ChunkSectionPos.getLocalCoord(pos.getX()),
                 ChunkSectionPos.getLocalCoord(pos.getY()),
                 ChunkSectionPos.getLocalCoord(pos.getZ()),

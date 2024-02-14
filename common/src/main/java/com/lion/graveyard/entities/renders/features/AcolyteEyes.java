@@ -2,7 +2,9 @@ package com.lion.graveyard.entities.renders.features;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.AcolyteEntity;
+import com.lion.graveyard.entities.models.AcolyteModel;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
+import com.lion.graveyard.entities.renders.AcolyteRender;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.OverlayTexture;
@@ -15,10 +17,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class AcolyteEyes extends FeatureRenderer<AcolyteEntity, CorruptedIllagerModel<AcolyteEntity>> {
+public class AcolyteEyes extends FeatureRenderer<AcolyteEntity, AcolyteModel<AcolyteEntity>> {
 
 
-    public AcolyteEyes(FeatureRendererContext<AcolyteEntity, CorruptedIllagerModel<AcolyteEntity>> context) {
+    public AcolyteEyes(FeatureRendererContext<AcolyteEntity, AcolyteModel<AcolyteEntity>> context) {
         super(context);
     }
 

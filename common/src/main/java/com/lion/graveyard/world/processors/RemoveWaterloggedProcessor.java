@@ -26,7 +26,7 @@ public class RemoveWaterloggedProcessor extends StructureProcessor {
         if (structureBlockInfo2.state().getBlock() instanceof Waterloggable) {
             Chunk currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);
             if (world.getFluidState(structureBlockInfo2.pos()).isIn(FluidTags.WATER)) {
-                currentChunk.setBlockState(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
+                currentChunk.setBlock(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
             }
         }
 

@@ -2,23 +2,24 @@ package com.lion.graveyard.blockentities.models;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.blockentities.BrazierBlockEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+
 import software.bernie.geckolib.model.GeoModel;
 
 
 public class BrazierModel extends GeoModel<BrazierBlockEntity> {
     @Override
-    public Identifier getAnimationResource(BrazierBlockEntity entity) {
-        return new Identifier(Graveyard.MOD_ID,"animations/brazier.animation.json");
+    public ResourceLocation getAnimationResource(BrazierBlockEntity entity) {
+        return new ResourceLocation(Graveyard.MOD_ID,"animations/brazier.animation.json");
     }
 
     @Override
-    public Identifier getModelResource(BrazierBlockEntity animatable) {
-        return new Identifier(Graveyard.MOD_ID, "geo/brazier.geo.json");
+    public ResourceLocation getModelResource(BrazierBlockEntity animatable) {
+        return new ResourceLocation(Graveyard.MOD_ID, "geo/brazier.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(BrazierBlockEntity entity) {
-        return new Identifier(Graveyard.MOD_ID, "textures/block/brazier.png");
+    public ResourceLocation getTextureResource(BrazierBlockEntity entity) {
+        return new ResourceLocation(Graveyard.MOD_ID, "textures/block/brazier.png");
     }
 }

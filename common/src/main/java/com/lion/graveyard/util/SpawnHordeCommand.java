@@ -26,8 +26,8 @@ public class SpawnHordeCommand {
         source.sendFeedback(() -> Text.literal("Spawned a graveyard horde."), false);
         int o = Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
         BlockPos.Mutable mutable = new BlockPos.Mutable(source.getPosition().getX(), source.getPosition().getY(), source.getPosition().getZ());
-        ServerWorld world = source.getWorld();
-        Random random = source.getWorld().getRandom();
+        ServerWorld world = source.getLevel();
+        Random random = source.getLevel().getRandom();
         boolean illagerSpawn = random.nextBoolean();
 
         for (int p = 0; p < o; ++p) {

@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 
 public class CorruptedPillager extends CorruptedIllager {
 
-    public CorruptedPillager(EntityType<? extends CorruptedIllager> entityType, World world) {
+    public CorruptedPillager(EntityType<? extends CorruptedIllager> entityType, Level world) {
         super(entityType, world, "corrupted_pillager");
     }
 

@@ -29,7 +29,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     private int ageWhenTargetSet;
     private int angerTime;
 
-    public AngerableGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
+    public AngerableGraveyardEntity(EntityType<? extends HostileEntity> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 
@@ -94,7 +94,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
             this.dataTracker.set(ANGRY, false);
             this.setAngerTime(0);
             this.dataTracker.set(PROVOKED, false);
-            entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
+            entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST.getId());
         } else {
             this.ageWhenTargetSet = this.age;
             this.dataTracker.set(ANGRY, true);
