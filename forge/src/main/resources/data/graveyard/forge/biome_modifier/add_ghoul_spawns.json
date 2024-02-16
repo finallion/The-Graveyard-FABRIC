@@ -1,7 +1,7 @@
 {
-  "type": "graveyard:mobspawns",
+  "type": "forge:add_spawns",
   "biomes": "#graveyard:ghoul_spawns",
-  "spawn": {
+  "spawners": {
     "type": "graveyard:ghoul",
     "maxCount": 5,
     "minCount": 2,

@@ -468,6 +468,11 @@
         },
         {
           "type": "minecraft:item",
+          "weight": 3,
+          "name": "graveyard:incarnated_evil_music_disc"
+        },
+        {
+          "type": "minecraft:item",
           "weight": 5,
           "functions": [
             {

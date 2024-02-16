@@ -14,8 +14,13 @@ public class GraveyardConfig implements Config {
              Enable or disable structure spawns.
              
              Mobs:
-             Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
              Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect (all graveyard mobs).
+             Configure the biomes, in which graveyard mobs spawn.
+                Fabric:
+                    Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
+                Forge:
+                    To configure spawning weight and group size, change the .json files in data/graveyard/forge/biome_modifiers.
+             
 
              Additional:
              Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
