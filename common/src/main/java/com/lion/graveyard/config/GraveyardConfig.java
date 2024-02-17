@@ -2,7 +2,7 @@ package com.lion.graveyard.config;
 
 import com.lion.graveyard.config.annotations.Description;
 import com.lion.graveyard.config.entries.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
@@ -14,8 +14,13 @@ public class GraveyardConfig implements Config {
              Enable or disable structure spawns.
              
              Mobs:
-             Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
              Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect (all graveyard mobs).
+             Configure the biomes, in which graveyard mobs spawn.
+                Fabric:
+                    Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
+                Forge:
+                    To configure spawning weight and group size, change the .json files in data/graveyard/forge/biome_modifiers.
+             
 
              Additional:
              Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
@@ -48,15 +53,15 @@ public class GraveyardConfig implements Config {
     }
 
     // generation booleans
-    public boolean enabled(ResourceLocation id) {
+    public boolean enabled(Identifier id) {
         return getStructure(id).enabled;
     }
-    public boolean fogSpawn(ResourceLocation id) {
+    public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
     }
 
     // structure config
-    public StructureConfigEntry getStructure(ResourceLocation id) {
+    public StructureConfigEntry getStructure(Identifier id) {
         for (Map.Entry<String, StructureConfigEntry> entry : structureConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -66,7 +71,7 @@ public class GraveyardConfig implements Config {
     }
 
     // moss particle config
-    public ParticleConfigEntry getParticle(ResourceLocation id) {
+    public ParticleConfigEntry getParticle(Identifier id) {
         for (Map.Entry<String, ParticleConfigEntry> entry : particleConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -76,7 +81,7 @@ public class GraveyardConfig implements Config {
     }
 
     // mob spawn config
-    public MobConfigEntry getMob(ResourceLocation id) {
+    public MobConfigEntry getMob(Identifier id) {
         for (Map.Entry<String, MobConfigEntry> entry : mobConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();
@@ -86,7 +91,7 @@ public class GraveyardConfig implements Config {
     }
 
     // horde spawn config
-    public HordeConfigEntry getHorde(ResourceLocation id) {
+    public HordeConfigEntry getHorde(Identifier id) {
         for (Map.Entry<String, HordeConfigEntry> entry : hordeConfigEntries.entrySet()) {
             if (entry.getKey().equals(id.getPath())) {
                 return entry.getValue();

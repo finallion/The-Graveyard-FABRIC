@@ -1,7 +1,7 @@
 {
   "type": "neoforge:add_spawns",
   "biomes": "#graveyard:skeleton_creeper_spawns",
-  "spawn": {
+  "spawners": {
     "type": "graveyard:skeleton_creeper",
     "maxCount": 4,
     "minCount": 1,

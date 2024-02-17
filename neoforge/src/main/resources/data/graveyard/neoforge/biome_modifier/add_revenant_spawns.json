@@ -1,7 +1,7 @@
 {
   "type": "neoforge:add_spawns",
   "biomes": "#graveyard:revenant_spawns",
-  "spawn": {
+  "spawners": {
     "type": "graveyard:revenant",
     "maxCount": 5,
     "minCount": 3,
