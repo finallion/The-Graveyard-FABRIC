@@ -1,12 +1,12 @@
 package com.lion.graveyard.util;
-
+/*
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.nbt.*;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 
 import java.io.*;
@@ -40,7 +40,7 @@ public class NBTParser {
 
                 if (nbtFile.exists()) {
                     try {
-                        NbtCompound nbt = NbtIo.readCompressed(nbtFile.toPath(), new NbtSizeTracker(Long.MAX_VALUE, 512));
+                        CompoundTag nbt = NbtIo.readCompressed(nbtFile.toPath(), new NbtSizeTracker(Long.MAX_VALUE, 512));
 
                         NbtList sizeList = nbt.getList("size", NbtInt.INT_TYPE);
                         int sizeX = sizeList.getInt(0);
@@ -49,11 +49,11 @@ public class NBTParser {
                         int centerX = sizeX / 2;
                         int centerZ = sizeZ / 2;
 
-                        NbtList blocks = nbt.getList("blocks", NbtCompound.COMPOUND_TYPE);
-                        NbtList palette = nbt.getList("palette", NbtCompound.COMPOUND_TYPE);
+                        NbtList blocks = nbt.getList("blocks", CompoundTag.COMPOUND_TYPE);
+                        NbtList palette = nbt.getList("palette", CompoundTag.COMPOUND_TYPE);
 
                         for (int i = 0; i < blocks.size(); i++) {
-                            NbtCompound blockTag = blocks.getCompound(i);
+                            CompoundTag blockTag = blocks.getCompound(i);
                             NbtList posList = blockTag.getList("pos", NbtInt.INT_TYPE);
                             int posX = posList.getInt(0);
                             int posY = posList.getInt(1);
@@ -61,21 +61,21 @@ public class NBTParser {
 
                             int state = blockTag.getInt("state");
 
-                            NbtCompound paletteEntry = palette.getCompound(state);
+                            CompoundTag paletteEntry = palette.getCompound(state);
                             String blockName = paletteEntry.getString("Name");
 
                             if (blockName.equals("minecraft:air")) {
                                 continue;
                             }
 
-                            Identifier blockId = new Identifier(blockName);
+                            ResourceLocation blockId = new ResourceLocation(blockName);
                             Block block = Registries.BLOCK.get(blockId);
 
                             if (!(block instanceof LeavesBlock) && !(block instanceof PillarBlock)) {
                                 continue;
                             }
 
-                            NbtCompound propertiesNbt = paletteEntry.getCompound("Properties");
+                            CompoundTag propertiesNbt = paletteEntry.getCompound("Properties");
 
 
                             if (block instanceof PillarBlock) {
@@ -117,6 +117,8 @@ public class NBTParser {
         writer.close();
     }
 }
+
+ */
 
 
 

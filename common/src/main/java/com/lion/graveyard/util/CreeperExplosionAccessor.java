@@ -9,7 +9,7 @@ public class CreeperExplosionAccessor {
     // helper class to access the private explode method of the creeper entity
     public static void explode(Creeper creeperEntity, CallbackInfo info) {
         if (creeperEntity instanceof SkeletonCreeper skeletonCreeper) {
-            if (!creeperEntity.getEntityWorld().isClient()) {
+            if (!creeperEntity.level().isClientSide()) {
                 skeletonCreeper.explode();
                 info.cancel();
             }

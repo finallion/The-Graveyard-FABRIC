@@ -4,15 +4,19 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGCriteria;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.DaggerItem;
-import net.minecraft.entity.*;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.World;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class AcolyteEntity extends CorruptedIllager {
@@ -21,8 +25,8 @@ public class AcolyteEntity extends CorruptedIllager {
         super(entityType, world, "acolyte");
     }
 
-    protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Registries.ITEM.get(new Identifier(Graveyard.MOD_ID, "bone_dagger"))));
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(Graveyard.MOD_ID, "bone_dagger"))));
     }
 
     @Override
@@ -35,20 +39,23 @@ public class AcolyteEntity extends CorruptedIllager {
         this.playSound(TGSounds.ACOLYTE_HURT.get(), 1.0F, 0.75F);
     }
 
-    @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.ACOLYTE_DEATH.get(), 1.0F, 0.75F);
+    protected SoundEvent getDeathSound() {
+        return TGSounds.ACOLYTE_DEATH.get();
     }
 
     @Override
-    protected void onKilledBy(@Nullable LivingEntity adversary) {
-        if (adversary instanceof ServerPlayerEntity player) {
-            if (player.getMainHandStack().getItem() instanceof DaggerItem) {
+    public float getVoicePitch() {
+        return 0.75F;
+    }
+
+    @Override
+    protected void createWitherRose(@Nullable LivingEntity adversary) {
+        if (adversary instanceof ServerPlayer player) {
+            if (player.getMainHandItem().getItem() instanceof DaggerItem) {
                 TGCriteria.KILLED_BY_BONE_DAGGER.get().trigger(player);
             }
         }
 
-        super.onKilledBy(adversary);
+        super.createWitherRose(adversary);
     }
 }

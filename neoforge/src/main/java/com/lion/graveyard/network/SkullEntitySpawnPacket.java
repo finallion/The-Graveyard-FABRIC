@@ -1,38 +1,37 @@
 package com.lion.graveyard.network;
 
 import com.lion.graveyard.GraveyardClient;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 
 import java.util.UUID;
 
-public record SkullEntitySpawnPacket(Entity entity, UUID uuid, int entityID, double x, double y, double z, float pitch, float yaw) implements CustomPayload {
-    public SkullEntitySpawnPacket(PacketByteBuf buf) {
-        this(MinecraftClient.getInstance().world.getEntityById(buf.readInt()), buf.readUuid(), buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte());
+public record SkullEntitySpawnPacket(Entity entity, UUID uuid, int entityID, double x, double y, double z, float pitch, float yaw) implements CustomPacketPayload {
+    public SkullEntitySpawnPacket(FriendlyByteBuf buf) {
+        this(Minecraft.getInstance().level.getEntity(buf.readInt()), buf.readUUID(), buf.readVarInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readByte(), buf.readByte());
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeVarInt(Registries.ENTITY_TYPE.getRawId(entity.getType()));
-        buf.writeUuid(entity.getUuid());
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
+        buf.writeUUID(entity.getUUID());
         buf.writeVarInt(entity.getId());
         buf.writeDouble(entity.getX());
         buf.writeDouble(entity.getY());
         buf.writeDouble(entity.getZ());
-        buf.writeByte(MathHelper.floor(entity.getPitch() * 256.0F / 360.0F));
-        buf.writeByte(MathHelper.floor(entity.getYaw() * 256.0F / 360.0F));
-        buf.writeFloat(entity.getPitch());
-        buf.writeFloat(entity.getYaw());
+        buf.writeByte(Mth.floor(entity.getXRot() * 256.0F / 360.0F));
+        buf.writeByte(Mth.floor(entity.getYRot() * 256.0F / 360.0F));
+        buf.writeFloat(entity.getXRot());
+        buf.writeFloat(entity.getYRot());
     }
 
     @Override
-    public Identifier id() {
+    public ResourceLocation id() {
         return GraveyardClient.SKULL_PACKET_ID;
     }
 }

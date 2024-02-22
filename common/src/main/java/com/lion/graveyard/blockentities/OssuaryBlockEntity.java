@@ -3,16 +3,9 @@ package com.lion.graveyard.blockentities;
 import com.lion.graveyard.blocks.OssuaryBlock;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.player.Player;
-import net.minecraft.sound.SoundSource;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,7 +37,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
                     if (level != null && !playedSound) {
                         Player playerEntity = level.getNearestPlayer((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D, 4.0D, false);
                         if (playerEntity != null) {
-                            playerEntity.playSound(TGSounds.OSSUARY_OPEN.get(), SoundSource.BLOCKS, 1.0F, -2.0F);
+                            playerEntity.playNotifySound(TGSounds.OSSUARY_OPEN.get(), SoundSource.BLOCKS, 1.0F, -2.0F);
                             playedSound = true;
                         }
                     }

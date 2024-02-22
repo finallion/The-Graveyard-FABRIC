@@ -2,39 +2,44 @@ package com.lion.graveyard.platform.neoforge;
 
 import com.lion.graveyard.Graveyard;
 import com.mojang.serialization.Codec;
-import net.minecraft.advancement.criterion.Criterion;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRenderers;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.item.*;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.text.Text;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -51,21 +56,21 @@ public class RegistryHelperImpl {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, Graveyard.MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, Graveyard.MOD_ID);
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, Graveyard.MOD_ID);
-    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(RegistryKeys.STRUCTURE_TYPE, Graveyard.MOD_ID);
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(BuiltInRegistries.STRUCTURE_TYPE, Graveyard.MOD_ID);
     public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(Registries.PARTICLE_TYPE, Graveyard.MOD_ID);
-    public static final DeferredRegister<ScreenHandlerType<?>> MENUS = DeferredRegister.create(Registries.SCREEN_HANDLER, Graveyard.MOD_ID);
-    public static final DeferredRegister<ItemGroup> CREATIVE_TABS = DeferredRegister.create(RegistryKeys.ITEM_GROUP, Graveyard.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, Graveyard.MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(BuiltInRegistries.CREATIVE_MODE_TAB, Graveyard.MOD_ID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, Graveyard.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Graveyard.MOD_ID);
-    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACERS = DeferredRegister.create(RegistryKeys.TRUNK_PLACER_TYPE, Graveyard.MOD_ID);
+    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACERS = DeferredRegister.create(BuiltInRegistries.TRUNK_PLACER_TYPE, Graveyard.MOD_ID);
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, Graveyard.MOD_ID);
-    public static final DeferredRegister<Criterion<?>> CRITERIA = DeferredRegister.create(RegistryKeys.CRITERION, Graveyard.MOD_ID);
-    public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSOR_TYPES = DeferredRegister.create(RegistryKeys.STRUCTURE_PROCESSOR, Graveyard.MOD_ID);
+    public static final DeferredRegister<CriterionTrigger<?>> CRITERIA = DeferredRegister.create(BuiltInRegistries.TRIGGER_TYPES, Graveyard.MOD_ID);
+    public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSOR_TYPES = DeferredRegister.create(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.MOD_ID);
 
 
-    public static final Map<EntityModelLayer, Supplier<TexturedModelData>> ENTITY_MODEL_LAYERS = new ConcurrentHashMap<>();
-    public static final Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<DefaultAttributeContainer.Builder>> ENTITY_ATTRIBUTES = new ConcurrentHashMap<>();
-    public static final HashMap<RegistryKey<ItemGroup>, List<Item>> ITEMS_TO_ADD = new HashMap<>();
+    public static final Map<ModelLayerLocation, Supplier<LayerDefinition>> ENTITY_MODEL_LAYERS = new ConcurrentHashMap<>();
+    public static final Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> ENTITY_ATTRIBUTES = new ConcurrentHashMap<>();
+    public static final HashMap<ResourceKey<CreativeModeTab>, List<Item>> ITEMS_TO_ADD = new HashMap<>();
 
     public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
@@ -75,16 +80,16 @@ public class RegistryHelperImpl {
         return TILE_ENTITIES.register(name, blockEntity);
     }
 
-    public static void registerItemGroup(RegistryKey<ItemGroup> registryKey, String name, String literalName, Item item) {
-        CREATIVE_TABS.register(name, () -> new ItemGroup.Builder(ItemGroup.Row.TOP,0)
+    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
+        CREATIVE_TABS.register(name, () -> new CreativeModeTab.Builder(CreativeModeTab.Row.TOP,0)
                 .icon(() -> new ItemStack(item))
-                .displayName(Text.literal(literalName)).build());
+                .title(Component.literal(literalName)).build());
     }
 
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
         return ITEMS.register(name, item);
     }
-    public static void addToItemGroup(RegistryKey<ItemGroup> itemGroup, Item item) {
+    public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
         if (ITEMS_TO_ADD.containsKey(itemGroup)) {
             ITEMS_TO_ADD.get(itemGroup).add(item);
         } else {
@@ -94,13 +99,13 @@ public class RegistryHelperImpl {
         }
     }
 
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends MobEntity>> type, int backgroundColor, int highlightColor, Item.Settings props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
         return (Supplier<T>) registerItem(name, () -> new DeferredSpawnEggItem(type, backgroundColor, highlightColor, props));
     }
 
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Settings props, int length) {
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
         Supplier<T> musicDisc = (Supplier<T>) registerItem(name, () ->
-                new MusicDiscItem(compOutput, event, props, length * 20));
+                new RecordItem(compOutput, event, props, length * 20));
         return musicDisc;
     }
 
@@ -108,7 +113,7 @@ public class RegistryHelperImpl {
         STRUCTURE_TYPES.register(name, () -> structureType);
     }
 
-    public static void registerParticleType(String name, DefaultParticleType particleType) {
+    public static void registerParticleType(String name, SimpleParticleType particleType) {
         PARTICLES.register(name, () -> particleType);
     }
 
@@ -116,11 +121,11 @@ public class RegistryHelperImpl {
         STRUCTURE_PROCESSOR_TYPES.register(name, () -> processorType);
     }
 
-    public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
+    public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {
         MENUS.register(name, () -> screenHandlerType);
     }
 
-    public static void registerRenderType(RenderLayer type, Block... blocks) {
+    public static void registerRenderType(RenderType type, Block... blocks) {
         // done block model JSON
     }
 
@@ -132,19 +137,19 @@ public class RegistryHelperImpl {
         return ENTITIES.register(name, entityType);
     }
 
-    public static void registerEntityModelLayer(EntityModelLayer location, Supplier<TexturedModelData> definition) {
+    public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
         ENTITY_MODEL_LAYERS.put(location, definition);
     }
 
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererFactory<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
         EntityRenderers.register(type.get(), renderProvider);
     }
 
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererFactory<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
         // registered via event
     }
 
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<DefaultAttributeContainer.Builder> attribute) {
+    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         ENTITY_ATTRIBUTES.put(type, attribute);
     }
 
@@ -164,7 +169,7 @@ public class RegistryHelperImpl {
         return FEATURES.register(name, () -> feature);
     }
 
-    public static <T extends Criterion<?>> Supplier<T> registerCriterion(String name, T criterion) {
+    public static <T extends CriterionTrigger<?>> Supplier<T> registerCriterion(String name, T criterion) {
         return CRITERIA.register(name, () -> criterion);
     }
 

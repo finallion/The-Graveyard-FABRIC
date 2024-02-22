@@ -1,29 +1,30 @@
 package com.lion.graveyard.trades.trades;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.map.MapIcon;
-import net.minecraft.item.map.MapState;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.jetbrains.annotations.NotNull;
 
 public class JsonSellStructureMapTradeOffer extends JsonTradeOffer {
 
     @Override
     @NotNull
-    public TradeOffers.Factory deserialize(JsonObject json) {
+    public VillagerTrades.ItemListing deserialize(JsonObject json) {
         loadDefaultStats(json);
 
-        TagKey<Structure> structure = TagKey.of(RegistryKeys.STRUCTURE, readIdentifier(json, "structure_id", ""));
+        TagKey<Structure> structure = TagKey.create(Registries.STRUCTURE, readIdentifier(json, "structure_id", ""));
         String name = readString(json, "name", "");
         ItemStack currency = getItemStackFromJson(json.get("priceIn").getAsJsonObject());
         ItemStack buy = getItemStackFromJson(json.get("buy").getAsJsonObject());
@@ -31,7 +32,7 @@ public class JsonSellStructureMapTradeOffer extends JsonTradeOffer {
         return new Factory(buy, currency, structure, name, maxUses, experience, priceMultiplier);
     }
 
-    private static class Factory implements TradeOffers.Factory {
+    private static class Factory implements VillagerTrades.ItemListing {
         private final ItemStack currency;
         private final ItemStack buy;
         private final String nameKey;
@@ -50,17 +51,18 @@ public class JsonSellStructureMapTradeOffer extends JsonTradeOffer {
             this.multiplier = multiplier;
         }
 
-        public TradeOffer create(Entity entity, net.minecraft.util.math.random.Random random) {
-            if (!(entity.getLevel() instanceof ServerWorld serverWorld)) {
+        public MerchantOffer getOffer(Entity entity, RandomSource random) {
+            if (!(entity.level() instanceof ServerLevel serverLevel)) {
                 return null;
             } else {
-                BlockPos blockPos = serverWorld.locateStructure(this.structure, entity.getBlockPos(), 100, true);
+                BlockPos blockPos = serverLevel.findNearestMapStructure(this.structure, entity.blockPosition(), 100, true);
                 if (blockPos != null) {
-                    ItemStack itemStack = FilledMapItem.createMap(serverWorld, blockPos.getX(), blockPos.getZ(), (byte)2, true, true);
-                    FilledMapItem.fillExplorationMap(serverWorld, itemStack);
-                    MapState.addDecorationsNbt(itemStack, blockPos, "+", MapIcon.Type.RED_X);
-                    itemStack.setCustomName(Text.translatable(this.nameKey));
-                    return new TradeOffer(currency, buy, itemStack, this.maxUses, this.experience, this.multiplier);
+                    ItemStack itemStack = MapItem.create(serverLevel, blockPos.getX(), blockPos.getZ(), (byte)2, true, true);
+                    MapItem.renderBiomePreviewMap(serverLevel, itemStack);
+                    MapItemSavedData.addTargetDecoration(itemStack, blockPos, "+", MapDecoration.Type.RED_X);
+                    itemStack.setHoverName(Component.translatable(this.nameKey));
+
+                    return new MerchantOffer(currency, buy, itemStack, this.maxUses, this.experience, this.multiplier);
                 } else {
                     return null;
                 }

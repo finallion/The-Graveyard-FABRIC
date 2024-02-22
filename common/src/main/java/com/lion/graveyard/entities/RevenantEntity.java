@@ -2,22 +2,32 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.*;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -32,12 +42,12 @@ import java.util.UUID;
 public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A4");
-    private static final EntityAttributeModifier SLOWNESS_EFFECT;
+    private static final AttributeModifier SLOWNESS_EFFECT;
 
-    private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
-    private static final TrackedData<Integer> REANIMATE_ANIM_TIMER;
-    private static final TrackedData<Integer> ANIMATION;
-    private static final TrackedData<Boolean> CAN_REANIMATE;
+    private static final EntityDataAccessor<Integer> ATTACK_ANIM_TIMER;
+    private static final EntityDataAccessor<Integer> REANIMATE_ANIM_TIMER;
+    private static final EntityDataAccessor<Integer> ANIMATION;
+    private static final EntityDataAccessor<Boolean> CAN_REANIMATE;
 
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
     private final RawAnimation FAKE_DEATH_ANIMATION = RawAnimation.begin().then("fake_death", Animation.LoopType.PLAY_ONCE);
@@ -59,49 +69,49 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public final int ATTACK_ANIMATION_DURATION = 9;
     public final int REANIMATE_DURATION = 120; // duration reanimation anim: 40 + duration death animation: 30 + waiting time: 30
 
-    public RevenantEntity(EntityType<? extends HostileEntity> entityType, Level world) {
+    public RevenantEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "revenant");
     }
 
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-        this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
-        this.dataTracker.startTracking(REANIMATE_ANIM_TIMER, 0);
-        this.dataTracker.startTracking(CAN_REANIMATE, true);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(ANIMATION, ANIMATION_IDLE);
+        this.entityData.define(ATTACK_ANIM_TIMER, 0);
+        this.entityData.define(REANIMATE_ANIM_TIMER, 0);
+        this.entityData.define(CAN_REANIMATE, true);
     }
 
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, Player.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
-        this.goalSelector.add(2, new RevenantMeleeAttackGoal(this, 1.0D, false));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 1.0D));
-        this.targetSelector.add(1, new RevengeGoal(this, LichEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal(this, Player.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal(this, MerchantEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal(this, IronGolemEntity.class, true));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(2, new RevenantMeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, LichEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, AbstractVillager.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
     }
 
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
-    public static DefaultAttributeContainer.Builder createRevenantAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 25.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 2.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.5D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.155D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D);
+    public static AttributeSupplier.Builder createRevenantAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 25.0D)
+                .add(Attributes.ARMOR, 2.0D)
+                .add(Attributes.ATTACK_DAMAGE, 3.5D)
+                .add(Attributes.MOVEMENT_SPEED, 0.155D)
+                .add(Attributes.FOLLOW_RANGE, 25.0D);
     }
 
 
 
-    protected void mobTick() {
+    protected void customServerAiStep() {
         // ATTACK TIMER
         if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
             setAnimationState(ANIMATION_MELEE);
@@ -126,16 +136,16 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             this.setReanimateAnimTimer(animTimer);
         }
 
-        super.mobTick();
+        super.customServerAiStep();
     }
 
     @Override
-    public void tickMovement() {
-        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+    public void aiStep() {
+        AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (getReanimateAnimTimer() > 0) {
-            this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
+            this.getLookControl().setLookAt(this.getX(), this.getY(), this.getZ());
             if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
-                entityAttributeInstance.addTemporaryModifier(SLOWNESS_EFFECT);
+                entityAttributeInstance.addTransientModifier(SLOWNESS_EFFECT);
             }
         } else {
             if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
@@ -143,22 +153,22 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             }
         }
 
-        super.tickMovement();
+        super.aiStep();
     }
 
 
     @Override
-    protected void updatePostDeath() {
+    protected void tickDeath() {
         ++this.deathTime;
-        if (this.deathTime == 30 && !this.getEntityWorld().isClient()) {
-            this.getEntityWorld().sendEntityStatus(this, (byte)60);
+        if (this.deathTime == 30 && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || source.isIn(DamageTypeTags.IS_FIRE)) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.is(DamageTypeTags.BYPASSES_RESISTANCE) || source.is(DamageTypeTags.IS_FIRE)) {
             setCanReanimate(false);
             setReanimateAnimTimer(0);
         }
@@ -173,7 +183,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             return false;
         }
 
-        return super.damage(source, amount);
+        return super.hurt(source, amount);
     }
 
     @Override
@@ -186,7 +196,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController(this, "controller", 0, event -> {
             /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
+            if (this.isDeadOrDying() || this.getHealth() < 0.01) {
                 event.getController().setAnimation(DEATH_ANIMATION);
                 return PlayState.CONTINUE;
             }
@@ -204,7 +214,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
             /* ATTACK */
             // takes one tick to get to this method (from mobtick)
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && getReanimateAnimTimer() <= 0) {
+            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAggressive() && !(this.isDeadOrDying() || this.getHealth() < 0.01) && getReanimateAnimTimer() <= 0) {
                 setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
                 event.getController().setAnimation(ATTACK_ANIMATION);
                 return PlayState.CONTINUE;
@@ -212,7 +222,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
             /* WALK */
             if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) && getReanimateAnimTimer() <= 0) {
-                if (isAttacking() && !isWet()) {
+                if (isAggressive() && !isInWater()) {
                     event.getController().setAnimation(RUNNING_ANIMATION);
                 } else {
                     event.getController().setAnimation(WALK_ANIMATION);
@@ -234,7 +244,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             }
 
             // stops attack animation from looping
-            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_REANIMATE) {
+            if (getAttackAnimTimer() <= 0 && !(this.isDeadOrDying() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_REANIMATE) {
                 setAnimationState(ANIMATION_IDLE);
                 return PlayState.STOP;
             }
@@ -254,10 +264,13 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.playSound(TGSounds.REVENANT_HURT.get(), 1.0F, 1.0F);
     }
 
+    protected SoundEvent getDeathSound() {
+        return TGSounds.REVENANT_DEATH.get();
+    }
+
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.REVENANT_DEATH.get(), 1.0F, 1.0F);
+    public float getVoicePitch() {
+        return 1.0F;
     }
 
     @Override
@@ -266,53 +279,53 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     }
 
     public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION);
+        return this.entityData.get(ANIMATION);
     }
 
     public void setAnimationState(int state) {
-        this.dataTracker.set(ANIMATION, state);
+        this.entityData.set(ANIMATION, state);
     }
 
     public int getAttackAnimTimer() {
-        return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
+        return (Integer) this.entityData.get(ATTACK_ANIM_TIMER);
     }
 
     public void setAttackAnimTimer(int time) {
-        this.dataTracker.set(ATTACK_ANIM_TIMER, time);
+        this.entityData.set(ATTACK_ANIM_TIMER, time);
     }
 
     public int getReanimateAnimTimer() {
-        return (Integer) this.dataTracker.get(REANIMATE_ANIM_TIMER);
+        return (Integer) this.entityData.get(REANIMATE_ANIM_TIMER);
     }
 
     public void setReanimateAnimTimer(int time) {
-        this.dataTracker.set(REANIMATE_ANIM_TIMER, time);
+        this.entityData.set(REANIMATE_ANIM_TIMER, time);
     }
 
     public boolean canReanimate() {
-        return this.dataTracker.get(CAN_REANIMATE);
+        return this.entityData.get(CAN_REANIMATE);
     }
 
     public void setCanReanimate(boolean bool) {
-        this.dataTracker.set(CAN_REANIMATE, bool);
+        this.entityData.set(CAN_REANIMATE, bool);
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
         nbt.putBoolean("canReanimate", canReanimate());
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         setCanReanimate(nbt.getBoolean("canReanimate"));
     }
 
     static {
-        ATTACK_ANIM_TIMER = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        REANIMATE_ANIM_TIMER = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        ANIMATION = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        CAN_REANIMATE = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        SLOWNESS_EFFECT = new EntityAttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, EntityAttributeModifier.Operation.ADDITION);
+        ATTACK_ANIM_TIMER = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.INT);
+        REANIMATE_ANIM_TIMER = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.INT);
+        ANIMATION = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.INT);
+        CAN_REANIMATE = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.BOOLEAN);
+        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, AttributeModifier.Operation.ADDITION);
     }
 
 

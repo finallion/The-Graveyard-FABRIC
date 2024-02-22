@@ -1,16 +1,5 @@
 package com.lion.graveyard.entities.ai.goals;
 
-import com.google.common.collect.AbstractIterator;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ai.goal.BreakDoorGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.Player;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
 /*
 public class BreakBlockGoal extends Goal {
     private final GhoulingEntity minion;
@@ -21,13 +10,13 @@ public class BreakBlockGoal extends Goal {
 
 
     public BreakBlockGoal(GhoulingEntity minion, Block block, BlockPos pos) {
-        this.setControls(EnumSet.of(Control.MOVE, Control.JUMP));
+        this.setFlags(EnumSet.of(Goal.Flag..MOVE, Goal.Flag..JUMP));
         this.minion = minion;
         this.targetBlock = block;
         this.targetPos = pos;
     }
 
-    public boolean canStart() {
+    public boolean canUse() {
         if (minion.canCollect() && minion.getTarget() == null && targetBlock != null && targetPos != null) {
             int counter = 0;
             for (BlockPos position : BlockPos.iterateOutwards(targetPos,  5, 3, 5)) {
@@ -54,7 +43,7 @@ public class BreakBlockGoal extends Goal {
     public void tick() {
         BlockState blockState = minion.world.getBlockState(targetPos);
         if (blockState.getBlock() != targetBlock) {
-            this.canStart();
+            this.canUse();
             return;
         }
 
@@ -77,7 +66,7 @@ public class BreakBlockGoal extends Goal {
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return targetPos != null && minion.getTarget() == null && minion.canCollect();
     }
 

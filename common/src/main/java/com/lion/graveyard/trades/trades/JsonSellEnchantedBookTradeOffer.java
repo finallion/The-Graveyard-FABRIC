@@ -1,16 +1,17 @@
 package com.lion.graveyard.trades.trades;
 
 import com.google.gson.JsonObject;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.trading.MerchantOffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class JsonSellEnchantedBookTradeOffer extends JsonTradeOffer {
 
     @Override
     @NotNull
-    public TradeOffers.Factory deserialize(JsonObject json) {
+    public VillagerTrades.ItemListing deserialize(JsonObject json) {
         loadDefaultStats(json);
 
         ItemStack currency = getItemStackFromJsonWithoutCount(json.get("currency").getAsJsonObject());
@@ -28,7 +29,7 @@ public class JsonSellEnchantedBookTradeOffer extends JsonTradeOffer {
         return new Factory(currency, maxUses, experience, priceMultiplier);
     }
 
-    private static class Factory implements TradeOffers.Factory {
+    private static class Factory implements VillagerTrades.ItemListing {
         private final ItemStack currency;
         private final int maxUses;
         private final int experience;
@@ -41,13 +42,13 @@ public class JsonSellEnchantedBookTradeOffer extends JsonTradeOffer {
             this.multiplier = multiplier;
         }
 
-        public TradeOffer create(Entity entity, net.minecraft.util.math.random.Random random) {
-            List<Enchantment> list = Registries.ENCHANTMENT.stream().filter(Enchantment::isAvailableForEnchantedBookOffer).collect(Collectors.toList());
+        public MerchantOffer getOffer(Entity entity, RandomSource random) {
+            List<Enchantment> list = BuiltInRegistries.ENCHANTMENT.stream().filter(Enchantment::isTradeable).collect(Collectors.toList());
             Enchantment enchantment = (Enchantment)list.get(random.nextInt(list.size()));
-            int i = MathHelper.nextInt(random, enchantment.getMinLevel(), enchantment.getMaxLevel());
-            ItemStack itemStack = EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantment, i));
+            int i = Mth.nextInt(random, enchantment.getMinLevel(), enchantment.getMaxLevel());
+            ItemStack itemStack = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, i));
             int j = 2 + random.nextInt(5 + i * 10) + 3 * i;
-            if (enchantment.isTreasure()) {
+            if (enchantment.isTreasureOnly()) {
                 j *= 2;
             }
 
@@ -55,7 +56,7 @@ public class JsonSellEnchantedBookTradeOffer extends JsonTradeOffer {
                 j = 64;
             }
 
-            return new TradeOffer(new ItemStack(currency.getItem(), j), new ItemStack(Items.BOOK), itemStack, this.maxUses, this.experience, multiplier);
+            return new MerchantOffer(new ItemStack(currency.getItem(), j), new ItemStack(Items.BOOK), itemStack, this.maxUses, this.experience, multiplier);
         }
     }
 }

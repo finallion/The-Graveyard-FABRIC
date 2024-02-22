@@ -72,7 +72,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     private final Supplier<Item> base;
     public SarcophagusBlock(BlockBehaviour.Properties settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
         super(settings);
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(OPEN, false).setValue(PART, SarcophagusPart.FOOT).setValue(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false).setValue(OPEN, false).setValue(PART, SarcophagusPart.FOOT).setValue(PLAYER_PLACED, false).setValue(IS_COFFIN, isCoffin));
         this.base = base;
         this.lid = lid;
     }

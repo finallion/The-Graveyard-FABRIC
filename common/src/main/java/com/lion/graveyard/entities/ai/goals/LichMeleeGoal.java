@@ -2,15 +2,14 @@ package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.LichEntity;
 import com.lion.graveyard.init.TGParticles;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.Player;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
@@ -37,16 +36,16 @@ public class LichMeleeGoal extends Goal {
         this.mob = mob;
         this.speed = speed;
         this.pauseWhenMobIdle = pauseWhenMobIdle;
-        this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
-    public boolean canStart() {
-        long l = this.mob.getEntityWorld().getTime();
+    public boolean canUse() {
+        long l = this.mob.level().getGameTime();
         // for some reason if you time your attack good enough, and position yourself close enough to the mob, the mob will deadlock and do nothing while you're standing still
         // this is because l - this.lastUpdateTime < 20L is true and will only reset if you move away and close in again
         if (l - this.lastUpdateTime < 20L) {
             this.lastUpdateTime -= 20; // ignore this by making sure it wont deadlock. Probably best to remove lastUpdateTime. Should be covered by cooldown.
-            return canStart();
+            return canUse();
         } else {
             this.lastUpdateTime = l;
             LivingEntity livingEntity = this.mob.getTarget();
@@ -55,25 +54,26 @@ public class LichMeleeGoal extends Goal {
             } else if (!livingEntity.isAlive()) {
                 return false;
             } else {
-                this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
+                this.path = this.mob.getNavigation().createPath(livingEntity, 0);
                 if (this.path != null) {
                     return true;
                 } else {
-                    return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+                    return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
                 }
             }
         }
     }
 
-    public boolean shouldContinue() {
+
+    public boolean canContinueToUse() {
         LivingEntity livingEntity = this.mob.getTarget();
         if (livingEntity == null) {
             return false;
         } else if (!livingEntity.isAlive()) {
             return false;
         } else if (!this.pauseWhenMobIdle) {
-            return !this.mob.getNavigation().isIdle();
-        } else if (!this.mob.isInWalkTargetRange(livingEntity.getBlockPos())) {
+            return !this.mob.getNavigation().isDone();
+        } else if (!this.mob.isWithinRestriction(livingEntity.blockPosition())) {
             return false;
         } else {
             return !(livingEntity instanceof Player) || !livingEntity.isSpectator() && !((Player) livingEntity).isCreative();
@@ -81,33 +81,33 @@ public class LichMeleeGoal extends Goal {
     }
 
     public void start() {
-        this.mob.getNavigation().startMovingAlong(this.path, this.speed);
-        this.mob.setAttacking(true);
+        this.mob.getNavigation().moveTo(this.path, this.speed);
+        this.mob.setAggressive(true);
         this.updateCountdownTicks = 0;
         this.cooldown = 0;
     }
 
     public void stop() {
         LivingEntity livingEntity = this.mob.getTarget();
-        if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
             this.mob.setTarget((LivingEntity) null);
         }
 
-        this.mob.setAttacking(false);
+        this.mob.setAggressive(false);
         this.mob.getNavigation().stop();
     }
 
-    public boolean shouldRunEveryTick() {
+    public boolean requiresUpdateEveryTick() {
         return true;
     }
 
     public void tick() {
         LivingEntity livingEntity = this.mob.getTarget();
         if (livingEntity != null) {
-            this.mob.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
-            double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
+            this.mob.getLookControl().setLookAt(livingEntity, 30.0F, 30.0F);
+            double d = this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
             this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
-            if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity)) && this.updateCountdownTicks <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingEntity.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.mob.getRandom().nextFloat() < 0.05F)) {
+            if ((this.pauseWhenMobIdle || this.mob.getSensing().hasLineOfSight(livingEntity)) && this.updateCountdownTicks <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingEntity.distanceToSqr(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.mob.getRandom().nextFloat() < 0.05F)) {
                 this.targetX = livingEntity.getX();
                 this.targetY = livingEntity.getY();
                 this.targetZ = livingEntity.getZ();
@@ -118,11 +118,11 @@ public class LichMeleeGoal extends Goal {
                     this.updateCountdownTicks += 5;
                 }
 
-                if (!this.mob.getNavigation().startMovingTo(livingEntity, this.speed)) {
+                if (!this.mob.getNavigation().moveTo(livingEntity, this.speed)) {
                     this.updateCountdownTicks += 15;
                 }
 
-                this.updateCountdownTicks = this.getTickCount(this.updateCountdownTicks);
+                this.updateCountdownTicks = this.adjustedTickDelay(this.updateCountdownTicks);
             }
 
             this.cooldown = Math.max(this.cooldown - 1, 0);
@@ -156,20 +156,20 @@ public class LichMeleeGoal extends Goal {
                     canFinishAttack = true;
                 }
 
-                if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
+                if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.doHurtTarget(target)) {
                     // warden sonic boom logic
-                    Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
-                    Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
-                    Vec3d vec3d3 = vec3d2.normalize();
+                    Vec3 vec3d = mob.position().add(0.0D, 1.600000023841858D, 0.0D);
+                    Vec3 vec3d2 = target.getEyePosition().subtract(vec3d);
+                    Vec3 vec3d3 = vec3d2.normalize();
 
-                    for (int i = 1; i < MathHelper.floor(vec3d2.length()) + 7; ++i) {
-                        Vec3d vec3d4 = vec3d.add(vec3d3.multiply((double) i));
-                        ((ServerWorld) mob.getLevel()).spawnParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                    for (int i = 1; i < Mth.floor(vec3d2.length()) + 7; ++i) {
+                        Vec3 vec3d4 = vec3d.add(vec3d3.scale((double) i));
+                        ((ServerLevel) mob.level()).sendParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE.getType(), vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
                     }
 
-                    double e = 2.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    double f = 1.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * f, vec3d3.getZ() * e);
+                    double e = 2.5D * (1.0D - target.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE));
+                    double f = 1.5D * (1.0D - target.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.KNOCKBACK_RESISTANCE));
+                    target.setDeltaMovement(vec3d3.x() * e, vec3d3.y() * f, vec3d3.z() * e);
                     canFinishAttack = false;
 
                 }
@@ -179,12 +179,12 @@ public class LichMeleeGoal extends Goal {
             // if lich enters "light-sphere" while player has blindness, play sound
             if (phase == 3 && squaredDistance <= d + 11.0D && scareSoundAge <= 0) {
                 this.mob.playScareSound();
-                scareSoundAge = 80;
+                scareSoundAge = 40;
             }
 
             if (squaredDistance <= d && this.cooldown <= 0) {
                 this.resetCooldown(20);
-                this.mob.tryAttack(target);
+                this.mob.doHurtTarget(target);
             }
         }
     }
@@ -193,12 +193,12 @@ public class LichMeleeGoal extends Goal {
         if (this.mob.getPhase() == 1) {
             return 16.0D;
         } else if (this.mob.getPhase() == 3) {
-            return (double) (this.mob.getWidth() * 3.0F * this.mob.getWidth() * 3.0F + entity.getWidth());
+            return (double) (this.mob.getBbWidth() * 3.0F * this.mob.getBbWidth() * 3.0F + entity.getBbWidth());
         }
-        return (double) (this.mob.getWidth() * 2.0F * this.mob.getWidth() * 2.0F + entity.getWidth());
+        return (double) (this.mob.getBbWidth() * 2.0F * this.mob.getBbWidth() * 2.0F + entity.getBbWidth());
     }
 
     protected void resetCooldown(int ticks) {
-        this.cooldown = this.getTickCount(ticks);
+        this.cooldown = this.adjustedTickDelay(ticks);
     }
 }

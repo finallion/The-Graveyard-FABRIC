@@ -40,7 +40,7 @@ public class TGItems {
     public static final Supplier<Item> CHERRY_COFFIN_BASE = RegistryHelper.registerItem("cherry_coffin_base", () -> new Item(new Item.Properties()));
 
     public static final Supplier<Item> OSSUARY = RegistryHelper.registerItem("ossuary", () -> new BlockItem(TGBlocks.OSSUARY.get(), new Item.Properties()));
-    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01, new Item.Properties().maxCount(1), 270);
+    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01, new Item.Properties().stacksTo(1), 270);
 
     public static final Supplier<Item> SKELETON_CREEPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("skeleton_creeper_spawn_egg", TGEntities.SKELETON_CREEPER, 7960171, 15263976, new Item.Properties());
     public static final Supplier<Item> ACOLYTE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("acolyte_spawn_egg", TGEntities.ACOLYTE, 2688830, 5898240, new Item.Properties());

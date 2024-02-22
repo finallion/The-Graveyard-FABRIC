@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -51,16 +51,16 @@ public class ServerEvents {
         }
 
         @Override
-        public void onWorldLoad(MinecraftServer server, ServerWorld world) {
+        public void onWorldLoad(MinecraftServer server, ServerLevel world) {
             readGhoulingUUIDFile(server);
         }
 
         private void readGhoulingUUIDFile(MinecraftServer server) {
             /* GHOULING UUID FILE READER */
             String line;
-            File file = new File(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
+            File file = new File(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
             if (file.exists()) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
+                try (BufferedReader reader = new BufferedReader(new FileReader(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
                     while ((line = reader.readLine()) != null) {
                         String[] keyValuePair = line.split(":", 2);
 
@@ -83,13 +83,13 @@ public class ServerEvents {
         }
 
         @Override
-        public void onWorldUnload(MinecraftServer server, ServerWorld world) {
+        public void onWorldUnload(MinecraftServer server, ServerLevel world) {
             saveGhoulingUUIDFile(server);
         }
 
         private void saveGhoulingUUIDFile(MinecraftServer server) {
             try {
-                FileWriter fileWriter = new FileWriter(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
+                FileWriter fileWriter = new FileWriter(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 for (Map.Entry<UUID, UUID> entry : BoneStaffItem.ownerGhoulingMapping.entrySet()) {

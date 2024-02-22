@@ -8,36 +8,47 @@ import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.sounds.BossMusicPlayer;
-import com.lion.graveyard.util.MathUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.*;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.entity.boss.ServerBossBar;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.effect.MobEffectInstance;
-import net.minecraft.entity.effect.MobEffects;
-import net.minecraft.entity.mob.*;
-import net.minecraft.entity.player.Player;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundSource;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import com.lion.graveyard.util.MathUtil;;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.BossEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.EvokerFangs;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -51,17 +62,17 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class LichEntity extends HostileEntity implements GeoEntity {
-    private final ServerBossBar bossBar;
+public class LichEntity extends Monster implements GeoEntity {
+    private final ServerBossEvent bossBar;
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    protected static final TargetPredicate HEAD_TARGET_PREDICATE;
+    protected static final TargetingConditions HEAD_TARGET_PREDICATE;
     private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final UUID ATTACKING_DMG_BOOST_ID = UUID.fromString("120E0DFB-87AE-4653-9776-831010E291A1");
     private static final UUID CRAWL_SPEED_BOOST_ID = UUID.fromString("120E0DFB-87AE-1978-9776-831010E291A2");
-    private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
-    private static final EntityAttributeModifier CRAWL_SPEED_BOOST;
-    private static final EntityAttributeModifier DMG_BOOST;
+    private static final AttributeModifier ATTACKING_SPEED_BOOST;
+    private static final AttributeModifier CRAWL_SPEED_BOOST;
+    private static final AttributeModifier DMG_BOOST;
     // animation
     private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
@@ -94,24 +105,24 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     protected static final int ANIMATION_STUNNED = 13;
     protected static final int ANIMATION_CRAWL_IDLE = 14;
     // data tracker
-    private static final TrackedData<Integer> INVUL_TIMER; // spawn invul timer
-    private static final TrackedData<Integer> PHASE_INVUL_TIMER; // other invul timer
-    private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
-    private static final TrackedData<Integer> FIGHT_DURATION_TIMER;
-    private static final TrackedData<Integer> PHASE_TWO_START_ANIM_TIMER; // main phase one to two
-    private static final TrackedData<Integer> PHASE_THREE_START_ANIM_TIMER; // main phase two to three
-    private static final TrackedData<Integer> PHASE; // divides fight into three main phases and two transitions, animations are named after the main phase
-    private static final TrackedData<Integer> ANIMATION;
-    private static final TrackedData<Integer> HUNT_TIMER;
-    private static final TrackedData<Boolean> CAN_HUNT_START;
-    private static final TrackedData<Boolean> CAN_MOVE;
-    private static final TrackedData<Integer> MUSIC_DELAY;
+    private static final EntityDataAccessor<Integer> INVUL_TIMER; // spawn invul timer
+    private static final EntityDataAccessor<Integer> PHASE_INVUL_TIMER; // other invul timer
+    private static final EntityDataAccessor<Integer> ATTACK_ANIM_TIMER;
+    private static final EntityDataAccessor<Integer> FIGHT_DURATION_TIMER;
+    private static final EntityDataAccessor<Integer> PHASE_TWO_START_ANIM_TIMER; // main phase one to two
+    private static final EntityDataAccessor<Integer> PHASE_THREE_START_ANIM_TIMER; // main phase two to three
+    private static final EntityDataAccessor<Integer> PHASE; // divides fight into three main phases and two transitions, animations are named after the main phase
+    private static final EntityDataAccessor<Integer> ANIMATION;
+    private static final EntityDataAccessor<Integer> HUNT_TIMER;
+    private static final EntityDataAccessor<Boolean> CAN_HUNT_START;
+    private static final EntityDataAccessor<Boolean> CAN_MOVE;
+    private static final EntityDataAccessor<Integer> MUSIC_DELAY;
 
     // spell timer data tracker
-    private static final TrackedData<Integer> CONJURE_FANG_TIMER;
-    private static final TrackedData<Integer> HEAL_DURATION_TIMER;
-    private static final TrackedData<Integer> CORPSE_SPELL_DURATION_TIMER;
-    private static final TrackedData<Integer> LEVITATION_DURATION_TIMER;
+    private static final EntityDataAccessor<Integer> CONJURE_FANG_TIMER;
+    private static final EntityDataAccessor<Integer> HEAL_DURATION_TIMER;
+    private static final EntityDataAccessor<Integer> CORPSE_SPELL_DURATION_TIMER;
+    private static final EntityDataAccessor<Integer> LEVITATION_DURATION_TIMER;
 
     // constants
     private static final byte MUSIC_PLAY_ID = 67;
@@ -137,9 +148,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private int phaseThreeAttackSoundAge = 120;
     private int idleSoundAge = 0;
 
-    public LichEntity(EntityType<? extends HostileEntity> entityType, Level world) {
+    public LichEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        this.bossBar = (ServerBossBar) (new ServerBossBar(this.getDisplayName(), BossBar.Color.WHITE, BossBar.Style.PROGRESS)).setDarkenSky(true).setThickenFog(true);
+        this.bossBar = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     }
 
     @Override
@@ -161,7 +172,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             /* PHASE 1 */
             // takes one tick to get to this method (from mobtick)
             // do not attack when: the spawn invul timer is active, the phase is incorrect or the phase invul timer was set from a spell
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack() && getAnimationState() != ANIMATION_SPAWN) {
+            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAggressive() && !(this.isDeadOrDying() || this.getHealth() < 0.01) && canMeeleAttack() && getAnimationState() != ANIMATION_SPAWN) {
                 setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2); // disables to call the animation immediately after (seems to be called multiple times per tick, per frame tick?)
                 event.getController().setAnimation(ATTACK_ANIMATION);
                 return PlayState.CONTINUE;
@@ -225,18 +236,18 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             }
 
             /* PHASE 5 */
-            if (!event.isMoving() && getPhase() == 5 && !(this.isDead() || this.getHealth() < 0.01)) {
+            if (!event.isMoving() && getPhase() == 5 && !(this.isDeadOrDying() || this.getHealth() < 0.01)) {
                 event.getController().setAnimation(CRAWL_IDLE_ANIMATION);
                 return PlayState.CONTINUE;
             }
 
-            if (getAnimationState() == ANIMATION_PHASE_3_ATTACK && getPhase() == 5 && !(this.isDead() || this.getHealth() < 0.01)) {
+            if (getAnimationState() == ANIMATION_PHASE_3_ATTACK && getPhase() == 5 && !(this.isDeadOrDying() || this.getHealth() < 0.01)) {
                 event.getController().setAnimation(PHASE_3_ATTACK_ANIMATION);
                 return PlayState.CONTINUE;
             }
 
             /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
+            if (this.isDeadOrDying() || this.getHealth() < 0.01) {
                 event.getController().setAnimation(DEATH_ANIMATION);
                 return PlayState.CONTINUE;
             }
@@ -266,59 +277,59 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         return factory;
     }
 
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(2, new LichMeleeGoal(this, 1.0D, false));
-        this.goalSelector.add(4, new SummonFallenCorpsesGoal(this));
-        this.goalSelector.add(5, new ConjureFangsGoal(this));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, Player.class, 8.0F));
-        this.goalSelector.add(7, new ShootSkullGoal(this));
-        this.goalSelector.add(8, new TeleportAndHealGoal(this));
-        this.goalSelector.add(9, new LevitationGoal(this));
-        this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[0]));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, Player.class, false));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(2, new LichMeleeGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(4, new SummonFallenCorpsesGoal(this));
+        this.goalSelector.addGoal(5, new ConjureFangsGoal(this));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new ShootSkullGoal(this));
+        this.goalSelector.addGoal(8, new TeleportAndHealGoal(this));
+        this.goalSelector.addGoal(9, new LevitationGoal(this));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[0]));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, false));
     }
 
-    public static DefaultAttributeContainer.Builder createLichAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").healthInCastingPhase)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").damageCastingPhase)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").armor)
-                .add(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").armorToughness)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 1.0D);
+    public static AttributeSupplier.Builder createLichAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").healthInCastingPhase)
+                .add(Attributes.MOVEMENT_SPEED, 0.0D)
+                .add(Attributes.ATTACK_DAMAGE, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").damageCastingPhase)
+                .add(Attributes.FOLLOW_RANGE, 25.0D)
+                .add(Attributes.ARMOR, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").armor)
+                .add(Attributes.ARMOR_TOUGHNESS, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").armorToughness)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
     @Override
     public void tick() {
-        if (!getEntityWorld().isClient && getBossMusic() != null) {
+        if (!level().isClientSide() && getBossMusic() != null) {
             if (canPlayMusic() && deathTime == 0) {
-                this.getEntityWorld().sendEntityStatus(this, MUSIC_PLAY_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_PLAY_ID);
             } else {
-                this.getEntityWorld().sendEntityStatus(this, MUSIC_STOP_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_STOP_ID);
             }
         }
         super.tick();
     }
 
     @Override
-    public void handleStatus(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == MUSIC_PLAY_ID && getMusicDelay() == 78) BossMusicPlayer.playBossMusic(this);
         else if (id == MUSIC_STOP_ID) BossMusicPlayer.stopBossMusic(this);
-        else super.handleStatus(id);
+        else super.handleEntityEvent(id);
     }
 
 
     /* PARTICLE HANDLING */
     @Override
-    public void tickMovement() {
+    public void aiStep() {
         if (homePos == null) {
-            homePos = BlockPos.ofFloored(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
+            homePos = BlockPos.containing(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
         }
 
-        animateTick(this.getLevel(), this.getBlockPos(), this.getRandom());
+        animateTick(this.level(), this.blockPosition(), this.getRandom());
 
         int phaseTwoTimer = getStartPhaseTwoAnimTimer();
         if (phaseTwoTimer < START_PHASE_TWO_PARTICLES && phaseTwoTimer > (START_PHASE_TWO_PARTICLES / 2)) {
@@ -329,46 +340,46 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 } else if (i > 12) {
                     offset -= 0.15F;
                 }
-                MathUtil.createParticleDisk(this.getLevel(), this.getX(), this.getY() + ((float) i / 10), this.getZ(), 0.0D, 0.3D, 0.0D, 2 * offset, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom());
+                MathUtil.createParticleDisk(this.level(), this.getX(), this.getY() + ((float) i / 10), this.getZ(), 0.0D, 0.3D, 0.0D, 2 * offset, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom());
             }
         }
 
         if (getInvulnerableTimer() > 60 && random.nextInt(6) == 0 && getPhase() == 1) {
-            MathUtil.createParticleFlare(this.getLevel(), this.getX() - 0.75D, this.getY() - 1.0D + 3.5D - (float) getInvulnerableTimer() / 100, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
+            MathUtil.createParticleFlare(this.level(), this.getX() - 0.75D, this.getY() - 1.0D + 3.5D - (float) getInvulnerableTimer() / 100, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
         if (getInvulnerableTimer() > 20 && getPhase() == 1) {
-            MathUtil.createParticleCircle(this.getLevel(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 1.0F);
+            MathUtil.createParticleCircle(this.level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 1.0F);
         }
 
-        Vec3d rotation = this.getRotationVec(1.0F);
+        Vec3 rotation = this.getViewVector(1.0F);
         if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
-            MathUtil.createParticleFlare(this.getLevel(), this.getX() - 0.75D, this.getY() - 1, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
+            MathUtil.createParticleFlare(this.level(), this.getX() - 0.75D, this.getY() - 1, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
 
         if (getPhaseInvulnerableTimer() > 0 && getInvulnerableTimer() <= 0 && getPhase() == 1) {
-            MathUtil.createParticleCircle(this.getLevel(), this.getX(), this.getY() + 1.5D, this.getZ(), 0.0D, 0.0D, 0.0D, 2.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
+            MathUtil.createParticleCircle(this.level(), this.getX(), this.getY() + 1.5D, this.getZ(), 0.0D, 0.0D, 0.0D, 2.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
         }
 
         if (!canHuntStart() && getPhase() == 3 && getAnimationState() == ANIMATION_STUNNED && random.nextInt(7) == 0) {
-            MathUtil.createParticleFlare(this.getLevel(), this.getX() - 0.75D, this.getY() + 2.5D, this.getZ() - 0.75D, random.nextInt(100) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, true);
+            MathUtil.createParticleFlare(this.level(), this.getX() - 0.75D, this.getY() + 2.5D, this.getZ() - 0.75D, random.nextInt(100) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, true);
         }
 
         if (getHealTimer() > 0 && getPhase() == 1) {
-            MathUtil.createParticleSpiral(this.getLevel(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, 0.0D, 0.0D, 0.0D, 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+            MathUtil.createParticleSpiral(this.level(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, 0.0D, 0.0D, 0.0D, 350, ParticleTypes.SOUL_FIRE_FLAME, random);
         }
 
         if (getHealTimer() == 1 && getPhase() == 1) {
-            getLevel().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 3.0F, -1.0F);
+            level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 3.0F, -1.0F);
             for (int i = 0; i < 20; i++) {
-                MathUtil.createParticleSpiral(this.getLevel(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+                MathUtil.createParticleSpiral(this.level(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), 350, ParticleTypes.SOUL_FIRE_FLAME, random);
             }
         }
 
         if (!this.isAlive() && homePos != null) {
-            BlockState altar = getLevel().getBlockState(homePos.down());
+            BlockState altar = level().getBlockState(homePos.below());
             if (altar.getBlock() instanceof AltarBlock) {
-                getLevel().setBlock(homePos.down(), altar.with(AltarBlock.BLOODY, false), 3);
+                level().setBlock(homePos.below(), altar.setValue(AltarBlock.BLOODY, false), 3);
             }
         }
 
@@ -378,37 +389,37 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             while (iterator.hasNext()) {
                 Player player = iterator.next();
                 if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
-                    player.playSound(SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, 2.5F, -5.0F);
+                    player.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 2.5F, -5.0F);
                     for (int i = 0; i < 10; i++) {
-                        MathUtil.createParticleCircle(this.getLevel(), player.getX(), player.getY(), player.getZ(), 0.0D, 0.01D, 0.0D, 1.0F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
+                        MathUtil.createParticleCircle(this.level(), player.getX(), player.getY(), player.getZ(), 0.0D, 0.01D, 0.0D, 1.0F, TGParticles.GRAVEYARD_SOUL_PARTICLE, this.getRandom(), 0.5F);
                     }
                 }
             }
         }
 
         if (!canHuntStart() && random.nextInt(5) == 0) {
-            getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundSource.HOSTILE, 4.0F, -10.0F);
+            level().playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE, SoundSource.HOSTILE, 4.0F, -10.0F);
         }
 
         if (getMusicDelay() < 78) {
             setMusicDelay(getMusicDelay() + 1);
         }
 
-        super.tickMovement();
+        super.aiStep();
     }
 
     @Override
     public void baseTick() {
         if (homePos == null) {
-            homePos = BlockPos.ofFloored(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
+            homePos = BlockPos.containing(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
         }
 
         super.baseTick();
     }
 
-    protected void mobTick() {
+    protected void customServerAiStep() {
         if (homePos == null) {
-            homePos = BlockPos.ofFloored(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
+            homePos = BlockPos.containing(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
         }
 
         if (idleSoundAge <= 0) {
@@ -440,19 +451,19 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 phaseThreeAttackSoundAge--;
             }
 
-            EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+            AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
             setCanMove(true);
             setAnimationState(ANIMATION_PHASE_3_ATTACK);
             if (!entityAttributeInstance.hasModifier(CRAWL_SPEED_BOOST)) {
-                entityAttributeInstance.addTemporaryModifier(CRAWL_SPEED_BOOST);
+                entityAttributeInstance.addTransientModifier(CRAWL_SPEED_BOOST);
             }
         }
         /* END PHASE 5 FIGHT LOGIC */
 
         /* PHASE 3 FIGHT LOGIC */
         if (getPhase() == 3) {
-            EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-            EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
+            AttributeInstance entityAttributeDmgInstance = this.getAttribute(Attributes.ATTACK_DAMAGE);
 
             if (getHuntCooldownTicker() > 0) {
                 setHuntCooldownTicker(getHuntCooldownTicker() - 1);
@@ -467,16 +478,16 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                     Player player = iterator.next();
                     if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                         for (int i = 0; i <= 5; i++) {
-                            BlockPos targetPos = BlockPos.ofFloored(this.getX() + MathHelper.nextInt(random, -10, 10), this.getY(), this.getZ() + MathHelper.nextInt(random, -10, 10));
+                            BlockPos targetPos = BlockPos.containing(this.getX() + Mth.nextInt(random, -10, 10), this.getY(), this.getZ() + Mth.nextInt(random, -10, 10));
 
-                            if (getEntityWorld().getBlockState(targetPos).isAir() && getEntityWorld().getBlockState(targetPos.up()).isAir() && getEntityWorld().getBlockState(targetPos.down()).isSolidBlock(getEntityWorld(), targetPos.down())) {
-                                player.teleport(targetPos.getX(), targetPos.getY(), targetPos.getZ());
+                            if (level().getBlockState(targetPos).isAir() && level().getBlockState(targetPos.above()).isAir() && level().getBlockState(targetPos.below()).isSolidRender(level(), targetPos.below())) {
+                                player.teleportTo(targetPos.getX(), targetPos.getY(), targetPos.getZ());
                                 break;
                             }
                         }
                     }
                     if (getHuntTimer() % 50 == 0 && !player.isCreative()) {
-                        player.addStatusEffect(new MobEffectInstance(MobEffects.BLINDNESS, 80, 2));
+                        player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 80, 2));
                     }
                 }
 
@@ -495,17 +506,17 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 setAnimationState(ANIMATION_PHASE_2_ATTACK);
 
                 if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
-                    entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
+                    entityAttributeInstance.addTransientModifier(ATTACKING_SPEED_BOOST);
                 }
 
                 if (!entityAttributeDmgInstance.hasModifier(DMG_BOOST)) {
-                    entityAttributeDmgInstance.addTemporaryModifier(DMG_BOOST);
+                    entityAttributeDmgInstance.addTransientModifier(DMG_BOOST);
                 }
             }
 
             // if the hunt runs out, set cooldown
             if (getHuntTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
-                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                this.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
                 setHuntStart(false);
@@ -525,7 +536,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         if (getPhase() == 2) {
             int phaseTwoTimer = getStartPhaseTwoAnimTimer();
             if (getPhaseInvulnerableTimer() == 0) {
-                this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                this.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION); // invul
             }
             setAnimationState(ANIMATION_START_PHASE_2);
@@ -548,10 +559,10 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         if (getPhase() == 4) {
             // config adaption
             if (!Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells && canHuntStart()) {
-                EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-                EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
+                AttributeInstance entityAttributeDmgInstance = this.getAttribute(Attributes.ATTACK_DAMAGE);
 
-                this.teleport(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
+                this.teleportTo(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
                 setHuntStart(false);
@@ -592,11 +603,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             while (iterator.hasNext()) {
                 Player player = iterator.next();
                 if (getHealTimer() == HEALING_DURATION && !player.isCreative()) {
-                    player.teleport(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
+                    player.teleportTo(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
                 }
-                if (!player.hasStatusEffect(MobEffects.MINING_FATIGUE) && !player.isCreative()) {
-                    player.addStatusEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1));
-                    player.addStatusEffect(new MobEffectInstance(MobEffects.WITHER, 50, 1));
+                if (!player.hasEffect(MobEffects.DIG_SLOWDOWN) && !player.isCreative()) {
+                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.WITHER, 50, 1));
                 }
             }
         }
@@ -621,7 +632,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 setAnimationState(ANIMATION_IDLE);
             }
 
-            this.bossBar.setPercent(1.0F - (float) i / timer);
+            this.bossBar.setProgress(1.0F - (float) i / timer);
             this.setInvulTimer(i);
         } else {
             // ATTACK TIMER
@@ -634,9 +645,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 this.setAttackAnimTimer(animTimer);
             }
 
-            super.mobTick();
+            super.customServerAiStep();
 
-            this.bossBar.setPercent(this.getHealth() / this.getMaxHealthPerPhase());
+            this.bossBar.setProgress(this.getHealth() / this.getMaxHealthPerPhase());
         }
     }
 
@@ -648,9 +659,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
     }
 
-
-    public void setCustomName(@Nullable Text name) {
-        super.setCustomName(name);
+    public void setCustomName(Component p_31476_) {
+        super.setCustomName(p_31476_);
         this.bossBar.setName(this.getDisplayName());
     }
 
@@ -658,32 +668,33 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     public void onSummoned(Direction direction, BlockPos altarPos) {
         this.setAnimationState(ANIMATION_SPAWN);
         applyInvulAndResetBossBar(SPAWN_INVUL_TIMER);
-        this.homePos = BlockPos.ofFloored(altarPos.getX() + 0.5D, altarPos.getY(), altarPos.getZ() + 0.5D);
+        this.homePos = BlockPos.containing(altarPos.getX() + 0.5D, altarPos.getY(), altarPos.getZ() + 0.5D);
         this.spawnDirection = direction;
         playSpawnSound();
     }
 
     private void applyInvulAndResetBossBar(int invul) {
         this.setInvulTimer(invul);
-        this.bossBar.setPercent(0.0F);
+        this.bossBar.setProgress(0.0F);
     }
 
     @Override
-    protected void updatePostDeath() {
+    protected void tickDeath() {
         ++this.deathTime;
 
         if (this.deathTime == 5) {
             playDeathSound();
         }
 
-        if (this.deathTime == 160 && !this.getEntityWorld().isClient()) {
-            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
+        if (this.deathTime == 160 && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
 
-    public float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
-        if (pose == EntityPose.CROUCHING) {
+    @Override
+    public float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+        if (pose == Pose.CROUCHING) {
             return 2.0F;
         } else {
             return 4.0F;
@@ -691,52 +702,59 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     @Override
-    public EntityDimensions getDimensions(EntityPose pose) {
-        if (pose == EntityPose.CROUCHING) {
-            setPose(EntityPose.CROUCHING);
+    public EntityDimensions getDimensions(Pose pose) {
+        if (pose == Pose.CROUCHING) {
+            setPose(Pose.CROUCHING);
             return CRAWL_DIMENSIONS;
         }
         return super.getDimensions(pose);
     }
 
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    @Override
+    public boolean causeFallDamage(float p_147187_, float p_147188_, DamageSource p_147189_) {
         return false;
     }
 
-    public boolean addStatusEffect(MobEffectInstance effect, @Nullable Entity source) {
+    @Override
+    public boolean addEffect(MobEffectInstance effect, @Nullable Entity source) {
         return false;
     }
 
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
+    @Override
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
-    protected boolean canStartRiding(Entity entity) {
+    @Override
+    protected boolean canRide(Entity p_20339_) {
         return false;
     }
 
-    public boolean canUsePortals() {
+    @Override
+    public boolean canChangeDimensions() {
         return false;
     }
 
-    public void onStartedTrackingBy(ServerPlayerEntity player) {
-        super.onStartedTrackingBy(player);
-        this.bossBar.addPlayer(player);
+    @Override
+    public void startSeenByPlayer(ServerPlayer p_31483_) {
+        super.startSeenByPlayer(p_31483_);
+        this.bossBar.addPlayer(p_31483_);
     }
 
-    public void onStoppedTrackingBy(ServerPlayerEntity player) {
-        super.onStoppedTrackingBy(player);
-        this.bossBar.removePlayer(player);
+    @Override
+    public void stopSeenByPlayer(ServerPlayer p_31488_) {
+        super.stopSeenByPlayer(p_31488_);
+        this.bossBar.removePlayer(p_31488_);
     }
 
-    public boolean damage(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && !source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
+            if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && !source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
                 return false;
             } else {
-                if (amount > this.getHealth() && getPhase() < 5 && !source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isMultiphaseFight) {
+                if (amount > this.getHealth() && getPhase() < 5 && !source.is(DamageTypeTags.BYPASSES_RESISTANCE) && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isMultiphaseFight) {
                     //amount = this.getHealth() - 1;
                     respawn();
                     return false;
@@ -750,7 +768,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 }
 
 
-                return super.damage(source, amount);
+                return super.hurt(source, amount);
             }
         }
     }
@@ -758,16 +776,16 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private void respawn() {
         this.setPhase(getPhase() + 1);
         setAnimationState(ANIMATION_STOP);
-        this.clearStatusEffects();
+        this.removeAllEffects();
         applyInvulAndResetBossBar(DEFAULT_INVUL_TIMER);
         setHealth(HEALTH_PHASE_02);
         setAttackAnimTimer(0);
         if (getPhase() == 4 || getPhase() == 5) {
-            getDimensions(EntityPose.CROUCHING);
+            getDimensions(Pose.CROUCHING);
         }
     }
 
-    public void animateTick(Level world, BlockPos pos, Random random) {
+    public void animateTick(Level world, BlockPos pos, RandomSource random) {
         int i = pos.getX();
         int j = pos.getY();
         int k = pos.getZ();
@@ -775,19 +793,19 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         double e = (double) j + 4.2D;
         double f = (double) k + random.nextInt(3) - random.nextInt(3);
         world.addParticle(ParticleTypes.ASH, d, e, f, 0.0D, 0.0D, 0.0D);
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
-        mutable.set(i + MathHelper.nextInt(random, -17, 17), j + random.nextInt(10), k + MathHelper.nextInt(random, -17, 17));
+        mutable.set(i + Mth.nextInt(random, -17, 17), j + random.nextInt(10), k + Mth.nextInt(random, -17, 17));
         BlockState blockState = world.getBlockState(mutable);
-        if (!blockState.isFullCube(world, mutable)) {
+        if (!blockState.isSolidRender(world, mutable)) {
             world.addParticle(ParticleTypes.SMOKE, (double) mutable.getX() + random.nextDouble(), (double) mutable.getY() + random.nextDouble(), (double) mutable.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
         }
 
     }
 
     public List<Player> getPlayersInRange(double range) {
-        Box box = (new Box(this.getBlockPos())).expand(range);
-        return getEntityWorld().getNonSpectatingEntities(Player.class, box);
+        AABB box = (new AABB(this.blockPosition())).inflate(range);
+        return level().getEntitiesOfClass(Player.class, box);
     }
 
     public boolean canMeeleAttack() {
@@ -813,36 +831,36 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     @Override
-    public boolean isImmuneToExplosion(Explosion explosion) {
+    public boolean ignoreExplosion(Explosion explosion) {
         return true;
     }
 
     private boolean summonMob(boolean hard) {
         if (this.getHuntTimer() <= 1) { // do not summon mobs when lich is hunting
-            Box box = (new Box(this.getBlockPos())).expand(35.0D);
-            List<HostileGraveyardEntity> mobs = getLevel().getNonSpectatingEntities(HostileGraveyardEntity.class, box);
+            AABB box = (new AABB(this.blockPosition())).inflate(35.0D);
+            List<HostileGraveyardEntity> mobs = level().getEntitiesOfClass(HostileGraveyardEntity.class, box);
             if (mobs.size() >= Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").maxSummonedMobs) {
                 return false;
             }
 
             for (int i = 10; i > 0; i--) {
-                BlockPos pos = new BlockPos(this.getBlockX() + MathHelper.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + MathHelper.nextInt(random, -15, 15));
+                BlockPos pos = new BlockPos(this.getBlockX() + Mth.nextInt(random, -15, 15), this.getBlockY(), this.getBlockZ() + Mth.nextInt(random, -15, 15));
                 int amount = random.nextInt(Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").maxGroupSizeSummonedMobs) + 1;
-                if (getEntityWorld().getBlockState(pos).isAir() && getEntityWorld().getBlockState(pos.up()).isAir() && getEntityWorld().getBlockState(pos.up().up()).isAir() && !getEntityWorld().getBlockState(pos.down()).isAir()) {
+                if (level().getBlockState(pos).isAir() && level().getBlockState(pos.above()).isAir() && level().getBlockState(pos.above().above()).isAir() && !level().getBlockState(pos.below()).isAir()) {
                     if (!hard) {
                         for (int ii = 0; ii < amount; ++ii) {
-                            RevenantEntity revenant = TGEntities.REVENANT.get().create(getEntityWorld());
-                            revenant.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                            RevenantEntity revenant = TGEntities.REVENANT.get().create(level());
+                            revenant.moveTo(pos.getX(), pos.getY(), pos.getZ());
                             revenant.setCanBurnInSunlight(false);
-                            getEntityWorld().spawnEntity(revenant);
+                            level().addFreshEntity(revenant);
                         }
                     } else {
                         for (int ii = 0; ii < amount - 1; ++ii) {
-                            GhoulEntity ghoul = TGEntities.GHOUL.get().create(getEntityWorld());
+                            GhoulEntity ghoul = TGEntities.GHOUL.get().create(level());
                             ghoul.setVariant((byte) 9);
-                            ghoul.setPosition(pos.getX(), pos.getY(), pos.getZ());
+                            ghoul.moveTo(pos.getX(), pos.getY(), pos.getZ());
                             ghoul.setCanBurnInSunlight(false);
-                            getEntityWorld().spawnEntity(ghoul);
+                            level().addFreshEntity(ghoul);
                         }
                     }
                     return true;
@@ -854,7 +872,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     @Override
-    public boolean cannotDespawn() {
+    public boolean requiresCustomPersistence() {
         return true;
     }
 
@@ -862,124 +880,124 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     /* GETTER AND SETTER */
     ///////////////////////
     public boolean canHuntStart() {
-        return this.dataTracker.get(CAN_HUNT_START);
+        return this.entityData.get(CAN_HUNT_START);
     }
 
     public void setHuntStart(boolean bool) {
-        this.dataTracker.set(CAN_HUNT_START, bool);
+        this.entityData.set(CAN_HUNT_START, bool);
     }
 
     public void setCanMove(boolean bool) {
-        this.dataTracker.set(CAN_MOVE, bool);
+        this.entityData.set(CAN_MOVE, bool);
     }
 
     public boolean canMove() {
-        return this.dataTracker.get(CAN_MOVE);
+        return this.entityData.get(CAN_MOVE);
     }
 
     public int getInvulnerableTimer() {
-        return (Integer) this.dataTracker.get(INVUL_TIMER);
+        return (Integer) this.entityData.get(INVUL_TIMER);
     }
 
     public void setInvulTimer(int ticks) {
-        this.dataTracker.set(INVUL_TIMER, ticks);
+        this.entityData.set(INVUL_TIMER, ticks);
     }
 
     public int getFightDurationTimer() {
-        return (Integer) this.dataTracker.get(FIGHT_DURATION_TIMER);
+        return (Integer) this.entityData.get(FIGHT_DURATION_TIMER);
     }
 
     public void setFightDurationTimer(int ticks) {
-        this.dataTracker.set(FIGHT_DURATION_TIMER, ticks);
+        this.entityData.set(FIGHT_DURATION_TIMER, ticks);
     }
 
     public int getLevitationDurationTimer() {
-        return (Integer) this.dataTracker.get(LEVITATION_DURATION_TIMER);
+        return (Integer) this.entityData.get(LEVITATION_DURATION_TIMER);
     }
 
     public void setLevitationDurationTimer(int ticks) {
-        this.dataTracker.set(LEVITATION_DURATION_TIMER, ticks);
+        this.entityData.set(LEVITATION_DURATION_TIMER, ticks);
     }
 
     public int getConjureFangTimer() {
-        return (Integer) this.dataTracker.get(CONJURE_FANG_TIMER);
+        return (Integer) this.entityData.get(CONJURE_FANG_TIMER);
     }
 
     public void setConjureFangTimer(int ticks) {
-        this.dataTracker.set(CONJURE_FANG_TIMER, ticks);
+        this.entityData.set(CONJURE_FANG_TIMER, ticks);
     }
 
     public int getCorpseSpellTimer() {
-        return (Integer) this.dataTracker.get(CORPSE_SPELL_DURATION_TIMER);
+        return (Integer) this.entityData.get(CORPSE_SPELL_DURATION_TIMER);
     }
 
     public void setCorpseSpellTimer(int ticks) {
-        this.dataTracker.set(CORPSE_SPELL_DURATION_TIMER, ticks);
+        this.entityData.set(CORPSE_SPELL_DURATION_TIMER, ticks);
     }
 
     public int getHealTimer() {
-        return (Integer) this.dataTracker.get(HEAL_DURATION_TIMER);
+        return (Integer) this.entityData.get(HEAL_DURATION_TIMER);
     }
 
     public void setHealTimer(int ticks) {
-        this.dataTracker.set(HEAL_DURATION_TIMER, ticks);
+        this.entityData.set(HEAL_DURATION_TIMER, ticks);
     }
 
     public int getPhaseInvulnerableTimer() {
-        return (Integer) this.dataTracker.get(PHASE_INVUL_TIMER);
+        return (Integer) this.entityData.get(PHASE_INVUL_TIMER);
     }
 
     public void setPhaseInvulTimer(int ticks) {
-        this.dataTracker.set(PHASE_INVUL_TIMER, ticks);
+        this.entityData.set(PHASE_INVUL_TIMER, ticks);
     }
 
     public int getHuntTimer() {
-        return (Integer) this.dataTracker.get(HUNT_TIMER);
+        return (Integer) this.entityData.get(HUNT_TIMER);
     }
 
     public void setHuntTimer(int ticks) {
-        this.dataTracker.set(HUNT_TIMER, ticks);
+        this.entityData.set(HUNT_TIMER, ticks);
     }
 
 
     public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION);
+        return this.entityData.get(ANIMATION);
     }
 
     public void setAnimationState(int state) {
-        this.dataTracker.set(ANIMATION, state);
+        this.entityData.set(ANIMATION, state);
     }
 
     public int getPhase() {
-        return (Integer) this.dataTracker.get(PHASE);
+        return (Integer) this.entityData.get(PHASE);
     }
 
     public void setPhase(int phase) {
-        this.dataTracker.set(PHASE, phase);
+        this.entityData.set(PHASE, phase);
     }
 
     public int getStartPhaseTwoAnimTimer() {
-        return (Integer) this.dataTracker.get(PHASE_TWO_START_ANIM_TIMER);
+        return (Integer) this.entityData.get(PHASE_TWO_START_ANIM_TIMER);
     }
 
     public void setStartPhaseTwoAnimTimer(int startPhaseTwoAnimTimer) {
-        this.dataTracker.set(PHASE_TWO_START_ANIM_TIMER, startPhaseTwoAnimTimer);
+        this.entityData.set(PHASE_TWO_START_ANIM_TIMER, startPhaseTwoAnimTimer);
     }
 
     public int getStartPhaseThreeAnimTimer() {
-        return (Integer) this.dataTracker.get(PHASE_THREE_START_ANIM_TIMER);
+        return (Integer) this.entityData.get(PHASE_THREE_START_ANIM_TIMER);
     }
 
     public void setStartPhaseThreeAnimTimer(int startPhaseThreeAnimTimer) {
-        this.dataTracker.set(PHASE_THREE_START_ANIM_TIMER, startPhaseThreeAnimTimer);
+        this.entityData.set(PHASE_THREE_START_ANIM_TIMER, startPhaseThreeAnimTimer);
     }
 
     public int getAttackAnimTimer() {
-        return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
+        return (Integer) this.entityData.get(ATTACK_ANIM_TIMER);
     }
 
     public void setAttackAnimTimer(int time) {
-        this.dataTracker.set(ATTACK_ANIM_TIMER, time);
+        this.entityData.set(ATTACK_ANIM_TIMER, time);
     }
 
     public int getHuntCooldownTicker() {
@@ -991,11 +1009,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     public int getMusicDelay() {
-        return (Integer) this.dataTracker.get(MUSIC_DELAY);
+        return (Integer) this.entityData.get(MUSIC_DELAY);
     }
 
     public void setMusicDelay(int time) {
-        this.dataTracker.set(MUSIC_DELAY, time);
+        this.entityData.set(MUSIC_DELAY, time);
     }
 
     /* END GETTER AND SETTER */
@@ -1004,56 +1022,56 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     /* SOUNDS */
     ///////////////////////
     private void playSpawnSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SPAWN.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_SPAWN.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
     }
 
     public void playAttackSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_MELEE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_MELEE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playHealSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_TELEPORT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_TELEPORT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playCorpseSpellSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CORPSE_SPELL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CORPSE_SPELL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseTwoSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_02.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_02.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeAttackSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playDeathSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_DEATH.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_DEATH.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playScareSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_SCARE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playHuntSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_HUNT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_HUNT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playShootSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_SKULL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_SKULL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playLevitationSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_CAST_LEVITATION.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_LEVITATION.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     @Override
     public void playAmbientSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_IDLE.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_IDLE.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
     }
 
     @Override
@@ -1074,28 +1092,28 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
     /* SOUNDS END */
 
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(CAN_MOVE, false);
-        this.dataTracker.startTracking(INVUL_TIMER, 0);
-        this.dataTracker.startTracking(MUSIC_DELAY, 0);
-        this.dataTracker.startTracking(HUNT_TIMER, 0);
-        this.dataTracker.startTracking(FIGHT_DURATION_TIMER, 0);
-        this.dataTracker.startTracking(HEAL_DURATION_TIMER, 0);
-        this.dataTracker.startTracking(LEVITATION_DURATION_TIMER, 0);
-        this.dataTracker.startTracking(CORPSE_SPELL_DURATION_TIMER, 0);
-        this.dataTracker.startTracking(PHASE_INVUL_TIMER, 0);
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-        this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
-        this.dataTracker.startTracking(CONJURE_FANG_TIMER, 0);
-        this.dataTracker.startTracking(PHASE_TWO_START_ANIM_TIMER, START_PHASE_TWO_ANIMATION_DURATION);
-        this.dataTracker.startTracking(PHASE_THREE_START_ANIM_TIMER, START_PHASE_THREE_ANIMATION_DURATION);
-        this.dataTracker.startTracking(PHASE, 1);
-        this.dataTracker.startTracking(CAN_HUNT_START, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CAN_MOVE, false);
+        this.entityData.define(INVUL_TIMER, 0);
+        this.entityData.define(MUSIC_DELAY, 0);
+        this.entityData.define(HUNT_TIMER, 0);
+        this.entityData.define(FIGHT_DURATION_TIMER, 0);
+        this.entityData.define(HEAL_DURATION_TIMER, 0);
+        this.entityData.define(LEVITATION_DURATION_TIMER, 0);
+        this.entityData.define(CORPSE_SPELL_DURATION_TIMER, 0);
+        this.entityData.define(PHASE_INVUL_TIMER, 0);
+        this.entityData.define(ANIMATION, ANIMATION_IDLE);
+        this.entityData.define(ATTACK_ANIM_TIMER, 0);
+        this.entityData.define(CONJURE_FANG_TIMER, 0);
+        this.entityData.define(PHASE_TWO_START_ANIM_TIMER, START_PHASE_TWO_ANIMATION_DURATION);
+        this.entityData.define(PHASE_THREE_START_ANIM_TIMER, START_PHASE_THREE_ANIMATION_DURATION);
+        this.entityData.define(PHASE, 1);
+        this.entityData.define(CAN_HUNT_START, false);
     }
 
     // on game stop
-    public void writeCustomDataToNbt(NbtCompound nbt) {
+    public void addAdditionalSaveData(CompoundTag nbt) {
         nbt.putInt("Invul", getInvulnerableTimer());
         nbt.putInt("PhaseInvul", getPhaseInvulnerableTimer());
         nbt.putInt("Phase", Math.max(getPhase(), 1));
@@ -1109,12 +1127,12 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         nbt.putFloat("Health", getHealth());
         nbt.putBoolean("CanMove", canMove());
         nbt.putBoolean("CanHunt", canHuntStart());
-        super.writeCustomDataToNbt(nbt);
+        super.addAdditionalSaveData(nbt);
     }
 
 
     // on game load
-    public void readCustomDataFromNbt(NbtCompound nbt) {
+    public void readAdditionalSaveData(CompoundTag nbt) {
         if (!nbt.contains("Invul")) { // if tag is empty, set to default phase 1
             this.setInvulTimer(0);
             this.setPhaseInvulTimer(0);
@@ -1149,32 +1167,32 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.bossBar.setName(this.getDisplayName());
         }
 
-        super.readCustomDataFromNbt(nbt);
+        super.readAdditionalSaveData(nbt);
     }
 
     static {
-        INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        PHASE_INVUL_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        HUNT_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        ATTACK_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        PHASE_TWO_START_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        PHASE_THREE_START_ANIM_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        ANIMATION = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        FIGHT_DURATION_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        HEAL_DURATION_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        CONJURE_FANG_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        CORPSE_SPELL_DURATION_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        LEVITATION_DURATION_TIMER = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        PHASE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        CAN_HUNT_START = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        CAN_MOVE = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        MUSIC_DELAY = DataTracker.registerData(LichEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        CAN_ATTACK_PREDICATE = Entity::isPlayer;
-        HEAD_TARGET_PREDICATE = TargetPredicate.createAttackable().setBaseMaxDistance(20.0D).setPredicate(CAN_ATTACK_PREDICATE);
+        INVUL_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        PHASE_INVUL_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        HUNT_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        ATTACK_ANIM_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        PHASE_TWO_START_ANIM_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        PHASE_THREE_START_ANIM_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        ANIMATION = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        FIGHT_DURATION_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        HEAL_DURATION_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        CONJURE_FANG_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        CORPSE_SPELL_DURATION_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        LEVITATION_DURATION_TIMER = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        PHASE = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        CAN_HUNT_START = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.BOOLEAN);
+        CAN_MOVE = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.BOOLEAN);
+        MUSIC_DELAY = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
+        CAN_ATTACK_PREDICATE = Entity::isAlwaysTicking;
+        HEAD_TARGET_PREDICATE = TargetingConditions.forCombat().range(20.0D).selector(CAN_ATTACK_PREDICATE);
         CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F);
-        CRAWL_SPEED_BOOST = new EntityAttributeModifier(CRAWL_SPEED_BOOST_ID, "Crawl speed boost", 0.18D, EntityAttributeModifier.Operation.ADDITION);
-        ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").speedInHuntPhase, EntityAttributeModifier.Operation.ADDITION);
-        DMG_BOOST = new EntityAttributeModifier(ATTACKING_DMG_BOOST_ID, "Damage speed boost", Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").damageHuntingPhaseAddition, EntityAttributeModifier.Operation.ADDITION);
+        CRAWL_SPEED_BOOST = new AttributeModifier(CRAWL_SPEED_BOOST_ID, "Crawl speed boost", 0.18D, AttributeModifier.Operation.ADDITION);
+        ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").speedInHuntPhase, AttributeModifier.Operation.ADDITION);
+        DMG_BOOST = new AttributeModifier(ATTACKING_DMG_BOOST_ID, "Damage speed boost", Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").damageHuntingPhaseAddition, AttributeModifier.Operation.ADDITION);
     }
 
     public class SummonFallenCorpsesGoal extends Goal {
@@ -1191,7 +1209,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean canStart() {
+        public boolean canUse() {
             return getCorpseSpellTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell // cooldown
                     && random.nextInt(75) == 0
                     && canSpellCast();
@@ -1205,16 +1223,16 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             }
             setCorpseSpellTimer(CORPSE_SPELL_DURATION);
             playCorpseSpellSound();
-            this.lich.teleport(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 0.5D, this.lich.homePos.getZ() + 0.5D);
+            this.lich.teleportTo(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 0.5D, this.lich.homePos.getZ() + 0.5D);
 
-            pos = this.lich.getBlockPos();
+            pos = this.lich.blockPosition();
             list = getPlayersInRange(35.0D);
 
             for (int i = -SQUARE_SIZE; i < SQUARE_SIZE; i++) {
                 for (int ii = -SQUARE_SIZE; ii < SQUARE_SIZE; ii++) {
-                    BlockPos position = this.lich.homePos.down().down().add(i, 0, ii);
-                    if (getEntityWorld().getBlockState(position).isSolidBlock(getEntityWorld(), position)) {
-                        positions.add(pos.add(i, FALL_HEIGHT, ii));
+                    BlockPos position = this.lich.homePos.below().below().offset(i, 0, ii);
+                    if (level().getBlockState(position).isSolidRender(level(), position)) {
+                        positions.add(pos.offset(i, FALL_HEIGHT, ii));
                     }
                 }
             }
@@ -1229,11 +1247,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             if (getCorpseSpellTimer() > 0) {
                 return true;
             }
-            return super.shouldContinue();
+            return super.canContinueToUse();
         }
 
         public void tick() {
@@ -1256,20 +1274,20 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 return;
             }
 
-            ServerWorld serverWorld = (ServerWorld) LichEntity.this.getEntityWorld();
+            ServerLevel serverWorld = (ServerLevel) LichEntity.this.level();
             FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld);
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
-            serverWorld.spawnEntity(corpse);
+            serverWorld.addFreshEntity(corpse);
 
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
                 FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld);
                 Player target = list.get(random.nextInt(list.size()));
                 if (target != null && !target.isCreative()) {
-                    BlockPos blockPos2 = target.getBlockPos().add(0, FALL_HEIGHT, 0);
+                    BlockPos blockPos2 = target.blockPosition().offset(0, FALL_HEIGHT, 0);
                     corpse2.setPos((double) blockPos2.getX() + 0.5D, (double) blockPos2.getY() + 0.55D, (double) blockPos2.getZ() + 0.5D);
-                    serverWorld.spawnEntity(corpse2);
+                    serverWorld.addFreshEntity(corpse2);
                 }
             }
         }
@@ -1283,7 +1301,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.mob = mob;
         }
 
-        public boolean canStart() {
+        public boolean canUse() {
             return this.mob.getTarget() != null && canSpellCast();
         }
 
@@ -1304,8 +1322,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         public void tick() {
             LivingEntity livingEntity = this.mob.getTarget();
             if (livingEntity != null) {
-                if (livingEntity.squaredDistanceTo(this.mob) < 8000.0D && livingEntity.squaredDistanceTo(this.mob) > 16.0D) {
-                    Level world = this.mob.getEntityWorld();
+                if (livingEntity.distanceToSqr(this.mob) < 8000.0D && livingEntity.distanceToSqr(this.mob) > 16.0D) {
+                    Level world = this.mob.level();
                     ++this.cooldown;
 
                     if (this.cooldown == 10) {
@@ -1314,24 +1332,24 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                     }
 
                     if (this.cooldown == 20) {
-                        Vec3d vec3d3 = this.mob.getRotationVec(1.0F);
-                        double d = this.mob.squaredDistanceTo(livingEntity) * 2;
+                        Vec3 vec3d3 = this.mob.getViewVector(1.0F);
+                        double d = this.mob.distanceToSqr(livingEntity) * 2;
                         double h = Math.sqrt(Math.sqrt(d)) * 0.5D;
                         double e = livingEntity.getX() - this.mob.getX();
-                        double f = livingEntity.getBodyY(0.5D) - this.mob.getBodyY(0.5D) - 1.25D;
+                        double f = livingEntity.getY(0.5D) - this.mob.getY(0.5D) - 1.25D;
                         double g = livingEntity.getZ() - this.mob.getZ();
-                        SkullEntity skull = new SkullEntity(this.mob.getLevel(), this.mob, e, f, g);
-                        skull.setPosition(this.mob.getX() - vec3d3.x * 0.5, this.mob.getBodyY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
-                        world.spawnEntity(skull);
+                        SkullEntity skull = new SkullEntity(this.mob.level(), this.mob, e, f, g);
+                        skull.moveTo(this.mob.getX() - vec3d3.x * 0.5, this.mob.getY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
+                        world.addFreshEntity(skull);
 
                         int amount = random.nextInt(Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").maxAmountSkullsInShootSkullSpell) + 2;
                         for (int i = 0; i < amount; ++i) {
-                            SkullEntity devSkull = new SkullEntity(this.mob.getLevel(), this.mob, this.mob.getRandom().nextTriangular(e, 2.297D * h), f, this.mob.getRandom().nextTriangular(g, 2.297D * h));
-                            devSkull.setPosition(this.mob.getX() - vec3d3.x * 0.5, this.mob.getBodyY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
-                            world.spawnEntity(devSkull);
+                            SkullEntity devSkull = new SkullEntity(this.mob.level(), this.mob, this.mob.getRandom().triangle(e, 2.297D * h), f, this.mob.getRandom().triangle(g, 2.297D * h));
+                            devSkull.moveTo(this.mob.getX() - vec3d3.x * 0.5, this.mob.getY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
+                            world.addFreshEntity(devSkull);
                         }
 
-                        this.mob.getLookControl().lookAt(livingEntity, 10.0F, 10.0F);
+                        this.mob.getLookControl().setLookAt(livingEntity, 10.0F, 10.0F);
                     }
 
                     if (this.cooldown == 45) {
@@ -1352,7 +1370,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.mob = mob;
         }
 
-        public boolean canStart() {
+        public boolean canUse() {
             return this.mob.getHealth() <= 300.0F
                     && random.nextInt(40) == 0
                     && this.mob.getHealTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownTeleportPlayerAndHeal
@@ -1361,12 +1379,13 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         public void start() {
             setHealTimer(HEALING_DURATION);
-            this.mob.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+            this.mob.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
             playHealSound();
         }
 
-        public boolean shouldRunEveryTick() {
-            return true;
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return super.requiresUpdateEveryTick();
         }
 
         @Override
@@ -1376,11 +1395,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             if (getHealTimer() > 0) {
                 return true;
             }
-            return super.shouldContinue();
+            return super.canContinueToUse();
         }
 
         public void tick() {
@@ -1402,7 +1421,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.mob = mob;
         }
 
-        public boolean canStart() {
+        public boolean canUse() {
             return canSpellCast()
                     && random.nextInt(125) == 0
                     && this.mob.getLevitationDurationTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownLevitationSpell; // cooldown
@@ -1418,16 +1437,18 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             while (it.hasNext()) {
                 playerEntity = (Player) it.next();
                 if (!playerEntity.isCreative()) {
-                    playerEntity.addStatusEffect(new MobEffectInstance(MobEffects.LEVITATION, LEVITATION_DURATION, 1));
+                    playerEntity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, LEVITATION_DURATION, 1));
                 }
             }
 
             playLevitationSound();
         }
 
-        public boolean shouldRunEveryTick() {
-            return true;
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return super.requiresUpdateEveryTick();
         }
+
 
         @Override
         public void stop() {
@@ -1436,11 +1457,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             if (getLevitationDurationTimer() > 0) {
                 return true;
             }
-            return super.shouldContinue();
+            return super.canContinueToUse();
         }
 
         public void tick() {
@@ -1462,7 +1483,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean canStart() {
+        public boolean canUse() {
             return canSpellCast() && random.nextInt(25) == 0 && this.mob.getConjureFangTimer() <= -100; // cooldown
         }
 
@@ -1477,11 +1498,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         @Override
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             if (getConjureFangTimer() > 0) {
                 return true;
             }
-            return super.shouldContinue();
+            return super.canContinueToUse();
         }
 
         public void start() {
@@ -1489,19 +1510,19 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             if (livingEntity != null) {
                 double d = Math.min(livingEntity.getY(), this.mob.getY());
                 double e = Math.max(livingEntity.getY(), this.mob.getY()) + 1.0D;
-                float f = (float) MathHelper.atan2(livingEntity.getZ() - this.mob.getZ(), livingEntity.getX() - this.mob.getX());
+                float f = (float) Mth.atan2(livingEntity.getZ() - this.mob.getZ(), livingEntity.getX() - this.mob.getX());
                 int i;
 
-                if (this.mob.squaredDistanceTo(livingEntity) <= 64.0D) {
+                if (this.mob.distanceToSqr(livingEntity) <= 64.0D) {
                     setConjureFangTimer(40);
 
                     for (i = 0; i < 16; ++i) {
                         double h = 1.25D * (double) (i + 1);
                         int j = 1 * i;
-                        this.conjureFangs(this.mob.getX() + (double) MathHelper.cos(f) * h, this.mob.getZ() + (double) MathHelper.sin(f) * h, d, e, f, j);
-                        this.conjureFangs(this.mob.getX() + (double) MathHelper.cos(-f) * h, this.mob.getZ() + (double) MathHelper.sin(-f) * h, d, e, -f, j);
-                        this.conjureFangs(this.mob.getX() + (double) MathHelper.sin(f) * h, this.mob.getZ() + (double) MathHelper.cos(f) * h, d, e, f, j);
-                        this.conjureFangs(this.mob.getX() + (double) MathHelper.sin(-f) * h, this.mob.getZ() + (double) MathHelper.cos(-f) * h, d, e, -f, j);
+                        this.conjureFangs(this.mob.getX() + (double) Mth.cos(f) * h, this.mob.getZ() + (double) Mth.sin(f) * h, d, e, f, j);
+                        this.conjureFangs(this.mob.getX() + (double) Mth.cos(-f) * h, this.mob.getZ() + (double) Mth.sin(-f) * h, d, e, -f, j);
+                        this.conjureFangs(this.mob.getX() + (double) Mth.sin(f) * h, this.mob.getZ() + (double) Mth.cos(f) * h, d, e, f, j);
+                        this.conjureFangs(this.mob.getX() + (double) Mth.sin(-f) * h, this.mob.getZ() + (double) Mth.cos(-f) * h, d, e, -f, j);
                     }
                 }
             }
@@ -1518,19 +1539,19 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
 
         private void conjureFangs(double x, double z, double maxY, double y, float yaw, int warmup) {
-            BlockPos blockPos = BlockPos.ofFloored(x, y, z);
+            BlockPos blockPos = BlockPos.containing(x, y, z);
             boolean bl = false;
             double d = 0.0D;
 
             do {
-                BlockPos blockPos2 = blockPos.down();
-                BlockState blockState = this.mob.getEntityWorld().getBlockState(blockPos2);
-                if (blockState.isSideSolidFullSquare(this.mob.getEntityWorld(), blockPos2, Direction.UP)) {
-                    if (!this.mob.getEntityWorld().isAir(blockPos)) {
-                        BlockState blockState2 = this.mob.getEntityWorld().getBlockState(blockPos);
-                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.getEntityWorld(), blockPos);
+                BlockPos blockPos2 = blockPos.below();
+                BlockState blockState = this.mob.level().getBlockState(blockPos2);
+                if (blockState.isFaceSturdy(this.mob.level(), blockPos2, Direction.UP)) {
+                    if (!this.mob.level().isEmptyBlock(blockPos)) {
+                        BlockState blockState2 = this.mob.level().getBlockState(blockPos);
+                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.level(), blockPos);
                         if (!voxelShape.isEmpty()) {
-                            d = voxelShape.getMax(Direction.Axis.Y);
+                            d = voxelShape.max(Direction.Axis.Y);
                         }
                     }
 
@@ -1538,11 +1559,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                     break;
                 }
 
-                blockPos = blockPos.down();
-            } while (blockPos.getY() >= MathHelper.floor(maxY) - 1);
+                blockPos = blockPos.below();
+            } while (blockPos.getY() >= Mth.floor(maxY) - 1);
 
             if (bl) {
-                this.mob.getEntityWorld().spawnEntity(new EvokerFangsEntity(this.mob.getEntityWorld(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
+                this.mob.level().addFreshEntity(new EvokerFangs(this.mob.level(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
             }
         }
     }

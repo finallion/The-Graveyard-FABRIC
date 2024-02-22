@@ -2,18 +2,18 @@ package com.lion.graveyard.entities.renders.features;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.WraithEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class WraithEyesFeatureRenderer extends GeoRenderLayer<WraithEntity> {
-    private final RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID,"textures/entity/wraith_eyes.png"));
+    private final RenderType TEXTURE = RenderType.eyes(new ResourceLocation(Graveyard.MOD_ID,"textures/entity/wraith_eyes.png"));
     private final GeoRenderer<WraithEntity> renderer;
 
     public WraithEyesFeatureRenderer(GeoRenderer<WraithEntity> entityRendererIn) {
@@ -22,7 +22,7 @@ public class WraithEyesFeatureRenderer extends GeoRenderLayer<WraithEntity> {
     }
 
     @Override
-    public void render(MatrixStack poseStack, WraithEntity animatable, BakedGeoModel bakedModel, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, WraithEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         VertexConsumer vertexConsumer = bufferSource.getBuffer(TEXTURE);
         renderer.actuallyRender(
                 poseStack,
@@ -34,7 +34,7 @@ public class WraithEyesFeatureRenderer extends GeoRenderLayer<WraithEntity> {
                 true,
                 partialTick,
                 15728640,
-                OverlayTexture.DEFAULT_UV,
+                OverlayTexture.NO_OVERLAY,
                 1.0F, 1.0F, 1.0F, 1.0F
         );
     }

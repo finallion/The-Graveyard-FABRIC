@@ -1,16 +1,22 @@
 package com.lion.graveyard.platform;
 
-import com.lion.graveyard.world.trunk_placer.TGOakTreeTrunkPlacer;
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -57,7 +63,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends MobEntity>> type, int backgroundColor, int highlightColor, Item.Settings props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
         throw new AssertionError();
     }
 
@@ -102,22 +108,22 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<DefaultAttributeContainer.Builder> attribute) {
+    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<TexturedModelData> definition) {
+    public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererFactory<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererFactory<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
         throw new AssertionError();
     }
 
@@ -142,7 +148,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Criterion<?>> Supplier<T> registerCriterion(String name, T criterion) {
+    public static <T extends CriterionTrigger<?>> Supplier<T> registerCriterion(String name, T criterion) {
         throw new AssertionError();
     }
 }

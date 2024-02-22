@@ -5,16 +5,16 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HordeSpawner {
-    private static Map<Identifier, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
+    private static Map<ResourceLocation, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
     private static boolean loaded = false;
 
     public HordeSpawner(){}
@@ -23,11 +23,11 @@ public class HordeSpawner {
         public WorldLoad() {}
 
         @Override
-        public void onWorldLoad(MinecraftServer server, ServerWorld world) {
+        public void onWorldLoad(MinecraftServer server, ServerLevel world) {
             if (loaded) {
                 return;
             }
-            addToSpawners(World.OVERWORLD.getValue(), new GraveyardHordeSpawner());
+            addToSpawners(Level.OVERWORLD.location(), new GraveyardHordeSpawner());
             loaded = true;
         }
     }
@@ -44,16 +44,16 @@ public class HordeSpawner {
     public static class OnWorldTick implements ServerTickEvents.EndWorldTick {
 
         @Override
-        public void onEndTick(ServerWorld world) {
-            if (world.isClient()) {
+        public void onEndTick(ServerLevel world) {
+            if (world.isClientSide) {
                 return;
             }
 
-            ArrayList<GraveyardHordeSpawner> spawnerList = spawners.get(world.getRegistryKey().getValue());
+            ArrayList<GraveyardHordeSpawner> spawnerList = spawners.get(world.getLevel().dimension().location());
             if (spawnerList != null) {
                 for (var spawner : spawnerList) {
                     if (spawner != null) {
-                        spawner.spawn(world, true, true);
+                        spawner.tick(world, true, true);
                         //spawner.tick(world);
                     }
                 }
@@ -61,11 +61,11 @@ public class HordeSpawner {
         }
     }
 
-    public static Map<Identifier, ArrayList<GraveyardHordeSpawner>> getSpawners() {
+    public static Map<ResourceLocation, ArrayList<GraveyardHordeSpawner>> getSpawners() {
         return spawners;
     }
 
-    public static void addToSpawners(Identifier world, GraveyardHordeSpawner spawner) {
+    public static void addToSpawners(ResourceLocation world, GraveyardHordeSpawner spawner) {
         if (!spawners.containsKey(world)) {
             spawners.put(world, new ArrayList<>());
         }

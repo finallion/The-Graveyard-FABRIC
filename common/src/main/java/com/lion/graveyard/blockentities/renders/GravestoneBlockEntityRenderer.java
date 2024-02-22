@@ -111,7 +111,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.43, 0.5);
         matrixStack.scale(2.28F, 2.15F, 2.28F);
-        float rotation = state.getValue(GravestoneBlock.FACING).asYRot();
+        float rotation = state.getValue(GravestoneBlock.FACING).toYRot();
         matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
         Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(state.getBlock().asItem(), 1), ItemDisplayContext.GROUND, i, j, matrixStack, vertexConsumerProvider, world, 2);
         matrixStack.popPose();

@@ -4,16 +4,13 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
-    "ChunkRegionAccessor",
     "CreeperEntityMixin",
-    "LakeFeatureMixin",
     "PlantBlockMixin",
     "ServerPlayNetworkHandlerMixin",
     "TreeFeatureMixin",
     "TrunkPlacerTypeInvoker",
     "VillagerEntityMixin",
-    "WanderingTraderEntityMixin",
-    "SpawnRestrictionAccessor"
+    "WanderingTraderEntityMixin"
   ],
   "client": [
     "ClientCommonNetworkHandlerAccessor",

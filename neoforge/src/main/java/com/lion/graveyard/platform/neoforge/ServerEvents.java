@@ -2,7 +2,7 @@ package com.lion.graveyard.platform.neoforge;
 
 import com.lion.graveyard.item.BoneStaffItem;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.level.storage.LevelResource;
 
 import java.io.*;
 import java.util.Map;
@@ -15,9 +15,9 @@ public class ServerEvents {
         public void onWorldLoad(MinecraftServer server) {
             /* GHOULING UUID FILE READER */
             String line;
-            File file = new File(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
+            File file = new File(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
             if (file.exists()) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
+                try (BufferedReader reader = new BufferedReader(new FileReader(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt"))) {
                     while ((line = reader.readLine()) != null) {
                         String[] keyValuePair = line.split(":", 2);
 
@@ -39,7 +39,7 @@ public class ServerEvents {
 
         public void onWorldUnload(MinecraftServer server) {
             try {
-                FileWriter fileWriter = new FileWriter(server.getSavePath(WorldSavePath.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
+                FileWriter fileWriter = new FileWriter(server.getWorldPath(LevelResource.ROOT).toString() + "/graveyardGhoulingUUIDmapping.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 for (Map.Entry<UUID, UUID> entry : BoneStaffItem.ownerGhoulingMapping.entrySet()) {

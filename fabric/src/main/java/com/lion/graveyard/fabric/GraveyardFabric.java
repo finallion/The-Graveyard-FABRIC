@@ -4,7 +4,6 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.platform.fabric.HordeSpawner;
 import com.lion.graveyard.platform.fabric.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.fabric.ServerEvents;
-import com.lion.graveyard.util.NBTParser;
 import com.lion.graveyard.util.SpawnHordeCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -12,10 +11,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.ResourceType;
-
-import java.io.IOException;
+import net.minecraft.server.packs.PackType;
 
 public class GraveyardFabric implements ModInitializer {
 
@@ -24,17 +20,18 @@ public class GraveyardFabric implements ModInitializer {
         Graveyard.init();
         Graveyard.postInit();
 
+        /*
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             try {
                 NBTParser.parseNBTFiles();
             } catch (IOException e) {}
         }
-
+         */
 
         registerServerEvents();
         registerCommands();
 
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new NamelessHangedTradeOfferResourceListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new NamelessHangedTradeOfferResourceListener());
     }
 
     private void registerCommands() {

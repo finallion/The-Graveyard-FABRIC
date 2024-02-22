@@ -4,32 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import com.lion.graveyard.init.TGBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Fertilizable;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntry.Reference;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
-import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -40,6 +27,11 @@ public class TGTurfBlock extends TGSpreadableBlock implements BonemealableBlock 
 
     public TGTurfBlock(BlockBehaviour.Properties settings) {
         super(settings);
+    }
+
+    @Override
+    protected MapCodec<? extends SpreadingSnowyDirtBlock> codec() {
+        return null;
     }
 
     @Override

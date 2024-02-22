@@ -6,6 +6,5 @@
     "maxCount": 3,
     "minCount": 2,
     "weight": 10
-  },
-  "category": "creature"
+  }
 }

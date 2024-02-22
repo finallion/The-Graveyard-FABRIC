@@ -1,6 +1,12 @@
 {
   "replace": false,
   "values": [
-    {"id": "#c:in_overworld", "required": false}
+    {"id": "#c:in_overworld", "required": false},
+    {"id": "#forge:is_cold/overworld", "required": false},
+    {"id": "#forge:is_dense/overworld", "required": false},
+    {"id": "#forge:is_dry/overworld", "required": false},
+    {"id": "#forge:is_hot/overworld", "required": false},
+    {"id": "#forge:is_sparse/overworld", "required": false},
+    {"id": "#forge:is_wet/overworld", "required": false}
   ]
 }

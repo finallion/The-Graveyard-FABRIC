@@ -1,13 +1,14 @@
 package com.lion.graveyard.world.features;
 
+
 import com.mojang.serialization.Codec;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 import java.util.List;
 
@@ -19,14 +20,14 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
         super(codec);
     }
 
-    public boolean generate(FeatureContext<BoulderFeatureConfig> context) {
-        StructureWorldAccess world = context.getLevel();
-        Random random = context.getRandom();
-        BlockPos startPos = context.getOrigin();
+    public boolean place(FeaturePlaceContext<BoulderFeatureConfig> context) {
+        WorldGenLevel world = context.level();
+        RandomSource random = context.random();
+        BlockPos startPos = context.origin();
 
-        int radius = context.getConfig().radius();
+        int radius = context.config().radius();
 
-        int startY = world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, startPos.getX(), startPos.getZ());
+        int startY = world.getHeight(Heightmap.Types.WORLD_SURFACE_WG, startPos.getX(), startPos.getZ());
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = 0; dy <= radius; dy++) {
@@ -36,7 +37,7 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
                         int z = startPos.getZ() + dz;
                         BlockPos pos = new BlockPos(x, startY, z);
 
-                        BlockState blockState = getBlockStateForPosition(dx, dy, dz, radius, random, context.getConfig());
+                        BlockState blockState = getBlockStateForPosition(dx, dy, dz, radius, random, context.config());
                         world.setBlock(pos, blockState, 3);
                     }
                 }
@@ -46,7 +47,7 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
         return true;
     }
 
-    private BlockState getBlockStateForPosition(int dx, int dy, int dz, int radius, Random random, BoulderFeatureConfig config) {
+    private BlockState getBlockStateForPosition(int dx, int dy, int dz, int radius, RandomSource random, BoulderFeatureConfig config) {
         int heightBlend = radius + random.nextInt(2);
 
         if (dy == 0) {
@@ -60,3 +61,4 @@ public class BoulderFeature extends Feature<BoulderFeatureConfig> {
         }
     }
 }
+

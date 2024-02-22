@@ -2,27 +2,37 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.*;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -38,14 +48,14 @@ import java.util.UUID;
 public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A1");
-    private static final EntityAttributeModifier SLOWNESS_EFFECT;
+    private static final AttributeModifier SLOWNESS_EFFECT;
 
-    private static final TrackedData<Byte> VARIANT;
-    private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
-    private static final TrackedData<Integer> RAGE_ANIM_TIMER;
-    private static final TrackedData<Integer> ANIMATION;
-    private static final TrackedData<Integer> SPAWN_TIMER;
-    private static final TrackedData<Boolean> IS_RAGING;
+    private static final EntityDataAccessor<Byte> VARIANT;
+    private static final EntityDataAccessor<Integer> ATTACK_ANIM_TIMER;
+    private static final EntityDataAccessor<Integer> RAGE_ANIM_TIMER;
+    private static final EntityDataAccessor<Integer> ANIMATION;
+    private static final EntityDataAccessor<Integer> SPAWN_TIMER;
+    private static final EntityDataAccessor<Boolean> IS_RAGING;
 
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
@@ -71,97 +81,97 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
 
         // selects one of eight skins for the ghoul (in BaseGhoulModel)
         byte variant = (byte) ((byte) random.nextInt(8) + (byte)1);
 
-        this.dataTracker.startTracking(VARIANT, variant);
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-        this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
-        this.dataTracker.startTracking(RAGE_ANIM_TIMER, 0);
-        this.dataTracker.startTracking(SPAWN_TIMER, 32);
-        this.dataTracker.startTracking(IS_RAGING, false);
+        this.entityData.define(VARIANT, variant);
+        this.entityData.define(ANIMATION, ANIMATION_IDLE);
+        this.entityData.define(ATTACK_ANIM_TIMER, 0);
+        this.entityData.define(RAGE_ANIM_TIMER, 0);
+        this.entityData.define(SPAWN_TIMER, 32);
+        this.entityData.define(IS_RAGING, false);
     }
 
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new GhoulMeleeAttackGoal(this, 1.0D, false));
-        this.goalSelector.add(5, new WanderAroundFarGoal(this, 0.8D));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, Player.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this, LichEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, Player.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
-    }
-
-
-    public static DefaultAttributeContainer.Builder createGhoulAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.175D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 3.0D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new GhoulMeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8D));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, LichEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
 
 
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
+    public static AttributeSupplier.Builder createGhoulAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.FOLLOW_RANGE, 30.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.175D)
+                .add(Attributes.ATTACK_DAMAGE, 4.0D)
+                .add(Attributes.ARMOR, 3.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
+    }
+
+
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
     public int getAnimationState() {
-        return this.dataTracker.get(ANIMATION);
+        return this.entityData.get(ANIMATION);
     }
 
     public void setAnimationState(int state) {
-        this.dataTracker.set(ANIMATION, state);
+        this.entityData.set(ANIMATION, state);
     }
 
     public int getAttackAnimTimer() {
-        return (Integer) this.dataTracker.get(ATTACK_ANIM_TIMER);
+        return (Integer) this.entityData.get(ATTACK_ANIM_TIMER);
     }
 
     public void setAttackAnimTimer(int time) {
-        this.dataTracker.set(ATTACK_ANIM_TIMER, time);
+        this.entityData.set(ATTACK_ANIM_TIMER, time);
     }
 
     public int getSpawnTimer() {
-        return (Integer) this.dataTracker.get(SPAWN_TIMER);
+        return (Integer) this.entityData.get(SPAWN_TIMER);
     }
 
     public void setSpawnTimer(int ticks) {
-        this.dataTracker.set(SPAWN_TIMER, ticks);
+        this.entityData.set(SPAWN_TIMER, ticks);
     }
 
     public int getRageAnimTimer() {
-        return (Integer) this.dataTracker.get(RAGE_ANIM_TIMER);
+        return (Integer) this.entityData.get(RAGE_ANIM_TIMER);
     }
 
     public void setRageAnimTimer(int time) {
-        this.dataTracker.set(RAGE_ANIM_TIMER, time);
+        this.entityData.set(RAGE_ANIM_TIMER, time);
     }
 
     public boolean isRaging() {
-        return this.dataTracker.get(IS_RAGING);
+        return this.entityData.get(IS_RAGING);
     }
 
     public void setIsRaging(boolean raging) {
-        this.dataTracker.set(IS_RAGING, raging);
+        this.entityData.set(IS_RAGING, raging);
     }
 
     public byte getVariant() {
-        return dataTracker.get(VARIANT);
+        return entityData.get(VARIANT);
     }
 
     public void setVariant(byte variant) {
-        dataTracker.set(VARIANT, variant);
+        entityData.set(VARIANT, variant);
     }
 
-    protected void mobTick() {
+    protected void customServerAiStep() {
         // ATTACK TIMER
         if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
             setAnimationState(ANIMATION_MELEE);
@@ -196,15 +206,15 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             this.setSpawnTimer(getSpawnTimer() - 1);
         }
 
-        super.mobTick();
+        super.customServerAiStep();
     }
 
     @Override
-    public void tickMovement() {
-        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+    public void aiStep() {
+        AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (isRaging()) {
             if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
-                entityAttributeInstance.addTemporaryModifier(SLOWNESS_EFFECT);
+                entityAttributeInstance.addTransientModifier(SLOWNESS_EFFECT);
             }
         } else {
             if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
@@ -212,42 +222,42 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
         }
 
-        super.tickMovement();
+        super.aiStep();
     }
 
     @Override
     public void tick() {
-        if (getSpawnTimer() > 0 && getEntityWorld() != null) {
-            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), getEntityWorld().getBlockState(this.getBlockPos().down()));
-            Random random = this.getRandom();
-            BlockState blockState = this.getSteppingBlockState();
-            if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+        if (getSpawnTimer() > 0 && level() != null) {
+            //MinecraftClient.getInstance().particleManager.addBlockBreakParticles(this.getBlockPos().down(), level.getBlockState(this.getBlockPos().down()));
+            RandomSource random = this.getRandom();
+            BlockState blockstate = this.getBlockStateOn();
+            if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
                 for(int i = 0; i < 30; ++i) {
-                    double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
+                    double d = this.getX() + (double) Mth.randomBetween(random, -0.7F, 0.7F);
                     double e = this.getY();
-                    double f = this.getZ() + (double)MathHelper.nextBetween(random, -0.7F, 0.7F);
-                    this.getEntityWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                    double f = this.getZ() + (double) Mth.randomBetween(random, -0.7F, 0.7F);
+                    this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d, e, f, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
         super.tick();
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
         nbt.putByte("ghoulVariant", getVariant());
         nbt.putInt("spawnTimer", getSpawnTimer());
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         setVariant(nbt.getByte("ghoulVariant"));
         setSpawnTimer(nbt.getInt("spawnTimer"));
     }
 
     private void aggroMobs() {
         if (getTarget() != null) {
-            List<HordeGraveyardEntity> monster = getEntityWorld().getEntitiesByClass(HordeGraveyardEntity.class, new Box(getBlockPos()).expand(45.0D), this::canSee);
+            List<HordeGraveyardEntity> monster = level().getEntitiesOfClass(HordeGraveyardEntity.class, new AABB(blockPosition()).inflate(45.0D), this::hasLineOfSight);
             for (HordeGraveyardEntity entity : monster) {
                 entity.setTarget(getTarget());
             }
@@ -268,14 +278,14 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
 
             /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
+            if (this.isDeadOrDying() || this.getHealth() < 0.01) {
                 event.getController().setAnimation(DEATH_ANIMATION);
                 return PlayState.CONTINUE;
             }
 
             /* ATTACK */
             // takes one tick to get to this method (from mobtick)
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
+            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAggressive() && !(this.isDeadOrDying() || this.getHealth() < 0.01)) {
                 setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
                 event.getController().setAnimation(ATTACK_ANIMATION);
                 return PlayState.CONTINUE;
@@ -289,7 +299,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
             /* WALK */
             if ((event.isMoving() || isMoving) && getAttackAnimTimer() <= 0 && !isRaging()) {
-                if (isAttacking() && !isWet()) {
+                if (isAggressive() && !isInWater()) {
                     event.getController().setAnimation(RUNNING_ANIMATION);
                 } else {
                     event.getController().setAnimation(WALK_ANIMATION);
@@ -315,7 +325,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
 
             // stops attack animation from looping
-            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_RAGE) {
+            if (getAttackAnimTimer() <= 0 && !(this.isDeadOrDying() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_RAGE) {
                 setAnimationState(ANIMATION_IDLE);
                 return PlayState.STOP;
             }
@@ -344,20 +354,22 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         this.playSound(TGSounds.GHOUL_HURT.get(), 1.0F, -5.0F);
     }
 
+    protected SoundEvent getDeathSound() {
+        return TGSounds.GHOUL_DEATH.get();
+    }
+
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.GHOUL_DEATH.get(), 1.0F, -5.0F);
+    public float getVoicePitch() {
+        return -5.0F;
     }
 
     static {
-        VARIANT = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BYTE);
-        ATTACK_ANIM_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        RAGE_ANIM_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        ANIMATION = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        SPAWN_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
-        IS_RAGING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        SLOWNESS_EFFECT = new EntityAttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, EntityAttributeModifier.Operation.ADDITION);
+        VARIANT = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.BYTE);
+        ATTACK_ANIM_TIMER = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.INT);
+        RAGE_ANIM_TIMER = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.INT);
+        ANIMATION = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.INT);
+        SPAWN_TIMER = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.INT);
+        IS_RAGING = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.BOOLEAN);
+        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, AttributeModifier.Operation.ADDITION);
     }
-
 }

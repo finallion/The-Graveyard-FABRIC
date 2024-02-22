@@ -4,20 +4,18 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.CorruptedPillager;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
 import com.lion.graveyard.init.TGEntityModelLayers;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 
 public class CorruptedPillagerRenderer extends CorruptedIllagerRenderer<CorruptedPillager> {
-    private static final Identifier TEXTURE = new Identifier(Graveyard.MOD_ID,"textures/entity/corrupted_pillager.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Graveyard.MOD_ID,"textures/entity/corrupted_pillager.png");
 
-    public CorruptedPillagerRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx, new CorruptedIllagerModel<>(ctx.getPart(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
+    public CorruptedPillagerRenderer(EntityRendererProvider.Context ctx) {
+        super(ctx, new CorruptedIllagerModel<>(ctx.bakeLayer(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
     }
 
     @Override
-    public Identifier getTexture(CorruptedPillager entity) {
+    public ResourceLocation getTextureLocation(CorruptedPillager entity) {
         return TEXTURE;
     }
 

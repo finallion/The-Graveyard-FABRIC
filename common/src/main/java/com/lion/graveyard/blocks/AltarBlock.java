@@ -7,8 +7,10 @@ import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGItems;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.VialOfBlood;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -83,12 +85,12 @@ public class AltarBlock extends Block {
             blood = VialOfBlood.getBlood(stack);
         }
 
-        if (state.is(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
+        if (state.is(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getDescriptionId())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.dimensionType().hasFixedTime())) {
             BlockPattern.BlockPatternMatch result = AltarBlock.getCompletedFramePattern().find(world, pos);
 
             if (!state.getValue(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
                 player.level().playSound((Player)null, player.blockPosition(), TGSounds.VIAL_SPLASH.get(), SoundSource.BLOCKS, 5.0F, 1.0F);
-                world.setBlock(pos, state.setValue(AltarBlock.BLOODY, true));
+                world.setBlock(pos, state.setValue(AltarBlock.BLOODY, true), 3);
                 Direction direction;
 
                 if (result == null) {
@@ -112,43 +114,39 @@ public class AltarBlock extends Block {
                     for (int i = 0; i < 16; ++i) {
                         for (int j = 0; j < 16; ++j) {
                             for (int k = 0; k < 2; ++k) {
-                                BlockPos iteratorPos = new BlockPos(corner.add(i, k, j));
+                                BlockPos iteratorPos = new BlockPos(corner.offset(i, k, j));
                                 BlockState blockState = world.getBlockState(iteratorPos);
 
                                 if (blockState.getBlock() instanceof OminousBoneStaffFragment) {
-                                    world.setBlock(iteratorPos, Blocks.AIR.defaultBlockState());
+                                    world.setBlock(iteratorPos, Blocks.AIR.defaultBlockState(), 3);
                                 }
                             }
                         }
                     }
 
                     LichEntity lich = (LichEntity) TGEntities.LICH.get().create(world);
-                    BlockPos blockPos = pos.up();
-                    lich.setYaw(direction.getOpposite().asRotation());
-                    lich.setBodyYaw(direction.getOpposite().asRotation());
-                    lich.setHeadYaw(direction.getOpposite().asRotation());
-                    lich.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
-                    lich.onSummoned(direction.getOpposite(), pos.up());
+                    BlockPos blockPos = pos.above();
+                    lich.setYHeadRot(direction.getOpposite().toYRot());
+                    lich.setYBodyRot(direction.getOpposite().toYRot());
+                    lich.setYRot(direction.getOpposite().toYRot());
+                    lich.moveTo((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 0.55D, (double)blockPos.getZ() + 0.5D, 0.0F, 0.0F);
+                    lich.onSummoned(direction.getOpposite(), pos.above());
 
-                    Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
-
-                    while (var13.hasNext()) {
-                        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var13.next();
-                        Criteria.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
+                    for (ServerPlayer serverplayer : world.getEntitiesOfClass(ServerPlayer.class, lich.getBoundingBox().inflate(50.0D))) {
+                        CriteriaTriggers.SUMMONED_ENTITY.trigger(serverplayer, lich);
                     }
 
-
-                    world.spawnEntity(lich);
-                    lich.addStatusEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 5));
+                    world.addFreshEntity(lich);
+                    lich.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 5));
 
                     return InteractionResult.CONSUME;
                 }
 
-                return InteractionResult.success(player.getLevel().isClient);
+                return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }
 
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 }

@@ -4,34 +4,34 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.HordeGraveyardEntity;
 import com.lion.graveyard.init.TGEntities;
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 public class SpawnHordeCommand {
 
-    public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher) {
-        commandDispatcher.register(CommandManager.literal("horde").requires((source) -> source.hasPermissionLevel(3)).then(CommandManager.literal("trigger").executes((context) -> executeSpawn(context.getSource()))));
+    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
+        commandDispatcher.register(Commands.literal("horde").requires((source) -> source.hasPermission(3)).then(Commands.literal("trigger").executes((context) -> executeSpawn(context.getSource()))));
     }
 
-    public static int executeSpawn(ServerCommandSource source) {
-        source.sendFeedback(() -> Text.literal("Spawned a graveyard horde."), false);
-        int o = Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
-        BlockPos.Mutable mutable = new BlockPos.Mutable(source.getPosition().getX(), source.getPosition().getY(), source.getPosition().getZ());
-        ServerWorld world = source.getLevel();
-        Random random = source.getLevel().getRandom();
+    public static int executeSpawn(CommandSourceStack source) {
+        source.sendSuccess(() -> Component.literal("Spawned a graveyard horde."), false);
+        int o = Graveyard.getConfig().getHorde(new ResourceLocation(Graveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(source.getPosition().x, source.getPosition().y, source.getPosition().z);
+        ServerLevel world = source.getLevel();
+        RandomSource random = source.getLevel().getRandom();
         boolean illagerSpawn = random.nextBoolean();
 
         for (int p = 0; p < o; ++p) {
-            mutable.setY(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
+            mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
             if (p == 0) {
                 if (!spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
                     break;
@@ -47,7 +47,7 @@ public class SpawnHordeCommand {
         return 1;
     }
 
-    private static boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain, boolean illagerSpawn) {
+    private static boolean spawnHordeEntity(ServerLevel world, BlockPos pos, RandomSource random, boolean captain, boolean illagerSpawn) {
         HordeGraveyardEntity hordeEntity;
 
         if (!illagerSpawn) {
@@ -69,13 +69,13 @@ public class SpawnHordeCommand {
             if (captain) {
                 hordeEntity.setPatrolLeader(true);
                 hordeEntity.setRandomPatrolTarget();
-                world.getServer().getPlayerManager().broadcast(Text.literal("A large Graveyard horde of undead appeared at x:" + pos.getX() + " y:" + pos.getY() + " z:" + pos.getZ() + "."), false);
+                world.getServer().getPlayerList().broadcastSystemMessage(Component.literal("A large Graveyard horde of undead appeared at x:" + pos.getX() + " y:" + pos.getY() + " z:" + pos.getZ() + "."), false);
             }
 
-            hordeEntity.setPosition((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
-            hordeEntity.initialize(world, world.getLocalDifficulty(pos), SpawnReason.PATROL, (EntityData) null, (NbtCompound) null);
+            hordeEntity.setPos((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
+            hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, (SpawnGroupData) null, (CompoundTag) null);
             hordeEntity.getNavigation().stop();
-            world.spawnEntityAndPassengers(hordeEntity);
+            world.addFreshEntityWithPassengers(hordeEntity);
             return true;
         } else {
             return false;

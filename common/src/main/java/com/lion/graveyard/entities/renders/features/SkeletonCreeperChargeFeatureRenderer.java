@@ -1,32 +1,32 @@
 package com.lion.graveyard.entities.renders.features;
 
-import net.minecraft.client.render.entity.feature.EnergySwirlOverlayFeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.CreeperEntityModel;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.CreeperModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.Creeper;
 
-public class SkeletonCreeperChargeFeatureRenderer<T extends CreeperEntity> extends EnergySwirlOverlayFeatureRenderer<T, CreeperEntityModel<T>> {
-    private static final Identifier SKIN = new Identifier("textures/entity/creeper/creeper_armor.png");
-    private final CreeperEntityModel<CreeperEntity> model;
+public class SkeletonCreeperChargeFeatureRenderer<T extends Creeper> extends EnergySwirlLayer<T, CreeperModel<T>> {
+    private static final ResourceLocation SKIN = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private final CreeperModel<Creeper> model;
 
-    public SkeletonCreeperChargeFeatureRenderer(FeatureRendererContext<T, CreeperEntityModel<T>> context, EntityModelLoader loader) {
+    public SkeletonCreeperChargeFeatureRenderer(RenderLayerParent<T, CreeperModel<T>> context, EntityModelSet loader) {
         super(context);
-        this.model = new CreeperEntityModel<>(loader.getModelPart(EntityModelLayers.CREEPER_ARMOR));
+        this.model = new CreeperModel<>(loader.bakeLayer(ModelLayers.CREEPER_ARMOR));
     }
 
-    protected float getEnergySwirlX(float partialAge) {
+    protected float xOffset(float partialAge) {
         return partialAge * 0.01F;
     }
 
-    protected Identifier getEnergySwirlTexture() {
+    protected ResourceLocation getTextureLocation() {
         return SKIN;
     }
 
-    protected EntityModel<T> getEnergySwirlModel() {
+    protected EntityModel<T> model() {
         return (EntityModel<T>) this.model;
     }
 }

@@ -1,5 +1,6 @@
 package com.lion.graveyard.init;
 
+
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.features.BoulderFeature;
 import com.lion.graveyard.world.features.BoulderFeatureConfig;

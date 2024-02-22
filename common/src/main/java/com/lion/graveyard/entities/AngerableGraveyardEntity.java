@@ -1,114 +1,113 @@
 package com.lion.graveyard.entities;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.Angerable;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.TimeHelper;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.TimeUtil;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity implements Angerable {
+public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity implements NeutralMob {
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
-    private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
-    private static final TrackedData<Boolean> ANGRY;
-    private static final TrackedData<Boolean> PROVOKED;
-    private static final UniformIntProvider ANGER_TIME;
+    private static final AttributeModifier ATTACKING_SPEED_BOOST;
+    private static final EntityDataAccessor<Boolean> ANGRY;
+    private static final EntityDataAccessor<Boolean> PROVOKED;
+    private static final UniformInt ANGER_TIME;
     private UUID target;
     private int ageWhenTargetSet;
     private int angerTime;
 
-    public AngerableGraveyardEntity(EntityType<? extends HostileEntity> entityType, Level world, String name) {
+    public AngerableGraveyardEntity(EntityType<? extends Monster> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 
-    public void tickMovement() {
-        if (!this.getEntityWorld().isClient()) {
-            this.tickAngerLogic((ServerWorld)this.getEntityWorld(), true);
+    public void aiStep() {
+        if (!this.level().isClientSide()) {
+            this.updatePersistentAnger((ServerLevel) this.level(), true);
         }
-        super.tickMovement();
+        super.aiStep();
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
 
-        this.dataTracker.startTracking(ANGRY, false);
-        this.dataTracker.startTracking(PROVOKED, false);
+        this.entityData.define(ANGRY, false);
+        this.entityData.define(PROVOKED, false);
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        this.writeAngerToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
+        this.addPersistentAngerSaveData(nbt);
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.readAngerFromNbt(this.getEntityWorld(), nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
+        this.readPersistentAngerSaveData(this.level(), nbt);
     }
-
-    @Override
+    
     public boolean hasAngerTime() {
-        return this.dataTracker.get(ANGRY);
+        return this.entityData.get(ANGRY);
     }
 
-    public void setAngerTime(int ticks) {
+    public void setRemainingPersistentAngerTime(int ticks) {
         this.angerTime = ticks;
     }
 
-    public int getAngerTime() {
+    public int getRemainingPersistentAngerTime() {
         return this.angerTime;
     }
 
     @Nullable
     @Override
-    public UUID getAngryAt() {
+    public UUID getPersistentAngerTarget() {
         return this.target;
     }
 
     @Override
-    public void setAngryAt(@Nullable UUID uuid) {
+    public void setPersistentAngerTarget(@Nullable UUID uuid) {
         this.target = uuid;
     }
 
-    public void chooseRandomAngerTime() {
-        this.setAngerTime(ANGER_TIME.get(this.random));
+    public void startPersistentAngerTimer() {
+        this.setRemainingPersistentAngerTime(ANGER_TIME.sample(this.random));
     }
 
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
-        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
         if (target == null) {
             this.ageWhenTargetSet = 0;
-            this.dataTracker.set(ANGRY, false);
-            this.setAngerTime(0);
-            this.dataTracker.set(PROVOKED, false);
+            this.entityData.set(ANGRY, false);
+            this.setRemainingPersistentAngerTime(0);
+            this.entityData.set(PROVOKED, false);
             entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST.getId());
         } else {
-            this.ageWhenTargetSet = this.age;
-            this.dataTracker.set(ANGRY, true);
+            this.ageWhenTargetSet = this.tickCount;
+            this.entityData.set(ANGRY, true);
             if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
-                entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
+                entityAttributeInstance.addTransientModifier(ATTACKING_SPEED_BOOST);
             }
         }
     }
 
     static {
-        ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, EntityAttributeModifier.Operation.ADDITION);
-        ANGRY = DataTracker.registerData(AngerableGraveyardEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        PROVOKED = DataTracker.registerData(AngerableGraveyardEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-        ANGER_TIME = TimeHelper.betweenSeconds(20, 39);
+        ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, AttributeModifier.Operation.ADDITION);
+        ANGRY = SynchedEntityData.defineId(AngerableGraveyardEntity.class, EntityDataSerializers.BOOLEAN);
+        PROVOKED = SynchedEntityData.defineId(AngerableGraveyardEntity.class, EntityDataSerializers.BOOLEAN);
+        ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     }
 
 

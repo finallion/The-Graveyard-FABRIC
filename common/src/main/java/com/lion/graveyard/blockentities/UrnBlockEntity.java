@@ -56,7 +56,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
 
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        this.inventory = NonNullList.withSize(this.size(), ItemStack.EMPTY);
+        this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(nbt)) {
             ContainerHelper.loadAllItems(nbt, this.inventory);
         }
@@ -71,7 +71,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
 
     }
 
-    public int size() {
+    public int getContainerSize() {
         return 54;
     }
 
@@ -87,7 +87,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
         return Component.translatable("container.urn");
     }
 
-    protected AbstractContainerMenu createScreenHandler(int syncId, Inventory playerInventory) {
+    protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
         boolean large = Graveyard.CONFIG.booleanEntries.get("urnHasDoubleInventory");
         if (large) {
             return ChestMenu.sixRows(syncId, playerInventory, this);

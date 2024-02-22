@@ -4,12 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Supplier;
 
-public class TGDeepslateBlock extends PillarBlock {
+public class TGDeepslateBlock extends RotatedPillarBlock {
 
     private final Supplier<Block> clickedBlock;
 

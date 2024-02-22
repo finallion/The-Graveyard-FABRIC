@@ -2,11 +2,13 @@ package com.lion.graveyard.entities;
 
 
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
 
 public class CorruptedVindicator extends CorruptedIllager {
 
@@ -21,7 +23,7 @@ public class CorruptedVindicator extends CorruptedIllager {
 
     @Override
     public CorruptedIllager.State getState() {
-        if (this.isAttacking()) {
+        if (this.isAggressive()) {
             return State.UNDEAD_ATTACKING;
         } else {
             return State.UNDEAD;
@@ -39,9 +41,13 @@ public class CorruptedVindicator extends CorruptedIllager {
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_DEATH.get(), 0.8F, 0.0F);
+    protected SoundEvent getDeathSound() {
+        return TGSounds.CORRUPTED_ILLAGER_DEATH.get();
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.0F;
     }
 
     @Override

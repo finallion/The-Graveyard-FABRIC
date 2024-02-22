@@ -1,27 +1,26 @@
 package com.lion.graveyard.sounds;
 
 import com.lion.graveyard.entities.LichEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.AbstractSoundInstance;
-import net.minecraft.client.sound.TickableSoundInstance;
-import net.minecraft.sound.SoundSource;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 
 
-public class LichBossMusic extends AbstractSoundInstance implements TickableSoundInstance {
+public class LichBossMusic extends AbstractTickableSoundInstance {
     public LichEntity boss;
     private int ticksExisted = 0;
     private boolean done;
     public final SoundEvent soundEvent;
 
-    public LichBossMusic(SoundEvent sound, LichEntity boss, Random random) {
+    public LichBossMusic(SoundEvent sound, LichEntity boss, RandomSource random) {
         super(sound, SoundSource.MUSIC, random);
         this.boss = boss;
         this.soundEvent = sound;
-        this.attenuationType = AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = Attenuation.NONE;
+        this.looping = true;
+        this.delay = 0;
         this.volume = 4.5F;
         this.x = boss.getX();
         this.y = boss.getY();
@@ -52,7 +51,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         }
 
         if (ticksExisted % 100 == 0) {
-            MinecraftClient.getInstance().getMusicTracker().stop();
+            Minecraft.getInstance().getMusicManager().stopPlaying();
         }
         ticksExisted++;
     }

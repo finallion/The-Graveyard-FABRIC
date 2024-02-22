@@ -1,11 +1,12 @@
 package com.lion.graveyard.trades.trades;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;;
-import net.minecraft.village.TradeOffers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -16,7 +17,7 @@ public abstract class JsonTradeOffer {
     protected float priceMultiplier;
 
     @NotNull
-    public abstract TradeOffers.Factory deserialize(JsonObject json);
+    public abstract VillagerTrades.ItemListing deserialize(JsonObject json);
 
     protected void loadDefaultStats(JsonObject jsonObject) {
         this.maxUses = readInt(jsonObject, "max_uses", 12);
@@ -36,13 +37,13 @@ public abstract class JsonTradeOffer {
         return object.has(key) ? object.get(key).getAsString() : defaultValue;
     }
 
-    public static Identifier readIdentifier(JsonObject object, String key, String defaultValue) {
-        return object.has(key) ? Identifier.tryParse(object.get(key).getAsString()) : new Identifier(defaultValue);
+    public static ResourceLocation readIdentifier(JsonObject object, String key, String defaultValue) {
+        return object.has(key) ? ResourceLocation.tryParse(object.get(key).getAsString()) : new ResourceLocation(defaultValue);
     }
 
 
     public static ItemStack getItemStackFromJson(JsonObject json) {
-        Optional<Item> item = Registries.ITEM.getOrEmpty(Identifier.tryParse(json.get("item").getAsString()));
+        Optional<Item> item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(json.get("item").getAsString()));
 
         if (item.isPresent()) {
             int count = json.has("count") ? json.get("count").getAsInt() : 1;
@@ -53,7 +54,7 @@ public abstract class JsonTradeOffer {
     }
 
     public static ItemStack getItemStackFromJsonWithoutCount(JsonObject json) {
-        Optional<Item> item = Registries.ITEM.getOrEmpty(Identifier.tryParse(json.get("item").getAsString()));
+        Optional<Item> item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(json.get("item").getAsString()));
         return item.map(value -> new ItemStack(value, 1)).orElse(ItemStack.EMPTY);
     }
 }

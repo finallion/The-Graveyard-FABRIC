@@ -2,16 +2,17 @@ package com.lion.graveyard.world.processors;
 
 import com.lion.graveyard.init.TGProcessors;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.structure.StructurePlacementData;
-import net.minecraft.structure.StructureTemplate;
-import net.minecraft.structure.processor.StructureProcessor;
-import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.WaterloggedTransparentBlock;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 
 public class RemoveWaterloggedProcessor extends StructureProcessor {
@@ -21,12 +22,12 @@ public class RemoveWaterloggedProcessor extends StructureProcessor {
     // removes waterlogged blockstate
     @Nullable
     @Override
-    public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlacementData data) {
+    public StructureTemplate.StructureBlockInfo processBlock(LevelReader world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlaceSettings data) {
         ChunkPos currentChunkPos = new ChunkPos(structureBlockInfo2.pos());
-        if (structureBlockInfo2.state().getBlock() instanceof Waterloggable) {
-            Chunk currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);
-            if (world.getFluidState(structureBlockInfo2.pos()).isIn(FluidTags.WATER)) {
-                currentChunk.setBlock(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
+        if (structureBlockInfo2.state().getBlock() instanceof SimpleWaterloggedBlock) {
+            ChunkAccess currentChunk = world.getChunk(currentChunkPos.x, currentChunkPos.z);
+            if (world.getFluidState(structureBlockInfo2.pos()).is(FluidTags.WATER)) {
+                currentChunk.setBlockState(structureBlockInfo2.pos(), structureBlockInfo2.state(), false);
             }
         }
 

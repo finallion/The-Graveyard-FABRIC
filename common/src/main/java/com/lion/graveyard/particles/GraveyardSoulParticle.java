@@ -1,65 +1,44 @@
 package com.lion.graveyard.particles;
 
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.particle.DefaultParticleType;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.world.ClientWorld;
-
-@Environment(EnvType.CLIENT)
-public class GraveyardSoulParticle extends AbstractSlowingParticle {
-    private final SpriteProvider spriteProvider;
+import net.minecraft.core.particles.SimpleParticleType;
+public class GraveyardSoulParticle extends RisingParticle {
+    private final SpriteSet spriteProvider;
     protected boolean sculk;
 
-    GraveyardSoulParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteProvider spriteProvider) {
+    GraveyardSoulParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteProvider) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.spriteProvider = spriteProvider;
         this.scale(world.getRandom().nextFloat() + 1.25F);
-        this.setSpriteForAge(spriteProvider);
+        this.setSpriteFromAge(spriteProvider);
     }
 
-    public int getBrightness(float tint) {
-        return this.sculk ? 240 : super.getBrightness(tint);
+    public int getLightColor(float p_234080_) {
+        return this.sculk ? 240 : super.getLightColor(p_234080_);
     }
 
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public void tick() {
         super.tick();
-        this.setSpriteForAge(this.spriteProvider);
+        this.setSpriteFromAge(this.spriteProvider);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static class SculkSoulFactory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteProvider;
+    public static class Provider implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet sprite;
 
-        public SculkSoulFactory(SpriteProvider spriteProvider) {
-            this.spriteProvider = spriteProvider;
+        public Provider(SpriteSet p_107739_) {
+            this.sprite = p_107739_;
         }
 
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
-            GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            soulParticle.setAlpha(1.0F);
-            soulParticle.sculk = true;
-            return soulParticle;
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static class Factory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteProvider;
-
-        public Factory(SpriteProvider spriteProvider) {
-            this.spriteProvider = spriteProvider;
-        }
-
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
-            GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            soulParticle.setAlpha(1.0F);
-            return soulParticle;
+        public Particle createParticle(SimpleParticleType p_107750_, ClientLevel p_107751_, double p_107752_, double p_107753_, double p_107754_, double p_107755_, double p_107756_, double p_107757_) {
+            GraveyardSoulParticle soulparticle = new GraveyardSoulParticle(p_107751_, p_107752_, p_107753_, p_107754_, p_107755_, p_107756_, p_107757_, this.sprite);
+            soulparticle.setAlpha(1.0F);
+            return soulparticle;
         }
     }
 }

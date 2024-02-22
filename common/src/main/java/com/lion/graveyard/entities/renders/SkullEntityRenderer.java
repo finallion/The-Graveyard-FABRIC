@@ -1,48 +1,49 @@
 package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.projectiles.SkullEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.SkullEntityModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.SkullModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+
 
 @Environment(EnvType.CLIENT)
 public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
-    private static final Identifier TEXTURE = new Identifier("textures/entity/skeleton/skeleton.png");
-    private final SkullEntityModel model;
+    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/skeleton/skeleton.png");
+    private final SkullModel model;
 
-    public SkullEntityRenderer(EntityRendererFactory.Context context) {
+    public SkullEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.model = new SkullEntityModel(context.getPart(EntityModelLayers.SKELETON_SKULL));
+        this.model = new SkullModel(context.bakeLayer(ModelLayers.SKELETON_SKULL));
     }
 
-    protected int getBlockLight(SkullEntity witherSkullEntity, BlockPos blockPos) {
+    protected int getBlockLightLevel(SkullEntity witherSkullEntity, BlockPos blockPos) {
         return 15;
     }
 
-    public void render(SkullEntity skullEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        matrixStack.push();
+    public void render(SkullEntity skullEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
+        matrixStack.pushPose();
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        float h = MathHelper.lerpAngleDegrees(g, skullEntity.prevYaw, skullEntity.getYaw());
-        float j = MathHelper.lerp(g, skullEntity.prevPitch, skullEntity.getPitch());
-        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.getLayer(this.getTexture(skullEntity)));
-        this.model.setHeadRotation(0.0F, h, j);
-        this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStack.pop();
+        float h = Mth.rotLerp(g, skullEntity.yRotO, skullEntity.getYRot());
+        float j = Mth.lerp(g, skullEntity.xRotO, skullEntity.getXRot());
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.renderType(this.getTextureLocation(skullEntity)));
+        this.model.setupAnim(0.0F, h, j);
+        this.model.renderToBuffer(matrixStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStack.popPose();
         super.render(skullEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 
     @Override
-    public Identifier getTexture(SkullEntity entity) {
+    public ResourceLocation getTextureLocation(SkullEntity entity) {
         return TEXTURE;
     }
 

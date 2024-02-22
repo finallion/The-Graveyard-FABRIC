@@ -1,18 +1,19 @@
 package com.lion.graveyard.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
+
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SarcophagusItem extends BlockItem {
-    public SarcophagusItem(Settings settings, Block block) {
+    public SarcophagusItem(Properties settings, Block block) {
         super(block, settings);
     }
 
-    protected boolean place(ItemPlacementContext context, BlockState state) {
-        return context.getLevel().setBlock(context.getBlockPos(), state, 26);
+    @Override
+    protected boolean canPlace(BlockPlaceContext context, BlockState state) {
+        return context.getLevel().setBlock(context.getClickedPos(), state, 26);
     }
-
 
 }

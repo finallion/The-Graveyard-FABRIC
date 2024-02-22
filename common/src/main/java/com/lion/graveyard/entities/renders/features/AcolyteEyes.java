@@ -1,37 +1,28 @@
 package com.lion.graveyard.entities.renders.features;
 
-import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.entities.AcolyteEntity;
+import com.lion.graveyard.entities.AcolyteEntity;;
 import com.lion.graveyard.entities.models.AcolyteModel;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
-import com.lion.graveyard.entities.renders.AcolyteRender;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 
-@Environment(EnvType.CLIENT)
-public class AcolyteEyes extends FeatureRenderer<AcolyteEntity, AcolyteModel<AcolyteEntity>> {
+public class AcolyteEyes extends RenderLayer<AcolyteEntity, AcolyteModel<AcolyteEntity>> {
 
-
-    public AcolyteEyes(FeatureRendererContext<AcolyteEntity, AcolyteModel<AcolyteEntity>> context) {
-        super(context);
+    public AcolyteEyes(RenderLayerParent<AcolyteEntity, AcolyteModel<AcolyteEntity>> p_117346_) {
+        super(p_117346_);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AcolyteEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        VertexConsumer vertex = vertexConsumers.getBuffer(RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID,"textures/entity/acolyte_eyes.png")));
+    public void render(PoseStack matrices, MultiBufferSource vertexConsumer, int p_117351_, AcolyteEntity p_117352_, float p_117353_, float p_117354_, float p_117355_, float p_117356_, float p_117357_, float p_117358_) {
+        VertexConsumer vertex = vertexConsumer.getBuffer(RenderType.eyes(new ResourceLocation("graveyard:textures/entity/acolyte_eyes.png")));
 
-        this.getContextModel().render(matrices, vertex, 15728640, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, 1F);
+        this.getParentModel().renderToBuffer(matrices, vertex, 15728640, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
     }
-
-
-
 }
-

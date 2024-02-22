@@ -4,10 +4,10 @@ import com.lion.graveyard.blocks.*;
 import com.lion.graveyard.blocks.PillarBlock;
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.util.GravestoneIdentifier;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -138,10 +138,10 @@ public class TGBlocks {
     public static final Supplier<Block> SOIL = RegistryHelper.registerBlock("soil", () -> new Block(BlockBehaviour.Properties.of().strength(0.5F).sound(SoundType.GRAVEL)));
     public static final Supplier<Block> TURF = RegistryHelper.registerBlock("turf", () -> new TGTurfBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).randomTicks().strength(0.6F).sound(SoundType.GRASS)));
     public static final Supplier<Block> GLOOM_STONE = RegistryHelper.registerBlock("gloom_stone", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(1.5F, 6.0F)));
-    public static final Supplier<Block> SCARLET_HEART = RegistryHelper.registerBlock("scarlet_heart", () -> new FlowerbedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).noCollission().sound(SoundType.PINK_PETALS).pushReaction(PushReaction.DESTROY).lightLevel((state) -> {
-        if (state.getValue(FlowerbedBlock.FLOWER_AMOUNT) <= 2) {
+    public static final Supplier<Block> SCARLET_HEART = RegistryHelper.registerBlock("scarlet_heart", () -> new PinkPetalsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).noCollission().sound(SoundType.PINK_PETALS).pushReaction(PushReaction.DESTROY).lightLevel((state) -> {
+        if (state.getValue(BlockStateProperties.FLOWER_AMOUNT) <= 2) {
             return 5;
-        } else if (state.getValue(FlowerbedBlock.FLOWER_AMOUNT) == 3) {
+        } else if (state.getValue(BlockStateProperties.FLOWER_AMOUNT) == 3) {
             return 7;
         } else {
             return 10;

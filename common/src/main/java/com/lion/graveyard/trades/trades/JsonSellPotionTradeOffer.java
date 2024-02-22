@@ -1,15 +1,16 @@
 package com.lion.graveyard.trades.trades;
 
 import com.google.gson.JsonObject;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.registry.Registries;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.trading.MerchantOffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class JsonSellPotionTradeOffer extends JsonTradeOffer {
 
     @Override
     @NotNull
-    public TradeOffers.Factory deserialize(JsonObject json) {
+    public VillagerTrades.ItemListing deserialize(JsonObject json) {
         loadDefaultStats(json);
 
         ItemStack sell = getItemStackFromJson(json.get("sell").getAsJsonObject());
@@ -29,7 +30,7 @@ public class JsonSellPotionTradeOffer extends JsonTradeOffer {
         return new Factory(buy, sell, currency, maxUses, experience, priceMultiplier);
     }
 
-    private static class Factory implements TradeOffers.Factory {
+    private static class Factory implements VillagerTrades.ItemListing {
         private final ItemStack buy;
         private final ItemStack sell;
         private final ItemStack currency;
@@ -46,13 +47,13 @@ public class JsonSellPotionTradeOffer extends JsonTradeOffer {
             this.multiplier = multiplier;
         }
 
-        public TradeOffer create(Entity entity, net.minecraft.util.math.random.Random random) {
-            List<Potion> list = Registries.POTION.stream().filter((potionx) -> !potionx.getEffects().isEmpty() && BrewingRecipeRegistry.isBrewable(potionx)).collect(Collectors.toList());
+        public MerchantOffer getOffer(Entity entity, RandomSource random) {
+            List<Potion> list = BuiltInRegistries.POTION.stream().filter((potionx) -> !potionx.getEffects().isEmpty() && PotionBrewing.isBrewablePotion(potionx)).collect(Collectors.toList());
 
             Potion potion = list.get(random.nextInt(list.size()));
-            ItemStack potionStack = PotionUtil.setPotion(new ItemStack(this.sell.getItem(), 1), potion);
+            ItemStack potionStack = PotionUtils.setPotion(new ItemStack(this.sell.getItem(), 1), potion);
 
-            return new TradeOffer(PotionUtil.setPotion(buy, Potions.WATER), currency, potionStack, this.maxUses, this.experience, this.multiplier);
+            return new MerchantOffer(PotionUtils.setPotion(buy, Potions.WATER), currency, potionStack, this.maxUses, this.experience, this.multiplier);
         }
 
     }

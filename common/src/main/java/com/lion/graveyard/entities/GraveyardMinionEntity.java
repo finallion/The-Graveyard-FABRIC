@@ -1,59 +1,55 @@
 package com.lion.graveyard.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.GhastEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.ServerConfigHandler;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class GraveyardMinionEntity extends PathAwareEntity {
-    protected static final TrackedData<Optional<UUID>> OWNER_UUID;
-    protected static final TrackedData<Byte> TAMEABLE_FLAGS;
+public class GraveyardMinionEntity extends PathfinderMob {
+    protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID;
+    protected static final EntityDataAccessor<Byte> TAMEABLE_FLAGS;
     private boolean sitting;
 
     public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, Level world) {
         super(entityType, world);
-        this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0F);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
     }
 
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(OWNER_UUID, Optional.empty());
-        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte)0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(OWNER_UUID, Optional.empty());
+        this.entityData.define(TAMEABLE_FLAGS, (byte)0);
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
         if (this.getOwnerUuid() != null) {
-            nbt.putUuid("Owner", this.getOwnerUuid());
+            nbt.putUUID("Owner", this.getOwnerUuid());
         }
         nbt.putBoolean("Sitting", this.sitting);
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         UUID uUID;
-        if (nbt.containsUuid("Owner")) {
-            uUID = nbt.getUuid("Owner");
+        if (nbt.contains("Owner")) {
+            uUID = nbt.getUUID("Owner");
         } else {
             String string = nbt.getString("Owner");
-            uUID = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
+            uUID = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
         }
 
         if (uUID != null) {
@@ -68,15 +64,15 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     @Nullable
     public UUID getOwnerUuid() {
-        return this.dataTracker.get(OWNER_UUID).orElse(null);
+        return this.entityData.get(OWNER_UUID).orElse(null);
     }
 
     public void setOwnerUuid(@Nullable UUID uuid) {
-        this.dataTracker.set(OWNER_UUID, Optional.ofNullable(uuid));
+        this.entityData.set(OWNER_UUID, Optional.ofNullable(uuid));
     }
 
     public void setOwner(Player player) {
-        this.setOwnerUuid(player.getUuid());
+        this.setOwnerUuid(player.getUUID());
     }
 
     public boolean isSitting() {
@@ -88,15 +84,15 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     public boolean isInSittingPose() {
-        return ((Byte)this.dataTracker.get(TAMEABLE_FLAGS) & 1) != 0;
+        return ((Byte)this.entityData.get(TAMEABLE_FLAGS) & 1) != 0;
     }
 
     public void setInSittingPose(boolean inSittingPose) {
-        byte b = (Byte)this.dataTracker.get(TAMEABLE_FLAGS);
+        byte b = (Byte)this.entityData.get(TAMEABLE_FLAGS);
         if (inSittingPose) {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 1));
+            this.entityData.set(TAMEABLE_FLAGS, (byte)(b | 1));
         } else {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -2));
+            this.entityData.set(TAMEABLE_FLAGS, (byte)(b & -2));
         }
     }
 
@@ -104,44 +100,45 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     public LivingEntity getOwner() {
         try {
             UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.getEntityWorld().getPlayerByUuid(uUID);
+            return uUID == null ? null : this.level().getPlayerByUUID(uUID);
         } catch (IllegalArgumentException var2) {
             return null;
         }
     }
 
-    public boolean canTarget(LivingEntity target) {
-        return this.isOwner(target) ? false : super.canTarget(target);
+    public boolean canAttack(LivingEntity target) {
+        return this.isOwner(target) ? false : super.canAttack(target);
     }
 
     public boolean isOwner(LivingEntity entity) {
         return entity == this.getOwner();
     }
 
-    public boolean isTeammate(Entity other) {
-        LivingEntity livingEntity = this.getOwner();
-        if (other == livingEntity) {
+    public boolean isAlliedTo(Entity p_21833_) {
+        LivingEntity livingentity = this.getOwner();
+        if (p_21833_ == livingentity) {
             return true;
         }
 
-        if (livingEntity != null) {
-            return livingEntity.isTeammate(other);
+        if (livingentity != null) {
+            return livingentity.isAlliedTo(p_21833_);
         }
 
-        return super.isTeammate(other);
+        return super.isAlliedTo(p_21833_);
     }
 
-    public boolean canAttackWithOwner(LivingEntity target, LivingEntity owner) {
-        if (!(target instanceof CreeperEntity) && !(target instanceof GhastEntity)) {
+
+    public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
+        if (!(target instanceof Creeper) && !(target instanceof Ghast)) {
             if (target instanceof GraveyardMinionEntity) {
                 GraveyardMinionEntity minion = (GraveyardMinionEntity)target;
                 return minion.getOwner() != owner;
-            } else if (target instanceof Player && owner instanceof Player && !((Player)owner).shouldDamagePlayer((Player)target)) {
+            } else if (target instanceof Player && owner instanceof Player && !((Player)owner).canHarmPlayer((Player)target)) {
                 return false;
-            } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
+            } else if (target instanceof AbstractHorse && ((AbstractHorse)target).isTamed()) {
                 return false;
             } else {
-                return !(target instanceof TameableEntity) || !((TameableEntity)target).isTamed();
+                return !(target instanceof TamableAnimal) || !((TamableAnimal)target).isTame();
             }
         } else {
             return false;
@@ -149,8 +146,8 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     static {
-        TAMEABLE_FLAGS = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.BYTE);
-        OWNER_UUID = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+        TAMEABLE_FLAGS = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.BYTE);
+        OWNER_UUID = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     }
 
 }

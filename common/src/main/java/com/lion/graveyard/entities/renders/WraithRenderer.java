@@ -3,16 +3,16 @@ package com.lion.graveyard.entities.renders;
 import com.lion.graveyard.entities.WraithEntity;
 import com.lion.graveyard.entities.models.WraithModel;
 import com.lion.graveyard.entities.renders.features.WraithEyesFeatureRenderer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
 
-    public WraithRenderer(EntityRendererFactory.Context context) {
+    public WraithRenderer(EntityRendererProvider.Context context) {
         super(context, new WraithModel());
         this.addRenderLayer(new WraithEyesFeatureRenderer(this));
         this.shadowRadius = 0.3F;
@@ -25,8 +25,8 @@ public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
     }
 
     @Override
-    public RenderLayer getRenderType(WraithEntity animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
-        return RenderLayer.getEntityTranslucent(texture);
+    public RenderType getRenderType(WraithEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return RenderType.entityTranslucent(texture);
     }
 
 }

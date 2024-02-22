@@ -1,18 +1,19 @@
 package com.lion.graveyard.trades.trades;
 
 import com.google.gson.JsonObject;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.trading.MerchantOffer;
 import org.jetbrains.annotations.NotNull;
 
 public class JsonSellEnchantedToolTradeOffer extends JsonTradeOffer {
 
     @Override
     @NotNull
-    public TradeOffers.Factory deserialize(JsonObject json) {
+    public VillagerTrades.ItemListing deserialize(JsonObject json) {
         loadDefaultStats(json);
 
         ItemStack sell = getItemStackFromJson(json.get("sell").getAsJsonObject());
@@ -21,7 +22,7 @@ public class JsonSellEnchantedToolTradeOffer extends JsonTradeOffer {
         return new Factory(sell, currency, maxUses, experience, priceMultiplier);
     }
 
-    private static class Factory implements TradeOffers.Factory {
+    private static class Factory implements VillagerTrades.ItemListing {
         private final ItemStack sell;
         private final ItemStack currency;
         private final int maxUses;
@@ -36,12 +37,12 @@ public class JsonSellEnchantedToolTradeOffer extends JsonTradeOffer {
             this.multiplier = multiplier;
         }
 
-        public TradeOffer create(Entity entity, net.minecraft.util.math.random.Random random) {
+        public MerchantOffer getOffer(Entity entity, RandomSource random) {
             int i = 5 + random.nextInt(15);
-            ItemStack itemStack = EnchantmentHelper.enchant(random, new ItemStack(this.sell.getItem()), i, false);
+            ItemStack itemStack = EnchantmentHelper.enchantItem(random, new ItemStack(this.sell.getItem()), i, false);
             int j = Math.min(this.currency.getCount() + i, 64);
 
-            return new TradeOffer(new ItemStack(currency.getItem(), j), itemStack, this.maxUses, this.experience, multiplier);
+            return new MerchantOffer(new ItemStack(currency.getItem(), j), itemStack, this.maxUses, this.experience, multiplier);
         }
     }
 }

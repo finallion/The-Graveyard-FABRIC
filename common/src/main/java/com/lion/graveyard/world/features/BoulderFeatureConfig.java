@@ -2,10 +2,11 @@ package com.lion.graveyard.world.features;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public record BoulderFeatureConfig(BlockState firstState, BlockState secondState, BlockState thirdState, BlockState forthState, int radius) implements FeatureConfig {
+
+public record BoulderFeatureConfig(BlockState firstState, BlockState secondState, BlockState thirdState, BlockState forthState, int radius) implements FeatureConfiguration {
 
     public static final Codec<BoulderFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             BlockState.CODEC.fieldOf("first_state").forGetter(BoulderFeatureConfig::firstState),
@@ -16,3 +17,4 @@ public record BoulderFeatureConfig(BlockState firstState, BlockState secondState
     ).apply(instance, BoulderFeatureConfig::new));
 
 }
+

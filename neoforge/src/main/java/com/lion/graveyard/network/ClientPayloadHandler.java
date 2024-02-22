@@ -1,10 +1,9 @@
 package com.lion.graveyard.network;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.UUID;
@@ -28,15 +27,15 @@ public class ClientPayloadHandler {
 
 
         context.workHandler().submitAsync(() -> {
-                    ClientWorld world = MinecraftClient.getInstance().world;
+                    ClientLevel world = Minecraft.getInstance().level;
                     Entity entity = type.create(world);
                     if (entity != null) {
-                        entity.updatePosition(x, y, z);
-                        entity.updateTrackedPosition(x, y, z);
-                        entity.setPitch(pitch);
-                        entity.setYaw(yaw);
+                        entity.setPos(x, y, z);
+                        entity.setPosRaw(x, y, z);
+                        entity.setXRot(pitch);
+                        entity.setYRot(yaw);
                         entity.setId(entityID);
-                        entity.setUuid(entityUUID);
+                        entity.setUUID(entityUUID);
                         world.addEntity(entity);
                     }
                 })

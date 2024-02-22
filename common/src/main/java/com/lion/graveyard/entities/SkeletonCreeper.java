@@ -1,101 +1,106 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGBlocks;
-import net.minecraft.entity.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.MobEffectInstance;
-import net.minecraft.entity.effect.MobEffects;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+
 
 import java.util.Collection;
 import java.util.Random;
 
-public class SkeletonCreeper extends CreeperEntity {
+public class SkeletonCreeper extends Creeper {
     private Player closestPlayer;
     private final double explosionRadius = 3.5D;
 
-    public SkeletonCreeper(EntityType<? extends CreeperEntity> entityType, Level world) {
+    public SkeletonCreeper(EntityType<? extends Creeper> entityType, Level world) {
         super(entityType, world);
     }
 
-    public static DefaultAttributeContainer.Builder createSkeletonCreeperAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.29D);
+    public static AttributeSupplier.Builder createSkeletonCreeperAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MOVEMENT_SPEED, 0.29D);
     }
 
     public boolean canStart() {
-        this.closestPlayer = this.getEntityWorld().getClosestPlayer(this, 8.0D);
+        this.closestPlayer = this.level().getNearestPlayer(this, 8.0D);
         return this.closestPlayer != null;
     }
 
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
-    protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
-        Entity entity = source.getAttacker();
-        if (entity instanceof CreeperEntity) {
-            CreeperEntity creeperEntity = (CreeperEntity)entity;
+    protected void dropCustomDeathLoot(DamageSource source, int lootingMultiplier, boolean allowDrops) {
+        Entity entity = source.getEntity();
+        if (entity instanceof Creeper) {
+            Creeper creeperEntity = (Creeper)entity;
             // changed from onHeadsDropped so every skeleton creeper will drop its skeleton instead of only one per charged creeper
-            if (creeperEntity.shouldRenderOverlay() && random.nextBoolean()) {
-                this.dropItem(TGBlocks.CREEPER_SKELETON.get().asItem());
+            if (creeperEntity.isIgnited() && random.nextBoolean()) {
+                this.spawnAtLocation(TGBlocks.CREEPER_SKELETON.get().asItem());
             }
         } else {
-            super.dropEquipment(source, lootingMultiplier, allowDrops);
+            super.dropCustomDeathLoot(source, lootingMultiplier, allowDrops);
         }
     }
 
 
     public void explode() {
-        if (!this.getEntityWorld().isClient) {
-            World.ExplosionSourceType destructionType = World.ExplosionSourceType.NONE;
-            float f = this.shouldRenderOverlay() ? 2.0F : 1.0F;
+        if (!this.level().isClientSide()) {
+            Level.ExplosionInteraction destructionType = Level.ExplosionInteraction.NONE;
+            float f = this.isPowered() ? 2.0F : 1.0F;
 
             if (canStart()) {
-                this.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, 1.0F, 10.0F);
-                this.closestPlayer.addStatusEffect(new MobEffectInstance(MobEffects.BLINDNESS, 125));
+                this.playSound(SoundEvents.END_PORTAL_SPAWN, 1.0F, 10.0F);
+                this.closestPlayer.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 125));
             }
 
             this.dead = true;
-            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionRadius * f, destructionType);
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionRadius * f, destructionType);
             this.discard();
-            this.spawnEffectsCloud();
+            this.spawnLingeringCloud();
         }
     }
 
-    private void spawnEffectsCloud() {
-        Collection<MobEffectInstance> collection = this.getStatusEffects();
+    private void spawnLingeringCloud() {
+        Collection<MobEffectInstance> collection = this.getActiveEffects();
         if (!collection.isEmpty()) {
-            AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(this.getEntityWorld(), this.getX(), this.getY(), this.getZ());
+            AreaEffectCloud areaEffectCloudEntity = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
             areaEffectCloudEntity.setRadius(2.5F);
             areaEffectCloudEntity.setRadiusOnUse(-0.5F);
             areaEffectCloudEntity.setWaitTime(10);
             areaEffectCloudEntity.setDuration(areaEffectCloudEntity.getDuration() / 2);
-            areaEffectCloudEntity.setRadiusGrowth(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
+            areaEffectCloudEntity.setRadiusPerTick(-areaEffectCloudEntity.getRadius() / (float)areaEffectCloudEntity.getDuration());
 
             for (MobEffectInstance statusEffectInstance : collection) {
                 areaEffectCloudEntity.addEffect(new MobEffectInstance(statusEffectInstance));
             }
 
-            this.getEntityWorld().spawnEntity(areaEffectCloudEntity);
+            this.level().addFreshEntity(areaEffectCloudEntity);
         }
     }
 
 
     @Override
-    public void tickMovement() {
+    public void aiStep() {
         if (random.nextInt(7) == 0) {
-            this.getEntityWorld().addParticle(ParticleTypes.ASH, this.getParticleX(2.0D), this.getRandomBodyY() + new Random().nextInt(1), this.getParticleZ(2.0), 2.0D, 7.0D, 2.0D);
+            this.level().addParticle(ParticleTypes.ASH, this.getRandomX(2.0D), this.getRandomY() + new Random().nextInt(1), this.getRandomZ(2.0), 2.0D, 7.0D, 2.0D);
 
         }
-        super.tickMovement();
+        super.aiStep();
     }
 
 }

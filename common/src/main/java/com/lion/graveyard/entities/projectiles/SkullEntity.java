@@ -1,53 +1,52 @@
 package com.lion.graveyard.entities.projectiles;
 
-import com.lion.graveyard.GraveyardClient;
 import com.lion.graveyard.init.TGEntities;
 import io.netty.buffer.Unpooled;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.entity.projectile.WitherSkullEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
-public class SkullEntity extends ExplosiveProjectileEntity {
+public class SkullEntity extends AbstractHurtingProjectile {
 
-    public static Packet<ClientPlayPacketListener> createPacket(Entity entity) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeVarInt(Registries.ENTITY_TYPE.getRawId(entity.getType()));
-        buf.writeUuid(entity.getUuid());
+    public static Packet<ClientGamePacketListener> createPacket(Entity entity) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        buf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
+        buf.writeUUID(entity.getUUID());
         buf.writeVarInt(entity.getId());
         buf.writeDouble(entity.getX());
         buf.writeDouble(entity.getY());
         buf.writeDouble(entity.getZ());
-        buf.writeByte(MathHelper.floor(entity.getPitch() * 256.0F / 360.0F));
-        buf.writeByte(MathHelper.floor(entity.getYaw() * 256.0F / 360.0F));
-        buf.writeFloat(entity.getPitch());
-        buf.writeFloat(entity.getYaw());
-        return new EntitySpawnS2CPacket(entity, buf.arrayOffset());
+        buf.writeByte(Mth.floor(entity.getXRot() * 256.0F / 360.0F));
+        buf.writeByte(Mth.floor(entity.getYRot() * 256.0F / 360.0F));
+        buf.writeFloat(entity.getXRot());
+        buf.writeFloat(entity.getYRot());
+        return new ClientboundAddEntityPacket(entity, buf.arrayOffset());
     }
 
-    private static final TrackedData<Boolean> CHARGED;
+    private static final EntityDataAccessor<Boolean> CHARGED;
 
     public SkullEntity(EntityType<? extends SkullEntity> entityType, Level world) {
         super(entityType, world);
@@ -58,17 +57,19 @@ public class SkullEntity extends ExplosiveProjectileEntity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return createPacket(this);
     }
+    
 
 
-    protected float getDrag() {
-        return this.isCharged() ? 0.73F : super.getDrag();
+    protected float getInertia() {
+        return this.isDangerous() ? 0.73F : super.getInertia();
     }
 
+
     @Override
-    public float getBrightnessAtEyes() {
+    public float getLightLevelDependentMagicValue() {
         return 0.0F;
     }
 
@@ -76,22 +77,22 @@ public class SkullEntity extends ExplosiveProjectileEntity {
         return false;
     }
 
-    public float getEffectiveExplosionResistance(Explosion explosion, BlockView world, BlockPos pos, BlockState blockState, FluidState fluidState, float max) {
-        return this.isCharged() && WitherEntity.canDestroy(blockState) ? Math.min(0.8F, max) : max;
+    public float getBlockExplosionResistance(Explosion explosion, BlockGetter world, BlockPos pos, BlockState blockState, FluidState fluidState, float max) {
+        return this.isDangerous() && WitherBoss.canDestroy(blockState) ? Math.min(0.8F, max) : max;
     }
 
-    protected void onEntityHit(EntityHitResult entityHitResult) {
-        super.onEntityHit(entityHitResult);
-        if (!this.getEntityWorld().isClient) {
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
+        if (!this.level().isClientSide) {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean bl;
             if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
-                bl = entity.damage(this.getDamageSources().indirectMagic(this, livingEntity), 10.0F);
+                bl = entity.hurt(this.damageSources().indirectMagic(this, livingEntity), 10.0F);
                 if (bl) {
                     if (entity.isAlive()) {
-                        this.applyDamageEffects(livingEntity, entity);
+                        this.doEnchantDamageEffects(livingEntity, entity);
                     }
                 }
             }
@@ -102,48 +103,47 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     public void tick() {
         super.tick();
-        Vec3d vec3d = this.getVelocity();
-        this.getLevel().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + vec3d.x * 0.4D, this.getY() + vec3d.y + 0.5D, this.getZ() + vec3d.z * 0.4D, 0.0D, 0.0D, 0.0D);
+        Vec3 vec3d = this.getDeltaMovement();
+        this.level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, this.getX() + vec3d.x * 0.4D, this.getY() + vec3d.y + 0.5D, this.getZ() + vec3d.z * 0.4D, 0.0D, 0.0D, 0.0D);
     }
 
-    protected void onCollision(HitResult hitResult) {
-        super.onCollision(hitResult);
-        if (!this.getEntityWorld().isClient) {
-            Explosion.DestructionType destructionType = Explosion.DestructionType.KEEP;
-            World.ExplosionSourceType sourceType = World.ExplosionSourceType.NONE;
-            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, sourceType);
+    protected void onHit(HitResult hitResult) {
+        super.onHit(hitResult);
+        if (!this.level().isClientSide) {
+            Level.ExplosionInteraction destructionType = Level.ExplosionInteraction.NONE;
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, destructionType);
             this.discard();
         }
 
     }
 
     @Override
-    public boolean canHit() {
+    public boolean isPickable() {
         return false;
     }
 
-    public boolean damage(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         return false;
     }
 
-    protected void initDataTracker() {
-        this.dataTracker.startTracking(CHARGED, false);
+    protected void defineSynchedData() {
+        this.entityData.define(CHARGED, false);
     }
 
-    public boolean isCharged() {
-        return (Boolean)this.dataTracker.get(CHARGED);
+    public boolean isDangerous() {
+        return (Boolean)this.entityData.get(CHARGED);
     }
 
-    public void setCharged(boolean charged) {
-        this.dataTracker.set(CHARGED, charged);
+    public void setDangerous(boolean charged) {
+        this.entityData.set(CHARGED, charged);
     }
 
-    protected boolean isBurning() {
+    protected boolean shouldBurn() {
         return false;
     }
 
     static {
-        CHARGED = DataTracker.registerData(SkullEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        CHARGED = SynchedEntityData.defineId(SkullEntity.class, EntityDataSerializers.BOOLEAN);
     }
 }
 
