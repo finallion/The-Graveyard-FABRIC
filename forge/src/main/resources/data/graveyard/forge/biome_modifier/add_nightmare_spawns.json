@@ -1,7 +1,7 @@
 {
-  "type": "graveyard:mobspawns",
+  "type": "forge:add_spawns",
   "biomes": "#graveyard:nightmare_spawns",
-  "spawn": {
+  "spawners": {
     "type": "graveyard:nightmare",
     "maxCount": 1,
     "minCount": 1,
