@@ -3,6 +3,16 @@ dependencies {
 	modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
+
+	// changing = true: the library is consumed from mavenLocal under a fixed version, so without
+	// this Gradle keeps the first copy it ever resolved and a republish never reaches the run.
+	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
+		changing = true
+	}
+}
+
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, "seconds"
 }
 
 architectury {

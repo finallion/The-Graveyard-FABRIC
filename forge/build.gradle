@@ -34,6 +34,16 @@ dependencies {
 
 	common(project(path: ":common", configuration: "namedElements")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+
+	// changing = true: the library is consumed from mavenLocal under a fixed version, so without
+	// this Gradle keeps the first copy it ever resolved and a republish never reaches the run.
+	modImplementation("lion.villagertradingplus:villagertradingplus-forge:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
+		changing = true
+	}
+}
+
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, "seconds"
 }
 
 repositories {

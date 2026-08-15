@@ -3,7 +3,6 @@ package com.lion.graveyard;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.OmegaConfig;
 import com.lion.graveyard.init.*;
-import com.lion.graveyard.trades.TradeOfferManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
@@ -40,8 +39,6 @@ public class Graveyard {
         TGRecipeTypes.init();
         TGTrunkPlacer.init();
         TGFeatures.init();
-
-        TradeOfferManager.registerTradeOffers();
     }
 
     public static void postInit() {

@@ -1,8 +1,7 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGSounds;
-import com.lion.graveyard.trades.NamelessHangedTradeOffers;
-import com.lion.graveyard.trades.TradeOfferManager;
+import com.lion.graveyard.trades.NamelessHangedTrades;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -151,7 +150,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     protected void fillRecipes() {
-        List<TradeOffers.Factory> factorys = TradeOfferManager.TRADES_REGISTRY;
+        List<TradeOffers.Factory> factorys = NamelessHangedTrades.TRADES_REGISTRY;
         TradeOfferList tradeOfferList = this.getOffers();
         int offers = random.nextInt(3) + 7;
         this.fillRecipesFromPool(tradeOfferList, factorys.toArray(new TradeOffers.Factory[0]), offers);

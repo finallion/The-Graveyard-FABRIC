@@ -32,3 +32,11 @@ mandatory=true
 versionRange="[4.2,)"
 ordering="NONE"
 side="BOTH"
+
+# AFTER: the trade parser must have registered its types before our resource listener runs.
+[[dependencies.graveyard]]
+modId = "villagertradingplus"
+mandatory = true
+versionRange = "[1.0.0,)"
+ordering = "AFTER"
+side = "BOTH"
