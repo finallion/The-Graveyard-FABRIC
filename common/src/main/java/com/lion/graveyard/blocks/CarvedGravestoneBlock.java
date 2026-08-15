@@ -40,6 +40,23 @@ public class CarvedGravestoneBlock extends GravestoneBlock {
         return BlockRenderType.INVISIBLE;
     }
 
+    /// The first carved gravestone took the item-model path over from the thirteen before it, which
+    /// carries an item transformation and a scale factor. Anything authored since is drawn straight
+    /// from its block model, at the size it was modelled.
+    public boolean drawsFromItemModel() {
+        return true;
+    }
+
+    /// Where the inscription sits, measured from the bottom of the block.
+    public double textHeight() {
+        return 0.3333333432674408D;
+    }
+
+    /// How far the inscription stands off the stone's face.
+    public double textDepth() {
+        return 0.23D;
+    }
+
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (world.getBlockEntity(pos) instanceof GravestoneBlockEntity gravestone) {

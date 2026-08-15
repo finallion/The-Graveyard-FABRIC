@@ -96,6 +96,8 @@ public class TGItems {
 
     public static final Supplier<Item> CARVED_GRAVESTONE = RegistryHelper.registerItem("carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.CARVED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> TALL_CARVED_GRAVESTONE = RegistryHelper.registerItem("tall_carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TALL_CARVED_GRAVESTONE.get(), new Item.Settings()));
+    public static final Supplier<Item> EPITAPH = RegistryHelper.registerItem("epitaph", () -> ItemFactory.carvedGravestone(TGBlocks.EPITAPH.get(), new Item.Settings()));
+    public static final Supplier<Item> GARGOYLE = RegistryHelper.registerItem("gargoyle", () -> new BlockItem(TGBlocks.GARGOYLE.get(), new Item.Settings()));
     public static final Supplier<Item> GRAVESTONE = RegistryHelper.registerItem("gravestone", () -> new BlockItem(TGBlocks.GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem( "cobblestone_gravestone", () -> new BlockItem(TGBlocks.COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem("mossy_cobblestone_gravestone", () -> new BlockItem(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
@@ -201,6 +203,8 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CANDLE_HOLDER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CARVED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TALL_CARVED_GRAVESTONE.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, EPITAPH.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GARGOYLE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, COBBLESTONE_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOSSY_COBBLESTONE_GRAVESTONE.get());

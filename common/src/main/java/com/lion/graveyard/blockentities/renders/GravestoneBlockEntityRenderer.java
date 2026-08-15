@@ -2,8 +2,8 @@ package com.lion.graveyard.blockentities.renders;
 
 import com.google.common.collect.Maps;
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
+import com.lion.graveyard.blocks.CarvedGravestoneBlock;
 import com.lion.graveyard.blocks.GravestoneBlock;
-import com.lion.graveyard.blocks.TallCarvedGravestoneBlock;
 import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.util.GravestoneIdentifier;
 import net.fabricmc.api.EnvType;
@@ -67,9 +67,10 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         // size of block
         matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
         matrixStack.pop();
-        // The tall stone carries its inscription further up, on the shaft rather than the head.
-        boolean tall = blockState.getBlock() instanceof TallCarvedGravestoneBlock;
-        matrixStack.translate(0.0D, tall ? 0.9D : 0.3333333432674408D, 0.23);
+        CarvedGravestoneBlock carved = blockState.getBlock() instanceof CarvedGravestoneBlock block ? block : null;
+        matrixStack.translate(0.0D,
+                carved == null ? 0.3333333432674408D : carved.textHeight(),
+                carved == null ? 0.23D : carved.textDepth());
         matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
 
         int m = getColor(signBlockEntity);
@@ -105,8 +106,8 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
 
         matrixStack.pop();
 
-        if (tall) {
-            renderTallGrave(signBlockEntity, blockState, matrixStack, vertexConsumerProvider, i, j);
+        if (carved != null && !carved.drawsFromItemModel()) {
+            renderBlockModelGrave(signBlockEntity, blockState, matrixStack, vertexConsumerProvider, i, j);
         } else {
             renderGrave(signBlockEntity, blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
         }
@@ -143,9 +144,9 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.pop();
     }
 
-    /// The tall one is drawn straight in block coordinates - its model is authored at full height and
-    /// needs none of the item transformation the small one inherited.
-    private void renderTallGrave(GravestoneBlockEntity gravestone, BlockState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
+    /// Drawn straight in block coordinates: the model is authored at the size it should have and
+    /// needs none of the item transformation the small gravestone inherited.
+    private void renderBlockModelGrave(GravestoneBlockEntity gravestone, BlockState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
         matrixStack.push();
         matrixStack.translate(0.5D, 0.0D, 0.5D);
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-state.get(GravestoneBlock.FACING).asRotation()));

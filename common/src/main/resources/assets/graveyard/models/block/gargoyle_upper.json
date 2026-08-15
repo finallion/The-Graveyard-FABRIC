@@ -1,0 +1,44 @@
+{
+	"textures": {
+		"3": "minecraft:block/deepslate",
+		"particle": "minecraft:block/deepslate"
+	},
+	"elements": [
+		{
+			"name": "body",
+			"from": [4, 0, 4],
+			"to": [12, 2, 12],
+			"faces": {
+				"north": {"uv": [4, 0, 12, 2], "texture": "#3"},
+				"east": {"uv": [4, 0, 12, 2], "texture": "#3"},
+				"south": {"uv": [4, 0, 12, 2], "texture": "#3"},
+				"west": {"uv": [4, 0, 12, 2], "texture": "#3"}
+			}
+		},
+		{
+			"name": "head",
+			"from": [4, 2, 3],
+			"to": [12, 10, 12],
+			"faces": {
+				"north": {"uv": [4, 2, 12, 10], "texture": "#3"},
+				"east": {"uv": [3, 2, 12, 10], "texture": "#3"},
+				"south": {"uv": [4, 2, 12, 10], "texture": "#3"},
+				"west": {"uv": [3, 2, 12, 10], "texture": "#3"},
+				"up": {"uv": [4, 3, 12, 12], "texture": "#3"},
+				"down": {"uv": [4, 3, 12, 12], "texture": "#3"}
+			}
+		},
+		{
+			"name": "wings",
+			"from": [1, 0, 11],
+			"to": [15, 6, 13],
+			"faces": {
+				"north": {"uv": [1, 0, 15, 6], "texture": "#3"},
+				"east": {"uv": [11, 0, 13, 6], "texture": "#3"},
+				"south": {"uv": [1, 0, 15, 6], "texture": "#3"},
+				"west": {"uv": [11, 0, 13, 6], "texture": "#3"},
+				"up": {"uv": [1, 11, 15, 13], "texture": "#3"}
+			}
+		}
+	]
+}

@@ -49,6 +49,17 @@ public class TallCarvedGravestoneBlock extends CarvedGravestoneBlock {
         builder.add(TallDeco.HALF);
     }
 
+    @Override
+    public boolean drawsFromItemModel() {
+        return false;
+    }
+
+    /// Further up than on the small stone: the inscription belongs on the shaft, not the plinth.
+    @Override
+    public double textHeight() {
+        return 0.9D;
+    }
+
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {

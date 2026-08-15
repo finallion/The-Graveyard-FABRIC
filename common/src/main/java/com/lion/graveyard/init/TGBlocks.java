@@ -117,6 +117,8 @@ public class TGBlocks {
 
     public static final Supplier<Block> CARVED_GRAVESTONE = RegistryHelper.registerBlock("carved_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> TALL_CARVED_GRAVESTONE = RegistryHelper.registerBlock("tall_carved_gravestone", () -> new TallCarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
+    public static final Supplier<Block> EPITAPH = RegistryHelper.registerBlock("epitaph", () -> new EpitaphBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
+    public static final Supplier<Block> GARGOYLE = RegistryHelper.registerBlock("gargoyle", GargoyleBlock::new);
     public static final Supplier<Block> GRAVESTONE = RegistryHelper.registerBlock("gravestone", () -> new GravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("mossy_cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));

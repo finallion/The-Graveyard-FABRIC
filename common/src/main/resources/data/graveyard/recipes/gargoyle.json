@@ -1,0 +1,8 @@
+{
+  "type": "graveyard:ossuary_carving",
+  "ingredient": {
+    "item": "minecraft:deepslate"
+  },
+  "result": "graveyard:gargoyle",
+  "count": 1
+}
