@@ -31,6 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -197,47 +198,12 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController(this, "controller", 2, event -> {
-            if (isDead()) {
-                event.getController().setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* ATTACK */
-            // takes one tick to get to this method (from mobtick)
-            if (getAnimationState() == ANIMATION_ATTACK && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
-                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-                event.getController().setAnimation(ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* WALK */
-            if (((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0)) {
-                event.getController().setAnimation(WALK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* IDLE */
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
-                event.getController().setAnimation(IDLE_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* STOPPERS */
-            // stops idle animation from looping
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-                setAnimation(ANIMATION_ATTACK);
-                return PlayState.STOP;
-            }
-
-            // stops attack animation from looping
-            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01)) {
-                setAnimation(ANIMATION_IDLE);
-                return PlayState.STOP;
-            }
-
-            return PlayState.CONTINUE;
-        }));
+        data.add(AnimationTable.<NightmareEntity>create()
+                .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
+                .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
+                .when(AnimationTable::isMoving, WALK_ANIMATION)
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
 

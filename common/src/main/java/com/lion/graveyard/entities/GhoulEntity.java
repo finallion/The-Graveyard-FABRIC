@@ -27,7 +27,9 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -61,6 +63,9 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     protected static final int ANIMATION_RUNNING = 4;
     protected static final int ANIMATION_MELEE = 5;
     protected static final int ANIMATION_SPAWN = 6;
+
+    /// Limb swing above which the walk turns into a run.
+    private static final float RUNNING_LIMB_SWING = 0.55F;
 
     public final int ATTACK_ANIMATION_DURATION = 14;
     public final int RAGE_ANIMATION_DURATION = 35;
@@ -257,71 +262,25 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController(this, "controller", 0, event -> {
-            float limbSwingAmount = event.getLimbSwingAmount();
-            boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
+        data.add(AnimationTable.<GhoulEntity>create()
+                .when(() -> getSpawnTimer() > 0, SPAWN_ANIMATION)
+                .when(this::isDying, DEATH_ANIMATION)
+                .when(this::isRaging, RAGE_ANIMATION)
+                .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
+                .when(this::isRunning, RUNNING_ANIMATION)
+                .when(AnimationTable::isMoving, WALK_ANIMATION)
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
+    }
 
-            /* SPAWN */
-            if (getSpawnTimer() > 0) {
-                event.getController().setAnimation(SPAWN_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+    private boolean isDying() {
+        return this.isDead() || this.getHealth() < 0.01F;
+    }
 
-            /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
-                event.getController().setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* ATTACK */
-            // takes one tick to get to this method (from mobtick)
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
-                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-                event.getController().setAnimation(ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* RAGE */
-            if (getAnimationState() == ANIMATION_RAGE && getRageAnimTimer() == (RAGE_ANIMATION_DURATION - 1) && isRaging()) {
-                event.getController().setAnimation(RAGE_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* WALK */
-            if ((event.isMoving() || isMoving) && getAttackAnimTimer() <= 0 && !isRaging()) {
-                if (isAttacking() && !isWet()) {
-                    event.getController().setAnimation(RUNNING_ANIMATION);
-                } else {
-                    event.getController().setAnimation(WALK_ANIMATION);
-                }
-                return PlayState.CONTINUE;
-            }
-
-            if (!event.isMoving() && !isRaging()) {
-                event.getController().setAnimation(IDLE_ANIMATION);
-            }
-
-            /* IDLE */
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && !event.isMoving()) {
-                setAnimationState(ANIMATION_IDLE);
-                return PlayState.CONTINUE;
-            }
-
-            /* STOPPERS */
-            // stops idle animation from looping
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-                setAnimationState(ANIMATION_MELEE);
-                return PlayState.STOP;
-            }
-
-            // stops attack animation from looping
-            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getAnimationState() != ANIMATION_RAGE) {
-                setAnimationState(ANIMATION_IDLE);
-                return PlayState.STOP;
-            }
-
-            return PlayState.CONTINUE;
-        }));
+    /// Running is a question of speed, not of having a target - the limb swing measures how fast it
+    /// actually moves. A ghoul in water never gets there.
+    private boolean isRunning(AnimationState<GhoulEntity> state) {
+        return AnimationTable.isMoving(state) && !isWet() && state.getLimbSwingAmount() > RUNNING_LIMB_SWING;
     }
 
     @Override

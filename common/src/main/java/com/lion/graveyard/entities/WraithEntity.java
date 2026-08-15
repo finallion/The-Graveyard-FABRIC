@@ -36,6 +36,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -195,6 +196,11 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     public void tickMovement() {
         spawnTimer--;
+        // Ticked, not set from the animation callback: that one runs per frame on the render thread.
+        if (getAnimation() == 0) {
+            spawned = true;
+        }
+
         if (getEntityWorld().isClient() && spawnTimer >= 0 && spawned) {
             addParticles();
         }
@@ -293,38 +299,13 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController(this, "controller", 2, event -> {
-            AnimationController controller = event.getController();
-            float limbSwingAmount = event.getLimbSwingAmount();
-            boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
-
-            if (this.isDead()) {
-                controller.setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (spawnTimer < 0) {
-                if (isAttacking()) {
-                    controller.setAnimation(ATTACK_ANIMATION);
-                } else if (isMoving) {
-                    controller.setAnimation(MOVE_ANIMATION);
-                } else {
-                    controller.setAnimation(IDLE_ANIMATION);
-                }
-                return PlayState.CONTINUE;
-
-            }
-            return PlayState.CONTINUE;
-        }));
-        data.add(new AnimationController(this, "controller2", 0, event -> {
-            if (getAnimation() == 0) {
-                event.getController().setAnimation(SPAWN_ANIMATION);
-                spawned = true;
-
-                return PlayState.CONTINUE;
-            }
-            return PlayState.CONTINUE;
-        }));
+        data.add(AnimationTable.<WraithEntity>create()
+                .when(this::isDead, DEATH_ANIMATION)
+                .when(() -> getAnimation() == 0 && spawnTimer >= 0, SPAWN_ANIMATION)
+                .when(this::isAttacking, ATTACK_ANIMATION)
+                .when(AnimationTable::isMoving, MOVE_ANIMATION)
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
 

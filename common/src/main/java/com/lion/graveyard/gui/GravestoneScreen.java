@@ -138,7 +138,7 @@ public class GravestoneScreen extends Screen {
         SignBlockEntityRenderer.SignModel var10002 = this.model;
         Objects.requireNonNull(var10002);
 
-        VertexConsumer vertexConsumer2 = GravestoneBlockEntityRenderer.getConsumer(immediate, sign.getCachedState().getBlock());
+        VertexConsumer vertexConsumer2 = GravestoneBlockEntityRenderer.getConsumer(immediate, this.sign);
 
         this.model.stick.visible = false;
         this.model.root.render(matrices, vertexConsumer2, 15728880, OverlayTexture.DEFAULT_UV);

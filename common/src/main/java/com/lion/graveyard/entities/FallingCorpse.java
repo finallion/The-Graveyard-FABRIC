@@ -17,6 +17,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -80,15 +81,10 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
-        animationData.add(new AnimationController<>(this, "controller", 0, event -> {
-            if (isFalling()) {
-                event.setAnimation(FALLING_ANIMATION);
-                return PlayState.CONTINUE;
-            } else {
-                event.getController().setAnimation(LANDING_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-        }));
+        animationData.add(AnimationTable.<FallingCorpse>create()
+                .when(this::isFalling, FALLING_ANIMATION)
+                .otherwise(LANDING_ANIMATION)
+                .build(this, "controller"));
     }
 
     @Override

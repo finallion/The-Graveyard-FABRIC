@@ -24,6 +24,7 @@ import net.minecraft.village.TradeOfferList;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -56,10 +57,9 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
-        animationData.add(new AnimationController<>(this, "controller", 0, event -> {
-            event.getController().setAnimation(IDLE_ANIMATION);
-            return PlayState.CONTINUE;
-        }));
+        animationData.add(AnimationTable.<NamelessHangedEntity>create()
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
     @Override

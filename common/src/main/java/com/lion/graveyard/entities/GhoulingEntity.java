@@ -47,6 +47,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -244,58 +245,13 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
-        animationData.add(new AnimationController(this, "controller", 0, event -> {
-            if (getAnimationState() == ANIMATION_SPAWN && getSpawnTimer() >= 0) {
-                event.getController().setAnimation(SPAWN_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            return PlayState.CONTINUE;
-        }));
-        animationData.add(new AnimationController(this, "controller2", 0, event -> {
-
-            /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
-                event.getController().setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* ATTACK */
-            // takes one tick to get to this method (from mobtick)
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01)) {
-                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2);
-                event.getController().setAnimation(ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* WALK */
-            if ((getAnimationState() == ANIMATION_WALK || event.isMoving()) && getAttackAnimTimer() <= 0) {
-                event.getController().setAnimation(WALK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* IDLE */
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getSpawnTimer() <= 0) {
-                event.getController().setAnimation(IDLE_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* STOPPERS */
-            // stops idle animation from looping
-            if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() > 0) {
-                setAnimationState(ANIMATION_MELEE);
-                return PlayState.STOP;
-            }
-
-            // stops attack animation from looping
-            if (getAttackAnimTimer() <= 0 && !(this.isDead() || this.getHealth() < 0.01) && getSpawnTimer() <= 0) {
-                setAnimationState(ANIMATION_IDLE);
-                return PlayState.STOP;
-            }
-
-
-            return PlayState.CONTINUE;
-        }));
+        animationData.add(AnimationTable.<GhoulingEntity>create()
+                .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
+                .when(() -> getAnimationState() == ANIMATION_SPAWN && getSpawnTimer() >= 0, SPAWN_ANIMATION)
+                .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
+                .when(AnimationTable::isMoving, WALK_ANIMATION)
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
     @Override

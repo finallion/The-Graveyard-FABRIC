@@ -38,6 +38,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -143,121 +144,36 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
-        animationData.add(new AnimationController(this, "controller", 0, event -> {
-            if (getAnimationState() == ANIMATION_SPAWN && getInvulnerableTimer() >= 0) {
-                event.getController().setAnimation(SPAWN_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+        animationData.add(AnimationTable.<LichEntity>create()
+                // Set from the respawn method: drops every animation of the phase before.
+                .stopWhen(() -> getAnimationState() == ANIMATION_STOP)
+                .when(() -> getAnimationState() == ANIMATION_SPAWN && getInvulnerableTimer() >= 0, SPAWN_ANIMATION)
+                .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
 
-            return PlayState.CONTINUE;
-        }));
-        animationData.add(new AnimationController(this, "controller2", 0, event -> {
-            // set from the respawn method, stops all animations from previous phases
-            if (getAnimationState() == ANIMATION_STOP) {
-                return PlayState.STOP;
-            }
+                /* PHASE 1 */
+                .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_CORPSE_SPELL, CORPSE_SPELL_ANIMATION)
+                .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_SHOOT_SKULL, SHOOT_SKULL_ANIMATION)
+                .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_SUMMON, SUMMON_ANIMATION)
+                .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_CONJURE_FANG, CONJURE_FANG_ANIMATION)
+                .when(() -> getPhase() == 1 && getAttackAnimTimer() > 0 && canMeeleAttack(), ATTACK_ANIMATION)
 
-            /* PHASE 1 */
-            // takes one tick to get to this method (from mobtick)
-            // do not attack when: the spawn invul timer is active, the phase is incorrect or the phase invul timer was set from a spell
-            if (getAnimationState() == ANIMATION_MELEE && getAttackAnimTimer() == (ATTACK_ANIMATION_DURATION - 1) && isAttacking() && !(this.isDead() || this.getHealth() < 0.01) && canMeeleAttack() && getAnimationState() != ANIMATION_SPAWN) {
-                setAttackAnimTimer(ATTACK_ANIMATION_DURATION - 2); // disables to call the animation immediately after (seems to be called multiple times per tick, per frame tick?)
-                event.getController().setAnimation(ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+                /* PHASE 2 */
+                .when(() -> getPhase() == 2 && getAnimationState() == ANIMATION_START_PHASE_2, START_PHASE_2_ANIMATION)
 
-            if (getAnimationState() == ANIMATION_CORPSE_SPELL && getPhase() == 1) {
-                event.getController().setAnimation(CORPSE_SPELL_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+                /* PHASE 3 */
+                .when(() -> getPhase() == 3 && getAnimationState() == ANIMATION_STUNNED, STUNNED_ANIMATION)
+                .when(() -> getPhase() == 3 && getAnimationState() == ANIMATION_PHASE_2_ATTACK, PHASE_2_ATTACK_ANIMATION)
+                .when(() -> getPhase() == 3, PHASE_2_IDLE_ANIMATION)
 
-            if (getAnimationState() == ANIMATION_SHOOT_SKULL && getPhase() == 1) {
-                event.getController().setAnimation(SHOOT_SKULL_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+                /* PHASE 4 */
+                .when(() -> getPhase() == 4 && getAnimationState() == ANIMATION_START_PHASE_3, START_PHASE_3_ANIMATION)
 
-            if (getAnimationState() == ANIMATION_SUMMON && getPhase() == 1) {
-                event.getController().setAnimation(SUMMON_ANIMATION);
-                return PlayState.CONTINUE;
-            }
+                /* PHASE 5 */
+                .when(state -> getPhase() == 5 && AnimationTable.isMoving(state), PHASE_3_ATTACK_ANIMATION)
+                .when(() -> getPhase() == 5, CRAWL_IDLE_ANIMATION)
 
-            if (getAnimationState() == ANIMATION_CONJURE_FANG && getPhase() == 1) {
-                event.getController().setAnimation(CONJURE_FANG_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (getPhase() == 1) {
-                if (getAnimationState() == ANIMATION_IDLE && getAttackAnimTimer() <= 0 && getInvulnerableTimer() <= 0 && getAnimationState() != ANIMATION_SHOOT_SKULL) {
-                    event.getController().setAnimation(IDLE_ANIMATION);
-                    return PlayState.CONTINUE;
-                } else if ((getAnimationState() != ANIMATION_SHOOT_SKULL || getAnimationState() != ANIMATION_SUMMON || getAnimationState() != ANIMATION_CONJURE_FANG || getAnimationState() != ANIMATION_CORPSE_SPELL) && getAttackAnimTimer() > 0) {
-                    setAnimationState(ANIMATION_MELEE);
-                }
-            }
-
-            /* TRANSITION PHASE 2 */
-            if (getAnimationState() == ANIMATION_START_PHASE_2 && getPhase() == 2) {
-                event.getController().setAnimation(START_PHASE_2_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-            /* PHASE 3 */
-            if (getAnimationState() == ANIMATION_STUNNED && getPhase() == 3) {
-                event.getController().setAnimation(STUNNED_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (getAnimationState() == ANIMATION_PHASE_2_IDLE && getPhase() == 3) {
-                event.getController().setAnimation(PHASE_2_IDLE_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (getAnimationState() == ANIMATION_PHASE_2_ATTACK && getPhase() == 3) {
-                event.getController().setAnimation(PHASE_2_ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-
-            /* PHASE 4 */
-            if (getAnimationState() == ANIMATION_START_PHASE_3 && getPhase() == 4) {
-                event.getController().setAnimation(START_PHASE_3_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* PHASE 5 */
-            if (!event.isMoving() && getPhase() == 5 && !(this.isDead() || this.getHealth() < 0.01)) {
-                event.getController().setAnimation(CRAWL_IDLE_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (getAnimationState() == ANIMATION_PHASE_3_ATTACK && getPhase() == 5 && !(this.isDead() || this.getHealth() < 0.01)) {
-                event.getController().setAnimation(PHASE_3_ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            /* DEATH */
-            if (this.isDead() || this.getHealth() < 0.01) {
-                event.getController().setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-
-            /* STOPPERS */
-            // stops attack animation from looping
-            if (getPhase() == 1) {
-                if (getAttackAnimTimer() <= 0 && getInvulnerableTimer() <= 0) {
-                    setAnimationState(ANIMATION_IDLE);
-                    return PlayState.STOP;
-                }
-
-                // stops idle animation from looping
-                if (getAttackAnimTimer() > 0 && getAnimationState() == ANIMATION_IDLE) {
-                    return PlayState.STOP;
-                }
-            }
-
-
-            return PlayState.CONTINUE;
-        }));
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
     @Override

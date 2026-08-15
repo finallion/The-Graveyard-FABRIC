@@ -24,6 +24,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -168,31 +169,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController(this, "controller", 2, event -> {
-            AnimationController controller = event.getController();
-            float limbSwingAmount = event.getLimbSwingAmount();
-            boolean isMoving = !(limbSwingAmount > -0.05F && limbSwingAmount < 0.05F);
-            boolean isDying = this.isDead();
-            boolean isAttacking = this.isAttacking();
-
-            if (isDying) {
-                controller.setAnimation(DEATH_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            if (isAttacking || isCharging()) {
-                controller.setAnimation(ATTACK_ANIMATION);
-                return PlayState.CONTINUE;
-            }
-
-            byte currentAnimation = getAnimation();
-            switch (currentAnimation) {
-                case ANIMATION_ATTACK -> controller.setAnimation(ATTACK_ANIMATION);
-                default -> controller.setAnimation(isMoving ? WALK_ANIMATION : IDLE_ANIMATION);
-            }
-
-            return PlayState.CONTINUE;
-        }));
+        data.add(AnimationTable.<ReaperEntity>create()
+                .when(this::isDead, DEATH_ANIMATION)
+                .when(() -> isAttacking() || isCharging() || getAnimation() == ANIMATION_ATTACK, ATTACK_ANIMATION)
+                .when(AnimationTable::isMoving, WALK_ANIMATION)
+                .otherwise(IDLE_ANIMATION)
+                .build(this, "controller"));
     }
 
 

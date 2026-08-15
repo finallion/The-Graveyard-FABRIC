@@ -187,5 +187,18 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     public static VertexConsumer getConsumer(VertexConsumerProvider provider, Block block) {
         return provider.getBuffer(LAYERS.getOrDefault(block, defaultLayer));
     }
+
+    /// The board in the edit screen. A carved gravestone has no drawn texture of its own, so its
+    /// material's sprite is wrapped the way vanilla wraps sign wood types: the model keeps its own
+    /// 0..1 coordinates and they are folded into the sprite's window on the atlas.
+    public static VertexConsumer getConsumer(VertexConsumerProvider provider, GravestoneBlockEntity gravestone) {
+        Block material = gravestone.getMaterial();
+        if (material == null) {
+            return getConsumer(provider, gravestone.getCachedState().getBlock());
+        }
+
+        Sprite sprite = CarvedGravestoneRenderer.sprite(material);
+        return sprite.getTextureSpecificVertexConsumer(provider.getBuffer(RenderLayer.getEntityCutout(sprite.getAtlasId())));
+    }
 }
 
