@@ -39,10 +39,14 @@ public final class CarvedGravestoneRenderer {
     private CarvedGravestoneRenderer() {
     }
 
-    /// Geometry comes from the default state, so the blockstate rotation stays out of it - both
-    /// callers rotate themselves.
+    /// Geometry comes from the default state, so the blockstate rotation stays out of it - every
+    /// caller rotates itself.
     public static BakedModel geometry() {
-        return MinecraftClient.getInstance().getBlockRenderManager().getModel(TGBlocks.CARVED_GRAVESTONE.get().getDefaultState());
+        return geometry(TGBlocks.CARVED_GRAVESTONE.get());
+    }
+
+    public static BakedModel geometry(Block block) {
+        return MinecraftClient.getInstance().getBlockRenderManager().getModel(block.getDefaultState());
     }
 
     public static Sprite sprite(@Nullable Block material) {

@@ -2,6 +2,7 @@ package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -30,6 +31,13 @@ public class CarvedGravestoneBlock extends GravestoneBlock {
 
     public CarvedGravestoneBlock(Identifier texture) {
         super(texture);
+    }
+
+    /// The block entity draws the whole stone with the material's texture. Leaving the blockstate
+    /// model on top of that would render a second, placeholder-textured copy inside it.
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override

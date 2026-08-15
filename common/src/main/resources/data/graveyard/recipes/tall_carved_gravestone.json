@@ -1,0 +1,8 @@
+{
+  "type": "graveyard:gravestone_carving",
+  "ingredient": {
+    "item": "minecraft:stone"
+  },
+  "result": "graveyard:tall_carved_gravestone",
+  "count": 1
+}

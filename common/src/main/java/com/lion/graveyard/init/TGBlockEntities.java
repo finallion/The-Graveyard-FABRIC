@@ -10,6 +10,7 @@ public class TGBlockEntities {
 
     public static final Supplier<BlockEntityType<GravestoneBlockEntity>> GRAVESTONE_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("gravestone_block_entity", () -> BlockEntityType.Builder.create(GravestoneBlockEntity::new,
             TGBlocks.CARVED_GRAVESTONE.get(),
+            TGBlocks.TALL_CARVED_GRAVESTONE.get(),
             TGBlocks.GRAVESTONE.get(),
             TGBlocks.COBBLESTONE_GRAVESTONE.get(),
             TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(),

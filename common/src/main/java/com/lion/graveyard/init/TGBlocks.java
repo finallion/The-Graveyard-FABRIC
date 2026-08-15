@@ -3,6 +3,7 @@ package com.lion.graveyard.init;
 import com.lion.graveyard.blockentities.*;
 import com.lion.graveyard.blocks.*;
 import com.lion.graveyard.blocks.PillarBlock;
+import com.lion.graveyard.blocks.TallCarvedGravestoneBlock;
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.util.GravestoneIdentifier;
 import net.minecraft.block.*;
@@ -115,6 +116,7 @@ public class TGBlocks {
     public static final Supplier<Block> VASE_BLOCK = RegistryHelper.registerBlock("vase_block", VaseBlock::new);
 
     public static final Supplier<Block> CARVED_GRAVESTONE = RegistryHelper.registerBlock("carved_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
+    public static final Supplier<Block> TALL_CARVED_GRAVESTONE = RegistryHelper.registerBlock("tall_carved_gravestone", () -> new TallCarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> GRAVESTONE = RegistryHelper.registerBlock("gravestone", () -> new GravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("mossy_cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));
