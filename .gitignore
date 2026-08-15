@@ -31,3 +31,18 @@ bin/
 # fabric
 
 run/
+logs/
+
+# build and crash artefacts the IDE otherwise auto-stages
+
+.architectury-transformer/
+hs_err_pid*.log
+replay_pid*.log
+
+# claude and local docs - kept on disk, never in the repo
+
+CLAUDE.md
+.claude/
+docs/
+*.md
+!README.md
