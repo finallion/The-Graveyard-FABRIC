@@ -3,6 +3,7 @@ package com.lion.graveyard.init;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
 import com.lion.graveyard.item.VialOfBlood;
+import com.lion.graveyard.platform.ItemFactory;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.item.*;
 
@@ -93,6 +94,7 @@ public class TGItems {
 
     public static final Supplier<Item> VASE_BLOCK = RegistryHelper.registerItem("vase_block", () -> new BlockItem(TGBlocks.VASE_BLOCK.get(), new Item.Settings()));
 
+    public static final Supplier<Item> CARVED_GRAVESTONE = RegistryHelper.registerItem("carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.CARVED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> GRAVESTONE = RegistryHelper.registerItem("gravestone", () -> new BlockItem(TGBlocks.GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem( "cobblestone_gravestone", () -> new BlockItem(TGBlocks.COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem("mossy_cobblestone_gravestone", () -> new BlockItem(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
@@ -196,6 +198,7 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PEDESTAL.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CANDLE_HOLDER.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CARVED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, COBBLESTONE_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOSSY_COBBLESTONE_GRAVESTONE.get());

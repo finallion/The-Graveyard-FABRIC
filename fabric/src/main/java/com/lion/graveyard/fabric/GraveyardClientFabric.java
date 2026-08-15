@@ -2,6 +2,7 @@ package com.lion.graveyard.fabric;
 
 import com.lion.graveyard.GraveyardClient;
 import com.lion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
+import com.lion.graveyard.blockentities.renders.CarvedGravestoneRenderer;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
@@ -14,6 +15,7 @@ import com.lion.graveyard.particles.GraveyardSoulParticle;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
@@ -37,6 +39,12 @@ public class GraveyardClientFabric implements ClientModInitializer {
         GraveyardClient.postInit();
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
+
+        // The carved gravestone has no fixed texture - it is drawn with the one of the block it was
+        // carved from, which is only known from the stack.
+        BuiltinItemRendererRegistry.INSTANCE.register(TGItems.CARVED_GRAVESTONE.get(),
+                (stack, mode, matrices, vertexConsumers, light, overlay)
+                        -> CarvedGravestoneRenderer.renderItem(stack, matrices, vertexConsumers, light, overlay));
 
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);

@@ -86,6 +86,8 @@
   "block.graveyard.dark_iron_trapdoor": "Dark Iron Trapdoor",
   "block.graveyard.dark_iron_door": "Dark Iron Door",
   "block.graveyard.candle_holder": "Candle Holder",
+  "block.graveyard.carved_gravestone": "Carved Gravestone",
+  "block.graveyard.carved_gravestone.of": "%s Gravestone",
   "block.graveyard.gravestone": "Polished Basalt Gravestone",
   "block.graveyard.cobblestone_gravestone": "Cobblestone Gravestone",
   "block.graveyard.mossy_cobblestone_gravestone": "Mossy Cobblestone Gravestone",

@@ -4,6 +4,7 @@ import com.lion.graveyard.init.TGBlockEntities;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -14,11 +15,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.*;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -37,6 +40,8 @@ public class GravestoneBlockEntity extends BlockEntity {
     private UUID editor;
     private SignText text;
     private boolean waxed;
+    @Nullable
+    private Block material;
 
 	public GravestoneBlockEntity(BlockPos pos, BlockState state) {
         this(TGBlockEntities.GRAVESTONE_BLOCK_ENTITY.get(), pos, state);
@@ -72,6 +77,9 @@ public class GravestoneBlockEntity extends BlockEntity {
             nbt.put("front_text", frontText);
         });
         nbt.putBoolean("is_waxed", this.waxed);
+        if (this.material != null) {
+            nbt.putString("material", Registries.BLOCK.getId(this.material).toString());
+        }
     }
 
     public void readNbt(NbtCompound nbt) {
@@ -88,6 +96,33 @@ public class GravestoneBlockEntity extends BlockEntity {
         }
 
         this.waxed = nbt.getBoolean("is_waxed");
+        this.material = readMaterial(nbt);
+    }
+
+    @Nullable
+    private static Block readMaterial(NbtCompound nbt) {
+        if (!nbt.contains("material")) {
+            return null;
+        }
+
+        Identifier id = Identifier.tryParse(nbt.getString("material"));
+        // A gravestone carved from a block of a mod that is no longer installed falls back to its
+        // own model rather than vanishing.
+        return id == null ? null : Registries.BLOCK.getOrEmpty(id).orElse(null);
+    }
+
+    /// The block this gravestone was carved from, or null for the gravestones that carry their
+    /// material in their own block model.
+    @Nullable
+    public Block getMaterial() {
+        return this.material;
+    }
+
+    public void setMaterial(@Nullable Block material) {
+        if (this.material != material) {
+            this.material = material;
+            this.updateListeners();
+        }
     }
 
     private SignText parseLines(SignText signText) {

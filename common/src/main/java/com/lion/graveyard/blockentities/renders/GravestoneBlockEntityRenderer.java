@@ -20,7 +20,10 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -28,6 +31,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -36,6 +40,8 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<GravestoneBlockEntity> {
     private static final int RENDER_DISTANCE = MathHelper.square(16);
+    /// Ints per vertex in a baked quad: position (3), colour, uv (2), light, normal.
+    private static final int VERTEX_STRIDE = 8;
     private final TextRenderer textRenderer;
     private static final HashMap<Block, RenderLayer> LAYERS = Maps.newHashMap();
     private static RenderLayer defaultLayer;
@@ -95,16 +101,37 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         }
 
         matrixStack.pop();
-        renderGrave(blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
+        renderGrave(signBlockEntity, blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
     }
 
-    public void renderGrave(BlockState state, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, World world) {
+    public void renderGrave(GravestoneBlockEntity gravestone, BlockState state, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j, World world) {
         matrixStack.push();
         matrixStack.translate(0.5, 0.43, 0.5);
         matrixStack.scale(2.28F, 2.15F, 2.28F);
         float rotation = state.get(GravestoneBlock.FACING).asRotation();
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
-        MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(state.getBlock().asItem(), 1), ModelTransformationMode.GROUND, i, j, matrixStack, vertexConsumerProvider, world, 2);
+
+        Block material = gravestone.getMaterial();
+        if (material == null) {
+            ItemStack stack = new ItemStack(state.getBlock().asItem(), 1);
+            MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.GROUND, i, j, matrixStack, vertexConsumerProvider, world, 2);
+        } else {
+            renderWithMaterial(material, matrixStack, vertexConsumerProvider, i, j);
+        }
+
+        matrixStack.pop();
+    }
+
+    private static void renderWithMaterial(Block material, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
+        BakedModel model = CarvedGravestoneRenderer.geometry();
+
+        matrixStack.push();
+        // Mirrors what the item renderer does before it draws a model, so a carved gravestone sits
+        // exactly where the pre-carving ones sit.
+        model.getTransformation().getTransformation(ModelTransformationMode.GROUND).apply(false, matrixStack);
+        matrixStack.translate(-0.5F, -0.5F, -0.5F);
+
+        CarvedGravestoneRenderer.render(model, CarvedGravestoneRenderer.sprite(material), matrixStack, vertexConsumerProvider, light, overlay);
         matrixStack.pop();
     }
 
