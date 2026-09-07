@@ -15,8 +15,11 @@ public class TGTags {
     public static TagKey<Biome> NIGHTMARE_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "nightmare_spawns"));
     public static TagKey<Biome> SKELETON_CREEPER_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "skeleton_creeper_spawns"));
     public static TagKey<Biome> REAPER_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "reaper_spawns"));
+    public static TagKey<Biome> RAVEN_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "raven_spawns"));
+    public static TagKey<Biome> MAGPIE_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "magpie_spawns"));
 
     public static TagKey<Block> NATURAL_HELPER_BLOCKS = TagKey.of(RegistryKeys.BLOCK, new Identifier(Graveyard.MOD_ID, "natural_helper_blocks"));
+    public static TagKey<Block> CORVID_PERCHES = TagKey.of(RegistryKeys.BLOCK, new Identifier(Graveyard.MOD_ID, "corvid_perches"));
 
     public static TagKey<Structure> ON_RUINS_EXPLORER_MAPS = TagKey.of(RegistryKeys.STRUCTURE, new Identifier(Graveyard.MOD_ID, "on_ruins_explorer_maps"));
 

@@ -137,6 +137,8 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,true, false));
+        mobConfigEntries.putIfAbsent("raven", MobConfigEntry.of(true, 8, 2, 4, false, false));
+        mobConfigEntries.putIfAbsent("magpie", MobConfigEntry.of(true, 8, 2, 3, false, false));
 
         corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", CorruptedChampionEntry.of(
               400.0F, 200.0F, 30.0D, 40.0D, 14.0D, 12.0D, 0.15D,

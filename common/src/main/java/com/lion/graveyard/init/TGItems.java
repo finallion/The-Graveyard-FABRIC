@@ -39,6 +39,8 @@ public class TGItems {
     public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01, new Item.Settings().maxCount(1), 270);
 
     public static final Supplier<Item> SKELETON_CREEPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("skeleton_creeper_spawn_egg", TGEntities.SKELETON_CREEPER, 7960171, 15263976, new Item.Settings());
+    public static final Supplier<Item> RAVEN_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("raven_spawn_egg", TGEntities.RAVEN, 1644825, 5132389, new Item.Settings());
+    public static final Supplier<Item> MAGPIE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("magpie_spawn_egg", TGEntities.MAGPIE, 1644825, 15592941, new Item.Settings());
     public static final Supplier<Item> ACOLYTE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("acolyte_spawn_egg", TGEntities.ACOLYTE, 2688830, 5898240, new Item.Settings());
     public static final Supplier<Item> GHOUL_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("ghoul_spawn_egg", TGEntities.GHOUL, 6239802, 16487198, new Item.Settings());
     public static final Supplier<Item> REAPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("reaper_spawn_egg", TGEntities.REAPER, 1381653, 7456477, new Item.Settings());
@@ -314,6 +316,8 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CHERRY_COFFIN.get());
 
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SKELETON_CREEPER_SPAWN_EGG.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, RAVEN_SPAWN_EGG.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MAGPIE_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, ACOLYTE_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GHOUL_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, REAPER_SPAWN_EGG.get());

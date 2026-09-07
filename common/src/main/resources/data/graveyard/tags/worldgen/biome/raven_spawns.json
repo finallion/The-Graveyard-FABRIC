@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {"id": "#minecraft:is_taiga", "required": false},
+    {"id": "minecraft:dark_forest", "required": false},
+    {"id": "minecraft:swamp", "required": false},
+    {"id": "minecraft:windswept_forest", "required": false}
+  ]
+}

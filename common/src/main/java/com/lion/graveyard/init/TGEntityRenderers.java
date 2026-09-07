@@ -7,6 +7,8 @@ public class TGEntityRenderers {
 
     public static void postInit() {
         RegistryHelper.registerEntityRenderer(TGEntities.SKELETON_CREEPER, SkeletonCreeperRender::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.RAVEN, CorvidRenderer::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.MAGPIE, CorvidRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.ACOLYTE, AcolyteRender::new);
         RegistryHelper.registerEntityRenderer(TGEntities.GHOUL, GhoulRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.REAPER, ReaperRenderer::new);
