@@ -146,6 +146,11 @@ public class TGBlocks {
             Block.createCuboidShape(4.0D, 10.0D, 4.0D, 12.0D, 16.0D, 12.0D),
             Block.createCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
             true));
+
+    // Two blocks tall: a whole skeleton in chains, not a torso. The lower half holds legs and pelvis
+    // and stays close to the wall, the upper half carries the skull and reaches half a block out.
+    public static final Supplier<Block> CHAINED_SKELETON = RegistryHelper.registerBlock("chained_skeleton", () -> new TallWallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().strength(1.0F).sounds(BlockSoundGroup.BONE),
             WallDeco.shapes(3.0D, 0.0D, 16.0D, 6.0D),
             WallDeco.shapes(2.0D, 0.0D, 14.0D, 8.0D)));
     // Reaches half a block out because the skull is a full 8x8x8 head, like every other skull in the mod.

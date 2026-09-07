@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "S",
+    "B"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "S": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    }
+  },
+  "result": {
+    "item": "graveyard:chained_skeleton"
+  }
+}

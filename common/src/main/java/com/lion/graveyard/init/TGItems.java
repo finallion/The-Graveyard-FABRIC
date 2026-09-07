@@ -111,6 +111,7 @@ public class TGItems {
     public static final Supplier<Item> OBELISK = RegistryHelper.registerItem("obelisk", () -> new BlockItem(TGBlocks.OBELISK.get(), new Item.Settings()));
     public static final Supplier<Item> STONE_CROSS = RegistryHelper.registerItem("stone_cross", () -> new BlockItem(TGBlocks.STONE_CROSS.get(), new Item.Settings()));
     public static final Supplier<Item> GIBBET = RegistryHelper.registerItem("gibbet", () -> new BlockItem(TGBlocks.GIBBET.get(), new Item.Settings()));
+    public static final Supplier<Item> CHAINED_SKELETON = RegistryHelper.registerItem("chained_skeleton", () -> new BlockItem(TGBlocks.CHAINED_SKELETON.get(), new Item.Settings()));
     public static final Supplier<Item> MOUNTED_SKULL = RegistryHelper.registerItem("mounted_skull", () -> new BlockItem(TGBlocks.MOUNTED_SKULL.get(), new Item.Settings()));
     public static final Supplier<Item> RIB_RELIEF = RegistryHelper.registerItem("rib_relief", () -> new BlockItem(TGBlocks.RIB_RELIEF.get(), new Item.Settings()));
     public static final Supplier<Item> GRAVESTONE = RegistryHelper.registerItem("gravestone", () -> new BlockItem(TGBlocks.GRAVESTONE.get(), new Item.Settings()));
@@ -229,6 +230,7 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GIBBET.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, OBELISK.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, STONE_CROSS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CHAINED_SKELETON.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOUNTED_SKULL.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, RIB_RELIEF.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
