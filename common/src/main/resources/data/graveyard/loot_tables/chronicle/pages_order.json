@@ -1,0 +1,131 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_physicians_ledger_1\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_physicians_ledger_2\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"brother_oswins_confession\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"of_the_marked_ones\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_first_mask\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_cart\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_scream\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_smiths_boy\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"on_the_quiet\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"the_pit\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"what_the_bell_did\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{page:\"leaving\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

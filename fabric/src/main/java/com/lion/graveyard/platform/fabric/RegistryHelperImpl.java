@@ -25,6 +25,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.*;
+import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
@@ -146,5 +147,9 @@ public class RegistryHelperImpl {
 
     public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
         return () -> TrunkPlacerTypeInvoker.callRegister(Graveyard.createStringID(name), codec);
+    }
+
+    public static LootConditionType registerLootCondition(String name, LootConditionType type) {
+        return Registry.register(Registries.LOOT_CONDITION_TYPE, new Identifier(Graveyard.MOD_ID, name), type);
     }
 }

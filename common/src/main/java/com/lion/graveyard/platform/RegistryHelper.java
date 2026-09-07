@@ -19,6 +19,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
@@ -145,6 +146,12 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
+        throw new AssertionError();
+    }
+
+    /// Returns the same type it was handed, so the caller can keep it without asking the registry back.
+    @ExpectPlatform
+    public static LootConditionType registerLootCondition(String name, LootConditionType type) {
         throw new AssertionError();
     }
 }

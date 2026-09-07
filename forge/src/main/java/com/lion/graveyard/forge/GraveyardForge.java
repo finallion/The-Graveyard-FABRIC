@@ -63,6 +63,7 @@ public class GraveyardForge {
         RegistryHelperImpl.PARTICLES.register(bus);
         RegistryHelperImpl.STRUCTURE_TYPES.register(bus);
         RegistryHelperImpl.FEATURES.register(bus);
+        RegistryHelperImpl.LOOT_CONDITIONS.register(bus);
         RegistryHelperImpl.TRUNK_PLACERS.register(bus);
         RegistryHelperImpl.RECIPE_TYPES.register(bus);
         RegistryHelperImpl.RECIPE_SERIALIZERS.register(bus);

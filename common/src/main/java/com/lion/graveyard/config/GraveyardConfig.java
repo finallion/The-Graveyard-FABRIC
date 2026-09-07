@@ -105,6 +105,7 @@ public class GraveyardConfig implements Config {
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
         booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
         booleanEntries.putIfAbsent("enableBossMusic", true);
+        booleanEntries.putIfAbsent("chroniclePagesInLoot", true);
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 

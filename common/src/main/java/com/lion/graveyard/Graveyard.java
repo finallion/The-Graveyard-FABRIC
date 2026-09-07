@@ -37,6 +37,7 @@ public class Graveyard {
         TGSounds.init();
         TGStructures.init();
         TGRecipeTypes.init();
+        TGLootConditions.init();
         TGTrunkPlacer.init();
         TGFeatures.init();
     }

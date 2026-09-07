@@ -18,6 +18,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.*;
+import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.recipe.Recipe;
@@ -59,6 +60,7 @@ public class RegistryHelperImpl {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Graveyard.MOD_ID);
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACERS = DeferredRegister.create(RegistryKeys.TRUNK_PLACER_TYPE, Graveyard.MOD_ID);
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Graveyard.MOD_ID);
+    public static final DeferredRegister<LootConditionType> LOOT_CONDITIONS = DeferredRegister.create(RegistryKeys.LOOT_CONDITION_TYPE, Graveyard.MOD_ID);
 
 
     public static final Map<EntityModelLayer, Supplier<TexturedModelData>> ENTITY_MODEL_LAYERS = new ConcurrentHashMap<>();
@@ -160,6 +162,11 @@ public class RegistryHelperImpl {
 
     public static Supplier<Feature<?>> registerFeature(String name, Feature<?> feature) {
         return FEATURES.register(name, () -> feature);
+    }
+
+    public static LootConditionType registerLootCondition(String name, LootConditionType type) {
+        LOOT_CONDITIONS.register(name, () -> type);
+        return type;
     }
 
 }
