@@ -29,8 +29,23 @@ public class CarvedGravestoneBlock extends GravestoneBlock {
     /// for creative operators, because this one also carries sign text.
     private static final String MATERIAL_KEY = "GravestoneMaterial";
 
+    private final boolean fromItemModel;
+    private final double textHeight;
+    private final double textDepth;
+    private final float textPitch;
+
     public CarvedGravestoneBlock(Identifier texture) {
+        this(texture, true, 0.3333333432674408D, 0.23D, 0.0F);
+    }
+
+    /// How the stone is drawn and where its inscription sits. Constructor arguments rather than
+    /// subclass overrides, so a differently shaped stone costs a registration line.
+    public CarvedGravestoneBlock(Identifier texture, boolean fromItemModel, double textHeight, double textDepth, float textPitch) {
         super(texture);
+        this.fromItemModel = fromItemModel;
+        this.textHeight = textHeight;
+        this.textDepth = textDepth;
+        this.textPitch = textPitch;
     }
 
     /// The block entity draws the whole stone with the material's texture. Leaving the blockstate
@@ -44,17 +59,23 @@ public class CarvedGravestoneBlock extends GravestoneBlock {
     /// carries an item transformation and a scale factor. Anything authored since is drawn straight
     /// from its block model, at the size it was modelled.
     public boolean drawsFromItemModel() {
-        return true;
+        return this.fromItemModel;
     }
 
     /// Where the inscription sits, measured from the bottom of the block.
     public double textHeight() {
-        return 0.3333333432674408D;
+        return this.textHeight;
     }
 
     /// How far the inscription stands off the stone's face.
     public double textDepth() {
-        return 0.23D;
+        return this.textDepth;
+    }
+
+    /// Tilt of the inscription plate around its own anchor, in degrees. A stone lying on its back
+    /// carries its text on the upward face, which no offset alone can express.
+    public float textPitch() {
+        return this.textPitch;
     }
 
     @Override

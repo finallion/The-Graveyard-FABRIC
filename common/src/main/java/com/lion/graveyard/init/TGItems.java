@@ -98,6 +98,12 @@ public class TGItems {
     public static final Supplier<Item> TALL_CARVED_GRAVESTONE = RegistryHelper.registerItem("tall_carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TALL_CARVED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> EPITAPH = RegistryHelper.registerItem("epitaph", () -> ItemFactory.carvedGravestone(TGBlocks.EPITAPH.get(), new Item.Settings()));
     public static final Supplier<Item> GARGOYLE = RegistryHelper.registerItem("gargoyle", () -> new BlockItem(TGBlocks.GARGOYLE.get(), new Item.Settings()));
+    public static final Supplier<Item> GALLOWS = RegistryHelper.registerItem("gallows", () -> new BlockItem(TGBlocks.GALLOWS.get(), new Item.Settings()));
+    public static final Supplier<Item> OBELISK = RegistryHelper.registerItem("obelisk", () -> new BlockItem(TGBlocks.OBELISK.get(), new Item.Settings()));
+    public static final Supplier<Item> STONE_CROSS = RegistryHelper.registerItem("stone_cross", () -> new BlockItem(TGBlocks.STONE_CROSS.get(), new Item.Settings()));
+    public static final Supplier<Item> GIBBET = RegistryHelper.registerItem("gibbet", () -> new BlockItem(TGBlocks.GIBBET.get(), new Item.Settings()));
+    public static final Supplier<Item> MOUNTED_SKULL = RegistryHelper.registerItem("mounted_skull", () -> new BlockItem(TGBlocks.MOUNTED_SKULL.get(), new Item.Settings()));
+    public static final Supplier<Item> RIB_RELIEF = RegistryHelper.registerItem("rib_relief", () -> new BlockItem(TGBlocks.RIB_RELIEF.get(), new Item.Settings()));
     public static final Supplier<Item> GRAVESTONE = RegistryHelper.registerItem("gravestone", () -> new BlockItem(TGBlocks.GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem( "cobblestone_gravestone", () -> new BlockItem(TGBlocks.COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem("mossy_cobblestone_gravestone", () -> new BlockItem(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
@@ -205,6 +211,12 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TALL_CARVED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, EPITAPH.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GARGOYLE.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GALLOWS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GIBBET.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, OBELISK.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, STONE_CROSS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOUNTED_SKULL.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, RIB_RELIEF.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, COBBLESTONE_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOSSY_COBBLESTONE_GRAVESTONE.get());

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " B ",
+    "BBB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "result": {
+    "item": "graveyard:stone_cross"
+  }
+}

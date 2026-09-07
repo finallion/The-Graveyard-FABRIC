@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "half=lower,facing=north": {
+      "model": "graveyard:block/gallows"
+    },
+    "half=upper,facing=north": {
+      "model": "graveyard:block/gallows_upper"
+    },
+    "half=lower,facing=east": {
+      "model": "graveyard:block/gallows",
+      "y": 90
+    },
+    "half=upper,facing=east": {
+      "model": "graveyard:block/gallows_upper",
+      "y": 90
+    },
+    "half=lower,facing=south": {
+      "model": "graveyard:block/gallows",
+      "y": 180
+    },
+    "half=upper,facing=south": {
+      "model": "graveyard:block/gallows_upper",
+      "y": 180
+    },
+    "half=lower,facing=west": {
+      "model": "graveyard:block/gallows",
+      "y": 270
+    },
+    "half=upper,facing=west": {
+      "model": "graveyard:block/gallows_upper",
+      "y": 270
+    }
+  }
+}

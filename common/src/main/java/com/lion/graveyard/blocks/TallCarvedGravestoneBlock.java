@@ -39,7 +39,8 @@ public class TallCarvedGravestoneBlock extends CarvedGravestoneBlock {
     private static final VoxelShape SHAPE_FACING_NS = Block.createCuboidShape(0.0D, 0.0D, 3.0D, 16.0D, 16.0D, 13.0D);
 
     public TallCarvedGravestoneBlock(Identifier texture) {
-        super(texture);
+        // Further up than on the small stone: the inscription belongs on the shaft, not the plinth.
+        super(texture, false, 0.9D, 0.23D, 0.0F);
         this.setDefaultState(this.getDefaultState().with(TallDeco.HALF, DoubleBlockHalf.LOWER));
     }
 
@@ -47,17 +48,6 @@ public class TallCarvedGravestoneBlock extends CarvedGravestoneBlock {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
         builder.add(TallDeco.HALF);
-    }
-
-    @Override
-    public boolean drawsFromItemModel() {
-        return false;
-    }
-
-    /// Further up than on the small stone: the inscription belongs on the shaft, not the plinth.
-    @Override
-    public double textHeight() {
-        return 0.9D;
     }
 
     @Nullable

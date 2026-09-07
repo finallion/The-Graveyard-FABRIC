@@ -7,6 +7,10 @@ public class TGRenderTypes {
     private static final RenderLayer CUTOUT_MIPPED = RenderLayer.getCutoutMipped();
 
     public static void postInit() {
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.GALLOWS.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.GIBBET.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.MOUNTED_SKULL.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.RIB_RELIEF.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SKULL_WITH_RIB_CAGE.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.WITHER_SKULL_WITH_RIB_CAGE.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.LEANING_SKELETON.get());

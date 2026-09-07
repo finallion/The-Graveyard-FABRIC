@@ -61,6 +61,35 @@ public final class TallDeco {
         return world.getBlockState(pos.down()).isSolid();
     }
 
+    /// Hanging decoration is anchored the other way round: the half that is clicked is the upper one,
+    /// because that is the half touching the ceiling.
+    @Nullable
+    public static BlockState hangingPlacementState(ItemPlacementContext ctx, BlockState upperHalf) {
+        BlockPos pos = ctx.getBlockPos();
+        if (pos.getY() <= ctx.getWorld().getBottomY() || !ctx.getWorld().getBlockState(pos.down()).canReplace(ctx)) {
+            return null;
+        }
+
+        return upperHalf.with(HALF, DoubleBlockHalf.UPPER);
+    }
+
+    public static void placeLowerHalf(World world, BlockPos pos, BlockState state) {
+        boolean waterlogged = world.getFluidState(pos.down()).getFluid() == Fluids.WATER;
+        world.setBlockState(pos.down(), state.with(HALF, DoubleBlockHalf.LOWER)
+                .with(Properties.WATERLOGGED, waterlogged), Block.NOTIFY_ALL);
+    }
+
+    /// The upper half needs a ceiling to hang from, the lower half needs its upper half.
+    public static boolean canHangAt(BlockState state, WorldView world, BlockPos pos) {
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            BlockState above = world.getBlockState(pos.up());
+            return above.isOf(state.getBlock()) && above.get(HALF) == DoubleBlockHalf.UPPER;
+        }
+
+        BlockPos ceiling = pos.up();
+        return world.getBlockState(ceiling).isSideSolidFullSquare(world, ceiling, Direction.DOWN);
+    }
+
     /// Takes the other half with it. Called from `getStateForNeighborUpdate`, so breaking either half
     /// removes both without the block having to react to its own removal.
     public static BlockState onNeighborUpdate(BlockState state, Direction direction, BlockState neighbor, WorldAccess world, BlockPos pos) {
@@ -75,17 +104,19 @@ public final class TallDeco {
         return state;
     }
 
-    /// Without this a creative player breaking the upper half gets a free copy from the lower one.
+    /// Without this a creative player gets a free copy from the half they did not hit - which half that
+    /// is depends on which one carries the loot, so both directions are handled.
     public static void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (world.isClient || !player.isCreative() || state.get(HALF) != DoubleBlockHalf.UPPER) {
+        if (world.isClient || !player.isCreative()) {
             return;
         }
 
-        BlockPos below = pos.down();
-        BlockState belowState = world.getBlockState(below);
-        if (belowState.isOf(state.getBlock()) && belowState.get(HALF) == DoubleBlockHalf.LOWER) {
-            world.setBlockState(below, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
-            world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, below, Block.getRawIdFromState(belowState));
+        DoubleBlockHalf half = state.get(HALF);
+        BlockPos otherPos = half == DoubleBlockHalf.UPPER ? pos.down() : pos.up();
+        BlockState other = world.getBlockState(otherPos);
+        if (other.isOf(state.getBlock()) && other.get(HALF) != half) {
+            world.setBlockState(otherPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
+            world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, otherPos, Block.getRawIdFromState(other));
         }
     }
 

@@ -71,6 +71,11 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         matrixStack.translate(0.0D,
                 carved == null ? 0.3333333432674408D : carved.textHeight(),
                 carved == null ? 0.23D : carved.textDepth());
+
+        if (carved != null && carved.textPitch() != 0.0F) {
+            matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(carved.textPitch()));
+        }
+
         matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
 
         int m = getColor(signBlockEntity);

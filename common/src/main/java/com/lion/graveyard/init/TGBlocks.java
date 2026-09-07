@@ -118,7 +118,36 @@ public class TGBlocks {
     public static final Supplier<Block> CARVED_GRAVESTONE = RegistryHelper.registerBlock("carved_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> TALL_CARVED_GRAVESTONE = RegistryHelper.registerBlock("tall_carved_gravestone", () -> new TallCarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> EPITAPH = RegistryHelper.registerBlock("epitaph", () -> new EpitaphBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-    public static final Supplier<Block> GARGOYLE = RegistryHelper.registerBlock("gargoyle", GargoyleBlock::new);
+    public static final Supplier<Block> GARGOYLE = RegistryHelper.registerBlock("gargoyle", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().strength(1.5F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
+            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D)));
+
+    public static final Supplier<Block> GALLOWS = RegistryHelper.registerBlock("gallows", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().strength(2.0F).burnable().sounds(BlockSoundGroup.WOOD),
+            Block.createCuboidShape(1.0D, 0.0D, 5.0D, 7.0D, 16.0D, 11.0D),
+            Block.createCuboidShape(1.0D, 0.0D, 5.0D, 15.0D, 16.0D, 11.0D)));
+    public static final Supplier<Block> OBELISK = RegistryHelper.registerBlock("obelisk", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
+            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D),
+            Block.createCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D)));
+    public static final Supplier<Block> STONE_CROSS = RegistryHelper.registerBlock("stone_cross", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
+            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D),
+            Block.createCuboidShape(1.0D, 0.0D, 6.0D, 15.0D, 16.0D, 10.0D)));
+
+    // Hangs from a ceiling instead of standing on the ground - the mod's first decoration that does.
+    public static final Supplier<Block> GIBBET = RegistryHelper.registerBlock("gibbet", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(2.0F).sounds(BlockSoundGroup.CHAIN),
+            Block.createCuboidShape(4.0D, 10.0D, 4.0D, 12.0D, 16.0D, 12.0D),
+            Block.createCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
+            true));
+            WallDeco.shapes(3.0D, 0.0D, 16.0D, 6.0D),
+            WallDeco.shapes(2.0D, 0.0D, 14.0D, 8.0D)));
+    // Reaches half a block out because the skull is a full 8x8x8 head, like every other skull in the mod.
+    public static final Supplier<Block> MOUNTED_SKULL = RegistryHelper.registerBlock("mounted_skull", () -> new WallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().strength(1.0F).sounds(BlockSoundGroup.BONE), 4.0D, 2.0D, 12.0D, 8.0D));
+    public static final Supplier<Block> RIB_RELIEF = RegistryHelper.registerBlock("rib_relief", () -> new WallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS), 2.0D, 2.0D, 14.0D, 4.0D));
     public static final Supplier<Block> GRAVESTONE = RegistryHelper.registerBlock("gravestone", () -> new GravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("mossy_cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));
