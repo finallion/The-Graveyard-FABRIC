@@ -7,7 +7,6 @@ import com.lion.graveyard.init.TGProcessors;
 import com.lion.graveyard.network.PacketHandler;
 import com.lion.graveyard.platform.forge.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.forge.RegistryHelperImpl;
-import com.lion.graveyard.platform.forge.ServerEvents;
 import com.lion.graveyard.util.SpawnHordeCommand;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

@@ -38,6 +38,7 @@ import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -61,6 +62,9 @@ import java.util.*;
 
 
 public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, NamedScreenHandlerFactory {
+    /// How often the last known position is recorded; the staff fetches at the same pace.
+    public static final int BINDING_INTERVAL = 40;
+
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
@@ -155,6 +159,9 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             this.heal(0.01F);
         }
 
+        if (this.age % BINDING_INTERVAL == 0 && this.getWorld() instanceof ServerWorld serverWorld) {
+            GhoulingBindings.get(serverWorld).update(this);
+        }
 
         super.mobTick();
     }
@@ -202,10 +209,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             }
         }
 
-
-        //if (isAlive()) {
-        //    ((BoneStaffItem)getStaff().getItem()).ownerGhoulingMapping.putIfAbsent(this.getUuid(), getOwnerUuid());
-        //}
 
         super.tick();
     }
@@ -396,8 +399,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     @Override
     public void onDeath(DamageSource damageSource) {
-        if (!getEntityWorld().isClient()) {
-            BoneStaffItem.ownerGhoulingMapping.remove(this.getUuid(), getOwnerUuid());
+        if (getWorld() instanceof ServerWorld serverWorld) {
+            GhoulingBindings.get(serverWorld).remove(this.getUuid());
         }
         super.onDeath(damageSource);
         this.playSound(TGSounds.GHOULING_DEATH.get(), 1.0F, -2.0F);

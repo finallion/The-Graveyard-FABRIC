@@ -169,6 +169,9 @@
   "entity.graveyard.ghouling.respawn": "Death... is a mere inconvenience.",
   "entity.graveyard.ghouling.obey": "I don't obey your orders, you are no master of mine!",
   "entity.graveyard.ghouling.kill": "Me make it stop moving!",
+  "entity.graveyard.ghouling.call": "I am far from you... I come.",
+  "entity.graveyard.ghouling.lost": "I cannot find the way to you.",
+  "entity.graveyard.ghouling.severed": "The bond is severed... raise me anew.",
   "entity.graveyard.nameless_hanged.wait": "Yes, I see you... But let me enjoy the sun for once. Come back at night.",
 
   "subtitles.entity.graveyard.ghouling.spawn": "Ghouling emerges",

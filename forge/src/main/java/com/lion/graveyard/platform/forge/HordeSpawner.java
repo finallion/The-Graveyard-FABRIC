@@ -2,11 +2,9 @@ package com.lion.graveyard.platform.forge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,24 +23,6 @@ public class HordeSpawner {
     @SubscribeEvent
     public static void onServerStart(ServerStartingEvent event) {
         spawners.put(World.OVERWORLD.getValue(), new GraveyardHordeSpawner());
-    }
-
-    @SubscribeEvent
-    public static void onWorldLoad(LevelEvent.Load event) {
-        MinecraftServer server = event.getLevel().getServer();
-
-        if (server != null) {
-            new ServerEvents.Load().onWorldLoad(server);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onWorldUnload(LevelEvent.Unload event) {
-        MinecraftServer server = event.getLevel().getServer();
-
-        if (server != null) {
-            new ServerEvents.Unload().onWorldUnload(server);
-        }
     }
 
 

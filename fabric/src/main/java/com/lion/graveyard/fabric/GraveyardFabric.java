@@ -48,8 +48,5 @@ public class GraveyardFabric implements ModInitializer {
         ServerTickEvents.END_WORLD_TICK.register(new HordeSpawner.OnWorldTick());
 
         ServerLifecycleEvents.SERVER_STARTED.register(new ServerEvents.DeleteOldConfigs());
-
-        ServerWorldEvents.LOAD.register(new ServerEvents.LoadUUIDMapping());
-        ServerWorldEvents.UNLOAD.register(new ServerEvents.UnloadUUIDMapping());
     }
 }
