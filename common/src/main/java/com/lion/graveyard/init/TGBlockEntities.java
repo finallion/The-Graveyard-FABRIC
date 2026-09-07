@@ -68,6 +68,12 @@ public class TGBlockEntities {
             TGBlocks.FIRE_BRAZIER.get()
     ).build(null));
 
+    public static final Supplier<BlockEntityType<SkeletalRemainsBlockEntity>> SKELETAL_REMAINS_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("skeletal_remains_block_entity", () -> BlockEntityType.Builder.create(SkeletalRemainsBlockEntity::new,
+            TGBlocks.SKELETAL_REMAINS.get(),
+            TGBlocks.WITHER_SKELETAL_REMAINS.get()
+    ).build(null));
+    ).build(null));
+
     public static final Supplier<BlockEntityType<OssuaryBlockEntity>> OSSUARY_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("ossuary_block_entity", () -> BlockEntityType.Builder.create(OssuaryBlockEntity::new,
             TGBlocks.OSSUARY.get()
     ).build(null));

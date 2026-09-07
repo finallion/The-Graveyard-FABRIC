@@ -192,6 +192,11 @@ public class TGBlocks {
     })));
     public static final Supplier<Block> GREAT_SCARLET_HEART = RegistryHelper.registerBlock("great_scarlet_heart", () -> new TallFlowerBlock(AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS).offset(AbstractBlock.OffsetType.XZ).burnable().pistonBehavior(PistonBehavior.DESTROY).luminance((state) -> 10)));
 
+    // Remains whose shape is a pose file rather than a model. The twenty ready-made skeleton blocks
+    // stay exactly as they are; these are new ids beside them.
+    public static final Supplier<Block> SKELETAL_REMAINS = RegistryHelper.registerBlock("skeletal_remains", () -> new SkeletalRemainsBlock(false));
+    public static final Supplier<Block> WITHER_SKELETAL_REMAINS = RegistryHelper.registerBlock("wither_skeletal_remains", () -> new SkeletalRemainsBlock(true));
+
     public static void init() {
 
     }

@@ -6,6 +6,7 @@ import com.lion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
+import com.lion.graveyard.blockentities.renders.SkeletalRemainsRenderer;
 import com.lion.graveyard.entities.renders.*;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.*;
@@ -14,6 +15,7 @@ import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
 import com.lion.graveyard.platform.forge.RegistryHelperImpl;
+import com.lion.graveyard.platform.forge.SkeletalPoseResourceListener;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
@@ -32,6 +34,7 @@ import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,6 +48,12 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Graveyard.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class GraveyardClientForge {
 
+
+    /// Poses are client resources, so they hang off the client reload rather than the data reload.
+    @SubscribeEvent
+    public static void registerClientReloadListeners(final RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(new SkeletalPoseResourceListener());
+    }
 
     @SubscribeEvent
     public static void clientInit(final FMLClientSetupEvent event) {
@@ -79,6 +88,7 @@ public class GraveyardClientForge {
         event.registerBlockEntityRenderer(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(TGBlockEntities.BRAZIER_BLOCK_ENTITY.get(), BrazierBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(TGBlockEntities.SKELETAL_REMAINS_BLOCK_ENTITY.get(), SkeletalRemainsRenderer::new);
     }
 
     @SubscribeEvent

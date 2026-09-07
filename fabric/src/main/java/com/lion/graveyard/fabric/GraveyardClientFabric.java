@@ -13,11 +13,13 @@ import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
+import com.lion.graveyard.platform.fabric.SkeletalPoseResourceListener;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
@@ -29,6 +31,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 import java.util.UUID;
@@ -42,6 +45,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
 
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SkeletalPoseResourceListener());
 
         // A carved stone has no fixed texture - it is drawn with the one of the block it was carved
         // from, which is only known from the stack. Registered by type so a new shape of stone needs

@@ -77,6 +77,8 @@ public class TGItems {
     public static final Supplier<Item> DARK_IRON_TRAPDOOR = RegistryHelper.registerItem("dark_iron_trapdoor", () -> new BlockItem(TGBlocks.DARK_IRON_TRAPDOOR.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_DOOR = RegistryHelper.registerItem("dark_iron_door", () -> new BlockItem(TGBlocks.DARK_IRON_DOOR.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_BLOCK = RegistryHelper.registerItem("dark_iron_block", () -> new BlockItem(TGBlocks.DARK_IRON_BLOCK.get(), new Item.Settings()));
+    public static final Supplier<Item> SKELETAL_REMAINS = RegistryHelper.registerItem("skeletal_remains", () -> new BlockItem(TGBlocks.SKELETAL_REMAINS.get(), new Item.Settings()));
+    public static final Supplier<Item> WITHER_SKELETAL_REMAINS = RegistryHelper.registerItem("wither_skeletal_remains", () -> new BlockItem(TGBlocks.WITHER_SKELETAL_REMAINS.get(), new Item.Settings()));
 
     public static final Supplier<Item> SKULL_WITH_RIB_CAGE = RegistryHelper.registerItem("skull_with_rib_cage", () -> new BlockItem(TGBlocks.SKULL_WITH_RIB_CAGE.get(), new Item.Settings()));
     public static final Supplier<Item> LEANING_SKELETON = RegistryHelper.registerItem("leaning_skeleton", () -> new BlockItem(TGBlocks.LEANING_SKELETON.get(), new Item.Settings()));
@@ -206,6 +208,8 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_DOOR.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_TRAPDOOR.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_BARS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SKELETAL_REMAINS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, WITHER_SKELETAL_REMAINS.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SOUL_FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PEDESTAL.get());

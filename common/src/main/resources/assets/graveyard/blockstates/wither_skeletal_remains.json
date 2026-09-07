@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "graveyard:block/wither_skeletal_remains" },
+    "facing=east":  { "model": "graveyard:block/wither_skeletal_remains" },
+    "facing=south": { "model": "graveyard:block/wither_skeletal_remains" },
+    "facing=west":  { "model": "graveyard:block/wither_skeletal_remains" }
+  }
+}
