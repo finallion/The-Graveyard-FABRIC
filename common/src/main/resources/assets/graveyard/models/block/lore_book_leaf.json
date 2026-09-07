@@ -1,0 +1,79 @@
+{
+	"render_type": "cutout",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"elements": [
+		{
+			"name": "leaf",
+			"from": [4, 0.05, 3.5],
+			"to": [12, 0.3, 12.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [4, 15.7, 12, 15.95], "texture": "#pages"},
+				"east": {"uv": [3.5, 15.7, 12.5, 15.95], "texture": "#pages"},
+				"south": {"uv": [4, 15.7, 12, 15.95], "texture": "#pages"},
+				"west": {"uv": [3.5, 15.7, 12.5, 15.95], "texture": "#pages"},
+				"up": {"uv": [4, 3.5, 12, 12.5], "texture": "#pages"},
+				"down": {"uv": [4, 3.5, 12, 12.5], "texture": "#pages"}
+			}
+		},
+		{
+			"name": "curl",
+			"from": [10.5, 0.3, 4.5],
+			"to": [12, 1.25, 11.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [10.5, 14.75, 12, 15.7], "texture": "#pages"},
+				"east": {"uv": [4.5, 14.75, 11.5, 15.7], "texture": "#pages"},
+				"south": {"uv": [10.5, 14.75, 12, 15.7], "texture": "#pages"},
+				"west": {"uv": [4.5, 14.75, 11.5, 15.7], "texture": "#pages"},
+				"up": {"uv": [10.5, 4.5, 12, 11.5], "texture": "#pages"},
+				"down": {"uv": [10.5, 4.5, 12, 11.5], "texture": "#pages"}
+			}
+		}
+	],
+	"textures": {
+		"pages": "graveyard:block/lore_book_pages",
+		"particle": "graveyard:block/lore_book_cover"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.6, 0.6, 0.6],
+			"translation": [0, 3.84, 0],
+			"rotation": [0, 45, 0]
+		},
+		"thirdperson_lefthand": {
+			"scale": [0.6, 0.6, 0.6],
+			"translation": [0, 3.84, 0],
+			"rotation": [0, 225, 0]
+		},
+		"firstperson_righthand": {
+			"scale": [0.68, 0.68, 0.68],
+			"translation": [0, 4.32, 0],
+			"rotation": [0, 45, 0]
+		},
+		"firstperson_lefthand": {
+			"scale": [0.68, 0.68, 0.68],
+			"translation": [0, 4.32, 0],
+			"rotation": [0, 225, 0]
+		},
+		"ground": {
+			"scale": [0.45, 0.45, 0.45],
+			"translation": [0, 2.88, 0]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [0, 4.8, 0],
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"head": {
+			"translation": [0, 12.8, 0],
+			"scale": [1.2, 1.2, 1.2]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 4.8, 0],
+			"scale": [0.75, 0.75, 0.75]
+		}
+	}
+}

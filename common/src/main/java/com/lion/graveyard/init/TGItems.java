@@ -1,5 +1,6 @@
 package com.lion.graveyard.init;
 
+import com.lion.graveyard.item.DiaryPageItem;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
 import com.lion.graveyard.item.VialOfBlood;
@@ -55,6 +56,7 @@ public class TGItems {
     public static final Supplier<Item> BONE_DAGGER = RegistryHelper.registerItem("bone_dagger", () -> new DaggerItem(ToolMaterials.STONE, 4, -2.0F, new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_INGOT = RegistryHelper.registerItem("dark_iron_ingot", () -> new Item(new Item.Settings()));
     public static final Supplier<Item> CORRUPTION = RegistryHelper.registerItem("corruption", () -> new Item(new Item.Settings()));
+    public static final Supplier<Item> DIARY_PAGE = RegistryHelper.registerItem("diary_page", () -> new DiaryPageItem(TGBlocks.LORE_BOOK.get(), new Item.Settings().maxCount(16)));
 
     public static final Supplier<Item> TG_ROOTED_DIRT = RegistryHelper.registerItem("tg_rooted_dirt", () -> new BlockItem(TGBlocks.TG_ROOTED_DIRT.get(), new Item.Settings()));
     public static final Supplier<Item> TG_TUFF = RegistryHelper.registerItem("tg_tuff", () -> new BlockItem(TGBlocks.TG_TUFF.get(), new Item.Settings()));
@@ -205,6 +207,7 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, INCARNATED_EVIL_MUSIC_DISC.get());
 
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CORRUPTION.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DIARY_PAGE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_BLOCK.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_INGOT.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_DOOR.get());

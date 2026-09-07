@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "variant=closed,facing=north": { "model": "graveyard:block/lore_book_closed" },
+    "variant=closed,facing=east": { "model": "graveyard:block/lore_book_closed", "y": 90 },
+    "variant=closed,facing=south": { "model": "graveyard:block/lore_book_closed", "y": 180 },
+    "variant=closed,facing=west": { "model": "graveyard:block/lore_book_closed", "y": 270 },
+    "variant=open,facing=north": { "model": "graveyard:block/lore_book_open" },
+    "variant=open,facing=east": { "model": "graveyard:block/lore_book_open", "y": 90 },
+    "variant=open,facing=south": { "model": "graveyard:block/lore_book_open", "y": 180 },
+    "variant=open,facing=west": { "model": "graveyard:block/lore_book_open", "y": 270 },
+    "variant=leaf,facing=north": { "model": "graveyard:block/lore_book_leaf" },
+    "variant=leaf,facing=east": { "model": "graveyard:block/lore_book_leaf", "y": 90 },
+    "variant=leaf,facing=south": { "model": "graveyard:block/lore_book_leaf", "y": 180 },
+    "variant=leaf,facing=west": { "model": "graveyard:block/lore_book_leaf", "y": 270 },
+    "variant=scroll,facing=north": { "model": "graveyard:block/lore_book_scroll" },
+    "variant=scroll,facing=east": { "model": "graveyard:block/lore_book_scroll", "y": 90 },
+    "variant=scroll,facing=south": { "model": "graveyard:block/lore_book_scroll", "y": 180 },
+    "variant=scroll,facing=west": { "model": "graveyard:block/lore_book_scroll", "y": 270 }
+  }
+}

@@ -13,10 +13,13 @@
     "TrunkPlacerTypeInvoker",
     "VillagerEntityMixin",
     "WanderingTraderEntityMixin",
-    "SpawnRestrictionAccessor"
+    "SpawnRestrictionAccessor",
+    "WrittenBookItemMixin",
+    "WritableBookItemMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientPlayNetworkHandlerMixin",
+    "client.InventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -8,6 +8,10 @@ import com.lion.graveyard.network.PacketHandler;
 import com.lion.graveyard.platform.forge.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.forge.RegistryHelperImpl;
 import com.lion.graveyard.util.SpawnHordeCommand;
+import com.lion.graveyard.util.ChronicleCommand;
+import com.lion.graveyard.chronicle.Chronicle;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnRestriction;
@@ -71,6 +75,9 @@ public class GraveyardForge {
 
         forgeBus.register(this);
         forgeBus.addListener(GraveyardForge::registerCommands);
+        forgeBus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayerEntity player) Chronicle.syncAll(player);
+        });
         forgeBus.addListener(GraveyardForge::registerResourceReloader);
     }
 
@@ -90,6 +97,7 @@ public class GraveyardForge {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
         SpawnHordeCommand.register(event.getDispatcher());
+        ChronicleCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

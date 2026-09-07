@@ -1,6 +1,7 @@
 package com.lion.graveyard.init;
 
 import com.lion.graveyard.blockentities.*;
+import com.lion.graveyard.blocks.LoreBookBlock;
 import com.lion.graveyard.blocks.*;
 import com.lion.graveyard.blocks.PillarBlock;
 import com.lion.graveyard.blocks.TallCarvedGravestoneBlock;
@@ -196,6 +197,9 @@ public class TGBlocks {
     // stay exactly as they are; these are new ids beside them.
     public static final Supplier<Block> SKELETAL_REMAINS = RegistryHelper.registerBlock("skeletal_remains", () -> new SkeletalRemainsBlock(false));
     public static final Supplier<Block> WITHER_SKELETAL_REMAINS = RegistryHelper.registerBlock("wither_skeletal_remains", () -> new SkeletalRemainsBlock(true));
+
+    // One block for every chronicle page: the page id sits in the block entity, the look is a state.
+    public static final Supplier<Block> LORE_BOOK = RegistryHelper.registerBlock("lore_book", LoreBookBlock::new);
 
     public static void init() {
 

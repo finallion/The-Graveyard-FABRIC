@@ -16,6 +16,8 @@ import com.lion.graveyard.particles.GraveyardSoulParticle;
 import com.lion.graveyard.platform.fabric.SkeletalPoseResourceListener;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import com.lion.graveyard.platform.ChronicleSync;
+import com.lion.graveyard.chronicle.client.ClientChronicle;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -74,6 +76,11 @@ public class GraveyardClientFabric implements ClientModInitializer {
                 TGBlocks.TG_GRASS_BLOCK.get(),
                 TGBlocks.TURF.get());
 
+
+        ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.CHANNEL, (client, handler, buf, responseSender) -> {
+            ChronicleSync.Payload payload = ChronicleSync.read(buf);
+            client.execute(() -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
+        });
 
         ClientPlayNetworking.registerGlobalReceiver(GraveyardClient.SKULL_PACKET_ID, (client, handler, byteBuf, responseSender) -> {
             EntityType<?> type = Registries.ENTITY_TYPE.get(byteBuf.readVarInt());

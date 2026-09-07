@@ -1,0 +1,122 @@
+{
+	"render_type": "cutout",
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"elements": [
+		{
+			"name": "cover_west",
+			"from": [1.5, 0, 3],
+			"to": [8, 0.5, 13],
+			"rotation": {"angle": 7.5, "axis": "z", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [1.5, 15.5, 8, 16], "texture": "#cover"},
+				"east": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
+				"south": {"uv": [1.5, 15.5, 8, 16], "texture": "#cover"},
+				"west": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
+				"up": {"uv": [1.5, 3, 8, 13], "texture": "#cover"},
+				"down": {"uv": [1.5, 3, 8, 13], "texture": "#cover"}
+			}
+		},
+		{
+			"name": "cover_east",
+			"from": [8, 0, 3],
+			"to": [14.5, 0.5, 13],
+			"rotation": {"angle": -7.5, "axis": "z", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [8, 15.5, 14.5, 16], "texture": "#cover"},
+				"east": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
+				"south": {"uv": [8, 15.5, 14.5, 16], "texture": "#cover"},
+				"west": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
+				"up": {"uv": [8, 3, 14.5, 13], "texture": "#cover"},
+				"down": {"uv": [8, 3, 14.5, 13], "texture": "#cover"}
+			}
+		},
+		{
+			"name": "page_west",
+			"from": [2, 0.5, 3.5],
+			"to": [8, 1.25, 12.5],
+			"rotation": {"angle": 7.5, "axis": "z", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [2, 14.75, 8, 15.5], "texture": "#pages"},
+				"east": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
+				"south": {"uv": [2, 14.75, 8, 15.5], "texture": "#pages"},
+				"west": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
+				"up": {"uv": [2, 3.5, 8, 12.5], "texture": "#pages"},
+				"down": {"uv": [2, 3.5, 8, 12.5], "texture": "#pages"}
+			}
+		},
+		{
+			"name": "page_east",
+			"from": [8, 0.5, 3.5],
+			"to": [14, 1.25, 12.5],
+			"rotation": {"angle": -7.5, "axis": "z", "origin": [8, 0, 8]},
+			"faces": {
+				"north": {"uv": [8, 14.75, 14, 15.5], "texture": "#pages"},
+				"east": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
+				"south": {"uv": [8, 14.75, 14, 15.5], "texture": "#pages"},
+				"west": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
+				"up": {"uv": [8, 3.5, 14, 12.5], "texture": "#pages"},
+				"down": {"uv": [8, 3.5, 14, 12.5], "texture": "#pages"}
+			}
+		},
+		{
+			"name": "spine",
+			"from": [7.25, 0, 3],
+			"to": [8.75, 1.5, 13],
+			"faces": {
+				"north": {"uv": [7.25, 14.5, 8.75, 16], "texture": "#edge"},
+				"east": {"uv": [3, 14.5, 13, 16], "texture": "#edge"},
+				"south": {"uv": [7.25, 14.5, 8.75, 16], "texture": "#edge"},
+				"west": {"uv": [3, 14.5, 13, 16], "texture": "#edge"},
+				"up": {"uv": [7.25, 3, 8.75, 13], "texture": "#edge"},
+				"down": {"uv": [7.25, 3, 8.75, 13], "texture": "#edge"}
+			}
+		}
+	],
+	"textures": {
+		"cover": "graveyard:block/lore_book_cover",
+		"pages": "graveyard:block/lore_book_pages",
+		"edge": "graveyard:block/lore_book_edge",
+		"particle": "graveyard:block/lore_book_cover"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"scale": [0.6, 0.6, 0.6],
+			"translation": [0, 3.78, 0],
+			"rotation": [0, 45, 0]
+		},
+		"thirdperson_lefthand": {
+			"scale": [0.6, 0.6, 0.6],
+			"translation": [0, 3.78, 0],
+			"rotation": [0, 225, 0]
+		},
+		"firstperson_righthand": {
+			"scale": [0.68, 0.68, 0.68],
+			"translation": [0, 4.26, 0],
+			"rotation": [0, 45, 0]
+		},
+		"firstperson_lefthand": {
+			"scale": [0.68, 0.68, 0.68],
+			"translation": [0, 4.26, 0],
+			"rotation": [0, 225, 0]
+		},
+		"ground": {
+			"scale": [0.45, 0.45, 0.45],
+			"translation": [0, 2.84, 0]
+		},
+		"gui": {
+			"rotation": [30, 135, 0],
+			"translation": [0, 4.73, 0],
+			"scale": [0.75, 0.75, 0.75]
+		},
+		"head": {
+			"translation": [0, 12.73, 0],
+			"scale": [1.2, 1.2, 1.2]
+		},
+		"fixed": {
+			"rotation": [0, 180, 0],
+			"translation": [0, 4.73, 0],
+			"scale": [0.75, 0.75, 0.75]
+		}
+	}
+}

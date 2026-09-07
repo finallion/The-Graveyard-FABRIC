@@ -6,6 +6,9 @@ import com.lion.graveyard.platform.fabric.NamelessHangedTradeOfferResourceListen
 import com.lion.graveyard.platform.fabric.ServerEvents;
 import com.lion.graveyard.util.NBTParser;
 import com.lion.graveyard.util.SpawnHordeCommand;
+import com.lion.graveyard.util.ChronicleCommand;
+import com.lion.graveyard.chronicle.Chronicle;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -38,7 +41,10 @@ public class GraveyardFabric implements ModInitializer {
     }
 
     private void registerCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> SpawnHordeCommand.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            SpawnHordeCommand.register(dispatcher);
+            ChronicleCommand.register(dispatcher);
+        });
     }
 
 
@@ -48,5 +54,6 @@ public class GraveyardFabric implements ModInitializer {
         ServerTickEvents.END_WORLD_TICK.register(new HordeSpawner.OnWorldTick());
 
         ServerLifecycleEvents.SERVER_STARTED.register(new ServerEvents.DeleteOldConfigs());
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> Chronicle.syncAll(handler.player));
     }
 }

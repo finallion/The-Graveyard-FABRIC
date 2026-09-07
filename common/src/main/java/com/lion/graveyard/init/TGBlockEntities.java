@@ -1,5 +1,6 @@
 package com.lion.graveyard.init;
 
+import com.lion.graveyard.blockentities.LoreBookBlockEntity;
 import com.lion.graveyard.blockentities.*;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.block.entity.BlockEntityType;
@@ -72,6 +73,9 @@ public class TGBlockEntities {
             TGBlocks.SKELETAL_REMAINS.get(),
             TGBlocks.WITHER_SKELETAL_REMAINS.get()
     ).build(null));
+
+    public static final Supplier<BlockEntityType<LoreBookBlockEntity>> LORE_BOOK_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("lore_book_block_entity", () -> BlockEntityType.Builder.create(LoreBookBlockEntity::new,
+            TGBlocks.LORE_BOOK.get()
     ).build(null));
 
     public static final Supplier<BlockEntityType<OssuaryBlockEntity>> OSSUARY_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("ossuary_block_entity", () -> BlockEntityType.Builder.create(OssuaryBlockEntity::new,
