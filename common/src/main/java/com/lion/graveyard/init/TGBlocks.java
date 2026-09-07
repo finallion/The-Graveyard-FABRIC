@@ -118,6 +118,10 @@ public class TGBlocks {
     public static final Supplier<Block> CARVED_GRAVESTONE = RegistryHelper.registerBlock("carved_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> TALL_CARVED_GRAVESTONE = RegistryHelper.registerBlock("tall_carved_gravestone", () -> new TallCarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> EPITAPH = RegistryHelper.registerBlock("epitaph", () -> new EpitaphBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
+    // Weathered stones carry the same carving and the same inscription, but as their own ids: a
+    // standing stone must not change shape under a world that already has one.
+    public static final Supplier<Block> BROKEN_GRAVESTONE = RegistryHelper.registerBlock("broken_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE, false, 0.14D, 0.23D, 0.0F));
+    public static final Supplier<Block> TOPPLED_GRAVESTONE = RegistryHelper.registerBlock("toppled_gravestone", () -> new ToppledGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> GARGOYLE = RegistryHelper.registerBlock("gargoyle", () -> new TallDecoBlock(
             AbstractBlock.Settings.create().nonOpaque().strength(1.5F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
             Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D)));

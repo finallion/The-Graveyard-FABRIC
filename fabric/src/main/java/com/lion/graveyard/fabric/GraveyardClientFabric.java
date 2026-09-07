@@ -8,6 +8,7 @@ import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.*;
+import com.lion.graveyard.item.CarvedGravestoneItem;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
@@ -26,6 +27,7 @@ import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -40,11 +42,17 @@ public class GraveyardClientFabric implements ClientModInitializer {
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
 
-        // The carved gravestone has no fixed texture - it is drawn with the one of the block it was
-        // carved from, which is only known from the stack.
-        BuiltinItemRendererRegistry.INSTANCE.register(TGItems.CARVED_GRAVESTONE.get(),
-                (stack, mode, matrices, vertexConsumers, light, overlay)
-                        -> CarvedGravestoneRenderer.renderItem(stack, matrices, vertexConsumers, light, overlay));
+
+        // A carved stone has no fixed texture - it is drawn with the one of the block it was carved
+        // from, which is only known from the stack. Registered by type so a new shape of stone needs
+        // nothing here.
+        for (Item item : Registries.ITEM) {
+            if (item instanceof CarvedGravestoneItem) {
+                BuiltinItemRendererRegistry.INSTANCE.register(item,
+                        (stack, mode, matrices, vertexConsumers, light, overlay)
+                                -> CarvedGravestoneRenderer.renderItem(stack, matrices, vertexConsumers, light, overlay));
+            }
+        }
 
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);

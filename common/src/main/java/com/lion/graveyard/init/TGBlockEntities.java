@@ -12,6 +12,8 @@ public class TGBlockEntities {
             TGBlocks.CARVED_GRAVESTONE.get(),
             TGBlocks.TALL_CARVED_GRAVESTONE.get(),
             TGBlocks.EPITAPH.get(),
+            TGBlocks.BROKEN_GRAVESTONE.get(),
+            TGBlocks.TOPPLED_GRAVESTONE.get(),
             TGBlocks.GRAVESTONE.get(),
             TGBlocks.COBBLESTONE_GRAVESTONE.get(),
             TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(),

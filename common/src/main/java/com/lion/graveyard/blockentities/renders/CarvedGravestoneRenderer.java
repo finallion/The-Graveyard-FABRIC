@@ -15,6 +15,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
@@ -54,9 +55,17 @@ public final class CarvedGravestoneRenderer {
         return MinecraftClient.getInstance().getBlockRenderManager().getModel(state).getParticleSprite();
     }
 
-    /// Entry point for the loader-specific item renderers.
+    /// Entry point for the loader-specific item renderers. The geometry follows the stack's own
+    /// block - the family shares this renderer, not a shape.
     public static void renderItem(ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        render(geometry(), sprite(CarvedGravestoneBlock.readMaterial(stack)), matrices, vertexConsumers, light, overlay);
+        BakedModel model = stack.getItem() instanceof BlockItem blockItem ? geometry(blockItem.getBlock()) : geometry();
+
+        matrices.push();
+        // A block model runs 0..1 from its corner, while an item renderer hands over a matrix that
+        // sits in the middle of the item - the same shift the world renderer makes.
+        matrices.translate(-0.5D, -0.5D, -0.5D);
+        render(model, sprite(CarvedGravestoneBlock.readMaterial(stack)), matrices, vertexConsumers, light, overlay);
+        matrices.pop();
     }
 
     public static void render(BakedModel model, Sprite target, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {

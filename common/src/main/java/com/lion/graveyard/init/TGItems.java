@@ -94,9 +94,12 @@ public class TGItems {
 
     public static final Supplier<Item> VASE_BLOCK = RegistryHelper.registerItem("vase_block", () -> new BlockItem(TGBlocks.VASE_BLOCK.get(), new Item.Settings()));
 
+
     public static final Supplier<Item> CARVED_GRAVESTONE = RegistryHelper.registerItem("carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.CARVED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> TALL_CARVED_GRAVESTONE = RegistryHelper.registerItem("tall_carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TALL_CARVED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> EPITAPH = RegistryHelper.registerItem("epitaph", () -> ItemFactory.carvedGravestone(TGBlocks.EPITAPH.get(), new Item.Settings()));
+    public static final Supplier<Item> BROKEN_GRAVESTONE = RegistryHelper.registerItem("broken_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.BROKEN_GRAVESTONE.get(), new Item.Settings()));
+    public static final Supplier<Item> TOPPLED_GRAVESTONE = RegistryHelper.registerItem("toppled_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TOPPLED_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> GARGOYLE = RegistryHelper.registerItem("gargoyle", () -> new BlockItem(TGBlocks.GARGOYLE.get(), new Item.Settings()));
     public static final Supplier<Item> GALLOWS = RegistryHelper.registerItem("gallows", () -> new BlockItem(TGBlocks.GALLOWS.get(), new Item.Settings()));
     public static final Supplier<Item> OBELISK = RegistryHelper.registerItem("obelisk", () -> new BlockItem(TGBlocks.OBELISK.get(), new Item.Settings()));
@@ -210,6 +213,8 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CARVED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TALL_CARVED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, EPITAPH.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BROKEN_GRAVESTONE.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TOPPLED_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GARGOYLE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GALLOWS.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GIBBET.get());

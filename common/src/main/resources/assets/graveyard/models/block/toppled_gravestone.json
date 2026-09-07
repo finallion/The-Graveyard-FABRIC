@@ -1,0 +1,88 @@
+{
+	"ambientocclusion": false,
+	"elements": [
+		{
+			"name": "plinth",
+			"from": [1, 0, 12],
+			"to": [15, 6, 16],
+			"faces": {
+				"north": {"uv": [1, 10, 15, 16], "texture": "#3"},
+				"east": {"uv": [12, 10, 16, 16], "texture": "#3"},
+				"south": {"uv": [1, 10, 15, 16], "texture": "#3"},
+				"west": {"uv": [12, 10, 16, 16], "texture": "#3"},
+				"up": {"uv": [1, 12, 15, 16], "texture": "#3"},
+				"down": {"uv": [1, 12, 15, 16], "texture": "#3"}
+			}
+		},
+		{
+			"name": "step",
+			"from": [2, 0, 10.5],
+			"to": [14, 5.5, 12],
+			"faces": {
+				"north": {"uv": [2, 10.5, 14, 16], "texture": "#3"},
+				"east": {"uv": [10.5, 10.5, 12, 16], "texture": "#3"},
+				"south": {"uv": [2, 10.5, 14, 16], "texture": "#3"},
+				"west": {"uv": [10.5, 10.5, 12, 16], "texture": "#3"},
+				"up": {"uv": [2, 10.5, 14, 12], "texture": "#3"},
+				"down": {"uv": [2, 10.5, 14, 12], "texture": "#3"}
+			}
+		},
+		{
+			"name": "slab",
+			"from": [2, 0, 3],
+			"to": [14, 6, 10.5],
+			"faces": {
+				"north": {"uv": [2, 10, 14, 16], "texture": "#3"},
+				"east": {"uv": [3, 10, 10.5, 16], "texture": "#3"},
+				"south": {"uv": [2, 10, 14, 16], "texture": "#3"},
+				"west": {"uv": [3, 10, 10.5, 16], "texture": "#3"},
+				"up": {"uv": [2, 3, 14, 10.5], "texture": "#3"},
+				"down": {"uv": [2, 3, 14, 10.5], "texture": "#3"}
+			}
+		},
+		{
+			"name": "cornice",
+			"from": [3, 0, 1.5],
+			"to": [13, 5, 3],
+			"faces": {
+				"north": {"uv": [3, 11, 13, 16], "texture": "#3"},
+				"east": {"uv": [1.5, 11, 3, 16], "texture": "#3"},
+				"south": {"uv": [3, 11, 13, 16], "texture": "#3"},
+				"west": {"uv": [1.5, 11, 3, 16], "texture": "#3"},
+				"up": {"uv": [3, 1.5, 13, 3], "texture": "#3"},
+				"down": {"uv": [3, 1.5, 13, 3], "texture": "#3"}
+			}
+		},
+		{
+			"name": "crest",
+			"from": [5, 0, 0],
+			"to": [10, 3.5, 1.5],
+			"faces": {
+				"north": {"uv": [5, 12.5, 10, 16], "texture": "#3"},
+				"east": {"uv": [0, 12.5, 1.5, 16], "texture": "#3"},
+				"south": {"uv": [5, 12.5, 10, 16], "texture": "#3"},
+				"west": {"uv": [0, 12.5, 1.5, 16], "texture": "#3"},
+				"up": {"uv": [5, 0, 10, 1.5], "texture": "#3"},
+				"down": {"uv": [5, 0, 10, 1.5], "texture": "#3"}
+			}
+		},
+		{
+			"name": "chip",
+			"from": [10.5, 0, 0.5],
+			"to": [13.5, 2.5, 3],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [12, 0, 1.75]},
+			"faces": {
+				"north": {"uv": [10.5, 13.5, 13.5, 16], "texture": "#3"},
+				"east": {"uv": [0.5, 13.5, 3, 16], "texture": "#3"},
+				"south": {"uv": [10.5, 13.5, 13.5, 16], "texture": "#3"},
+				"west": {"uv": [0.5, 13.5, 3, 16], "texture": "#3"},
+				"up": {"uv": [10.5, 0.5, 13.5, 3], "texture": "#3"},
+				"down": {"uv": [10.5, 0.5, 13.5, 3], "texture": "#3"}
+			}
+		}
+	],
+	"textures": {
+		"3": "minecraft:block/stone",
+		"particle": "minecraft:block/stone"
+	}
+}
