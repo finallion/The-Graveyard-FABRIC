@@ -84,6 +84,13 @@ public class TGSounds {
     public static final Supplier<SoundEvent> BONE_AMBIENT = register("block.bone.ambient");
 
 
+    public static final Supplier<SoundEvent> CROW_AMBIENT = register("entity.crow.ambient");
+    public static final Supplier<SoundEvent> CROW_ALARM = register("entity.crow.alarm");
+    public static final Supplier<SoundEvent> RAVEN_AMBIENT = register("entity.raven.ambient");
+    public static final Supplier<SoundEvent> MAGPIE_AMBIENT = register("entity.magpie.ambient");
+    public static final Supplier<SoundEvent> CORVID_HURT = register("entity.corvid.hurt");
+    public static final Supplier<SoundEvent> CORVID_DEATH = register("entity.corvid.death");
+
     public static final Supplier<SoundEvent> VIAL_SPLASH = register("item.vial.splash");
 
     public static final Supplier<SoundEvent> LICH_THEME_01 = register("entity.lich.theme_01");

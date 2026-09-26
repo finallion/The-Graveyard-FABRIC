@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#graveyard:corvid_perches",
+    "minecraft:farmland",
+    "minecraft:hay_block",
+    "minecraft:pumpkin",
+    "minecraft:carved_pumpkin",
+    "minecraft:melon",
+    "#graveyard:corvid_bones"
+  ]
+}

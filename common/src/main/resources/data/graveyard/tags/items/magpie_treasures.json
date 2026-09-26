@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:gold_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:gold_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:copper_ingot",
+    "minecraft:raw_gold",
+    "minecraft:raw_iron",
+    "minecraft:raw_copper",
+    "minecraft:emerald",
+    "minecraft:diamond",
+    "minecraft:amethyst_shard",
+    "minecraft:lapis_lazuli",
+    "minecraft:quartz",
+    "minecraft:prismarine_shard",
+    "minecraft:prismarine_crystals",
+    "minecraft:echo_shard",
+    "minecraft:glow_ink_sac",
+    "graveyard:dark_iron_ingot"
+  ]
+}

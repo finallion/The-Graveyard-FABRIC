@@ -468,6 +468,56 @@
     ],
     "stream": "true",
     "subtitle": "subtitles.entity.graveyard.lich.theme_01"
+  },
+
+  "entity.crow.ambient": {
+    "sounds": [
+      "graveyard:entity/crow/ambient1",
+      "graveyard:entity/crow/ambient2",
+      "graveyard:entity/crow/ambient3",
+      "graveyard:entity/crow/ambient4"
+    ],
+    "subtitle": "subtitles.entity.graveyard.crow.ambient"
+  },
+  "entity.crow.alarm": {
+    "sounds": [
+      "graveyard:entity/crow/alarm1",
+      "graveyard:entity/crow/alarm2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.crow.alarm"
+  },
+  "entity.raven.ambient": {
+    "sounds": [
+      "graveyard:entity/raven/ambient1",
+      "graveyard:entity/raven/ambient2",
+      "graveyard:entity/raven/ambient3",
+      "graveyard:entity/raven/ambient4"
+    ],
+    "subtitle": "subtitles.entity.graveyard.raven.ambient"
+  },
+  "entity.magpie.ambient": {
+    "sounds": [
+      "graveyard:entity/magpie/ambient1",
+      "graveyard:entity/magpie/ambient2",
+      "graveyard:entity/magpie/ambient3",
+      "graveyard:entity/magpie/ambient4"
+    ],
+    "subtitle": "subtitles.entity.graveyard.magpie.ambient"
+  },
+  "entity.corvid.hurt": {
+    "sounds": [
+      "graveyard:entity/corvid/hurt1",
+      "graveyard:entity/corvid/hurt2",
+      "graveyard:entity/corvid/hurt3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corvid.hurt"
+  },
+  "entity.corvid.death": {
+    "sounds": [
+      "graveyard:entity/corvid/death2",
+      "graveyard:entity/corvid/death3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corvid.death"
   }
 
 }

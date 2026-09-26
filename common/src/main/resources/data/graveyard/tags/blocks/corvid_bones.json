@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bone_block",
+    "graveyard:skull_pile",
+    "graveyard:wither_skull_pile",
+    "graveyard:lying_skeleton",
+    "graveyard:lying_wither_skeleton",
+    "graveyard:laterally_lying_skeleton",
+    "graveyard:laterally_lying_wither_skeleton",
+    "graveyard:bone_remains",
+    "graveyard:wither_bone_remains",
+    "graveyard:skeletal_remains",
+    "graveyard:wither_skeletal_remains",
+    "graveyard:skull_with_rib_cage",
+    "graveyard:wither_skull_with_rib_cage",
+    "graveyard:leaning_skeleton",
+    "graveyard:leaning_wither_skeleton"
+  ]
+}

@@ -15,11 +15,27 @@
   },
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "spawn_overrides": {
-    "creature": {
+    "ambient": {
       "bounding_box": "piece",
       "spawns": [
-        {"type": "graveyard:raven", "weight": 3, "minCount": 2, "maxCount": 4},
-        {"type": "graveyard:magpie", "weight": 2, "minCount": 1, "maxCount": 3}
+        {
+          "type": "graveyard:raven",
+          "weight": 3,
+          "minCount": 2,
+          "maxCount": 4
+        },
+        {
+          "type": "graveyard:magpie",
+          "weight": 2,
+          "minCount": 1,
+          "maxCount": 3
+        },
+        {
+          "type": "graveyard:crow",
+          "weight": 4,
+          "minCount": 4,
+          "maxCount": 8
+        }
       ]
     },
     "monster": {

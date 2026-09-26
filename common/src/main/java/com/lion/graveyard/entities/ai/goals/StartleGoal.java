@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
-/// A grounded bird takes off away from a player who walks up to it. Sneaking players can get
-/// closer — the one concession to anyone who wants a look.
 public class StartleGoal extends Goal {
     private final CorvidEntity corvid;
     private final double distance;
@@ -34,7 +32,7 @@ public class StartleGoal extends Goal {
             return false;
         }
         Vec3d away = this.corvid.getPos().subtract(player.getPos()).normalize();
-        this.target = AboveGroundTargeting.find(this.corvid, 8, 7, away.x, away.z, (float) (Math.PI / 2), 3, 1);
+        this.target = AboveGroundTargeting.find(this.corvid, 12, 10, away.x, away.z, (float) (Math.PI / 2), 10, 6);
         if (this.target == null) {
             this.target = NoPenaltyTargeting.findFrom(this.corvid, 8, 7, player.getPos());
         }
@@ -48,7 +46,7 @@ public class StartleGoal extends Goal {
 
     @Override
     public void start() {
-        this.corvid.setVelocity(this.corvid.getVelocity().add(0.0D, 0.3D, 0.0D));
+        this.corvid.takeOff();
         this.corvid.getNavigation().startMovingTo(this.target.x, this.target.y, this.target.z, 1.2D);
     }
 

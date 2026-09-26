@@ -36,8 +36,9 @@ public class TGEntities {
     public static final Supplier<EntityType<LichEntity>> LICH = RegistryHelper.registerEntityType("lich", () -> EntityType.Builder.create(LichEntity::new, SpawnGroup.MONSTER).setDimensions(0.9F, 4.0F).build(Graveyard.createStringID("lich")));
     public static final Supplier<EntityType<SkullEntity>> SKULL = RegistryHelper.registerEntityType("skull", () -> EntityType.Builder.<SkullEntity>create(SkullEntity::new, SpawnGroup.MISC).setDimensions(0.25F, 0.25F).maxTrackingRange(4).trackingTickInterval(10).build(Graveyard.createStringID("skull")));
     public static final Supplier<EntityType<NamelessHangedEntity>> NAMELESS_HANGED = RegistryHelper.registerEntityType("nameless_hanged", () -> EntityType.Builder.create(NamelessHangedEntity::new, SpawnGroup.MONSTER).setDimensions(0.8F, 2.5F).build(Graveyard.createStringID("nameless_hanged")));
-    public static final Supplier<EntityType<CorvidEntity>> RAVEN = RegistryHelper.registerEntityType("raven", () -> EntityType.Builder.create(CorvidEntity::new, SpawnGroup.CREATURE).setDimensions(0.5F, 0.6F).build(Graveyard.createStringID("raven")));
-    public static final Supplier<EntityType<CorvidEntity>> MAGPIE = RegistryHelper.registerEntityType("magpie", () -> EntityType.Builder.create(CorvidEntity::new, SpawnGroup.CREATURE).setDimensions(0.4F, 0.5F).build(Graveyard.createStringID("magpie")));
+    public static final Supplier<EntityType<CorvidEntity>> RAVEN = RegistryHelper.registerEntityType("raven", () -> EntityType.Builder.create(CorvidEntity::new, SpawnGroup.AMBIENT).setDimensions(0.5F, 0.6F).build(Graveyard.createStringID("raven")));
+    public static final Supplier<EntityType<CorvidEntity>> MAGPIE = RegistryHelper.registerEntityType("magpie", () -> EntityType.Builder.<CorvidEntity>create(MagpieEntity::new, SpawnGroup.AMBIENT).setDimensions(0.4F, 0.5F).build(Graveyard.createStringID("magpie")));
+    public static final Supplier<EntityType<CorvidEntity>> CROW = RegistryHelper.registerEntityType("crow", () -> EntityType.Builder.<CorvidEntity>create(CrowEntity::new, SpawnGroup.AMBIENT).setDimensions(0.45F, 0.55F).build(Graveyard.createStringID("crow")));
 
 
     public static void init() {
@@ -83,16 +84,22 @@ public class TGEntities {
                 config.mobConfigEntries.get("skeleton_creeper").maxGroup);
 
         BiomeModifications.addMobSpawn(TGTags.RAVEN_SPAWNS,
-                SpawnGroup.CREATURE, TGEntities.RAVEN.get(),
+                SpawnGroup.AMBIENT, TGEntities.RAVEN.get(),
                 config.mobConfigEntries.get("raven").weight,
                 config.mobConfigEntries.get("raven").minGroup,
                 config.mobConfigEntries.get("raven").maxGroup);
 
         BiomeModifications.addMobSpawn(TGTags.MAGPIE_SPAWNS,
-                SpawnGroup.CREATURE, TGEntities.MAGPIE.get(),
+                SpawnGroup.AMBIENT, TGEntities.MAGPIE.get(),
                 config.mobConfigEntries.get("magpie").weight,
                 config.mobConfigEntries.get("magpie").minGroup,
                 config.mobConfigEntries.get("magpie").maxGroup);
+
+        BiomeModifications.addMobSpawn(TGTags.CROW_SPAWNS,
+                SpawnGroup.AMBIENT, TGEntities.CROW.get(),
+                config.mobConfigEntries.get("crow").weight,
+                config.mobConfigEntries.get("crow").minGroup,
+                config.mobConfigEntries.get("crow").maxGroup);
     }
 
     private static void addSpawnRestrictions() {
@@ -109,6 +116,7 @@ public class TGEntities {
         SpawnRestrictionAccessor.callRegister(LICH.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
         SpawnRestrictionAccessor.callRegister(RAVEN.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
         SpawnRestrictionAccessor.callRegister(MAGPIE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        SpawnRestrictionAccessor.callRegister(CROW.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
     }
 
     private static void createMobAttributes() {
@@ -126,6 +134,7 @@ public class TGEntities {
         RegistryHelper.registerEntityAttribute(TGEntities.NAMELESS_HANGED, NamelessHangedEntity::createNamelessHangedAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.RAVEN, CorvidEntity::createCorvidAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.MAGPIE, CorvidEntity::createCorvidAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.CROW, CorvidEntity::createCorvidAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.LICH, LichEntity::createLichAttributes);
     }
 }

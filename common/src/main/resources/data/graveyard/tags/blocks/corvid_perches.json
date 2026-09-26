@@ -4,6 +4,7 @@
     "#minecraft:fences",
     "#minecraft:walls",
     "#minecraft:leaves",
+    "#graveyard:corvid_bones",
     "graveyard:gravestone",
     "graveyard:broken_gravestone",
     "graveyard:carved_gravestone",
