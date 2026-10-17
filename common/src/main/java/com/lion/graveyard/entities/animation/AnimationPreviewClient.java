@@ -222,8 +222,8 @@ public final class AnimationPreviewClient {
     }
 
     private static final class Dig {
-        private static final int MIN_GAP = 7;
-        private static final int GAP_SPREAD = 5;
+        private static final int MIN_GAP = 16;
+        private static final int GAP_SPREAD = 8;
         final DigSpec spec;
         final long start;
         final boolean particles;
