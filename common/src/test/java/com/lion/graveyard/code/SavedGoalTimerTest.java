@@ -38,7 +38,8 @@ class SavedGoalTimerTest {
             String shouldContinue = JavaText.joinedBodies(JavaText.methods(goal.code()), "shouldContinue");
             String canStart = JavaText.joinedBodies(JavaText.methods(goal.code()), "canStart");
             for (String getter : saved) {
-                if (activeCheck(getter).matcher(shouldContinue).find() && !activeCheck(getter).matcher(canStart).find()) {
+                if (activeCheck(getter).matcher(shouldContinue).find()
+                        && !activeCheck(getter).matcher(canStart).find()) {
                     problems.add(goal.name() + " runs on saved " + getter + " but canStart never resumes it");
                 }
             }
@@ -51,7 +52,9 @@ class SavedGoalTimerTest {
         int count = 0;
         for (GoalBody goal : goals(entityCode)) {
             String shouldContinue = JavaText.joinedBodies(JavaText.methods(goal.code()), "shouldContinue");
-            if (saved.stream().anyMatch(getter -> activeCheck(getter).matcher(shouldContinue).find())) {
+
+            if (saved.stream()
+                    .anyMatch(getter -> activeCheck(getter).matcher(shouldContinue).find())) {
                 count++;
             }
         }
@@ -81,8 +84,9 @@ class SavedGoalTimerTest {
 
     @TestFactory
     Stream<DynamicTest> goalsOnSavedTimersResumeAfterReload() {
-        return entityFiles().stream().map(file -> DynamicTest.dynamicTest(file.getFileName().toString(),
-                () -> assertEquals(List.of(), problems(Sources.code(file)))));
+        return entityFiles().stream()
+                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(),
+                        () -> assertEquals(List.of(), problems(Sources.code(file)))));
     }
 
     @Test

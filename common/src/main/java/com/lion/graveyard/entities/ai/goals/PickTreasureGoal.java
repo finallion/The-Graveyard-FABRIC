@@ -34,11 +34,13 @@ public class PickTreasureGoal extends Goal {
         if (this.magpie.isPecking() || !this.magpie.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty()) {
             return false;
         }
+
         World world = this.magpie.getWorld();
         // The vanilla pickup needs the mobGriefing game rule.
         if (!world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
             return false;
         }
+
         this.target = this.findTreasure();
         return this.target != null;
     }
@@ -52,6 +54,7 @@ public class PickTreasureGoal extends Goal {
         double closestDistance = Double.MAX_VALUE;
         for (ItemEntity item : items) {
             double distance = this.magpie.squaredDistanceTo(item);
+
             if (distance < closestDistance) {
                 closest = item;
                 closestDistance = distance;
@@ -75,6 +78,7 @@ public class PickTreasureGoal extends Goal {
     @Override
     public void tick() {
         this.age++;
+
         if (this.target != null && this.age % RESCAN_INTERVAL == 0) {
             this.magpie.getNavigation().startMovingTo(this.target, SPEED);
         }

@@ -113,6 +113,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     public void tick() {
         super.tick();
+
         if (this.getEntityWorld().isClient()) {
             restartAttackClipOnRearm();
         }
@@ -121,12 +122,15 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     // The controller does not restart a running clip.
     private void restartAttackClipOnRearm() {
         int timer = this.getAttackAnimTimer();
+
         if (timer > this.lastAttackAnimTimer + 1) {
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+
             if (controller != null) {
                 controller.forceAnimationReset();
             }
         }
+
         this.lastAttackAnimTimer = timer;
     }
 
@@ -178,8 +182,10 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     public void tickMovement() {
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+
         if (getReanimateAnimTimer() > 0) {
             this.getLookControl().lookAt(this.getX(), this.getY(), this.getZ());
+
             if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
                 entityAttributeInstance.addTemporaryModifier(SLOWNESS_EFFECT);
             }
@@ -196,6 +202,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
+
         if (this.deathTime == 35 && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
@@ -209,11 +216,14 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             boolean lyingDead = getAnimationState() == ANIMATION_FAKE_DEATH && lyingTicks > 40;
             setCanReanimate(false);
             setReanimateAnimTimer(0);
+
             if (lyingDead) {
                 boolean hurt = super.damage(source, Float.MAX_VALUE);
+
                 if (isAlive()) {
                     setReanimateAnimTimer(lyingTicks);
                 }
+
                 return hurt;
             }
         }
@@ -318,8 +328,10 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         setCanReanimate(nbt.getBoolean("canReanimate"));
+
         if (nbt.contains("ReanimateTimer")) {
             setReanimateAnimTimer(nbt.getInt("ReanimateTimer"));
+
             if (getReanimateAnimTimer() > 40) {
                 setAnimationState(ANIMATION_FAKE_DEATH);
             }

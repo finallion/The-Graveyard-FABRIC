@@ -34,6 +34,7 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathAwareEntity> exte
     @Override
     public boolean canStart() {
         long l = this.mob.getEntityWorld().getTime();
+
         if (l - this.lastUpdateTime < 20L) {
             // Rewind the timer so the goal cannot stay blocked while the target stands still.
             this.lastUpdateTime -= 20;
@@ -41,12 +42,14 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathAwareEntity> exte
         } else {
             this.lastUpdateTime = l;
             LivingEntity livingEntity = this.mob.getTarget();
+
             if (livingEntity == null) {
                 return false;
             } else if (!livingEntity.isAlive()) {
                 return false;
             } else {
                 this.path = this.mob.getNavigation().findPathTo(livingEntity, 0);
+
                 if (this.path != null) {
                     return true;
                 } else {
@@ -59,6 +62,7 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathAwareEntity> exte
     @Override
     public boolean shouldContinue() {
         LivingEntity livingEntity = this.mob.getTarget();
+
         if (livingEntity == null) {
             return false;
         } else if (!livingEntity.isAlive()) {
@@ -83,6 +87,7 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathAwareEntity> exte
     @Override
     public void stop() {
         LivingEntity livingEntity = this.mob.getTarget();
+
         if (!EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(livingEntity)) {
             this.mob.setTarget((LivingEntity) null);
         }
@@ -99,15 +104,18 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathAwareEntity> exte
     @Override
     public void tick() {
         LivingEntity livingEntity = this.mob.getTarget();
+
         if (livingEntity != null) {
             this.mob.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
             double d = this.mob.squaredDistanceTo(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
             this.updateCountdownTicks = Math.max(this.updateCountdownTicks - 1, 0);
+
             if ((this.pauseWhenMobIdle || this.mob.getVisibilityCache().canSee(livingEntity)) && this.updateCountdownTicks <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingEntity.squaredDistanceTo(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.mob.getRandom().nextFloat() < 0.05F)) {
                 this.targetX = livingEntity.getX();
                 this.targetY = livingEntity.getY();
                 this.targetZ = livingEntity.getZ();
                 this.updateCountdownTicks = 4 + this.mob.getRandom().nextInt(7);
+
                 if (d > 1024.0D) {
                     this.updateCountdownTicks += 10;
                 } else if (d > 256.0D) {

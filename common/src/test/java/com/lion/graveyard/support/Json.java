@@ -27,9 +27,11 @@ public final class Json {
             JsonReader reader = new JsonReader(new StringReader(text));
             reader.setLenient(false);
             JsonElement element = GSON.getAdapter(JsonElement.class).read(reader);
+
             if (reader.peek() != JsonToken.END_DOCUMENT) {
                 throw new IllegalStateException("Trailing content after the JSON document");
             }
+
             return element;
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);

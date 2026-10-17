@@ -15,7 +15,7 @@ import java.util.Set;
 
 /// Server → client: the full set of found pages, plus the one that was just found (for the toast).
 public final class ChronicleSync {
-    public static final Identifier CHANNEL = new Identifier(Graveyard.MOD_ID, "chronicle");
+    public static final Identifier CHANNEL = Graveyard.id("chronicle");
 
     private ChronicleSync() {}
 
@@ -25,12 +25,17 @@ public final class ChronicleSync {
     }
 
     public static void write(PacketByteBuf buf, Collection<String> found, @Nullable String newlyFound) {
-        List<String> valid = found.stream().filter(Chronicle::isValidId).toList();
+        List<String> valid = found.stream()
+                .filter(Chronicle::isValidId)
+                .toList();
         buf.writeVarInt(valid.size());
         valid.forEach(buf::writeString);
         boolean sendNew = Chronicle.isValidId(newlyFound);
         buf.writeBoolean(sendNew);
-        if (sendNew) buf.writeString(newlyFound);
+
+        if (sendNew) {
+            buf.writeString(newlyFound);
+        }
     }
 
     public record Payload(Set<String> found, @Nullable String newlyFound) {}
@@ -38,7 +43,9 @@ public final class ChronicleSync {
     public static Payload read(PacketByteBuf buf) {
         int count = buf.readVarInt();
         Set<String> found = new LinkedHashSet<>();
-        for (int i = 0; i < count; i++) found.add(buf.readString());
+        for (int i = 0; i < count; i++) {
+            found.add(buf.readString());
+        }
         String newlyFound = buf.readBoolean() ? buf.readString() : null;
         return new Payload(found, newlyFound);
     }

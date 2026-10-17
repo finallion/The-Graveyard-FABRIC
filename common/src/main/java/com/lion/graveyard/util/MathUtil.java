@@ -1,4 +1,5 @@
 package com.lion.graveyard.util;
+
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
@@ -37,6 +38,7 @@ public class MathUtil {
             double xCoord = x + MathHelper.sin(densityFactor);
             yCoord += 0.025;
             double zCoord = z + MathHelper.cos(densityFactor);
+
             if (random.nextInt(10) == 0) {
                 world.addParticle(type, xCoord, yCoord, zCoord, velocityX, velocityY, velocityZ);
             }

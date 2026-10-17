@@ -22,6 +22,7 @@ public class WalkGoal extends HopGoal {
         if (this.magpie.isPecking() || !this.magpie.isOnGround() || this.magpie.getRandom().nextInt(40) != 0) {
             return false;
         }
+
         this.target = this.findTarget();
         return this.target != null;
     }
@@ -37,20 +38,26 @@ public class WalkGoal extends HopGoal {
     @Override
     public void tick() {
         this.timeout--;
+
         if (this.target == null || this.magpie.horizontalCollision) {
             this.arrived = true;
             return;
         }
+
         Vec3d offset = new Vec3d(this.target.x - this.magpie.getX(), 0.0D, this.target.z - this.magpie.getZ());
+
         if (offset.lengthSquared() < ARRIVE_DISTANCE_SQ) {
             this.arrived = true;
             return;
         }
+
         Vec3d direction = offset.normalize();
+
         if (!this.isHopPathClear(direction)) {
             this.arrived = true;
             return;
         }
+
         float yaw = (float) (MathHelper.atan2(direction.z, direction.x) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
         this.magpie.setYaw(yaw);
         this.magpie.setBodyYaw(yaw);

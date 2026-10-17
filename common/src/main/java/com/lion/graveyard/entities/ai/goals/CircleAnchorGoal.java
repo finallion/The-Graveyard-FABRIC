@@ -45,12 +45,15 @@ public class CircleAnchorGoal extends Goal {
         }
 
         CrowEntity head = this.crow.getFlockHead();
+
         if (head != this.crow) {
             return head.isCircling();
         }
+
         if (this.crow.getRandom().nextInt(START_CHANCE) != 0) {
             return false;
         }
+
         head.setCircling(true);
         return true;
     }
@@ -60,6 +63,7 @@ public class CircleAnchorGoal extends Goal {
         if (this.aborted || this.crow.isAlarmed() || this.crow.getAnchor() == null) {
             return false;
         }
+
         CrowEntity head = this.crow.getFlockHead();
         return head == this.crow ? this.ticksLeft > 0 : head.isCircling();
     }
@@ -67,9 +71,11 @@ public class CircleAnchorGoal extends Goal {
     @Override
     public void start() {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
+
         if (anchor == null) {
             return;
         }
+
         BlockPos pos = anchor.pos();
         this.crow.takeOff();
         this.crow.getNavigation().stop();
@@ -106,9 +112,11 @@ public class CircleAnchorGoal extends Goal {
     @Override
     public void tick() {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
+
         if (anchor == null) {
             return;
         }
+
         BlockPos pos = anchor.pos();
         this.ticksLeft--;
         this.phase += RING_SPEED / this.radius * this.direction;
@@ -118,6 +126,7 @@ public class CircleAnchorGoal extends Goal {
         } else {
             this.stuckTicks = 0;
         }
+
         if (this.stuckTicks >= 20) {
             this.aborted = true;
             return;
@@ -131,9 +140,11 @@ public class CircleAnchorGoal extends Goal {
     @Override
     public void stop() {
         this.crow.setGliding(false);
+
         if (this.crow.getFlockHead() == this.crow) {
             this.crow.setCircling(false);
         }
+
         this.crow.getNavigation().stop();
     }
 }

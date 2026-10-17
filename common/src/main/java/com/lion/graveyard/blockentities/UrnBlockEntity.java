@@ -57,6 +57,7 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+
         if (!this.deserializeLootTable(nbt)) {
             Inventories.readNbt(nbt, this.inventory);
         }
@@ -65,6 +66,7 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
 
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
+
         if (!this.serializeLootTable(nbt)) {
             Inventories.writeNbt(nbt, this.inventory);
         }
@@ -89,6 +91,7 @@ public class UrnBlockEntity extends LootableContainerBlockEntity {
 
     protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
         boolean large = Graveyard.CONFIG.booleanEntries.get("urnHasDoubleInventory");
+
         if (large) {
             return GenericContainerScreenHandler.createGeneric9x6(syncId, playerInventory, this);
         }

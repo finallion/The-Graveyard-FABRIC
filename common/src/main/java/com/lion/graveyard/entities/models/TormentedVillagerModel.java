@@ -9,16 +9,16 @@ public class TormentedVillagerModel extends GeoModel<TormentedVillagerEntity> {
 
     @Override
     public Identifier getModelResource(TormentedVillagerEntity entity) {
-        return new Identifier(Graveyard.MOD_ID, "geo/tormented_villager.geo.json");
+        return Graveyard.id("geo/tormented_villager.geo.json");
     }
 
     @Override
     public Identifier getTextureResource(TormentedVillagerEntity entity) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/tormented_villager.png");
+        return Graveyard.id("textures/entity/tormented_villager.png");
     }
 
     @Override
     public Identifier getAnimationResource(TormentedVillagerEntity entity) {
-        return new Identifier(Graveyard.MOD_ID, "animations/tormented_villager/tormented_villager.animation.json");
+        return Graveyard.id("animations/tormented_villager/tormented_villager.animation.json");
     }
 }

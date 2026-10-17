@@ -141,8 +141,8 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
         // The raven model is larger. Its peck and death clips move the parts farther.
         Species(String name, String bodyClips) {
-            this.texture = new Identifier(Graveyard.MOD_ID, "textures/entity/" + name + ".png");
-            this.model = new Identifier(Graveyard.MOD_ID, "geo/" + name + ".geo.json");
+            this.texture = Graveyard.id("textures/entity/" + name + ".png");
+            this.model = Graveyard.id("geo/" + name + ".geo.json");
             this.walkAnimation = RawAnimation.begin().thenLoop("animation." + name + ".walk");
             this.peckAnimation = RawAnimation.begin().thenPlay("animation." + bodyClips + ".peck");
             this.deathAnimation = RawAnimation.begin().thenPlayAndHold("animation." + bodyClips + ".death");
@@ -196,14 +196,17 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     protected float turnHead(float bodyRotation, float headRotation) {
         FlightState state = this.getFlightState();
+
         if (this.getWorld().isClient() && this.isAlive() && (state == FlightState.HOP || state == FlightState.WALK)) {
             double dx = this.getX() - this.prevX;
             double dz = this.getZ() - this.prevZ;
+
             if (dx * dx + dz * dz > GROUND_TURN_MIN_SPEED_SQ) {
                 this.bodyYaw = (float) (MathHelper.atan2(dz, dx) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
                 return headRotation;
             }
         }
+
         return super.turnHead(bodyRotation, headRotation);
     }
 
@@ -223,12 +226,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (spawnReason != SpawnReason.SPAWN_EGG && spawnReason != SpawnReason.COMMAND && spawnReason != SpawnReason.BUCKET) {
             this.home = this.getBlockPos();
         }
+
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.home != null) {
             nbt.putLong("HomePos", this.home.asLong());
         }
@@ -237,6 +242,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains("HomePos")) {
             this.home = BlockPos.fromLong(nbt.getLong("HomePos"));
         }
@@ -254,6 +260,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public void copyFrom(net.minecraft.entity.Entity original) {
         super.copyFrom(original);
+
         if (original.getWorld() != this.getWorld()) {
             this.home = null;
         }
@@ -263,6 +270,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (this.home == null) {
             return false;
         }
+
         double dx = this.getX() - this.home.getX();
         double dz = this.getZ() - this.home.getZ();
         return dx * dx + dz * dz > (double) (HOME_RADIUS * HOME_RADIUS);
@@ -303,6 +311,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
+
         if (this.getWorld().isClient()) {
             return;
         }
@@ -318,6 +327,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         // A push from another bird is not flight. Steered movement is.
         boolean steering = !this.getNavigation().isIdle() || this.isGliding();
         boolean airborne = !this.isOnGround() || (moving && steering);
+
         if (airborne) {
             this.flightTicks++;
             this.restTicks = 0;
@@ -325,12 +335,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             this.restTicks++;
             this.flightTicks = 0;
         }
+
         // Hysteresis, because isOnGround can flicker for one tick.
         if (this.flightTicks >= 2) {
             this.flying = true;
         } else if (this.restTicks >= 3) {
             this.flying = false;
         }
+
         if (this.isHopping()) {
             this.flightTicks = 0;
             this.flying = false;
@@ -343,37 +355,47 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         } else {
             this.descendTicks = 0;
         }
+
         if (this.descendTicks >= 3 && this.nearGround && !this.isOnGround() && !this.isHopping() && this.landingCooldown == 0) {
             this.landingTicks = 24;
             this.landingCooldown = 40;
         }
+
         if (this.isOnGround() && this.landingTicks > 4) {
             this.landingTicks = 4;
+
             if (this.isAlive()) {
                 this.playWingSound(TGSounds.CORVID_LAND.get(), LAND_SOUND_VOLUME);
             }
         }
+
         if (this.getVelocity().y > 0.05D) {
             this.landingTicks = 0;
         }
+
         if (this.landingTicks > 0) {
             this.landingTicks--;
         }
+
         if (this.landingCooldown > 0) {
             this.landingCooldown--;
         }
+
         if (this.takeoffCooldown > 0) {
             this.takeoffCooldown--;
         }
+
         if (this.takeoffSoundCooldown > 0) {
             this.takeoffSoundCooldown--;
         }
+
         if (this.peckTicks > 0) {
             this.peckTicks--;
         }
 
         double vy = this.getVelocity().y;
         boolean climbing = vy > 0.03D;
+
         if (!this.flying || climbing || this.isHopping()) {
             this.glideTicks = 0;
         } else if (this.glideTicks < 0 || this.isGliding() || vy < -0.10D) {
@@ -382,36 +404,44 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         } else {
             this.glideTicks = Math.max(0, this.glideTicks - 2);
         }
+
         if (this.glideTicks > GLIDE_MAX) {
             this.glideTicks = -FLAP_BURST;
         }
+
         boolean gliding = this.glideTicks >= GLIDE_MIN;
 
         boolean onGround = this.isOnGround();
+
         if (this.age % 10 == 0) {
             PlayerEntity player = this.getWorld().getClosestPlayer(this, 8.0D);
             this.watching = onGround && player != null && !player.isSpectator();
         }
+
         if (this.home == null && this.age % 20 == 0 && (this.isPerched() || (onGround && this.isTouching(TGTags.CROW_LANDMARKS)))) {
             this.home = this.getBlockPos();
         }
 
         boolean walkedThisTick = this.canWalk() && onGround && !this.isHopping() && dx * dx + dz * dz > WALK_MIN_SPEED_SQ;
+
         if (walkedThisTick && !this.isWalking()) {
             float yaw = (float) (MathHelper.atan2(dz, dx) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
             this.setYaw(yaw);
             this.setBodyYaw(yaw);
             this.setHeadYaw(yaw);
         }
+
         if ((this.isWalking() && onGround) || walkedThisTick) {
             this.walkTicks = WALK_HOLD_TICKS;
         } else if (this.walkTicks > 0) {
             this.walkTicks--;
         }
+
         boolean walkingOnGround = this.walkTicks > 0 && !this.flying;
         boolean airborneNow = !this.isOnGround() || this.getVelocity().y > 0.1D || (moving && steering);
         boolean flightHeld = airborneNow || this.restTicks < 3;
         FlightState state;
+
         if (this.isHopping() && (this.nearGround || onGround)) {
             state = FlightState.HOP;
         } else if (this.landingTicks > 0) {
@@ -427,9 +457,11 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         } else {
             state = FlightState.IDLE;
         }
+
         if (state != this.getFlightState()) {
             this.dataTracker.set(FLIGHT_STATE, state.id);
         }
+
         if (state != FlightState.FLY || !this.isAlive()) {
             this.flapSoundTicks = 0;
         } else if (++this.flapSoundTicks >= FLAP_SOUND_INTERVAL) {
@@ -447,40 +479,49 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (this.getWorld().isClient()) {
             return;
         }
+
         boolean navigating = !this.getNavigation().isIdle();
         // Vanilla sets isOnGround only on a downward collision, so give a grounded bird its gravity back.
         if (this.isOnGround() && !this.isHopping()) {
             this.setNoGravity(false);
             Vec3d v = this.getVelocity();
+
             if (v.y > -0.08D) {
                 this.setVelocity(v.x, -0.08D, v.z);
             }
         }
+
         // Delay the impulse until the crouch in the takeoff animation ends.
         boolean lifted = false;
+
         if (this.liftDelay > 0 && --this.liftDelay == 0) {
             this.lift();
             lifted = true;
         }
+
         // Safety net for goals that path on the ground without takeOff().
         if (this.isOnGround() && !this.isHopping() && navigating && this.deathTime == 0 && !this.isDead()
                 && !this.horizontalCollision && !this.isPreparingTakeoff() && !lifted) {
             this.takeOff();
         }
+
         if (!this.hasNoGravity() && !this.isOnGround() && !this.isHopping() && !this.isDead()) {
             Vec3d v = this.getVelocity();
             this.setVelocity(v.x, Math.max(v.y, -0.3D), v.z);
         }
+
         if (this.isLanding() && !this.isOnGround() && !this.isHopping()) {
             Vec3d v = this.getVelocity();
             this.setVelocity(v.x * 0.85D, v.y, v.z * 0.85D);
         }
+
         if (this.horizontalCollision && navigating && !this.isHopping() && !this.isPreparingTakeoff()
                 && (this.flying || this.isOnGround())) {
             this.stuckTicks++;
         } else {
             this.stuckTicks = 0;
         }
+
         if (this.stuckTicks >= 20) {
             this.getNavigation().stop();
             this.stuckTicks = 0;
@@ -492,6 +533,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             this.setVelocity(v.x, 0.25D, v.z);
             this.velocityDirty = true;
         }
+
         // In a cobweb, Entity.move sets the velocity to zero, so apply the climb here.
         if (this.webbed && this.isAlive()) {
             Vec3d v = this.getVelocity();
@@ -499,6 +541,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             this.velocityDirty = true;
             this.webbed = false;
         }
+
         if (this.isTouchingWater() && !this.isOnGround() && this.deathTime == 0) {
             Vec3d v = this.getVelocity();
             this.setVelocity(v.x, Math.max(v.y, 0.3D), v.z);
@@ -513,6 +556,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             this.webbed = !this.getWorld().isClient();
             return;
         }
+
         super.slowMovement(state, multiplier);
     }
 
@@ -520,6 +564,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         World world = this.getWorld();
         for (int n = 1; n <= 3; n++) {
             BlockPos pos = this.getBlockPos().down(n);
+
             if (!world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) {
                 return true;
             }
@@ -532,16 +577,20 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (this.getWorld().isClient()) {
             return;
         }
+
         if (!this.isOnGround() || this.isHopping() || this.deathTime > 0 || this.isDead()) {
             return;
         }
+
         // isOnGround is still true in the jump tick.
         if (this.getVelocity().y > 0.1D) {
             return;
         }
+
         if (this.liftDelay == 0) {
             this.liftDelay = 4;
         }
+
         if (this.takeoffCooldown == 0) {
             this.triggerAnim("controller", "takeoff");
             this.takeoffCooldown = 30;
@@ -552,10 +601,12 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (!this.isOnGround() || this.isHopping() || this.deathTime > 0 || this.isDead()) {
             return;
         }
+
         Vec3d v = this.getVelocity();
         this.setVelocity(v.x, 0.22D, v.z);
         this.velocityDirty = true;
         this.landingTicks = 0;
+
         if (this.takeoffSoundCooldown == 0) {
             this.takeoffSoundCooldown = TAKEOFF_SOUND_COOLDOWN;
             this.playWingSound(TGSounds.CORVID_TAKEOFF.get(), TAKEOFF_SOUND_VOLUME);
@@ -568,11 +619,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
     private void tryPeck(boolean onGround, boolean moving) {
         FlightState flight = this.getFlightState();
+
         if (!onGround || moving || this.deathTime != 0 || this.isHopping() || !this.canPeck()
                 || !this.getNavigation().isIdle() || (flight != FlightState.IDLE && flight != FlightState.WATCH)) {
             return;
         }
+
         int chance = this.isOnFeedingGround() ? 60 : 240;
+
         if (this.getRandom().nextInt(chance) == 0) {
             this.triggerAnim("controller", "peck");
             this.peckTicks = 20;
@@ -723,6 +777,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             float step = 1.0F / AnimationTable.TRANSITION_TICKS;
             this.lookWeight = MathHelper.clamp(this.lookWeight + (suppressed ? -step : step), 0.0F, 1.0F);
         }
+
         return MathHelper.lerp(partialTick, this.previousLookWeight, this.lookWeight);
     }
 
@@ -734,19 +789,25 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     protected void updatePostDeath() {
         this.deathTime++;
+
         if (this.getWorld().isClient() || this.isRemoved()) {
             return;
         }
+
         if (!this.diedInAir) {
             if (this.deathTime >= DEATH_ANIMATION_DURATION) {
                 this.removeDeadBody();
             }
+
             return;
         }
+
         boolean landed = this.isOnGround() || this.isTouchingWater() || this.deathTime >= DEAD_FALL_LIMIT;
+
         if (landed && this.impactTicks == 0) {
             this.playSound(SoundEvents.ENTITY_GENERIC_SMALL_FALL, 0.6F, 1.2F);
         }
+
         if (landed && ++this.impactTicks >= IMPACT_REST_TICKS && this.deathTime >= DEATH_ANIMATION_DURATION) {
             this.removeDeadBody();
         }

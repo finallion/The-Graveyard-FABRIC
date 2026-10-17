@@ -53,6 +53,7 @@ public class AltarBlock extends Block {
 
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         super.randomDisplayTick(state, world, pos, random);
+
         if (state.get(BLOODY)) {
             if (random.nextInt(10) == 0) {
                 world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.ALTAR_AMBIENT.get(), SoundCategory.BLOCKS, 0.05F, random.nextFloat() * 0.4F + 0.8F, true);
@@ -94,18 +95,22 @@ public class AltarBlock extends Block {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
             return "block.graveyard.altar.peaceful";
         }
+
         if (!world.isNight() && !world.getDimension().hasFixedTime()) {
             return "block.graveyard.altar.night_only";
         }
+
         if (blood < 0.8F) {
             return "block.graveyard.altar.vial_not_full";
         }
+
         if (Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments
                 && getCompletedFramePattern().searchAround(world, pos) == null) {
             return getAnyOrderFramePattern().searchAround(world, pos) != null
                     ? "block.graveyard.altar.wrong_order"
                     : "block.graveyard.altar.missing_fragments";
         }
+
         return null;
     }
 
@@ -114,14 +119,17 @@ public class AltarBlock extends Block {
         if (!player.canModifyBlocks()) {
             return ActionResult.PASS;
         }
+
         ItemStack stack = player.getStackInHand(hand);
         float blood = 0.0F;
+
         if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
             blood = VialOfBlood.getBlood(stack);
         }
 
         if (!world.isClient && stack.isOf(TGItems.VIAL_OF_BLOOD.get()) && state.isOf(TGBlocks.ALTAR.get()) && !state.get(BLOODY)) {
             String failure = findSummonFailure(world, pos, blood);
+
             if (failure != null) {
                 player.sendMessage(Text.translatable(failure), true);
             }
@@ -134,6 +142,7 @@ public class AltarBlock extends Block {
                 if (!world.isClient) {
                     world.playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH.get(), SoundCategory.BLOCKS, 5.0F, 1.0F);
                 }
+
                 world.setBlockState(pos, state.with(AltarBlock.BLOODY, true));
                 Direction direction;
 
@@ -147,6 +156,7 @@ public class AltarBlock extends Block {
                     if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                         VialOfBlood.setBlood(stack, 0.1F);
                     }
+
                     if (!player.isCreative()) {
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 430));
                     }

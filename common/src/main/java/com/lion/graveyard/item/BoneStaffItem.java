@@ -107,32 +107,40 @@ public class BoneStaffItem extends Item {
 
         if (player != null && world.isClient) {
             NbtCompound nbt = stack.getNbt();
+
             if (nbt != null && nbt.containsUuid("OwnerUUID") && !nbt.getUuid("OwnerUUID").equals(player.getUuid())) {
                 return ActionResult.FAIL;
             }
+
             if (isUnbound(stack) || isStored(stack)) {
                 return ActionResult.SUCCESS;
             }
+
             return ActionResult.PASS;
         }
 
         if (player != null && world instanceof ServerWorld serverWorld) {
             NbtCompound nbt = stack.getNbt();
+
             if (nbt != null && nbt.containsUuid("OwnerUUID") && !nbt.getUuid("OwnerUUID").equals(player.getUuid())) {
                 player.sendMessage(Text.translatable("entity.graveyard.ghouling.obey"), true);
                 return ActionResult.FAIL;
             }
+
             BlockPos spawnPos = spawnPosition(world, blockPos, context.getSide());
+
             if (nbt != null && nbt.contains(STORED_KEY)) {
                 release(serverWorld, player, stack, spawnPos);
                 player.getItemCooldownManager().set(this, USE_COOLDOWN_TICKS);
                 return ActionResult.SUCCESS;
             }
+
             if (nbt != null && nbt.containsUuid("GhoulingUUID") && isAlive(serverWorld, nbt.getUuid("GhoulingUUID"))) {
                 if (!(findLoaded(serverWorld, nbt.getUuid("GhoulingUUID")) instanceof GhoulingEntity bound)
                         || !rejectsStaff(bound, stack, player)) {
                     return ActionResult.PASS;
                 }
+
                 nbt = stack.getNbt();
             }
 
@@ -145,6 +153,7 @@ public class BoneStaffItem extends Item {
             ghouling.setBondId(bondId);
             stack.getOrCreateNbt().putUuid("GhoulingUUID", ghouling.getUuid());
             stack.getNbt().putUuid(BOND_KEY, bondId);
+
             if (!stack.getNbt().containsUuid("OwnerUUID")) {
                 stack.getNbt().putUuid("OwnerUUID", player.getUuid());
                 player.sendMessage(Text.translatable("entity.graveyard.ghouling.spawn"), true);
@@ -200,11 +209,15 @@ public class BoneStaffItem extends Item {
         Vec3d from = new Vec3d(ghouling.getX(), ghouling.getY() + ghouling.getHeight() * 0.5D, ghouling.getZ());
         Vec3d side = player.getRotationVec(1.0F).crossProduct(new Vec3d(0.0D, 1.0D, 0.0D)).normalize();
         double handSide = player.getActiveHand() == Hand.MAIN_HAND ? -0.35D : 0.35D;
-        Vec3d to = player.getEyePos().subtract(0.0D, 0.4D, 0.0D).add(side.multiply(handSide)).add(player.getRotationVec(1.0F).multiply(0.4D));
+        Vec3d to = player.getEyePos()
+                .subtract(0.0D, 0.4D, 0.0D)
+                .add(side.multiply(handSide))
+                .add(player.getRotationVec(1.0F).multiply(0.4D));
         int count = 2 + usedTicks * 6 / STORE_TICKS;
         for (int i = 0; i < count; i++) {
             Vec3d p = from.lerp(to, world.random.nextDouble());
             world.spawnParticles(TGParticles.GRAVEYARD_SOUL_PARTICLE, p.x, p.y, p.z, 1, 0.1D, 0.1D, 0.1D, 0.0D);
+
             if (i % 2 == 0) {
                 world.spawnParticles(ParticleTypes.SOUL, p.x, p.y, p.z, 1, 0.05D, 0.05D, 0.05D, 0.0D);
             }
@@ -214,6 +227,7 @@ public class BoneStaffItem extends Item {
     private static void release(ServerWorld world, PlayerEntity player, ItemStack stack, BlockPos spawnPos) {
         NbtCompound nbt = stack.getNbt();
         NbtCompound saved = nbt.getCompound(STORED_KEY);
+
         if (EntityType.getEntityFromNbt(saved, world).orElse(null) instanceof GhoulingEntity ghouling) {
             ghouling.refreshPositionAndAngles(spawnPos, 0.0F, 0.0F);
             ghouling.setSitting(false);
@@ -221,6 +235,7 @@ public class BoneStaffItem extends Item {
             staff.getNbt().remove(STORED_KEY);
             ghouling.setStaff(staff);
             ghouling.prepareSpawn();
+
             if (world.spawnEntity(ghouling)) {
                 ghouling.playSpawnSounds();
                 nbt.remove(STORED_KEY);
@@ -229,6 +244,7 @@ public class BoneStaffItem extends Item {
                 return;
             }
         }
+
         player.sendMessage(Text.translatable("entity.graveyard.ghouling.release_failed"), true);
     }
 
@@ -238,6 +254,7 @@ public class BoneStaffItem extends Item {
             player.sendMessage(Text.translatable("entity.graveyard.ghouling.too_heavy"), true);
             return;
         }
+
         world.playSound(null, ghouling.getBlockPos(), STORE_DONE_SOUND, SoundCategory.PLAYERS, 2.0F, 1.0F);
         stack.getOrCreateNbt().put(STORED_KEY, ghouling.removeForStorage());
         player.getItemCooldownManager().set(stack.getItem(), 20);
@@ -272,10 +289,13 @@ public class BoneStaffItem extends Item {
         if (!(world instanceof ServerWorld serverWorld) || !(user instanceof PlayerEntity player)) {
             return;
         }
+
         UUID drawn = DRAWING.get(player.getUuid());
+
         if (drawn == null) {
             return;
         }
+
         if (!(findLoaded(serverWorld, drawn) instanceof GhoulingEntity ghouling) || !ghouling.isAlive()
                 || ghouling.squaredDistanceTo(player) > STORE_RANGE_SQ || !ghouling.isOwner(player)
                 || !isBoundTo(stack, ghouling) || isStored(stack) || !ghouling.acceptsStaff(stack)) {
@@ -284,11 +304,14 @@ public class BoneStaffItem extends Item {
             user.stopUsingItem();
             return;
         }
+
         int used = getMaxUseTime(stack) - remainingUseTicks;
         streamSouls(serverWorld, player, ghouling, used);
+
         if (used == DRAW_SOUND_DELAY) {
             serverWorld.playSound(null, ghouling.getBlockPos(), TGSounds.GHOULING_SOUL_DRAW.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
         }
+
         // A stopped use lets a held key use the staff on the ground.
         if (used >= STORE_TICKS) {
             DRAWING.remove(player.getUuid());
@@ -301,10 +324,13 @@ public class BoneStaffItem extends Item {
         if (!(world instanceof ServerWorld serverWorld) || !(user instanceof PlayerEntity player)) {
             return;
         }
+
         UUID drawn = DRAWING.remove(player.getUuid());
+
         if (drawn != null) {
             stopDrawSound(serverWorld, player);
         }
+
         if (drawn != null && getMaxUseTime(stack) - remainingUseTicks < SIT_CLICK_TICKS
                 && findLoaded(serverWorld, drawn) instanceof GhoulingEntity ghouling && ghouling.isAlive()
                 && !rejectsStaff(ghouling, stack, player)) {
@@ -320,9 +346,11 @@ public class BoneStaffItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         NbtCompound nbt = stack.getNbt();
+
         if (nbt != null && nbt.contains(STORED_KEY)) {
             NbtCompound saved = nbt.getCompound(STORED_KEY);
             Text name = null;
+
             if (saved.contains("CustomName", 8)) {
                 try {
                     name = Text.Serializer.fromJson(saved.getString("CustomName"));
@@ -330,17 +358,21 @@ public class BoneStaffItem extends Item {
                     name = null;
                 }
             }
+
             if (name == null) {
                 name = TGEntities.GHOULING.get().getName();
             }
+
             tooltip.add(Text.translatable("item.graveyard.bone_staff.stored", name));
         }
+
         super.appendTooltip(stack, world, tooltip, context);
     }
 
     private static Entity findLoaded(ServerWorld world, UUID id) {
         for (ServerWorld other : world.getServer().getWorlds()) {
             Entity entity = other.getEntity(id);
+
             if (entity != null) {
                 return entity;
             }
@@ -362,26 +394,32 @@ public class BoneStaffItem extends Item {
         nbt.remove(CALL_KEY);
         ghouling.setBondId(bondId);
         ghouling.setStaff(stack.copy());
+
         if (ghouling.getWorld() instanceof ServerWorld serverWorld) {
             GhoulingBindings.get(serverWorld).update(ghouling);
         }
+
         player.sendMessage(Text.translatable("entity.graveyard.ghouling.rebound"), true);
     }
 
     public static boolean rejectsStaff(GhoulingEntity ghouling, ItemStack stack, PlayerEntity player) {
         NbtCompound nbt = stack.getNbt();
+
         if (nbt != null && nbt.containsUuid("GhoulingUUID") && !nbt.getUuid("GhoulingUUID").equals(ghouling.getUuid())) {
             return false;
         }
+
         if (ghouling.acceptsStaff(stack)) {
             return false;
         }
+
         if (nbt != null) {
             nbt.remove("OwnerUUID");
             nbt.remove("GhoulingUUID");
             nbt.remove(BOND_KEY);
             nbt.remove(CALL_KEY);
         }
+
         player.sendMessage(Text.translatable("entity.graveyard.ghouling.forgotten"), true);
         return true;
     }
@@ -397,6 +435,7 @@ public class BoneStaffItem extends Item {
     private static boolean isAlive(ServerWorld world, UUID ghouling) {
         for (ServerWorld other : world.getServer().getWorlds()) {
             Entity entity = other.getEntity(ghouling);
+
             if (entity != null) {
                 return entity.isAlive();
             }
@@ -409,64 +448,80 @@ public class BoneStaffItem extends Item {
         if (!(world instanceof ServerWorld serverWorld) || !(entity instanceof PlayerEntity player)) {
             return;
         }
+
         NbtCompound nbt = stack.getNbt();
+
         if (nbt == null || nbt.contains(STORED_KEY) || !nbt.containsUuid("GhoulingUUID") || !nbt.containsUuid("OwnerUUID")
                 || !nbt.getUuid("OwnerUUID").equals(player.getUuid())) {
             return;
         }
 
         boolean calling = nbt.getLong(CALL_KEY) > 0L;
+
         if (calling && world.getTime() > nbt.getLong(CALL_KEY)) {
             nbt.remove(CALL_KEY);
             player.sendMessage(Text.translatable("entity.graveyard.ghouling.lost"), true);
             calling = false;
         }
+
         if (!calling && (world.getTime() + player.getId()) % GhoulingEntity.BINDING_INTERVAL != 0) {
             return;
         }
 
         UUID ghoulingId = nbt.getUuid("GhoulingUUID");
         GhoulingBindings.Binding binding = GhoulingBindings.get(serverWorld).get(ghoulingId);
+
         if (binding == null) {
             nbt.remove(CALL_KEY);
             return;
         }
+
         if (!calling && binding.sitting()) {
             return;
         }
 
         ServerWorld home = serverWorld.getServer().getWorld(binding.dimension());
+
         if (home == null) {
             nbt.remove(CALL_KEY);
             return;
         }
 
         GhoulingEntity ghouling = home.getEntity(ghoulingId) instanceof GhoulingEntity found ? found : null;
+
         if (ghouling == null) {
             int misses = nbt.getInt(MISSES_KEY);
+
             if (binding.pos() != null && player.getUuid().equals(binding.owner()) && (calling || !ownerAirborne(player))
                     && (calling || misses < MAX_FETCH_MISSES)) {
                 home.getChunkManager().addTicket(FETCH_TICKET, new ChunkPos(binding.pos()), 2, ghoulingId);
+
                 if (!calling) {
                     nbt.putInt(MISSES_KEY, misses + 1);
                 }
             }
+
             return;
         }
+
         nbt.remove(MISSES_KEY);
+
         if (!isOwnedBy(ghouling, player) || rejectsStaff(ghouling, stack, player)) {
             return;
         }
 
         if (calling) {
             nbt.remove(CALL_KEY);
+
             if (!fetch(ghouling, serverWorld, player)) {
                 player.sendMessage(Text.translatable("entity.graveyard.ghouling.no_landing"), true);
             }
+
             return;
         }
 
         boolean farAway = home != serverWorld || ghouling.squaredDistanceTo(player) > FETCH_DISTANCE_SQ;
+
         if (farAway && !ownerAirborne(player) && !ghouling.isSitting() && !ghouling.isLeashed() && !ghouling.hasVehicle()) {
             fetch(ghouling, serverWorld, player);
         }
@@ -475,20 +530,25 @@ public class BoneStaffItem extends Item {
     private static void call(ServerWorld world, PlayerEntity owner, ItemStack stack, UUID ghoulingId) {
         GhoulingBindings bindings = GhoulingBindings.get(world);
         GhoulingBindings.Binding binding = bindings.get(ghoulingId);
+
         if (binding == null) {
             owner.sendMessage(Text.translatable("entity.graveyard.ghouling.severed"), true);
             return;
         }
 
         ServerWorld home = world.getServer().getWorld(binding.dimension());
+
         if (home != null && home.getEntity(ghoulingId) instanceof GhoulingEntity ghouling) {
             if (!isOwnedBy(ghouling, owner) || rejectsStaff(ghouling, stack, owner)) {
                 return;
             }
+
             stack.removeSubNbt(CALL_KEY);
+
             if (!fetch(ghouling, world, owner)) {
                 owner.sendMessage(Text.translatable("entity.graveyard.ghouling.no_landing"), true);
             }
+
             return;
         }
 
@@ -510,17 +570,22 @@ public class BoneStaffItem extends Item {
     private static Vec3d findLanding(GhoulingEntity ghouling, ServerWorld world, PlayerEntity player) {
         EntityDimensions size = ghouling.getDimensions(ghouling.getPose());
         Box atOwner = size.getBoxAt(player.getX(), player.getY(), player.getZ());
+
         if (player.isOnGround() && world.isSpaceEmpty(ghouling, atOwner) && !world.containsFluid(atOwner)) {
             return player.getPos();
         }
+
         BlockPos top = player.getBlockPos();
         for (int i = 0; i <= MAX_LANDING_DROP; i++) {
             BlockPos feet = top.down(i);
             Box box = size.getBoxAt(player.getX(), feet.getY(), player.getZ());
+
             if (!world.isSpaceEmpty(ghouling, box) || world.getFluidState(feet).isIn(FluidTags.LAVA)) {
                 return null;
             }
+
             BlockPos floor = feet.down();
+
             if (world.getBlockState(floor).isSideSolidFullSquare(world, floor, Direction.UP)) {
                 return new Vec3d(player.getX(), feet.getY(), player.getZ());
             }
@@ -530,9 +595,11 @@ public class BoneStaffItem extends Item {
 
     private static boolean fetch(GhoulingEntity ghouling, ServerWorld world, PlayerEntity player) {
         Vec3d landing = findLanding(ghouling, world, player);
+
         if (landing == null) {
             return false;
         }
+
         ghouling.setTarget(null);
         ghouling.setAttacking(false);
         ghouling.setSitting(false);
@@ -555,8 +622,10 @@ public class BoneStaffItem extends Item {
         ItemEntity best = null;
         for (ItemEntity item : user.getWorld().getEntitiesByClass(ItemEntity.class, user.getBoundingBox().stretch(end.subtract(start)).expand(1.0D), Entity::isAlive)) {
             var hit = item.getBoundingBox().expand(ITEM_AIM_MARGIN).raycast(start, end);
+
             if (hit.isPresent()) {
                 double distance = hit.get().squaredDistanceTo(start);
+
                 if (distance < limit) {
                     limit = distance;
                     best = item;
@@ -568,9 +637,11 @@ public class BoneStaffItem extends Item {
 
     private static boolean startFarDraw(World world, PlayerEntity user, Hand hand, ItemStack stack) {
         NbtCompound nbt = stack.getNbt();
+
         if (user.isSneaking() || isStored(stack) || nbt == null || !nbt.containsUuid("GhoulingUUID")) {
             return false;
         }
+
         UUID id = nbt.getUuid("GhoulingUUID");
         Vec3d start = user.getEyePos();
         Vec3d end = clipAtBlocks(user, start, start.add(user.getRotationVec(1.0F).multiply(STORE_RANGE)));
@@ -579,9 +650,11 @@ public class BoneStaffItem extends Item {
             if (ghouling.isOwner(user) && ghouling.getSpawnTimer() <= 0 && ghouling.acceptsStaff(stack)
                     && ghouling.getBoundingBox().expand(ghouling.getTargetingMargin()).raycast(start, end).isPresent()) {
                 user.setCurrentHand(hand);
+
                 if (!world.isClient) {
                     startDrawing(user, ghouling);
                 }
+
                 return true;
             }
         }
@@ -591,35 +664,49 @@ public class BoneStaffItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
+
         if (!world.isClient) {
             user.getItemCooldownManager().set(this, USE_COOLDOWN_TICKS);
         }
+
         NbtCompound nbt = stack.getNbt();
         boolean owned = nbt != null && nbt.containsUuid("OwnerUUID");
+
         if (owned && !nbt.getUuid("OwnerUUID").equals(user.getUuid())) {
             if (!world.isClient) {
                 user.sendMessage(Text.translatable("entity.graveyard.ghouling.obey"), true);
             }
+
             return TypedActionResult.fail(stack);
         }
+
         if (owned && startFarDraw(world, user, hand, stack)) {
             return TypedActionResult.consume(stack);
         }
+
         if (world.isClient) {
             return owned ? TypedActionResult.success(stack, true) : super.use(world, user, hand);
         }
+
         if (isStored(stack)) {
             user.sendMessage(Text.translatable("entity.graveyard.ghouling.resting"), true);
             return TypedActionResult.success(stack, false);
         }
+
         if (nbt != null && nbt.contains("GhoulingUUID") && owned) {
             UUID ghoulingUUID = nbt.getUuid("GhoulingUUID");
+
             if (user.isSneaking()) {
                 if (world instanceof ServerWorld serverWorld) {
                     call(serverWorld, user, stack, ghoulingUUID);
                 }
             } else {
-                GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Entity::isAlive).stream().filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0).findFirst().orElse(null);
+                GhoulingEntity ghouling = world.getEntitiesByClass(GhoulingEntity.class, user.getBoundingBox().expand(100), Entity::isAlive)
+                        .stream()
+                        .filter(entity -> entity.getUuid().compareTo(ghoulingUUID) == 0)
+                        .findFirst()
+                        .orElse(null);
+
                 if (ghouling != null && isOwnedBy(ghouling, user) && !rejectsStaff(ghouling, stack, user)) {
                     Predicate<Entity> predicate = entity -> {
                         if (entity instanceof LivingEntity target && ghouling.canTarget(target) && ghouling.canAttackWithOwner(target, user)) {
@@ -632,8 +719,10 @@ public class BoneStaffItem extends Item {
                                     return minion.getOwnerUuid().compareTo(nbt.getUuid("OwnerUUID")) != 0;
                                 }
                             }
+
                             return true;
                         }
+
                         return false;
                     };
                     int distance = 100;
@@ -643,6 +732,7 @@ public class BoneStaffItem extends Item {
                     Box box = user.getBoundingBox().stretch(rot).expand(1.0D);
                     HitResult result = ProjectileUtil.raycast(user, start, end, box, predicate, distance * distance);
                     ItemEntity targetItem = findItemInSight(user, result);
+
                     if (targetItem != null) {
                         if (!ghouling.hasCoffin()) {
                             user.sendMessage(Text.translatable("entity.graveyard.ghouling.no_coffin"), true);
@@ -657,6 +747,7 @@ public class BoneStaffItem extends Item {
                         }
                     } else if (result != null && result.getType() == HitResult.Type.ENTITY) {
                         Entity entity = ((EntityHitResult) result).getEntity();
+
                         if (entity instanceof LivingEntity livingEntity) {
                             user.sendMessage(Text.translatable("entity.graveyard.ghouling.kill"), true);
                             ghouling.playAttackSound = true;

@@ -69,7 +69,9 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
     public LoreBookBlock() {
         super(AbstractBlock.Settings.create().nonOpaque().noCollision().strength(0.5F).sounds(BlockSoundGroup.WOOL));
         this.setDefaultState(this.stateManager.getDefaultState()
-                .with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(VARIANT, Variant.OPEN));
+                .with(FACING, Direction.NORTH)
+                .with(WATERLOGGED, false)
+                .with(VARIANT, Variant.OPEN));
     }
 
     @Override
@@ -80,7 +82,9 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
     @Override
     public BlockState getPlacementState(ItemPlacementContext context) {
         boolean water = context.getWorld().getFluidState(context.getBlockPos()).getFluid() == Fluids.WATER;
-        return this.getDefaultState().with(FACING, context.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, water);
+        return this.getDefaultState()
+                .with(FACING, context.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, water);
     }
 
     @Override
@@ -102,8 +106,10 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable net.minecraft.entity.LivingEntity placer, ItemStack stack) {
         String page = DiaryPageItem.pageOf(stack);
+
         if (page != null && world.getBlockEntity(pos) instanceof LoreBookBlockEntity book) {
             book.setPage(page);
+
             if (placer instanceof ServerPlayerEntity serverPlayer) {
                 TGAdvancements.PLACE_LORE_BOOK.trigger(serverPlayer);
             }
@@ -113,25 +119,36 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
-            if (!player.canModifyBlocks()) return ActionResult.PASS;
-            if (!world.isClient()) world.setBlockState(pos, state.with(VARIANT, state.get(VARIANT).next()), Block.NOTIFY_ALL);
+            if (!player.canModifyBlocks()) {
+                return ActionResult.PASS;
+            }
+
+            if (!world.isClient()) {
+                world.setBlockState(pos, state.with(VARIANT, state.get(VARIANT).next()), Block.NOTIFY_ALL);
+            }
+
             return ActionResult.success(world.isClient());
         }
+
         if (!(world.getBlockEntity(pos) instanceof LoreBookBlockEntity book) || book.getPage() == null) {
             return ActionResult.PASS;
         }
+
         if (player instanceof ServerPlayerEntity serverPlayer && !Chronicle.find(serverPlayer, book.getPage())) {
             serverPlayer.sendMessage(Text.translatable("chronicle.graveyard.already_found").formatted(Formatting.GRAY), true);
         }
+
         return ActionResult.success(world.isClient());
     }
 
     @Override
     public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
         BlockEntity entity = builder.getOptional(LootContextParameters.BLOCK_ENTITY);
+
         if (entity instanceof LoreBookBlockEntity book && book.getPage() != null) {
             return List.of(DiaryPageItem.of(TGItems.DIARY_PAGE.get(), book.getPage()));
         }
+
         return List.of(new ItemStack(TGItems.DIARY_PAGE.get()));
     }
 
@@ -140,6 +157,7 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
         if (world.getBlockEntity(pos) instanceof LoreBookBlockEntity book && book.getPage() != null) {
             return DiaryPageItem.of(TGItems.DIARY_PAGE.get(), book.getPage());
         }
+
         return new ItemStack(TGItems.DIARY_PAGE.get());
     }
 
@@ -150,7 +168,10 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (state.get(WATERLOGGED)) world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        if (state.get(WATERLOGGED)) {
+            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 

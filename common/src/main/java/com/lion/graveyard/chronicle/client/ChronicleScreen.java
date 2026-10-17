@@ -23,7 +23,7 @@ import java.util.List;
 /// so the player sees how much of the story is still out there.
 @Environment(EnvType.CLIENT)
 public class ChronicleScreen extends Screen {
-    public static final Identifier BUTTON_TEXTURE = new Identifier(Graveyard.MOD_ID, "textures/gui/chronicle_button.png");
+    public static final Identifier BUTTON_TEXTURE = Graveyard.id("textures/gui/chronicle_button.png");
     private static final Identifier BOOK_TEXTURE = new Identifier("textures/gui/book.png");
 
     private static final int BOOK_WIDTH = 192;
@@ -53,8 +53,12 @@ public class ChronicleScreen extends Screen {
     public ChronicleScreen(@Nullable Screen parent, @Nullable String openPage) {
         super(Text.translatable("chronicle." + Graveyard.MOD_ID + ".title"));
         this.parent = parent;
+
         if (openPage != null) {
-            this.selected = this.chapters.stream().filter(c -> c.id().equals(openPage)).findFirst().orElse(null);
+            this.selected = this.chapters.stream()
+                    .filter(c -> c.id().equals(openPage))
+                    .findFirst()
+                    .orElse(null);
         }
     }
 
@@ -72,10 +76,14 @@ public class ChronicleScreen extends Screen {
                 .dimensions(this.bookX + 48, this.bookY + BOOK_HEIGHT - 4, 98, 20).build());
 
         if (this.selected == null) {
-            this.chapters.stream().filter(c -> ClientChronicle.isFound(c.id())).findFirst().ifPresent(this::select);
+            this.chapters.stream()
+                    .filter(c -> ClientChronicle.isFound(c.id()))
+                    .findFirst()
+                    .ifPresent(this::select);
         } else {
             this.select(this.selected);
         }
+
         this.updateButtons();
     }
 
@@ -90,14 +98,21 @@ public class ChronicleScreen extends Screen {
     private List<List<OrderedText>> paginate(ChronicleChapters.Chapter chapter) {
         List<OrderedText> lines = new ArrayList<>();
         for (String paragraph : chapter.pages()) {
-            if (!lines.isEmpty()) lines.add(OrderedText.EMPTY);
+            if (!lines.isEmpty()) {
+                lines.add(OrderedText.EMPTY);
+            }
+
             lines.addAll(this.textRenderer.wrapLines(Text.literal(paragraph), TEXT_WIDTH));
         }
         List<List<OrderedText>> pages = new ArrayList<>();
         for (int i = 0; i < lines.size(); i += LINES_PER_PAGE) {
             pages.add(lines.subList(i, Math.min(lines.size(), i + LINES_PER_PAGE)));
         }
-        if (pages.isEmpty()) pages.add(List.of());
+
+        if (pages.isEmpty()) {
+            pages.add(List.of());
+        }
+
         return pages;
     }
 
@@ -129,13 +144,21 @@ public class ChronicleScreen extends Screen {
         for (ChronicleChapters.Chapter chapter : this.chapters) {
             if (chapter.act() != lastAct) {
                 lastAct = chapter.act();
+
                 if (rows++ >= this.listScroll) {
                     context.drawText(font, Text.translatable("chronicle." + Graveyard.MOD_ID + ".act." + lastAct).formatted(Formatting.GOLD), this.listX, y, 0xFFFFFF, true);
                     y += ROW_HEIGHT;
                 }
             }
-            if (rows++ < this.listScroll) continue;
-            if (y > this.progressY() - ROW_HEIGHT) break;
+
+            if (rows++ < this.listScroll) {
+                continue;
+            }
+
+            if (y > this.progressY() - ROW_HEIGHT) {
+                break;
+            }
+
             boolean found = ClientChronicle.isFound(chapter.id());
             boolean hovered = found && mouseX >= this.listX && mouseX < this.listX + LIST_WIDTH && mouseY >= y && mouseY < y + ROW_HEIGHT;
             Text label = found ? Text.translatable(chapter.titleKey()) : Text.literal("? ? ?");
@@ -143,7 +166,9 @@ public class ChronicleScreen extends Screen {
             context.drawText(font, Text.literal("  ").append(label), this.listX, y, color, true);
             y += ROW_HEIGHT;
         }
-        int foundCount = (int) this.chapters.stream().filter(c -> ClientChronicle.isFound(c.id())).count();
+        int foundCount = (int) this.chapters.stream()
+                .filter(c -> ClientChronicle.isFound(c.id()))
+                .count();
         context.drawText(font, Text.translatable("chronicle." + Graveyard.MOD_ID + ".progress", foundCount, this.chapters.size()).formatted(Formatting.DARK_GRAY),
                 this.listX, this.progressY(), 0xFFFFFF, true);
     }
@@ -154,6 +179,7 @@ public class ChronicleScreen extends Screen {
 
     private void renderBook(DrawContext context) {
         context.drawTexture(BOOK_TEXTURE, this.bookX, this.bookY, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
+
         if (this.selected == null) {
             List<OrderedText> hint = this.textRenderer.wrapLines(Text.translatable("chronicle." + Graveyard.MOD_ID + ".empty"), TEXT_WIDTH);
             int y = this.bookY + 40;
@@ -163,6 +189,7 @@ public class ChronicleScreen extends Screen {
             }
             return;
         }
+
         Text header = Text.translatable(this.selected.titleKey()).formatted(Formatting.BOLD);
         context.drawText(this.textRenderer, header, this.bookX + 36, this.bookY + 14, 0x202020, false);
         Text counter = Text.translatable("book.pageIndicator", this.pageIndex + 1, this.bookPages.size());
@@ -184,27 +211,46 @@ public class ChronicleScreen extends Screen {
             for (ChronicleChapters.Chapter chapter : this.chapters) {
                 if (chapter.act() != lastAct) {
                     lastAct = chapter.act();
-                    if (rows++ >= this.listScroll) y += ROW_HEIGHT;
+
+                    if (rows++ >= this.listScroll) {
+                        y += ROW_HEIGHT;
+                    }
                 }
-                if (rows++ < this.listScroll) continue;
-                if (y > this.progressY() - ROW_HEIGHT) break;
+
+                if (rows++ < this.listScroll) {
+                    continue;
+                }
+
+                if (y > this.progressY() - ROW_HEIGHT) {
+                    break;
+                }
+
                 if (mouseY >= y && mouseY < y + ROW_HEIGHT) {
-                    if (ClientChronicle.isFound(chapter.id())) this.select(chapter);
+                    if (ClientChronicle.isFound(chapter.id())) {
+                        this.select(chapter);
+                    }
+
                     return true;
                 }
+
                 y += ROW_HEIGHT;
             }
         }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         if (mouseX < this.bookX) {
-            int rows = this.chapters.size() + (int) this.chapters.stream().mapToInt(ChronicleChapters.Chapter::act).distinct().count();
+            int rows = this.chapters.size() + (int) this.chapters.stream()
+                    .mapToInt(ChronicleChapters.Chapter::act)
+                    .distinct()
+                    .count();
             this.listScroll = MathHelper.clamp(this.listScroll - (int) Math.signum(amount), 0, Math.max(0, rows - 8));
             return true;
         }
+
         this.turnPage(amount < 0 ? 1 : -1);
         return true;
     }

@@ -28,7 +28,6 @@ import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-
 public class FallingCorpse extends HostileEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation FALLING_ANIMATION = RawAnimation.begin().then("falling", Animation.LoopType.LOOP);
@@ -62,6 +61,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         if (!impacted && impactTicks < 0) {
             impactTicks = IMPACT_DELAY;
         }
+
         return false;
     }
 
@@ -69,6 +69,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
         }
+
         return false;
     }
 
@@ -103,7 +104,9 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
 
 
     public static DefaultAttributeContainer.Builder createFallingCorpseAttributes() {
-        return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0D).add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
     }
 
     @Override
@@ -112,6 +115,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
             for (int i = 0; i < 10; i++) {
                 BlockPos pos = this.getBlockPos().add(0, -i, 0);
                 BlockState state = this.getEntityWorld().getBlockState(pos);
+
                 if (!state.isAir() && state.isSolidBlock(getEntityWorld(), pos)) {
                     MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
                     break;
@@ -164,6 +168,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         getEntityWorld().playSound(null, getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 0.8F);
         getEntityWorld().playSound(null, getBlockPos(), SoundEvents.BLOCK_BONE_BLOCK_BREAK, SoundCategory.HOSTILE, 1.2F, 0.6F);
         BlockState ground = getEntityWorld().getBlockState(getBlockPos().down());
+
         if (getEntityWorld() instanceof ServerWorld world && !ground.isAir()) {
             world.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, ground), getX(), getY() + 0.1D, getZ(), 30, 0.6D, 0.05D, 0.6D, 0.15D);
         }
@@ -175,6 +180,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
             player.damage(this.getDamageSources().fall(), DAMAGE);
             setHasCollided(true);
         }
+
         super.onPlayerCollision(player);
     }
 

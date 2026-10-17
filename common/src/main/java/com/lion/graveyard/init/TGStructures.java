@@ -1,18 +1,10 @@
 package com.lion.graveyard.init;
 
-
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.structures.TGJigsawStructure;
-import net.minecraft.registry.Registry;
-import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TGStructures {
-    public static List<Structure> structures = new ArrayList<>();
-
     public static StructureType<TGJigsawStructure> TG_JIGSAW = () -> TGJigsawStructure.CODEC;
     public static StructureType<TGJigsawStructure> ALTAR = () -> TGJigsawStructure.CODEC;
     public static StructureType<TGJigsawStructure> DEAD_TREE = () -> TGJigsawStructure.CODEC;

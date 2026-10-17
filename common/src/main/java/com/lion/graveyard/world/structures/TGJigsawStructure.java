@@ -70,12 +70,13 @@ public class TGJigsawStructure extends Structure {
     }
 
     public Optional<StructurePosition> getStructurePosition(Context context) {
-        if (!Graveyard.getConfig().enabled(new Identifier(Graveyard.MOD_ID, structureName))) {
+        if (!Graveyard.getConfig().enabled(Graveyard.id(structureName))) {
             return Optional.empty();
         }
 
-        StructureConfigEntry entry = Graveyard.getConfig().getStructure(new Identifier(Graveyard.MOD_ID, structureName));
-        double chance = Graveyard.getConfig().structureChance(new Identifier(Graveyard.MOD_ID, structureName));
+        StructureConfigEntry entry = Graveyard.getConfig().getStructure(Graveyard.id(structureName));
+        double chance = Graveyard.getConfig().structureChance(Graveyard.id(structureName));
+
         if (chance < 1.0D && context.random().nextDouble() >= chance) {
             return Optional.empty();
         }

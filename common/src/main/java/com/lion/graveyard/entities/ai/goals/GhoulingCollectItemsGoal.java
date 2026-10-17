@@ -53,9 +53,11 @@ public class GhoulingCollectItemsGoal extends Goal {
             mob.getNavigation().startMovingTo(item, speed);
             return;
         }
+
         if (item.cannotPickup()) {
             return;
         }
+
         var nearby = mob.getWorld().getEntitiesByClass(ItemEntity.class, item.getBoundingBox().expand(COLLECT_RANGE),
                 other -> !other.cannotPickup() && other.squaredDistanceTo(mob) <= COLLECT_RANGE * COLLECT_RANGE * 4);
         mob.storeInCoffin(item);

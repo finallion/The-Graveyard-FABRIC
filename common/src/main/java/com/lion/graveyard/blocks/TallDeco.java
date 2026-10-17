@@ -37,6 +37,7 @@ public final class TallDeco {
     @Nullable
     public static BlockState placementState(ItemPlacementContext ctx, BlockState lowerHalf) {
         BlockPos pos = ctx.getBlockPos();
+
         if (pos.getY() >= ctx.getWorld().getTopY() - 1 || !ctx.getWorld().getBlockState(pos.up()).canReplace(ctx)) {
             return null;
         }
@@ -66,6 +67,7 @@ public final class TallDeco {
     @Nullable
     public static BlockState hangingPlacementState(ItemPlacementContext ctx, BlockState upperHalf) {
         BlockPos pos = ctx.getBlockPos();
+
         if (pos.getY() <= ctx.getWorld().getBottomY() || !ctx.getWorld().getBlockState(pos.down()).canReplace(ctx)) {
             return null;
         }
@@ -112,6 +114,7 @@ public final class TallDeco {
 
         BlockPos otherPos = pos.down();
         BlockState other = world.getBlockState(otherPos);
+
         if (other.isOf(state.getBlock()) && other.get(HALF) == DoubleBlockHalf.LOWER) {
             world.setBlockState(otherPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
             world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, otherPos, Block.getRawIdFromState(other));

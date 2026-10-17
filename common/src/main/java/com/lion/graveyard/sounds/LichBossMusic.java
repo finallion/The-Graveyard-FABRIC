@@ -9,7 +9,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.random.Random;
 
-
 public class LichBossMusic extends AbstractSoundInstance implements TickableSoundInstance {
     public LichEntity boss;
     private int ticksExisted = 0;
@@ -44,6 +43,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
     public void tick() {
         if (boss == null || !boss.isAlive() || boss.isSilent()) {
             boss = null;
+
             if (volume >= 0) {
                 volume -= 0.03F;
             } else {
@@ -55,6 +55,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         if (ticksExisted % 100 == 0) {
             MinecraftClient.getInstance().getMusicTracker().stop();
         }
+
         ticksExisted++;
     }
 }

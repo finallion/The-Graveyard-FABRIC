@@ -13,8 +13,10 @@ public class RevenantMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Revenant
     @Override
     protected void attack(LivingEntity target, double squaredDistance) {
         double d = this.getSquaredMaxAttackDistance(target);
+
         if (squaredDistance <= d && this.cooldown <= 0 && this.mob.getReanimateAnimTimer() <= 0) {
             this.resetCooldown(20);
+
             if (this.mob.getAttackAnimTimer() <= this.mob.ATTACK_ANIM_SYNC_TICKS - this.mob.ATTACK_ANIMATION_DURATION) {
                 this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIM_SYNC_TICKS);
                 animationTicker = this.mob.ATTACK_ANIMATION_DURATION;

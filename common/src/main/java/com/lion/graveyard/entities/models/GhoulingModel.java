@@ -8,12 +8,12 @@ import software.bernie.geckolib.model.GeoModel;
 public class GhoulingModel extends GeoModel<GhoulingEntity> {
     @Override
     public Identifier getModelResource(GhoulingEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "geo/ghouling.geo.json");
+        return Graveyard.id("geo/ghouling.geo.json");
     }
 
     @Override
     public Identifier getTextureResource(GhoulingEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/" + textureVariant(object.getVariant()) + "_ghouling.png");
+        return Graveyard.id("textures/entity/" + textureVariant(object.getVariant()) + "_ghouling.png");
     }
 
     private static int textureVariant(byte variant) {
@@ -22,6 +22,6 @@ public class GhoulingModel extends GeoModel<GhoulingEntity> {
 
     @Override
     public Identifier getAnimationResource(GhoulingEntity animatable) {
-        return new Identifier(Graveyard.MOD_ID, "animations/ghouling/ghouling.animation.json");
+        return Graveyard.id("animations/ghouling/ghouling.animation.json");
     }
 }

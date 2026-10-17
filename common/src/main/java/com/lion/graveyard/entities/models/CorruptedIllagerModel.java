@@ -51,8 +51,16 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
         ModelPartData modelPartData2 = modelPartData.addChild("head", ModelPartBuilder.create().uv(0, 0).cuboid(-4.0F, -10.0F, -4.0F, 8.0F, 10.0F, 8.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
         modelPartData2.addChild("hat", ModelPartBuilder.create().uv(32, 0).cuboid(-4.0F, -10.0F, -4.0F, 8.0F, 12.0F, 8.0F, new Dilation(0.45F)), ModelTransform.NONE);
         modelPartData2.addChild("nose", ModelPartBuilder.create().uv(24, 0).cuboid(-1.0F, -1.0F, -6.0F, 2.0F, 4.0F, 2.0F), ModelTransform.pivot(0.0F, -2.0F, 0.0F));
-        modelPartData.addChild("body", ModelPartBuilder.create().uv(16, 20).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F).uv(0, 38).cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new Dilation(0.5F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
-        ModelPartData modelPartData3 = modelPartData.addChild("arms", ModelPartBuilder.create().uv(44, 22).cuboid(-8.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F).uv(40, 38).cuboid(-4.0F, 2.0F, -2.0F, 8.0F, 4.0F, 4.0F), ModelTransform.of(0.0F, 3.0F, -1.0F, -0.75F, 0.0F, 0.0F));
+        modelPartData.addChild("body", ModelPartBuilder.create()
+                .uv(16, 20)
+                .cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F)
+                .uv(0, 38)
+                .cuboid(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new Dilation(0.5F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+        ModelPartData modelPartData3 = modelPartData.addChild("arms", ModelPartBuilder.create()
+                .uv(44, 22)
+                .cuboid(-8.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F)
+                .uv(40, 38)
+                .cuboid(-4.0F, 2.0F, -2.0F, 8.0F, 4.0F, 4.0F), ModelTransform.of(0.0F, 3.0F, -1.0F, -0.75F, 0.0F, 0.0F));
         modelPartData3.addChild("left_shoulder", ModelPartBuilder.create().uv(44, 22).mirrored().cuboid(4.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F), ModelTransform.NONE);
         modelPartData.addChild("right_leg", ModelPartBuilder.create().uv(0, 22).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(-2.0F, 12.0F, 0.0F));
         modelPartData.addChild("left_leg", ModelPartBuilder.create().uv(0, 22).mirrored().cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(2.0F, 12.0F, 0.0F));
@@ -71,6 +79,7 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
 
         this.head.yaw = i * 0.017453292F;
         this.head.pitch = j * 0.017453292F;
+
         if (this.riding) {
             this.rightArm.pitch = -0.62831855F;
             this.rightArm.yaw = 0.0F;
@@ -159,6 +168,7 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
                 this.arms.visible = false;
                 this.leftArm.visible = false;
             }
+
             CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, false, this.handSwingProgress, h);
         } else if (state == CorruptedIllager.State.UNDEAD_ATTACKING) {
             if (illagerEntity.isModelDamaged()) {
@@ -166,6 +176,7 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends SinglePar
                 this.leftArmStomp.visible = true;
                 this.leftArm.visible = false;
             }
+
             CrossbowPosing.meleeAttack(this.leftArm, this.rightArm, true, this.handSwingProgress, h);
         }
 

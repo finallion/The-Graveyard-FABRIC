@@ -39,6 +39,7 @@ public final class CrowAnchors {
         if (world.isClient()) {
             return;
         }
+
         Deque<DeathSite> sites = DEATH_SITES.computeIfAbsent(world.getRegistryKey(), key -> new ArrayDeque<>());
         sites.addLast(new DeathSite(pos.toImmutable(), world.getTime() + DEATH_MEMORY_TICKS));
         while (sites.size() > MAX_DEATH_SITES) {
@@ -49,6 +50,7 @@ public final class CrowAnchors {
     @Nullable
     public static Anchor find(ServerWorld world, BlockPos origin) {
         BlockPos death = findDeathSite(world, origin);
+
         if (death != null) {
             return new Anchor(death, Kind.DEATH);
         }
@@ -72,10 +74,13 @@ public final class CrowAnchors {
                 if (!world.isChunkLoaded(x >> 4, z >> 4)) {
                     continue;
                 }
+
                 int topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
                 BlockState ground = world.getBlockState(pos.set(x, topY - 1, z));
+
                 if (ground.isOf(Blocks.FARMLAND) || ground.isIn(BlockTags.CROPS)) {
                     fieldHits++;
+
                     if (distance < nearestField) {
                         nearestField = distance;
                         fieldX = x;
@@ -83,6 +88,7 @@ public final class CrowAnchors {
                     }
                 } else if (ground.isIn(TGTags.CROW_LANDMARKS)) {
                     landmarkHits++;
+
                     if (distance < nearestLandmark) {
                         nearestLandmark = distance;
                         landmarkX = x;
@@ -91,8 +97,10 @@ public final class CrowAnchors {
                 } else {
                     // The heightmap ignores blocks without collision, such as skeletons.
                     BlockState surface = world.getBlockState(pos.set(x, topY, z));
+
                     if (surface.isIn(BlockTags.CROPS)) {
                         fieldHits++;
+
                         if (distance < nearestField) {
                             nearestField = distance;
                             fieldX = x;
@@ -100,6 +108,7 @@ public final class CrowAnchors {
                         }
                     } else if (surface.isIn(TGTags.CORVID_BONES)) {
                         landmarkHits++;
+
                         if (distance < nearestLandmark) {
                             nearestLandmark = distance;
                             landmarkX = x;
@@ -113,15 +122,18 @@ public final class CrowAnchors {
         if (fieldHits >= MIN_FIELD_HITS) {
             return new Anchor(surface(world, fieldX, fieldZ), Kind.FIELD);
         }
+
         if (landmarkHits >= MIN_LANDMARK_HITS) {
             return new Anchor(surface(world, landmarkX, landmarkZ), Kind.LANDMARK);
         }
+
         return null;
     }
 
     @Nullable
     private static BlockPos findDeathSite(ServerWorld world, BlockPos origin) {
         Deque<DeathSite> sites = DEATH_SITES.get(world.getRegistryKey());
+
         if (sites == null) {
             return null;
         }
@@ -138,7 +150,9 @@ public final class CrowAnchors {
                 it.remove();
                 continue;
             }
+
             double distance = site.pos().getSquaredDistance(origin);
+
             if (distance < DEATH_SEARCH_RADIUS_SQ && distance < closestDistance) {
                 closest = site.pos();
                 closestDistance = distance;

@@ -68,6 +68,7 @@ class LangTest {
         List<String> problems = new ArrayList<>();
         for (Map.Entry<String, String> entry : base.entrySet()) {
             String translated = other.get(entry.getKey());
+
             if (translated != null && !placeholders(entry.getValue()).equals(placeholders(translated))) {
                 problems.add(entry.getKey() + ": " + placeholders(entry.getValue()) + " vs " + placeholders(translated));
             }
@@ -83,58 +84,64 @@ class LangTest {
     @TestFactory
     Stream<DynamicTest> everyTranslationHasExactlyTheEnglishKeys() {
         Map<String, String> english = english();
-        return translations().stream().map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
-            List<String> problems = keyDifferences(english, load(file));
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return translations().stream()
+                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
+                    List<String> problems = keyDifferences(english, load(file));
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyTranslationKeepsTheEnglishPlaceholders() {
         Map<String, String> english = english();
-        return translations().stream().map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
-            List<String> problems = placeholderDifferences(english, load(file));
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return translations().stream()
+                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
+                    List<String> problems = placeholderDifferences(english, load(file));
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> noLanguageFileHasEmptyValues() {
-        return ModProject.files(LANG_DIR, ".json").stream().map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
-            List<String> empty = new ArrayList<>();
-            load(file).forEach((key, value) -> {
-                if (value.isBlank()) {
-                    empty.add(key);
-                }
-            });
-            assertTrue(empty.isEmpty(), () -> "Empty values: " + empty);
-        }));
+        return ModProject.files(LANG_DIR, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () -> {
+                    List<String> empty = new ArrayList<>();
+                    load(file).forEach((key, value) -> {
+                        if (value.isBlank()) {
+                            empty.add(key);
+                        }
+                    });
+                    assertTrue(empty.isEmpty(), () -> "Empty values: " + empty);
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredBlockHasAnEnglishName() {
         Map<String, String> english = english();
-        return RegistryIds.of(RegistryIds.BLOCK).stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(english.containsKey("block." + ModProject.MOD_ID + "." + id), "No name for block " + id)));
+        return RegistryIds.of(RegistryIds.BLOCK).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(english.containsKey("block." + ModProject.MOD_ID + "." + id), "No name for block " + id)));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredItemHasAnEnglishName() {
         Map<String, String> english = english();
-        return RegistryIds.of(RegistryIds.ITEM).stream().map(id -> DynamicTest.dynamicTest(id, () -> {
-            boolean internalPart = id.matches("(?:\\w+_coffin|sarcophagus)_(?:lid|base)");
-            boolean named = internalPart
-                    || english.containsKey("item." + ModProject.MOD_ID + "." + id)
-                    || english.containsKey("block." + ModProject.MOD_ID + "." + id);
-            assertTrue(named, "No name for item " + id);
-        }));
+        return RegistryIds.of(RegistryIds.ITEM).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () -> {
+                    boolean internalPart = id.matches("(?:\\w+_coffin|sarcophagus)_(?:lid|base)");
+                    boolean named = internalPart
+                            || english.containsKey("item." + ModProject.MOD_ID + "." + id)
+                            || english.containsKey("block." + ModProject.MOD_ID + "." + id);
+                    assertTrue(named, "No name for item " + id);
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredEntityHasAnEnglishName() {
         Map<String, String> english = english();
-        return RegistryIds.of(RegistryIds.ENTITY).stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(english.containsKey("entity." + ModProject.MOD_ID + "." + id), "No name for entity " + id)));
+        return RegistryIds.of(RegistryIds.ENTITY).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(english.containsKey("entity." + ModProject.MOD_ID + "." + id), "No name for entity " + id)));
     }
 
     @Test

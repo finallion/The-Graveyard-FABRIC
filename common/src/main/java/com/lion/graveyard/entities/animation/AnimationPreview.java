@@ -32,10 +32,13 @@ public final class AnimationPreview {
         if (!DevEnvironment.isDevelopment()) {
             return null;
         }
+
         Text name = entity.getCustomName();
+
         if (name == null) {
             return null;
         }
+
         String text = name.getString();
         return text.startsWith(PREFIX) ? text.substring(PREFIX.length()).trim() : null;
     }
@@ -45,28 +48,37 @@ public final class AnimationPreview {
         if (!(state.getAnimatable() instanceof Entity entity)) {
             return null;
         }
+
         String forced = forcedAnimation(entity);
+
         if (forced == null) {
             return null;
         }
+
         AnimationController<?> controller = state.getController();
         controller.transitionLength(AnimationTable.TRANSITION_TICKS);
+
         if (!ALL.equals(forced)) {
             return LOOPS.computeIfAbsent(forced, key -> RawAnimation.begin().thenLoop(key));
         }
+
         List<String> names = sequence.get();
+
         if (names.isEmpty()) {
             return null;
         }
+
         String name = names.get(nextIndex(controller, names, entity.age + state.getPartialTick()));
         return PLAYS.computeIfAbsent(name, key -> RawAnimation.begin().then(key, Animation.LoopType.PLAY_ONCE));
     }
 
     private static int nextIndex(AnimationController<?> controller, List<String> names, double clock) {
         Step step = STEPS.computeIfAbsent(controller, key -> new Step());
+
         if (step.index >= names.size()) {
             step.index = 0;
         }
+
         if (step.started < 0.0D) {
             step.started = clock;
         } else if (controller.hasAnimationFinished() || isStalled(controller, names.get(step.index), clock - step.started)) {
@@ -74,6 +86,7 @@ public final class AnimationPreview {
             step.started = clock;
             controller.forceAnimationReset();
         }
+
         return step.index;
     }
 

@@ -9,16 +9,16 @@ public class BaseGhoulModel extends GeoModel<GhoulEntity> {
 
     @Override
     public Identifier getModelResource(GhoulEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "geo/ghoul.geo.json");
+        return Graveyard.id("geo/ghoul.geo.json");
     }
 
     @Override
     public Identifier getTextureResource(GhoulEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/ghoul_skin" + object.getVariant() + ".png");
+        return Graveyard.id("textures/entity/ghoul_skin" + object.getVariant() + ".png");
     }
 
     @Override
     public Identifier getAnimationResource(GhoulEntity animatable) {
-        return new Identifier(Graveyard.MOD_ID, "animations/ghoul/ghoul.animation.json");
+        return Graveyard.id("animations/ghoul/ghoul.animation.json");
     }
 }

@@ -36,6 +36,7 @@ public final class FragmentSpotHints {
     public static void clientTick(MinecraftClient client) {
         ClientWorld world = client.world;
         ClientPlayerEntity player = client.player;
+
         if (world == null || player == null || !holdsFragment(player) || !(world.isNight() || world.getDimension().hasFixedTime())) {
             ALTARS.clear();
             ticks = 0;
@@ -45,11 +46,13 @@ public final class FragmentSpotHints {
         if (ticks % SCAN_INTERVAL == 0) {
             scanAltars(world, player.getBlockPos());
         }
+
         if (ticks % PARTICLE_INTERVAL == 0) {
             for (BlockPos altar : ALTARS) {
                 spawnParticles(world, altar);
             }
         }
+
         ticks++;
     }
 
@@ -69,6 +72,7 @@ public final class FragmentSpotHints {
                 for (int dz = -RANGE; dz <= RANGE; dz++) {
                     cursor.set(center.getX() + dx, center.getY() + dy, center.getZ() + dz);
                     BlockState state = world.getBlockState(cursor);
+
                     if (state.isOf(TGBlocks.ALTAR.get()) && !state.get(AltarBlock.BLOODY)) {
                         ALTARS.add(cursor.toImmutable());
                     }
@@ -85,9 +89,11 @@ public final class FragmentSpotHints {
                     middle,
                     middle.offset(direction.rotateYCounterclockwise(), END_OFFSET)
             };
+
             if (!isUsableRow(world, spots)) {
                 continue;
             }
+
             for (BlockPos spot : spots) {
                 if (world.getBlockState(spot).isAir()) {
                     world.addParticle(ParticleTypes.SOUL,
@@ -104,6 +110,7 @@ public final class FragmentSpotHints {
         for (BlockPos spot : spots) {
             BlockState state = world.getBlockState(spot);
             boolean free = state.isAir() || state.getBlock() instanceof OminousBoneStaffFragment;
+
             if (!free || !world.getBlockState(spot.down()).isSideSolidFullSquare(world, spot.down(), Direction.UP)) {
                 return false;
             }

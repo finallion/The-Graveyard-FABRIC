@@ -23,23 +23,29 @@ public final class NbtKeys {
 
     public static Set<String> readKeys(String code) {
         Set<String> keys = collect(READ_CALL, code);
+
         if (code.contains("Inventories.readNbt")) {
             keys.add("Items");
         }
+
         if (code.contains("deserializeLootTable")) {
             keys.add("LootTable");
         }
+
         return keys;
     }
 
     public static Set<String> writeKeys(String code) {
         Set<String> keys = collect(WRITE_CALL, code);
+
         if (code.contains("Inventories.writeNbt")) {
             keys.add("Items");
         }
+
         if (code.matches("(?s).*(?<!de)serializeLootTable.*")) {
             keys.add("LootTable");
         }
+
         return keys;
     }
 
@@ -53,6 +59,7 @@ public final class NbtKeys {
         Matcher m = call.matcher(code);
         while (m.find()) {
             String key = m.group(1) != null ? m.group(1) : constants.get(m.group(2));
+
             if (key != null) {
                 keys.add(key);
             }
@@ -64,6 +71,7 @@ public final class NbtKeys {
         Set<String> lines = new TreeSet<>();
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
             String code = Sources.code(file);
+
             if (declaresNbtReader(code)) {
                 String name = file.getFileName().toString().replace(".java", "");
                 for (String key : readKeys(code)) {

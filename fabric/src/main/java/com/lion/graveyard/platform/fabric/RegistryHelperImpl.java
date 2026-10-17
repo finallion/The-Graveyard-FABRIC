@@ -34,7 +34,6 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 
@@ -44,12 +43,12 @@ import java.util.function.Supplier;
 public class RegistryHelperImpl {
 
     public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
-        var registry = Registry.register(Registries.BLOCK, new Identifier(Graveyard.MOD_ID, name), block.get());
+        var registry = Registry.register(Registries.BLOCK, Graveyard.id(name), block.get());
         return () -> registry;
     }
 
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
-        var registry = Registry.register(Registries.ITEM, new Identifier(Graveyard.MOD_ID, name), item.get());
+        var registry = Registry.register(Registries.ITEM, Graveyard.id(name), item.get());
         return () -> registry;
     }
 
@@ -84,12 +83,12 @@ public class RegistryHelperImpl {
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
-        var registry = Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(Graveyard.MOD_ID, name), blockEntity.get());
+        var registry = Registry.register(Registries.BLOCK_ENTITY_TYPE, Graveyard.id(name), blockEntity.get());
         return () -> registry;
     }
 
     public static <T extends Structure> void registerStructureType(String name, StructureType<T> structureType) {
-        Registry.register(Registries.STRUCTURE_TYPE, new Identifier(Graveyard.MOD_ID, name), structureType);
+        Registry.register(Registries.STRUCTURE_TYPE, Graveyard.id(name), structureType);
     }
 
     public static void registerParticleType(String name, DefaultParticleType particleType) {
@@ -97,11 +96,11 @@ public class RegistryHelperImpl {
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, name), processorType);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id(name), processorType);
     }
 
     public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
-        Registry.register(Registries.SCREEN_HANDLER, new Identifier(Graveyard.MOD_ID, name), screenHandlerType);
+        Registry.register(Registries.SCREEN_HANDLER, Graveyard.id(name), screenHandlerType);
     }
 
     public static void registerRenderType(RenderLayer type, Block... blocks) {
@@ -109,7 +108,7 @@ public class RegistryHelperImpl {
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {
-        var registry = Registry.register(Registries.SOUND_EVENT, new Identifier(Graveyard.MOD_ID, name), soundEvent.get());
+        var registry = Registry.register(Registries.SOUND_EVENT, Graveyard.id(name), soundEvent.get());
         return () -> registry;
     }
 
@@ -122,7 +121,7 @@ public class RegistryHelperImpl {
     }
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String name, Supplier<EntityType<T>> entityType) {
-        var registry = Registry.register(Registries.ENTITY_TYPE, new Identifier(Graveyard.MOD_ID, name), entityType.get());
+        var registry = Registry.register(Registries.ENTITY_TYPE, Graveyard.id(name), entityType.get());
         return () -> registry;
     }
 
@@ -135,7 +134,7 @@ public class RegistryHelperImpl {
     }
 
     public static <T extends Recipe<?>> Supplier<RecipeType<T>> registerRecipeType(String name, RecipeType<T> type) {
-        var registry = Registry.register(Registries.RECIPE_TYPE, new Identifier(Graveyard.MOD_ID, name), type);
+        var registry = Registry.register(Registries.RECIPE_TYPE, Graveyard.id(name), type);
         return () -> registry;
     }
 
@@ -145,6 +144,6 @@ public class RegistryHelperImpl {
     }
 
     public static LootConditionType registerLootCondition(String name, LootConditionType type) {
-        return Registry.register(Registries.LOOT_CONDITION_TYPE, new Identifier(Graveyard.MOD_ID, name), type);
+        return Registry.register(Registries.LOOT_CONDITION_TYPE, Graveyard.id(name), type);
     }
 }

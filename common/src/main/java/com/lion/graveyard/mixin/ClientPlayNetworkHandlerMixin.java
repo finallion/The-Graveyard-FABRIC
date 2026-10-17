@@ -7,10 +7,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.SignEditorOpenS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Final;
@@ -36,25 +34,12 @@ public class ClientPlayNetworkHandlerMixin {
         BlockPos blockPos = packet.getPos();
 
         BlockEntity var4 = this.world.getBlockEntity(blockPos);
+
         if (var4 instanceof GravestoneBlockEntity) {
             BlockState blockState = this.world.getBlockState(blockPos);
             GravestoneBlockEntity signBlockEntity2 = new GravestoneBlockEntity(blockPos, blockState);
             signBlockEntity2.setWorld(this.world);
             MinecraftClient.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
-            info.cancel();
-        }
-    }
-
-    @Inject(method = "onBlockEntityUpdate", at = @At(value = "HEAD"), cancellable = true)
-    public void onEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo info) {
-        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, this.client);
-        BlockPos blockPos = packet.getPos();
-        BlockEntity blockEntity = this.world.getBlockEntity(blockPos);
-        if (blockEntity instanceof GravestoneBlockEntity) {
-            NbtCompound nbtCompound = packet.getNbt();
-            if (nbtCompound != null) {
-                blockEntity.readNbt(nbtCompound);
-            }
             info.cancel();
         }
     }

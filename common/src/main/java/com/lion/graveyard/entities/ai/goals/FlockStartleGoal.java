@@ -40,12 +40,15 @@ public class FlockStartleGoal extends Goal {
         if (!this.crow.isAlarmed() && this.crow.age % SCAN_INTERVAL == 0) {
             this.watch();
         }
+
         if (!this.crow.isAlarmed() && this.crow.isSentinel() && this.crow.age % SCARECROW_SCAN_INTERVAL == 0) {
             this.watchForScarecrows();
         }
+
         if (!this.crow.isAlarmed()) {
             return false;
         }
+
         this.target = this.findEscape();
         return this.target != null;
     }
@@ -53,16 +56,21 @@ public class FlockStartleGoal extends Goal {
     private void watch() {
         double range = this.crow.isSentinel() ? SENTINEL_RANGE : MEMBER_RANGE;
         PlayerEntity player = this.crow.getWorld().getClosestPlayer(this.crow, range);
+
         if (player == null || player.isSpectator()) {
             return;
         }
+
         if (player.isSneaking()) {
             double sneakRange = range * SNEAK_FACTOR;
+
             if (this.crow.squaredDistanceTo(player) > sneakRange * sneakRange) {
                 return;
             }
         }
+
         this.crow.raiseAlarm();
+
         if (player instanceof ServerPlayerEntity serverPlayer && this.crow.getFlockSize() >= SCARE_FLOCK_SIZE) {
             TGAdvancements.SCARE_CROWS.trigger(serverPlayer);
         }
@@ -71,6 +79,7 @@ public class FlockStartleGoal extends Goal {
     private void watchForScarecrows() {
         if (Scarecrows.isNear(this.crow.getWorld(), this.crow.getBlockPos(), Scarecrows.RADIUS)) {
             this.crow.raiseAlarm();
+
             if (this.crow.getWorld() instanceof ServerWorld world) {
                 TGAdvancements.triggerNearby(world, this.crow.getPos(), SCARECROW_WITNESS_RANGE, TGAdvancements.SCARECROW);
             }
@@ -85,9 +94,11 @@ public class FlockStartleGoal extends Goal {
                 : this.crow.getPos().subtract(player.getPos()).normalize();
 
         Vec3d escape = AboveGroundTargeting.find(this.crow, ESCAPE_DISTANCE, ESCAPE_HEIGHT, away.x, away.z, (float) (Math.PI / 2), 10, 6);
+
         if (escape == null && player != null) {
             escape = NoPenaltyTargeting.findFrom(this.crow, ESCAPE_DISTANCE, ESCAPE_HEIGHT, player.getPos());
         }
+
         return escape;
     }
 

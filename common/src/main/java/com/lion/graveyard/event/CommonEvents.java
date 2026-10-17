@@ -44,6 +44,7 @@ public final class CommonEvents {
         if (entity.getWorld().isClient) {
             return;
         }
+
         if (entity instanceof VillagerEntity villager) {
             addFleeGoal(villager, 0.7D, 1.0D);
         } else if (entity instanceof WanderingTraderEntity trader) {
@@ -58,7 +59,8 @@ public final class CommonEvents {
     private static void addFleeGoal(MerchantEntity merchant, double slowSpeed, double fastSpeed) {
         GoalSelector goals = ((MobEntityAccessor) merchant).graveyard$getGoalSelector();
         // The same entity instance loads again when its chunk becomes tracked again.
-        if (goals.getGoals().stream().noneMatch(goal -> goal.getGoal() instanceof FleeGraveyardMobsGoal)) {
+        if (goals.getGoals().stream()
+                .noneMatch(goal -> goal.getGoal() instanceof FleeGraveyardMobsGoal)) {
             goals.add(1, new FleeGraveyardMobsGoal(merchant, slowSpeed, fastSpeed));
         }
     }
@@ -90,6 +92,7 @@ public final class CommonEvents {
 
     private static void findPage(ServerPlayerEntity player, ItemStack book) {
         String page = Chronicle.pageOf(book);
+
         if (page != null) {
             Chronicle.find(player, page);
         }
@@ -105,18 +108,24 @@ public final class CommonEvents {
         BlockPos pos = hit.getBlockPos();
         ItemStack stack = player.getStackInHand(hand);
         BlockState stripped = smolderingStrippedState(world.getBlockState(pos));
+
         if (stripped == null || !(stack.getItem() instanceof AxeItem) || player.isSpectator() || shieldTakesPriority(player, hand) || !mayModify(player, world, pos, stack)) {
             return ActionResult.PASS;
         }
+
         world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
         if (!world.isClient) {
             world.setBlockState(pos, stripped, 11);
             world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(player, stripped));
+
             if (player instanceof ServerPlayerEntity serverPlayer) {
                 Criteria.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
             }
+
             stack.damage(1, player, user -> user.sendToolBreakStatus(hand));
         }
+
         return ActionResult.success(world.isClient);
     }
 

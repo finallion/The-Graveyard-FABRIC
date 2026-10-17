@@ -78,6 +78,7 @@ public class GravestoneBlockEntity extends BlockEntity {
         super.readNbt(nbt);
         DataResult<SignText> var10000;
         Logger var10001;
+
         if (nbt.contains("front_text")) {
             var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
             var10001 = LOGGER;
@@ -102,6 +103,7 @@ public class GravestoneBlockEntity extends BlockEntity {
 
     private Text parseLine(Text text) {
         World var3 = this.world;
+
         if (var3 instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld)var3;
 
@@ -135,10 +137,12 @@ public class GravestoneBlockEntity extends BlockEntity {
         for(int i = 0; i < messages.size(); ++i) {
             FilteredMessage filteredMessage = (FilteredMessage)messages.get(i);
             Style style = text.getMessage(i, player.shouldFilterText()).getStyle();
+
             if (player.shouldFilterText()) {
                 text = text.withMessage(i, Text.literal(filteredMessage.getString()).setStyle(style));
             } else {
-                text = text.withMessage(i, Text.literal(filteredMessage.raw()).setStyle(style), Text.literal(filteredMessage.getString()).setStyle(style));
+                text = text.withMessage(i, Text.literal(filteredMessage.raw()).setStyle(style),
+                        Text.literal(filteredMessage.getString()).setStyle(style));
             }
         }
 
@@ -166,6 +170,7 @@ public class GravestoneBlockEntity extends BlockEntity {
         for (Text text : var6) {
             Style style = text.getStyle();
             ClickEvent clickEvent = style.getClickEvent();
+
             if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
                 player.getServer().getCommandManager().executeWithPrefix(createCommandSource(player, world, pos), clickEvent.getValue());
                 bl = true;
@@ -228,6 +233,7 @@ public class GravestoneBlockEntity extends BlockEntity {
 
     public static void tick(World world, BlockPos pos, BlockState state, GravestoneBlockEntity blockEntity) {
         UUID uUID = blockEntity.getEditor();
+
         if (uUID != null) {
             blockEntity.tryClearInvalidEditor(blockEntity, world, uUID);
         }

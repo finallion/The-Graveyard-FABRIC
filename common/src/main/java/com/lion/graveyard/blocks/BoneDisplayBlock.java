@@ -20,7 +20,9 @@ public class BoneDisplayBlock extends Block implements Waterloggable {
 
     public BoneDisplayBlock() {
         super(AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE));
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(WATERLOGGED, false));
     }
 
     @Override
@@ -39,7 +41,9 @@ public class BoneDisplayBlock extends Block implements Waterloggable {
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        return this.getDefaultState()
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
     public FluidState getFluidState(BlockState state) {

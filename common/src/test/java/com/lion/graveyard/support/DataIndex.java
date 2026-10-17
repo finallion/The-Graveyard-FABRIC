@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 public final class DataIndex {
-    private static final Pattern TRIGGER = Pattern.compile("new Identifier\\(\\s*\"graveyard:([a-z0-9_/]+)\"");
+    private static final Pattern TRIGGER = Pattern.compile("(?:new Identifier\\(\\s*\"graveyard:|Graveyard\\.id\\(\\s*\")([a-z0-9_/]+)\"");
     private static DataIndex mod;
 
     public final Set<String> blocks;
@@ -51,15 +51,18 @@ public final class DataIndex {
                 other.addAll(RegistryIds.of(category));
             }
             Path advancementCode = ModProject.JAVA.resolve("init/TGAdvancements.java");
+
             if (advancementCode.toFile().isFile()) {
                 other.addAll(com.lion.graveyard.support.Sources.matches(TRIGGER, Sources.code(advancementCode), 1));
             }
+
             mod = new DataIndex(
                     RegistryIds.of(RegistryIds.BLOCK), RegistryIds.of(RegistryIds.ITEM), RegistryIds.of(RegistryIds.ENTITY), other,
                     ids(ModProject.LOOT_TABLES), ids(ModProject.RECIPES), ids(ModProject.ADVANCEMENTS),
                     ids(ModProject.TAGS_ITEMS), ids(ModProject.TAGS_BLOCKS), ids(ModProject.TAGS_BIOMES),
                     ids(ModProject.TEMPLATE_POOLS), ids(ModProject.PROCESSOR_LISTS), ids(ModProject.STRUCTURE_FEATURES));
         }
+
         return mod;
     }
 

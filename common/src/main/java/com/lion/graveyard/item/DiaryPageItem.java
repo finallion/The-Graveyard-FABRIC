@@ -38,7 +38,11 @@ public class DiaryPageItem extends BlockItem {
     @Nullable
     public static String pageOf(ItemStack stack) {
         NbtCompound nbt = stack.getNbt();
-        if (nbt == null || !nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE)) return null;
+
+        if (nbt == null || !nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE)) {
+            return null;
+        }
+
         String page = nbt.getString(PAGE_KEY);
         return Chronicle.isValidId(page) ? page : null;
     }
@@ -47,21 +51,34 @@ public class DiaryPageItem extends BlockItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
         String page = pageOf(stack);
-        if (page == null) return TypedActionResult.pass(stack);
-        if (world.isClient()) ChronicleOpener.open(page);
+
+        if (page == null) {
+            return TypedActionResult.pass(stack);
+        }
+
+        if (world.isClient()) {
+            ChronicleOpener.open(page);
+        }
+
         if (user instanceof ServerPlayerEntity player) {
             boolean fresh = Chronicle.find(player, page);
+
             if (!fresh) {
                 player.sendMessage(Text.translatable("chronicle.graveyard.already_found").formatted(Formatting.GRAY), true);
             }
-            if (!player.getAbilities().creativeMode) stack.decrement(1);
+
+            if (!player.getAbilities().creativeMode) {
+                stack.decrement(1);
+            }
         }
+
         return TypedActionResult.success(stack, world.isClient());
     }
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         String page = pageOf(stack);
+
         if (page != null) {
             tooltip.add(Text.translatable("chronicle.graveyard.page." + page + ".title").formatted(Formatting.ITALIC, Formatting.GRAY));
         }

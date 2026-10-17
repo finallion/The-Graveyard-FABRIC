@@ -38,14 +38,18 @@ class ModMetadataTest {
     static List<String> accessWidenerProblems(String text) {
         List<String> problems = new ArrayList<>();
         String[] lines = text.split("\\R");
+
         if (lines.length == 0 || !lines[0].matches("accessWidener\\s+v[12]\\s+named")) {
             problems.add("header must be 'accessWidener v2 named'");
         }
+
         for (int i = 1; i < lines.length; i++) {
             String line = lines[i].trim();
+
             if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
+
             if (!ACCESS_LINE.matcher(line).matches()) {
                 problems.add("line " + (i + 1) + " is not a valid access rule: " + line);
             }

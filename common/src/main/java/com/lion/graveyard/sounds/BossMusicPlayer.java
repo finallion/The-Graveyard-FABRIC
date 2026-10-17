@@ -7,16 +7,19 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 
-
 public class BossMusicPlayer {
     public static LichBossMusic music;
 
     public static void playBossMusic(LichEntity entity) {
-        if (!Graveyard.getConfig().booleanEntries.get("enableBossMusic")) return;
+        if (!Graveyard.getConfig().booleanEntries.get("enableBossMusic")) {
+            return;
+        }
+
         SoundEvent soundEvent = entity.getBossMusic();
 
         if (soundEvent != null && entity.isAlive()) {
             PlayerEntity player = MinecraftClient.getInstance().player;
+
             if (music != null) {
                 if (MinecraftClient.getInstance().options.getSoundVolume(SoundCategory.MUSIC) <= 0) {
                     music = null;

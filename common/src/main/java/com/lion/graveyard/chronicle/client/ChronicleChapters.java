@@ -46,7 +46,9 @@ public final class ChronicleChapters {
                 String chapterId = path.substring(DIRECTORY.length() + 1, path.length() - ".json".length());
                 List<String> pages = new ArrayList<>();
                 JsonArray array = JsonHelper.getArray(json, "pages");
-                for (JsonElement element : array) pages.add(element.getAsString());
+                for (JsonElement element : array) {
+                    pages.add(element.getAsString());
+                }
                 chapters.add(new Chapter(chapterId,
                         JsonHelper.getInt(json, "act", 1),
                         JsonHelper.getInt(json, "order", 0),

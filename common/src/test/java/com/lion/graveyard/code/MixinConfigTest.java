@@ -59,6 +59,7 @@ class MixinConfigTest {
         List<String> problems = new ArrayList<>();
         for (Path file : ModProject.files(mixinDir, ".java")) {
             String name = ModProject.idOf(mixinDir, file, ".java").replace('/', '.');
+
             if (!listed.contains(name)) {
                 problems.add("on disk but not listed: " + name);
             }
@@ -74,37 +75,41 @@ class MixinConfigTest {
     @TestFactory
     Stream<DynamicTest> everyListedCommonMixinHasASourceFile() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
-        return listed(ModProject.read(COMMON_CONFIG)).stream().map(name -> DynamicTest.dynamicTest(name, () ->
-                assertTrue(Files.isRegularFile(mixinDir.resolve(name.replace('.', '/') + ".java")), "No source file for mixin " + name)));
+        return listed(ModProject.read(COMMON_CONFIG)).stream()
+                .map(name -> DynamicTest.dynamicTest(name, () ->
+                        assertTrue(Files.isRegularFile(mixinDir.resolve(name.replace('.', '/') + ".java")), "No source file for mixin " + name)));
     }
 
     @TestFactory
     Stream<DynamicTest> everyMixinSourceFileIsListed() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
         Set<String> listed = listed(ModProject.read(COMMON_CONFIG));
-        return ModProject.files(mixinDir, ".java").stream().map(file -> {
-            String name = ModProject.idOf(mixinDir, file, ".java").replace('/', '.');
-            return DynamicTest.dynamicTest(name, () -> assertTrue(listed.contains(name), "Mixin class not in graveyard-common.mixins.json: " + name));
-        });
+        return ModProject.files(mixinDir, ".java").stream()
+                .map(file -> {
+                    String name = ModProject.idOf(mixinDir, file, ".java").replace('/', '.');
+                    return DynamicTest.dynamicTest(name, () -> assertTrue(listed.contains(name), "Mixin class not in graveyard-common.mixins.json: " + name));
+                });
     }
 
     @TestFactory
     Stream<DynamicTest> everyMixinSourceFileCarriesTheMixinAnnotation() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
-        return ModProject.files(mixinDir, ".java").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(mixinDir, file, ".java"), () ->
-                        assertTrue(Sources.code(file).contains("@Mixin("), "No @Mixin annotation")));
+        return ModProject.files(mixinDir, ".java").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(mixinDir, file, ".java"), () ->
+                                assertTrue(Sources.code(file).contains("@Mixin("), "No @Mixin annotation")));
     }
 
     @TestFactory
     Stream<DynamicTest> loaderMixinConfigsOnlyListExistingClasses() {
-        return Stream.of(FABRIC_CONFIG, FORGE_CONFIG).map(config -> DynamicTest.dynamicTest(config.getFileName().toString(), () -> {
-            String json = ModProject.read(config);
-            Path root = (config == FABRIC_CONFIG ? ModProject.FABRIC_MAIN : ModProject.FORGE_MAIN)
-                    .resolve("java/" + packageOf(json).replace('.', '/'));
-            List<String> problems = missingClasses(json, root);
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return Stream.of(FABRIC_CONFIG, FORGE_CONFIG)
+                .map(config -> DynamicTest.dynamicTest(config.getFileName().toString(), () -> {
+                    String json = ModProject.read(config);
+                    Path root = (config == FABRIC_CONFIG ? ModProject.FABRIC_MAIN : ModProject.FORGE_MAIN)
+                            .resolve("java/" + packageOf(json).replace('.', '/'));
+                    List<String> problems = missingClasses(json, root);
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @Test

@@ -77,6 +77,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains("BoundX")) {
             this.bounds = new BlockPos(nbt.getInt("BoundX"), nbt.getInt("BoundY"), nbt.getInt("BoundZ"));
         }
@@ -84,6 +85,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.bounds != null) {
             nbt.putInt("BoundX", this.bounds.getX());
             nbt.putInt("BoundY", this.bounds.getY());
@@ -117,6 +119,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             tickDown(SPAWN_TIMER);
             tickDown(ATTACK_TIMER);
         }
+
         this.noClip = true;
         super.tick();
         this.noClip = false;
@@ -134,6 +137,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private void tickDown(TrackedData<Integer> timer) {
         int ticks = this.dataTracker.get(timer);
+
         if (ticks > 0) {
             this.dataTracker.set(timer, ticks - 1);
         }
@@ -148,12 +152,14 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         if (!this.getEntityWorld().isClient()) {
             this.dataTracker.set(ATTACK_TIMER, ATTACK_TICKS);
         }
+
         return super.tryAttack(target);
     }
 
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
+
         if (this.deathTime == DEATH_TICKS && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
@@ -178,6 +184,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private void setVexFlag(int mask, boolean value) {
         int i = (Byte)this.dataTracker.get(VEX_FLAGS);
+
         if (value) {
             i = i | mask;
         } else {
@@ -255,11 +262,13 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             if (this.state == State.MOVE_TO) {
                 Vec3d vec3d = new Vec3d(this.targetX - ReaperEntity.this.getX(), this.targetY - ReaperEntity.this.getY(), this.targetZ - ReaperEntity.this.getZ());
                 double d = vec3d.length();
+
                 if (d < ReaperEntity.this.getBoundingBox().getAverageSideLength()) {
                     this.state = State.WAIT;
                     ReaperEntity.this.setVelocity(ReaperEntity.this.getVelocity().multiply(0.5D));
                 } else {
                     ReaperEntity.this.setVelocity(ReaperEntity.this.getVelocity().add(vec3d.multiply(this.speed * 0.05D / d)));
+
                     if (ReaperEntity.this.getTarget() == null) {
                         Vec3d vec3d2 = ReaperEntity.this.getVelocity();
                         ReaperEntity.this.setYaw(-((float)MathHelper.atan2(vec3d2.x, vec3d2.z)) * 57.295776F);
@@ -307,11 +316,13 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
         public void tick() {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
+
             if (ReaperEntity.this.getBoundingBox().intersects(livingEntity.getBoundingBox())) {
                 ReaperEntity.this.tryAttack(livingEntity);
                 ReaperEntity.this.setCharging(false);
             } else {
                 double d = ReaperEntity.this.squaredDistanceTo(livingEntity);
+
                 if (d < 9.0D) {
                     Vec3d vec3d = livingEntity.getEyePos();
                     ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
@@ -336,17 +347,21 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
         public void tick() {
             BlockPos blockPos = ReaperEntity.this.getBounds();
+
             if (blockPos == null) {
                 blockPos = ReaperEntity.this.getBlockPos();
             }
 
             for(int i = 0; i < 3; ++i) {
                 BlockPos blockPos2 = blockPos.add(ReaperEntity.this.random.nextInt(15) - 7, ReaperEntity.this.random.nextInt(11) - 5, ReaperEntity.this.random.nextInt(15) - 7);
+
                 if (ReaperEntity.this.getEntityWorld().isAir(blockPos2)) {
                     ReaperEntity.this.moveControl.moveTo((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 0.25D);
+
                     if (ReaperEntity.this.getTarget() == null) {
                         ReaperEntity.this.getLookControl().lookAt((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 180.0F, 20.0F);
                     }
+
                     break;
                 }
             }

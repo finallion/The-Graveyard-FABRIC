@@ -35,7 +35,10 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
 
     public UrnBlock() {
         super(AbstractBlock.Settings.create().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(0.3F));
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false).with(OPEN, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(WATERLOGGED, false)
+                .with(OPEN, false));
     }
 
     @Override
@@ -54,7 +57,9 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        return this.getDefaultState()
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
     public FluidState getFluidState(BlockState state) {
@@ -90,6 +95,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
             return ActionResult.SUCCESS;
         } else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
+
             if (blockEntity instanceof UrnBlockEntity) {
                 player.openHandledScreen((UrnBlockEntity)blockEntity);
             }
@@ -101,6 +107,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.isOf(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
+
             if (blockEntity instanceof Inventory) {
                 ItemScatterer.spawn(world, pos, (Inventory)blockEntity);
             }
@@ -112,6 +119,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
 
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
+
         if (blockEntity instanceof UrnBlockEntity) {
             ((UrnBlockEntity)blockEntity).onScheduledTick();
         }
@@ -136,6 +144,7 @@ public class UrnBlock extends BlockWithEntity implements Waterloggable, BlockEnt
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (itemStack.hasCustomName()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
+
             if (blockEntity instanceof UrnBlockEntity) {
                 ((UrnBlockEntity)blockEntity).setCustomName(itemStack.getName());
             }

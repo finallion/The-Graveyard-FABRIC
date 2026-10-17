@@ -30,10 +30,12 @@ public class PoolAliasProcessor extends StructureProcessor {
         List<StructureBlockInfo> result = new ArrayList<>(jigsaws.size());
         for (StructureBlockInfo jigsaw : jigsaws) {
             Identifier alias = jigsaw.nbt() == null ? null : this.aliases.get(Identifier.tryParse(jigsaw.nbt().getString(POOL_KEY)));
+
             if (alias == null) {
                 result.add(jigsaw);
                 continue;
             }
+
             NbtCompound nbt = jigsaw.nbt().copy();
             nbt.putString(POOL_KEY, alias.toString());
             result.add(new StructureBlockInfo(jigsaw.pos(), jigsaw.state(), nbt));

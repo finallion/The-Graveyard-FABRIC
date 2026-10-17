@@ -27,6 +27,7 @@ public class HordeSpawner {
             if (loaded) {
                 return;
             }
+
             addToSpawners(World.OVERWORLD.getValue(), new GraveyardHordeSpawner());
             loaded = true;
         }
@@ -50,6 +51,7 @@ public class HordeSpawner {
             }
 
             ArrayList<GraveyardHordeSpawner> spawnerList = spawners.get(world.getRegistryKey().getValue());
+
             if (spawnerList != null) {
                 for (var spawner : spawnerList) {
                     if (spawner != null) {

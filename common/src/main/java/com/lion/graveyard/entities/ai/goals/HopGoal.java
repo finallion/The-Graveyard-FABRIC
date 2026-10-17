@@ -39,6 +39,7 @@ public class HopGoal extends Goal {
         if (this.magpie.isPecking() || !this.magpie.isOnGround() || this.magpie.getRandom().nextInt(60) != 0) {
             return false;
         }
+
         this.target = this.findTarget();
         return this.target != null;
     }
@@ -48,6 +49,7 @@ public class HopGoal extends Goal {
         for (int i = 0; i < FIND_ATTEMPTS; i++) {
             float angle = this.magpie.getRandom().nextFloat() * ((float) Math.PI * 2.0F);
             Vec3d direction = new Vec3d(MathHelper.cos(angle), 0.0D, MathHelper.sin(angle));
+
             if (this.isHopPathClear(direction)) {
                 double distance = MIN_DISTANCE + this.magpie.getRandom().nextDouble() * DISTANCE_SPREAD;
                 return new Vec3d(this.magpie.getX() + direction.x * distance, this.magpie.getY(), this.magpie.getZ() + direction.z * distance);
@@ -62,9 +64,11 @@ public class HopGoal extends Goal {
         boolean diagonal = Math.abs(direction.x) > 0.35D && Math.abs(direction.z) > 0.35D;
         boolean checkX = diagonal || Math.abs(direction.x) >= Math.abs(direction.z);
         boolean checkZ = diagonal || Math.abs(direction.z) >= Math.abs(direction.x);
+
         if (checkX && !this.isColumnClear(feet.offset(direction.x > 0.0D ? Direction.EAST : Direction.WEST))) {
             return false;
         }
+
         return !checkZ || this.isColumnClear(feet.offset(direction.z > 0.0D ? Direction.SOUTH : Direction.NORTH));
     }
 
@@ -107,23 +111,30 @@ public class HopGoal extends Goal {
     @Override
     public void tick() {
         this.timeout--;
+
         if (this.magpie.horizontalCollision) {
             this.hopsLeft = 0;
         }
+
         this.timer--;
+
         if (this.timer > 0) {
             return;
         }
+
         if (!this.magpie.isOnGround() || this.target == null) {
             // Skip the beat. A late hop breaks the sync with the animation loop.
             this.timer = this.getHopInterval();
             return;
         }
+
         Vec3d direction = new Vec3d(this.target.x - this.magpie.getX(), 0.0D, this.target.z - this.magpie.getZ()).normalize();
+
         if (!this.isHopPathClear(direction)) {
             this.hopsLeft = 0;
             return;
         }
+
         float yaw = (float) (MathHelper.atan2(direction.z, direction.x) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
         this.magpie.setYaw(yaw);
         this.magpie.setBodyYaw(yaw);
@@ -139,6 +150,7 @@ public class HopGoal extends Goal {
         if (!this.magpie.isOnGround() && !this.magpie.isNearGround()) {
             return false;
         }
+
         return this.timeout > 0 && (this.hopsLeft > 0 || !this.magpie.isOnGround());
     }
 

@@ -22,6 +22,7 @@ public final class Scarecrows {
     public static boolean isNear(World world, BlockPos center, int radius) {
         Box box = new Box(center).expand(radius);
         boolean wornPumpkin = !world.getEntitiesByClass(ArmorStandEntity.class, box, Scarecrows::isWearingPumpkin).isEmpty();
+
         if (wornPumpkin) {
             return true;
         }
@@ -30,6 +31,7 @@ public final class Scarecrows {
                 center.getX() - radius, center.getY() - radius, center.getZ() - radius,
                 center.getX() + radius, center.getY() + radius, center.getZ() + radius)) {
             BlockState state = world.getBlockState(pos);
+
             if (state.isIn(TGTags.CROW_REPELLENTS)
                     || state.isIn(TGTags.SCARECROW_HEADS) && isBuiltScarecrow(world, pos)) {
                 return true;
@@ -45,9 +47,11 @@ public final class Scarecrows {
 
     private static boolean isBuiltScarecrow(World world, BlockPos head) {
         BlockPos body = head.down();
+
         if (!world.getBlockState(body).isIn(TGTags.SCARECROW_BODIES)) {
             return false;
         }
+
         for (Direction side : Direction.values()) {
             if (side != Direction.UP && world.getBlockState(body.offset(side)).isIn(BlockTags.FENCES)) {
                 return true;

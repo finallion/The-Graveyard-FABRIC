@@ -20,11 +20,14 @@ public record ConfigSpawnsBiomeModifier(String mob) implements BiomeModifier {
         if (phase != Phase.ADD || !biome.isIn(BiomeTags.IS_OVERWORLD)) {
             return;
         }
+
         for (TGEntities.NaturalSpawn spawn : TGEntities.naturalSpawns()) {
             if (!spawn.mob().equals(mob) || !biome.isIn(spawn.tag())) {
                 continue;
             }
+
             SpawnSettings.SpawnEntry entry = spawn.entry();
+
             if (entry != null) {
                 builder.getMobSpawnSettings().spawn(spawn.group(), entry);
             }

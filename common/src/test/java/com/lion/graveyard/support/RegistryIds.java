@@ -55,6 +55,7 @@ public final class RegistryIds {
             }
             cache = all;
         }
+
         return cache;
     }
 
@@ -63,16 +64,19 @@ public final class RegistryIds {
         Matcher helper = HELPER_CALL.matcher(code);
         while (helper.find()) {
             String category = CATEGORY_BY_CALL.get(helper.group(1));
+
             if (category != null) {
                 ids.add(category + ":" + helper.group(2));
             }
         }
+
         if (soundFile) {
             Matcher sound = SOUND_CALL.matcher(code);
             while (sound.find()) {
                 ids.add(SOUND + ":" + sound.group(1));
             }
         }
+
         return ids;
     }
 

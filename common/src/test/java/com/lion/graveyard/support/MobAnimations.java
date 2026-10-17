@@ -151,9 +151,11 @@ public final class MobAnimations {
             String body = JavaText.inside(code, head.end() - 1);
             int constantsEnd = body.indexOf(';');
             Matcher constructor = Pattern.compile("(?<![\\w.])" + head.group(1) + "\\s*\\(([^)]*)\\)\\s*\\{").matcher(body);
+
             if (constantsEnd < 0 || !constructor.find(constantsEnd)) {
                 continue;
             }
+
             List<String> parameters = new ArrayList<>();
             for (String parameter : JavaText.splitTopLevel(constructor.group(1), ',')) {
                 String[] words = parameter.trim().split("\\s+");
@@ -168,14 +170,18 @@ public final class MobAnimations {
                 for (String constant : constants) {
                     Map<String, String> values = bindConstant(parameters, constant);
                     String name = resolveText(arguments.get(0), values, strings);
+
                     if (name == null) {
                         local.clear();
                         break;
                     }
-                    String loop = arguments.size() > 1 ? values.getOrDefault(arguments.get(1).trim(), arguments.get(1).trim()) : null;
+
+                    String loop = arguments.size() > 1 ? values.getOrDefault(arguments.get(1).trim(),
+                            arguments.get(1).trim()) : null;
                     String explicit = loop == null ? null : loop.substring(loop.lastIndexOf('.') + 1);
                     local.add(new Clip(assignment.group(1), name, loopOf(assignment.group(2), explicit), OptionalInt.empty()));
                 }
+
                 if (!local.isEmpty()) {
                     sites++;
                     clips.addAll(local);
@@ -188,12 +194,14 @@ public final class MobAnimations {
     private static Map<String, String> bindConstant(List<String> parameters, String constant) {
         Map<String, String> values = new LinkedHashMap<>();
         Matcher m = ENUM_CONSTANT.matcher(constant);
+
         if (m.matches() && m.group(1) != null) {
             List<String> arguments = JavaText.splitTopLevel(m.group(1), ',');
             for (int i = 0; i < Math.min(arguments.size(), parameters.size()); i++) {
                 values.put(parameters.get(i), arguments.get(i).trim());
             }
         }
+
         return values;
     }
 
@@ -204,6 +212,7 @@ public final class MobAnimations {
             String token = part.trim();
             Matcher literal = STRING_LITERAL.matcher(token);
             String bound = values.get(token);
+
             if (literal.matches()) {
                 text.append(literal.group(1));
             } else if (bound != null && STRING_LITERAL.matcher(bound).matches()) {
@@ -235,9 +244,11 @@ public final class MobAnimations {
     public static List<Clip> moodClips(String code, Map<String, Integer> constants) {
         List<Clip> clips = new ArrayList<>();
         int enumAt = code.indexOf("enum Mood");
+
         if (enumAt < 0) {
             return clips;
         }
+
         int open = code.indexOf('{', enumAt);
         String body = JavaText.inside(code, open);
         String constantsPart = body.substring(0, body.indexOf(';'));
@@ -268,6 +279,7 @@ public final class MobAnimations {
         if (animations.has(clip)) {
             return clip;
         }
+
         for (String key : animations.keySet()) {
             if (key.endsWith("." + clip)) {
                 return key;
@@ -282,9 +294,11 @@ public final class MobAnimations {
 
     public static FileLoop fileLoop(JsonObject animation) {
         JsonElement loop = animation.get("loop");
+
         if (loop == null || !loop.isJsonPrimitive()) {
             return FileLoop.ONCE;
         }
+
         String text = loop.getAsString();
         return switch (text) {
             case "true" -> FileLoop.LOOP;

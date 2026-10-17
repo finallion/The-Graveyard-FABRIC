@@ -32,8 +32,9 @@ class NbtCompatibilityTest {
     @TestFactory
     Stream<DynamicTest> everySnapshotKeyIsStillRead() {
         Set<String> current = NbtKeys.currentReadLines();
-        return ModProject.snapshotLines("nbt-read-keys.txt").stream().map(line ->
-                DynamicTest.dynamicTest(line, () -> assertTrue(current.contains(line), "NBT key no longer read: " + line)));
+        return ModProject.snapshotLines("nbt-read-keys.txt").stream()
+                .map(line ->
+                        DynamicTest.dynamicTest(line, () -> assertTrue(current.contains(line), "NBT key no longer read: " + line)));
     }
 
     @TestFactory
@@ -41,9 +42,11 @@ class NbtCompatibilityTest {
         List<DynamicTest> tests = new ArrayList<>();
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
             String code = Sources.code(file);
+
             if (!NbtKeys.declaresNbtReader(code)) {
                 continue;
             }
+
             String name = file.getFileName().toString().replace(".java", "");
             tests.add(DynamicTest.dynamicTest(name, () -> {
                 Set<String> unread = new java.util.TreeSet<>(NbtKeys.writeKeys(code));

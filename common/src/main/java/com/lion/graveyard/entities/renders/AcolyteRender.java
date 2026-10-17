@@ -12,7 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
-    private static final Identifier TEXTURE = new Identifier(Graveyard.MOD_ID,"textures/entity/acolyte.png");
+    private static final Identifier TEXTURE = Graveyard.id("textures/entity/acolyte.png");
 
     public AcolyteRender(EntityRendererFactory.Context ctx) {
         super(ctx, new CorruptedIllagerModel<>(ctx.getPart(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);

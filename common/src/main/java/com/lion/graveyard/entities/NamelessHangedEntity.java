@@ -90,6 +90,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -164,6 +165,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
                     getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 0.8F);
                 }
             }
+
             return ActionResult.success(this.getEntityWorld().isClient);
         } else {
             return super.interactMob(player, hand);

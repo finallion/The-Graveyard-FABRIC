@@ -24,13 +24,16 @@ public abstract class InventoryChangedCriterionMixin {
         if (stack.isEmpty() || !stack.isIn(TGTags.SKELETON_DECORATION)) {
             return;
         }
+
         Set<Item> distinct = new HashSet<>();
         for (int slot = 0; slot < inventory.size(); slot++) {
             ItemStack held = inventory.getStack(slot);
+
             if (held.isIn(TGTags.SKELETON_DECORATION)) {
                 distinct.add(held.getItem());
             }
         }
+
         if (distinct.size() >= DISTINCT_ITEMS_NEEDED) {
             TGAdvancements.BONE_COLLECTOR.trigger(player);
         }

@@ -12,8 +12,6 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.CreeperEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class SkeletonCreeperEyes extends FeatureRenderer<SkeletonCreeper, CreeperEntityModel<SkeletonCreeper>> {
@@ -24,7 +22,7 @@ public class SkeletonCreeperEyes extends FeatureRenderer<SkeletonCreeper, Creepe
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, SkeletonCreeper entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        VertexConsumer vertex = vertexConsumers.getBuffer(RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID,"textures/entity/skeleton_creeper_eyes.png")));
+        VertexConsumer vertex = vertexConsumers.getBuffer(RenderLayer.getEyes(Graveyard.id("textures/entity/skeleton_creeper_eyes.png")));
 
         this.getContextModel().render(matrices, vertex, 15728640, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, 1F);
     }

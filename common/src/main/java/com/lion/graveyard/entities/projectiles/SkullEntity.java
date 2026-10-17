@@ -81,13 +81,16 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
+
         if (!this.getEntityWorld().isClient) {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean bl;
+
             if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
                 bl = entity.damage(this.getDamageSources().indirectMagic(this, livingEntity), 10.0F);
+
                 if (bl) {
                     if (entity.isAlive()) {
                         this.applyDamageEffects(livingEntity, entity);
@@ -107,6 +110,7 @@ public class SkullEntity extends ExplosiveProjectileEntity {
 
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
+
         if (!this.getEntityWorld().isClient) {
             Explosion.DestructionType destructionType = Explosion.DestructionType.KEEP;
             var champion = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion");

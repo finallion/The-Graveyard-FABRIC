@@ -61,6 +61,7 @@ public class LongDecoBlock extends Block implements Waterloggable {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockPos headPos = ctx.getBlockPos().offset(ctx.getHorizontalPlayerFacing());
+
         if (!ctx.getWorld().getBlockState(headPos).canReplace(ctx)) {
             return null;
         }
@@ -91,6 +92,7 @@ public class LongDecoBlock extends Block implements Waterloggable {
         }
 
         Direction towardOther = state.get(PART) == BedPart.FOOT ? state.get(FACING) : state.get(FACING).getOpposite();
+
         if (direction == towardOther && (!neighbor.isOf(this) || neighbor.get(PART) == state.get(PART))) {
             return state.get(WATERLOGGED) ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState();
         }
@@ -110,6 +112,7 @@ public class LongDecoBlock extends Block implements Waterloggable {
         if (!world.isClient && player.isCreative() && state.get(PART) == BedPart.HEAD) {
             BlockPos otherPos = otherPartPos(pos, state);
             BlockState other = world.getBlockState(otherPos);
+
             if (other.isOf(this) && other.get(PART) != state.get(PART)) {
                 world.setBlockState(otherPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
                 world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, otherPos, Block.getRawIdFromState(other));

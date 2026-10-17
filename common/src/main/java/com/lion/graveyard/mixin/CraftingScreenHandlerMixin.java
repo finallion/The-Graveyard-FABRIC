@@ -27,10 +27,13 @@ public abstract class CraftingScreenHandlerMixin {
         if (world.isClient || !(player instanceof ServerPlayerEntity serverPlayer)) {
             return;
         }
+
         Optional<CraftingRecipe> match = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+
         if (match.isEmpty() || !StaffRecipeLock.isLocked(serverPlayer, match.get())) {
             return;
         }
+
         resultInventory.setStack(0, ItemStack.EMPTY);
         handler.setPreviousTrackedSlot(0, ItemStack.EMPTY);
         serverPlayer.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.nextRevision(), 0, ItemStack.EMPTY));
@@ -40,6 +43,7 @@ public abstract class CraftingScreenHandlerMixin {
     @Inject(method = "quickMove", at = @At("HEAD"), cancellable = true)
     private void graveyard$blockLockedStaffShiftClick(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> info) {
         CraftingScreenHandler self = (CraftingScreenHandler) (Object) this;
+
         if (slot == 0 && !self.slots.get(0).canTakeItems(player)) {
             info.setReturnValue(ItemStack.EMPTY);
         }

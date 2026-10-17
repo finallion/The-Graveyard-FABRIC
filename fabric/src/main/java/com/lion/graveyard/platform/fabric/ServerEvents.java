@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ServerEvents {
 
     public ServerEvents() {
@@ -33,7 +32,9 @@ public class ServerEvents {
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/graveyard/the-graveyard-2.7-config.json5"));
 
             for (File file : oldConfigs) {
-                if (file.exists()) file.delete();
+                if (file.exists()) {
+                    file.delete();
+                }
             }
         }
     }

@@ -33,6 +33,7 @@ public class SmolderingPillarBlock extends PillarBlock {
         if (this.stripped == null) {
             return null;
         }
+
         return this.stripped.get().getStateWithProperties(state);
     }
 

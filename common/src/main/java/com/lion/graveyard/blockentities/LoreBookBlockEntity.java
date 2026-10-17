@@ -36,7 +36,10 @@ public class LoreBookBlockEntity extends BlockEntity {
     @Override
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        if (this.page != null) nbt.putString(PAGE_KEY, this.page);
+
+        if (this.page != null) {
+            nbt.putString(PAGE_KEY, this.page);
+        }
     }
 
     @Override

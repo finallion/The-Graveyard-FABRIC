@@ -11,7 +11,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
@@ -24,7 +23,7 @@ public class SpawnHordeCommand {
 
     public static int executeSpawn(ServerCommandSource source) {
         source.sendFeedback(() -> Text.literal("Spawned a graveyard horde."), false);
-        int o = Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).mobSpawnAttempts;
+        int o = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;
         BlockPos.Mutable mutable = new BlockPos.Mutable(source.getPosition().getX(), source.getPosition().getY(), source.getPosition().getZ());
         ServerWorld world = source.getWorld();
         Random random = source.getWorld().getRandom();
@@ -32,6 +31,7 @@ public class SpawnHordeCommand {
 
         for (int p = 0; p < o; ++p) {
             mutable.setY(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
+
             if (p == 0) {
                 if (!spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
                     break;

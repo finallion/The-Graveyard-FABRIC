@@ -7,13 +7,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class TormentedVillagerEyes extends GeoRenderLayer<TormentedVillagerEntity> {
-    private static final RenderLayer EYES = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID, "textures/entity/tormented_villager_eyes.png"));
+    private static final RenderLayer EYES = RenderLayer.getEyes(Graveyard.id("textures/entity/tormented_villager_eyes.png"));
     private static final int FULL_LIGHT = 15728640;
 
     private final GeoRenderer<TormentedVillagerEntity> renderer;

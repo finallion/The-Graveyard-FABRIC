@@ -16,6 +16,7 @@ public final class Sources {
         int n = source.length();
         while (i < n) {
             char c = source.charAt(i);
+
             if (source.startsWith("\"\"\"", i)) {
                 int end = source.indexOf("\"\"\"", i + 3);
                 end = end < 0 ? n : end + 3;

@@ -7,13 +7,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class LichEyesFeatureRenderer extends GeoRenderLayer<LichEntity> {
-    private RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID, "textures/entity/lich_eye_texture.png"));;
+    private RenderLayer TEXTURE = RenderLayer.getEyes(Graveyard.id("textures/entity/lich_eye_texture.png"));;
     private final GeoRenderer<LichEntity> renderer;
 
     public LichEyesFeatureRenderer(GeoRenderer<LichEntity> entityRendererIn) {

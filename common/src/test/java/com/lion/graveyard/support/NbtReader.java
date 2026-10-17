@@ -17,9 +17,11 @@ public final class NbtReader {
     public static Map<String, Object> readGzipped(byte[] bytes) throws IOException {
         try (DataInputStream in = new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes)))) {
             int type = in.readUnsignedByte();
+
             if (type != 10) {
                 throw new IOException("Root tag is not a compound: " + type);
             }
+
             in.readUTF();
             return (Map<String, Object>) readPayload(in, 10);
         }

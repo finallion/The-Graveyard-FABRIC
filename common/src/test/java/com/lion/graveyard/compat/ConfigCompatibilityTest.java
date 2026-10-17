@@ -35,6 +35,7 @@ public class ConfigCompatibilityTest {
         }
         for (Path file : ModProject.files(CONFIG_DIR, ".java")) {
             String name = file.getFileName().toString().replace(".java", "");
+
             if (name.equals("GraveyardConfig") || file.getParent().getFileName().toString().equals("entries")) {
                 Matcher field = PUBLIC_FIELD.matcher(Sources.code(file));
                 while (field.find()) {
@@ -47,14 +48,16 @@ public class ConfigCompatibilityTest {
 
     @Test
     void extractorFindsConfigContent() {
-        assertTrue(currentLines().size() > 80, "Only found " + currentLines().size());
+        assertTrue(currentLines().size() > 80,
+                "Only found " + currentLines().size());
     }
 
     @TestFactory
     Stream<DynamicTest> everySnapshotConfigKeyIsStillPresent() {
         Set<String> current = currentLines();
-        return ModProject.snapshotLines("config-keys.txt").stream().map(line ->
-                DynamicTest.dynamicTest(line, () -> assertTrue(current.contains(line), "Config key or field vanished: " + line)));
+        return ModProject.snapshotLines("config-keys.txt").stream()
+                .map(line ->
+                        DynamicTest.dynamicTest(line, () -> assertTrue(current.contains(line), "Config key or field vanished: " + line)));
     }
 
     @Test

@@ -25,6 +25,7 @@ public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
     @Override
     public void renderForBone(MatrixStack poseStack, CorvidEntity animatable, GeoBone bone, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         ItemStack stack = animatable.getEquippedStack(EquipmentSlot.MAINHAND);
+
         if (!bone.getName().equals("head") || stack.isEmpty()) {
             return;
         }

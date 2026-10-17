@@ -99,9 +99,11 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     public int getDecay() {
         byte decay = this.dataTracker.get(DECAY);
+
         if (decay >= 1 && decay <= DECAY_LEVELS) {
             return decay;
         }
+
         return Math.floorMod(this.getUuid().hashCode(), DECAY_LEVELS) + 1;
     }
 
@@ -120,9 +122,11 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     private int getClaws() {
         byte claws = this.dataTracker.get(CLAWS);
+
         if (claws >= 0 && claws <= (LEFT_CLAW | RIGHT_CLAW)) {
             return claws;
         }
+
         return (int) (this.getUuid().getMostSignificantBits() >>> 62);
     }
 
@@ -137,9 +141,11 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         this.dataTracker.set(DECAY, (byte) (this.random.nextInt(DECAY_LEVELS) + 1));
         this.dataTracker.set(CLAWS, (byte) this.random.nextInt((LEFT_CLAW | RIGHT_CLAW) + 1));
         boolean unseenSpawn = spawnReason == SpawnReason.CHUNK_GENERATION || spawnReason == SpawnReason.STRUCTURE;
+
         if (this.hasSpawnAnimation() && !unseenSpawn) {
             this.dataTracker.set(SPAWN_TIMER, SPAWN_TICKS);
         }
+
         return result;
     }
 
@@ -153,12 +159,15 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains("Decay", NbtElement.NUMBER_TYPE)) {
             byte decay = nbt.getByte("Decay");
+
             if (decay >= 1 && decay <= DECAY_LEVELS) {
                 this.dataTracker.set(DECAY, decay);
             }
         }
+
         if (nbt.contains("Claws", NbtElement.NUMBER_TYPE)) {
             this.dataTracker.set(CLAWS, nbt.getByte("Claws"));
         }
@@ -173,11 +182,14 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
             tickDown(GLITCH_TIMER);
             resolvePendingHit();
         }
+
         super.tick();
+
         if (!this.getWorld().isClient() && this.isAiDisabled()) {
             setChasing(false);
             this.dataTracker.set(WANDERING, false);
         }
+
         if (this.getWorld().isClient() && AnimationPreview.forcedAnimation(this) == null) {
             tickAnimationSound();
         }
@@ -185,39 +197,49 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     private AnimationSound currentAnimationSound() {
         boolean moving = this.limbAnimator.getSpeed() > MOVING_LIMB_SPEED;
+
         if (this.isDead() || this.getHealth() < 0.01F) {
             return AnimationSound.BLOW_APART;
         }
+
         if (this.getSpawnTimer() > 0) {
             return AnimationSound.SPAWN;
         }
+
         if (this.dataTracker.get(ATTACK_TIMER) > 0) {
             return this.dataTracker.get(ATTACK_KIND) == ATTACK_STRIKE ? AnimationSound.STRIKE : AnimationSound.BITE;
         }
+
         if (this.dataTracker.get(GLITCH_TIMER) > 0) {
             return AnimationSound.SILENT;
         }
+
         if (this.isSwimmingInWater()) {
             return AnimationSound.IDLE;
         }
+
         if (this.isChasing() && moving) {
             return AnimationSound.ATTACK_RUN;
         }
+
         return moving || this.dataTracker.get(WANDERING) ? AnimationSound.WANDER : AnimationSound.IDLE;
     }
 
     private void tickAnimationSound() {
         boolean rendered = AnimationClock.isRendered(this);
         AnimationSound sound = currentAnimationSound();
+
         if (!rendered && sound != this.currentSound) {
             this.currentSound = sound;
             // GeckoLib starts the keyframes after the blend.
             this.soundCountdown = (sound == AnimationSound.SPAWN ? 0 : AnimationTable.TRANSITION_TICKS) + 1;
         }
+
         if (this.soundCountdown > 0 && --this.soundCountdown == 0) {
             if (!rendered) {
                 startSound(this.currentSound);
             }
+
             this.soundCountdown = this.currentSound.repeatTicks;
         }
     }
@@ -226,14 +248,18 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         if (AnimationPreview.forcedAnimation(this) != null) {
             return;
         }
+
         AnimationSound sound = AnimationSound.of(animation);
+
         if (sound == AnimationSound.SPAWN && startOffsetTicks > 0) {
             return;
         }
+
         // One sound can span several loops of its animation.
         if (sound == this.playingSound && this.age - this.soundStartAge < sound.lengthTicks - SOUND_RESTART_SLACK) {
             return;
         }
+
         this.currentSound = sound;
         this.soundCountdown = sound.repeatTicks;
         startSound(sound);
@@ -243,6 +269,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         this.playingSound = sound;
         this.soundStartAge = this.age;
         SoundEvent event = sound.event == null ? null : sound.event.get();
+
         if (sound == AnimationSound.BLOW_APART) {
             AnimationClock.playTracked(this, null);
             AnimationClock.playDetached(this, event);
@@ -261,18 +288,23 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         if (this.pendingTarget == null) {
             return;
         }
+
         if (!this.isAlive()) {
             this.pendingTarget = null;
             return;
         }
+
         boolean strike = this.dataTracker.get(ATTACK_KIND) == ATTACK_STRIKE;
         int hitTimer = strike ? STRIKE_TICKS - STRIKE_HIT_TICKS : BITE_TICKS - BITE_HIT_TICKS;
+
         if (this.dataTracker.get(ATTACK_TIMER) != hitTimer) {
             return;
         }
+
         LivingEntity target = this.pendingTarget;
         this.pendingTarget = null;
         float reach = this.getWidth() * 2.0F;
+
         if (target.isAlive() && this.squaredDistanceTo(target) <= reach * reach + target.getWidth() + 1.0D) {
             super.tryAttack(target);
         }
@@ -284,6 +316,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     private void tickDown(TrackedData<Integer> timer) {
         int ticks = this.dataTracker.get(timer);
+
         if (ticks > 0) {
             this.dataTracker.set(timer, ticks - 1);
         }
@@ -297,12 +330,14 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         this.dataTracker.set(WANDERING, navigating && this.stuckTicks < WANDER_STUCK_TICKS);
         boolean resting = !ChaseTarget.isLive(this) && this.getNavigation().isIdle() && this.getSpawnTimer() == 0;
         int glitch = this.dataTracker.get(GLITCH_TIMER);
+
         if (glitch > 0 && !resting) {
             this.dataTracker.set(GLITCH_TIMER, 0);
         } else if (glitch == 0 && resting && this.glitchCooldown == 0 && this.random.nextInt(GLITCH_CHANCE) == 0) {
             this.dataTracker.set(GLITCH_TIMER, GLITCH_TICKS);
             this.glitchCooldown = GLITCH_COOLDOWN_TICKS;
         }
+
         if (this.glitchCooldown > 0) {
             this.glitchCooldown--;
         }
@@ -315,6 +350,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
             this.dataTracker.set(ATTACK_KIND, next);
             this.dataTracker.set(ATTACK_TIMER, next == ATTACK_STRIKE ? STRIKE_TICKS : BITE_TICKS);
         }
+
         this.pendingTarget = target instanceof LivingEntity living ? living : null;
         return true;
     }
@@ -327,6 +363,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
+
         if (this.deathTime == DEATH_TICKS && !this.getWorld().isClient()) {
             this.getWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);

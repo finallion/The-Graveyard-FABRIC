@@ -29,10 +29,12 @@ public class SettleGoal extends FlyOntoPerchGoal {
     @Override
     protected Vec3d getSearchCenter() {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
+
         if (anchor != null && anchor.kind() == CrowAnchors.Kind.DEATH
                 && anchor.pos().getSquaredDistance(this.crow.getBlockPos()) <= DEATH_ANCHOR_RANGE_SQ) {
             return Vec3d.ofCenter(anchor.pos());
         }
+
         CrowEntity head = this.crow.getFlockHead();
         return head != this.crow && head.isPerched() ? head.getPos() : super.getSearchCenter();
     }
@@ -54,10 +56,12 @@ public class SettleGoal extends FlyOntoPerchGoal {
 
     private boolean isNearDeathSite(World world, BlockPos pos) {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
+
         if (anchor == null || anchor.kind() != CrowAnchors.Kind.DEATH
                 || anchor.pos().getSquaredDistance(pos) > DEATH_LANDING_RANGE_SQ) {
             return false;
         }
+
         return world.getBlockState(pos).isSideSolidFullSquare(world, pos, Direction.UP);
     }
 }

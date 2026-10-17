@@ -27,7 +27,6 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -88,7 +87,9 @@ public class GraveyardForge {
         forgeBus.register(this);
         forgeBus.addListener(GraveyardForge::registerCommands);
         forgeBus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
-            if (event.getEntity() instanceof ServerPlayerEntity player) Chronicle.syncAll(player);
+            if (event.getEntity() instanceof ServerPlayerEntity player) {
+                Chronicle.syncAll(player);
+            }
         });
         forgeBus.addListener(GraveyardForge::registerResourceReloader);
         forgeBus.addListener((EntityJoinLevelEvent event) -> CommonEvents.onEntityLoad(event.getEntity()));
@@ -99,11 +100,11 @@ public class GraveyardForge {
     }
 
     private static void init(final FMLCommonSetupEvent event) {
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, "remove_waterlogged_processor"), TGProcessors.REMOVE_WATERLOGGED);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, "switch_spawner_processor"), TGProcessors.SWITCH_SPAWNER);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, "waterlogged_crypt_processor"), TGProcessors.REMOVE_WATERLOGGED_CRYPT);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, "ruin"), TGOverrunVillage.RUIN);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, "pool_aliases"), TGOverrunVillage.POOL_ALIASES);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("remove_waterlogged_processor"), TGProcessors.REMOVE_WATERLOGGED);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("switch_spawner_processor"), TGProcessors.SWITCH_SPAWNER);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("waterlogged_crypt_processor"), TGProcessors.REMOVE_WATERLOGGED_CRYPT);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("ruin"), TGOverrunVillage.RUIN);
+        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("pool_aliases"), TGOverrunVillage.POOL_ALIASES);
 
         event.enqueueWork(Graveyard::postInit);
     }
@@ -117,6 +118,7 @@ public class GraveyardForge {
     private static void onToolModification(BlockEvent.BlockToolModificationEvent event) {
         if (event.getToolAction() == ToolActions.AXE_STRIP) {
             BlockState stripped = CommonEvents.smolderingStrippedState(event.getState());
+
             if (stripped != null) {
                 event.setFinalState(stripped);
             }
@@ -137,7 +139,8 @@ public class GraveyardForge {
     @SubscribeEvent
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<DefaultAttributeContainer.Builder>> entry : RegistryHelperImpl.ENTITY_ATTRIBUTES.entrySet()) {
-            event.put(entry.getKey().get(), entry.getValue().get().build());
+            event.put(entry.getKey().get(),
+                    entry.getValue().get().build());
         }
     }
 

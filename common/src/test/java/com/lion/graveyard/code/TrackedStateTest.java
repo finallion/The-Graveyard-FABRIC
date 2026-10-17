@@ -51,18 +51,22 @@ class TrackedStateTest {
         while (spawn.find()) {
             int open = spawn.end() - 1;
             Matcher named = SPAWNED_VARIABLE.matcher(JavaText.inside(code, open));
+
             if (!named.matches()) {
                 continue;
             }
+
             String variable = named.group(1);
             int at = JavaText.closing(code, open) + 1;
             JavaText.Span method = spans.stream()
                     .filter(s -> s.contains(spawn.start()))
                     .reduce((a, b) -> a.end() - a.start() <= b.end() - b.start() ? a : b)
                     .orElse(null);
+
             if (method == null) {
                 continue;
             }
+
             String after = code.substring(at, method.end());
             Matcher late = Pattern.compile("\\b" + variable + "\\s*\\.\\s*(" + SPAWN_STATE_SETTERS + ")\\s*\\(").matcher(after);
             while (late.find()) {
@@ -116,6 +120,7 @@ class TrackedStateTest {
         List<String> problems = new ArrayList<>();
         for (String args : JavaText.callArguments(code, "startTracking(")) {
             List<String> parts = JavaText.splitTopLevel(args, ',');
+
             if (parts.size() >= 2 && RANDOM.matcher(parts.get(1)).find()) {
                 problems.add("startTracking(" + args.trim() + ") has a random default");
             }
@@ -186,7 +191,9 @@ class TrackedStateTest {
         for (String table : tables) {
             scanForFields(table, methods, fields, new HashSet<>(), 0, problems);
         }
-        return problems.stream().distinct().toList();
+        return problems.stream()
+                .distinct()
+                .toList();
     }
 
     private static void scanForFields(String text, Map<String, List<String>> methods, Set<String> fields, Set<String> visited, int depth, List<String> problems) {
@@ -195,12 +202,15 @@ class TrackedStateTest {
                 problems.add(name);
             }
         }
+
         if (depth >= 3) {
             return;
         }
+
         Matcher called = Pattern.compile("(?<![\\w.])(?:this\\.)?(\\w+)\\s*\\(|this::(\\w+)").matcher(text);
         while (called.find()) {
             String method = called.group(1) != null ? called.group(1) : called.group(2);
+
             if (methods.containsKey(method) && visited.add(method)) {
                 scanForFields(String.join("\n", methods.get(method)), methods, fields, visited, depth + 1, problems);
             }
@@ -209,11 +219,12 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> tablesReadOnlyTrackedState() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-            Set<String> reads = new TreeSet<>(untrackedReads(mob.code()));
-            reads.removeIf(field -> UNTRACKED_READS_ALLOWED.containsKey(mob.name() + "." + field));
-            assertEquals(Set.of(), reads);
-        }));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
+                    Set<String> reads = new TreeSet<>(untrackedReads(mob.code()));
+                    reads.removeIf(field -> UNTRACKED_READS_ALLOWED.containsKey(mob.name() + "." + field));
+                    assertEquals(Set.of(), reads);
+                }));
     }
 
     @Test
@@ -246,11 +257,12 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> tablesNeverReadTheTarget() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-            if (!TARGET_READS_ALLOWED.containsKey(mob.name())) {
-                assertEquals(List.of(), targetReadProblems(mob.code()));
-            }
-        }));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
+                    if (!TARGET_READS_ALLOWED.containsKey(mob.name())) {
+                        assertEquals(List.of(), targetReadProblems(mob.code()));
+                    }
+                }));
     }
 
     @Test
@@ -275,6 +287,7 @@ class TrackedStateTest {
         for (Map.Entry<String, List<String>> method : JavaText.methods(code).entrySet()) {
             String body = String.join("\n", method.getValue());
             boolean setsFlag = STALE_TARGET_FLAG.matcher(body).find();
+
             if (setsFlag && TARGET_CALL.matcher(body).find() && !body.contains("ChaseTarget.isLive(")
                     && !STALE_TARGET_ALLOWED.containsKey(className + "." + method.getKey())) {
                 problems.add(className + "." + method.getKey() + " sets a tracked chase flag from getTarget() without ChaseTarget.isLive");
@@ -286,7 +299,8 @@ class TrackedStateTest {
     @TestFactory
     Stream<DynamicTest> trackedChaseFlagsGoThroughTheLiveTargetCheck() {
         return ModProject.files(MobAnimations.ENTITIES, ".java").stream()
-                .filter(file -> !file.toString().replace('\\', '/').contains("/entities/renders/") && !file.toString().replace('\\', '/').contains("/entities/models/"))
+                .filter(file -> !file.toString().replace('\\', '/').contains("/entities/renders/")
+                        && !file.toString().replace('\\', '/').contains("/entities/models/"))
                 .filter(file -> STALE_TARGET_FLAG.matcher(Sources.code(file)).find())
                 .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () ->
                         assertEquals(List.of(), staleTargetProblems(file.getFileName().toString().replace(".java", ""), Sources.code(file)))));
@@ -326,8 +340,9 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> geckoLibEntityConstructorsDrawNoRandomValues() {
-        return entityClassNames().stream().map(name -> DynamicTest.dynamicTest(name, () ->
-                assertEquals(List.of(), constructorRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
+        return entityClassNames().stream()
+                .map(name -> DynamicTest.dynamicTest(name, () ->
+                        assertEquals(List.of(), constructorRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
     }
 
     @Test
@@ -343,6 +358,7 @@ class TrackedStateTest {
         Matcher m = FIELD_INITIALIZER.matcher(code);
         while (m.find()) {
             boolean isStatic = Pattern.compile("\\bstatic\\b").matcher(m.group(1)).find();
+
             if (!isStatic && RANDOM.matcher(m.group(3)).find()) {
                 problems.add(className + "." + m.group(2) + " draws a random value in its initializer");
             }
@@ -352,8 +368,9 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> geckoLibEntityFieldInitializersDrawNoRandomValues() {
-        return entityClassNames().stream().map(name -> DynamicTest.dynamicTest(name, () ->
-                assertEquals(List.of(), fieldInitializerRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
+        return entityClassNames().stream()
+                .map(name -> DynamicTest.dynamicTest(name, () ->
+                        assertEquals(List.of(), fieldInitializerRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
     }
 
     @Test

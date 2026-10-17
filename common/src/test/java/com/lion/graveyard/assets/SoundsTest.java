@@ -35,9 +35,11 @@ class SoundsTest {
 
     static List<String> soundFileReferences(JsonObject event) {
         List<String> names = new ArrayList<>();
+
         if (!event.has("sounds")) {
             return names;
         }
+
         for (JsonElement sound : event.getAsJsonArray("sounds")) {
             if (sound.isJsonPrimitive()) {
                 names.add(sound.getAsString());
@@ -69,33 +71,38 @@ class SoundsTest {
     @TestFactory
     Stream<DynamicTest> everySoundEventInSoundsJsonPointsAtExistingFiles() {
         JsonObject sounds = soundsJson();
-        return sounds.entrySet().stream().map(event -> DynamicTest.dynamicTest(event.getKey(), () -> {
-            JsonObject single = new JsonObject();
-            single.add(event.getKey(), event.getValue());
-            List<String> problems = missingSoundFiles(single, ASSETS);
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return sounds.entrySet().stream()
+                .map(event -> DynamicTest.dynamicTest(event.getKey(), () -> {
+                    JsonObject single = new JsonObject();
+                    single.add(event.getKey(), event.getValue());
+                    List<String> problems = missingSoundFiles(single, ASSETS);
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyOggFileHasAnOggHeader() {
         Path dir = ASSETS.root().resolve(ModProject.SOUNDS);
-        return ModProject.files(dir, ".ogg").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".ogg"), () -> assertTrue(hasOggHeader(file), "Missing OggS header")));
+        return ModProject.files(dir, ".ogg").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".ogg"), () -> assertTrue(hasOggHeader(file), "Missing OggS header")));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredSoundEventIsDefinedInSoundsJson() {
         Set<String> defined = soundsJson().keySet();
-        return RegistryIds.of(RegistryIds.SOUND).stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(defined.contains(id), "Registered sound event not in sounds.json: " + id)));
+        return RegistryIds.of(RegistryIds.SOUND).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(defined.contains(id), "Registered sound event not in sounds.json: " + id)));
     }
 
     @TestFactory
     Stream<DynamicTest> everySoundsJsonEventIsRegisteredInCode() {
         Set<String> registered = RegistryIds.of(RegistryIds.SOUND);
-        return soundsJson().keySet().stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(registered.contains(id), "Event in sounds.json without a registration: " + id)));
+        return soundsJson().keySet()
+                .stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(registered.contains(id), "Event in sounds.json without a registration: " + id)));
     }
 
     @TestFactory

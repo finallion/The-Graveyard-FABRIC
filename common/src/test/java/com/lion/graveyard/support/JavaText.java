@@ -27,6 +27,7 @@ public final class JavaText {
         int depth = 0;
         for (int i = open; i < text.length(); i++) {
             char c = text.charAt(i);
+
             if (c == '"' || c == '\'') {
                 i = skipLiteral(text, i);
             } else if (c == openChar) {
@@ -58,9 +59,11 @@ public final class JavaText {
         int from = 0;
         while (true) {
             int at = code.indexOf(prefix, from);
+
             if (at < 0) {
                 return result;
             }
+
             int open = at + prefix.length() - 1;
             result.add(inside(code, open));
             from = open + 1;
@@ -73,6 +76,7 @@ public final class JavaText {
         int start = 0;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
+
             if (c == '"' || c == '\'') {
                 i = skipLiteral(text, i);
             } else if (c == '(' || c == '{' || c == '[') {
@@ -100,9 +104,11 @@ public final class JavaText {
         Matcher m = METHOD.matcher(code);
         while (m.find()) {
             String name = m.group(1);
+
             if (NOT_METHODS.contains(name) || precededByNew(code, m.start())) {
                 continue;
             }
+
             int open = m.end() - 1;
             spans.add(new Span(name, open, closing(code, open)));
         }
@@ -144,6 +150,7 @@ public final class JavaText {
             for (Map.Entry<String, String> entry : raw.entrySet()) {
                 if (!resolved.containsKey(entry.getKey())) {
                     OptionalInt value = evaluate(entry.getValue(), resolved);
+
                     if (value.isPresent()) {
                         resolved.put(entry.getKey(), value.getAsInt());
                         progress = true;
@@ -202,26 +209,34 @@ public final class JavaText {
             if (text.charAt(index) == '(') {
                 index++;
                 int value = sum();
+
                 if (text.charAt(index++) != ')') {
                     throw new IllegalStateException();
                 }
+
                 return value;
             }
+
             int start = index;
             while (index < text.length() && (Character.isLetterOrDigit(text.charAt(index)) || text.charAt(index) == '_' || text.charAt(index) == '.')) {
                 index++;
             }
             String token = text.substring(start, index);
+
             if (token.isEmpty()) {
                 throw new IllegalStateException();
             }
+
             if (Character.isDigit(token.charAt(0))) {
                 return Integer.parseInt(token);
             }
+
             Integer value = constants.get(token.substring(token.lastIndexOf('.') + 1));
+
             if (value == null) {
                 throw new IllegalStateException();
             }
+
             return value;
         }
     }
@@ -239,9 +254,11 @@ public final class JavaText {
         if (depth <= 0) {
             return;
         }
+
         Matcher called = CALLED.matcher(text);
         while (called.find()) {
             String name = called.group(1) != null ? called.group(1) : called.group(2);
+
             if (methods.containsKey(name) && visited.add(name)) {
                 String body = String.join("\n", methods.get(name));
                 out.append('\n').append(body);

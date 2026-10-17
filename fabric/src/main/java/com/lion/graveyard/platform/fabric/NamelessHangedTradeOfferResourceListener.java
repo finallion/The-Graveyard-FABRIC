@@ -20,7 +20,7 @@ public class NamelessHangedTradeOfferResourceListener extends JsonDataLoader imp
 
     @Override
     public Identifier getFabricId() {
-        return new Identifier(Graveyard.MOD_ID,"nameless_hanged_trades_data_loader");
+        return Graveyard.id("nameless_hanged_trades_data_loader");
     }
 
     @Override

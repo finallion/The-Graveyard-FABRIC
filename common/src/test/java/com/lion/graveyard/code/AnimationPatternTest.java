@@ -114,16 +114,21 @@ class AnimationPatternTest {
         List<String> problems = new ArrayList<>();
         for (String args : JavaText.callArguments(code, "AnimationClock.controller(")) {
             int at = args.indexOf("transitionLength(");
+
             if (at < 0) {
                 problems.add("handler never calls transitionLength");
                 continue;
             }
+
             String statement = args.substring(at, args.indexOf(';', at));
             String before = args.substring(0, at);
+
             if (braceDepth(before) != 1) {
                 problems.add("transitionLength is not set on every frame: " + statement);
             }
-            if (!FIRST_FRAME_NULL_CHECK.matcher(before + statement).find() || !ZERO_BRANCH.matcher(statement).find()) {
+
+            if (!FIRST_FRAME_NULL_CHECK.matcher(before + statement).find()
+                    || !ZERO_BRANCH.matcher(statement).find()) {
                 problems.add("transitionLength is not 0 while getCurrentAnimation() is null: " + statement);
             }
         }
@@ -134,6 +139,7 @@ class AnimationPatternTest {
         int depth = 0;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
+
             if (c == '"') {
                 i = text.indexOf('"', i + 1);
             } else if (c == '{') {
@@ -163,9 +169,11 @@ class AnimationPatternTest {
     void geckoLibControllersOutsideTheClockUseNoBlend() {
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
             String code = Sources.code(file);
+
             if (file.getFileName().toString().equals("AnimationClock.java")) {
                 continue;
             }
+
             for (String args : JavaText.callArguments(code, "new AnimationController<>(")) {
                 assertEquals("0", JavaText.splitTopLevel(args, ',').get(2).trim(), ModProject.display(file));
             }
@@ -186,16 +194,20 @@ class AnimationPatternTest {
 
     static List<String> spawnTableProblems(String code, boolean startAtRequired) {
         List<String> problems = new ArrayList<>();
+
         if (!cutsIntoSpawn(code)) {
             problems.add("no transitionTicks lambda that returns 0 while spawning");
         }
+
         if (startAtRequired) {
             if (!START_AT_SPAWN.matcher(code).find()) {
                 problems.add("no startAt(SPAWN...) for a tracked spawn timer");
-            } else if (JavaText.callArguments(code, ".startAt(").stream().noneMatch(args -> SPAWN_OFFSET.matcher(args).find())) {
+            } else if (JavaText.callArguments(code, ".startAt(").stream()
+                    .noneMatch(args -> SPAWN_OFFSET.matcher(args).find())) {
                 problems.add("startAt does not subtract the spawn timer from the spawn length");
             }
         }
+
         return problems;
     }
 
@@ -203,6 +215,7 @@ class AnimationPatternTest {
         Map<String, List<String>> methods = JavaText.methods(code);
         for (String args : JavaText.callArguments(code, ".transitionTicks(")) {
             Matcher zero = ZERO_WHILE.matcher(JavaText.reachableText(args, methods, 2));
+
             if (zero.find() && SPAWN_WORD.matcher(zero.group(1)).find()) {
                 return true;
             }
@@ -211,7 +224,9 @@ class AnimationPatternTest {
     }
 
     private static List<Mob> mobsWithSpawnClip() {
-        return MobAnimations.mobs().stream().filter(mob -> MobAnimations.hasClip(mob.animations(), "spawn")).toList();
+        return MobAnimations.mobs().stream()
+                .filter(mob -> MobAnimations.hasClip(mob.animations(), "spawn"))
+                .toList();
     }
 
     @Test
@@ -222,7 +237,8 @@ class AnimationPatternTest {
     @TestFactory
     Stream<DynamicTest> spawnClipMobsBlendInstantlyAndResumeMidSpawn() {
         return mobsWithSpawnClip().stream()
-                .filter(mob -> !mob.name().equals("TormentedVillagerEntity") && !mob.name().equals("LichEntity"))
+                .filter(mob -> !mob.name().equals("TormentedVillagerEntity")
+                        && !mob.name().equals("LichEntity"))
                 .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> assertEquals(List.of(), spawnTableProblems(mob.code(), true))));
     }
 
@@ -257,6 +273,7 @@ class AnimationPatternTest {
     static List<String> stateSourceProblems(String owner, String code, boolean wholeFile) {
         List<String> problems = new ArrayList<>();
         Map<String, String> scopes = new LinkedHashMap<>();
+
         if (wholeFile) {
             scopes.put("file", code);
         } else {
@@ -271,11 +288,13 @@ class AnimationPatternTest {
                 }
             }
         }
+
         scopes.forEach((scope, text) -> {
             Matcher m = FORBIDDEN_STATE_SOURCE.matcher(text);
             while (m.find()) {
                 String token = m.group().contains("isIdle") ? "isIdle" : "isAttacking";
                 String scopeName = scope.startsWith("when#") ? "when" : scope;
+
                 if (!STATE_SOURCE_ALLOWED.containsKey(owner + "." + scopeName + ":" + token)) {
                     problems.add(owner + " " + scopeName + " reads " + token + "()");
                 }
@@ -304,10 +323,13 @@ class AnimationPatternTest {
             List<String> parts = JavaText.splitTopLevel(args, ',');
             String tracked = parts.get(0).trim();
             Matcher source = FORBIDDEN_STATE_SOURCE.matcher(String.join(",", parts.subList(1, parts.size())));
+
             if (!read.contains(tracked) || !source.find()) {
                 continue;
             }
+
             String token = source.group().contains("isIdle") ? "isIdle" : "isAttacking";
+
             if (!STATE_SOURCE_ALLOWED.containsKey(owner + "." + tracked + ":" + token)) {
                 problems.add(owner + " copies " + token + "() into " + tracked + " and a table reads it");
             }
@@ -335,7 +357,9 @@ class AnimationPatternTest {
 
     @Test
     void tablesRenderersAndModelsWereFound() {
-        int conditions = MobAnimations.mobs().stream().mapToInt(mob -> JavaText.callArguments(mob.code(), ".when(").size()).sum();
+        int conditions = MobAnimations.mobs().stream()
+                .mapToInt(mob -> JavaText.callArguments(mob.code(), ".when(").size())
+                .sum();
         assertTrue(conditions >= 40, "only " + conditions + " table conditions found");
         assertTrue(ModProject.files(MobAnimations.ENTITIES.resolve("renders"), ".java").size() >= 10);
         assertTrue(ModProject.files(MobAnimations.ENTITIES.resolve("models"), ".java").size() >= 10);
@@ -375,12 +399,15 @@ class AnimationPatternTest {
         List<String> problems = new ArrayList<>();
         for (Clip clip : clips) {
             JsonObject animation = MobAnimations.animation(animations, clip.clip());
+
             if (animation == null) {
                 problems.add(clip.field() + ": clip " + clip.clip() + " is not in the animation file");
                 continue;
             }
+
             FileLoop file = MobAnimations.fileLoop(animation);
             FileLoop effective = MobAnimations.effective(clip.loop(), file);
+
             if (triggerable.contains(clip.field())) {
                 if (effective != FileLoop.ONCE) {
                     problems.add(clip.field() + ": triggered clip must play once but is " + effective);
@@ -389,6 +416,7 @@ class AnimationPatternTest {
                 if (effective == FileLoop.ONCE) {
                     problems.add(clip.field() + ": state clip plays once and then stops; use hold on last frame");
                 }
+
                 if (clip.loop() == Loop.LOOP && file != FileLoop.LOOP) {
                     problems.add(clip.field() + ": Java loops a clip the file does not loop");
                 }
@@ -412,20 +440,22 @@ class AnimationPatternTest {
 
     @TestFactory
     Stream<DynamicTest> everyDeclaredClipIsParsed() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
-                assertEquals(0, MobAnimations.unparsedClipSites(mob.code()), "some RawAnimation.begin( calls are not understood by the test")));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
+                        assertEquals(0, MobAnimations.unparsedClipSites(mob.code()), "some RawAnimation.begin( calls are not understood by the test")));
     }
 
     @TestFactory
     Stream<DynamicTest> clipsAssignedInEnumsExistInTheAnimationFile() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-            JsonObject animations = mob.animations();
-            List<String> missing = mob.enumClips().stream()
-                    .filter(clip -> MobAnimations.animation(animations, clip.clip()) == null)
-                    .map(Clip::clip)
-                    .toList();
-            assertEquals(List.of(), missing);
-        }));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
+                    JsonObject animations = mob.animations();
+                    List<String> missing = mob.enumClips().stream()
+                            .filter(clip -> MobAnimations.animation(animations, clip.clip()) == null)
+                            .map(Clip::clip)
+                            .toList();
+                    assertEquals(List.of(), missing);
+                }));
     }
 
     @Test
@@ -446,16 +476,19 @@ class AnimationPatternTest {
         assertEquals(1, MobAnimations.unparsedClipSites(bare));
         assertEquals(0, MobAnimations.unparsedClipSites(enumOk));
         assertEquals(1, MobAnimations.unparsedClipSites(enumUnknown));
-        assertEquals(List.of("animation.a.walk", "animation.b.walk"), MobAnimations.enumClips(enumOk).stream().map(Clip::clip).toList());
+        assertEquals(List.of("animation.a.walk", "animation.b.walk"), MobAnimations.enumClips(enumOk).stream()
+                .map(Clip::clip)
+                .toList());
     }
 
     @TestFactory
     Stream<DynamicTest> javaLoopTypesMatchTheAnimationFile() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-            String controllers = mob.controllerBody();
-            List<Clip> clips = new ArrayList<>(mob.clips());
-            assertEquals(List.of(), loopProblems(clips, triggerableFields(controllers), controllers, mob.animations()));
-        }));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
+                    String controllers = mob.controllerBody();
+                    List<Clip> clips = new ArrayList<>(mob.clips());
+                    assertEquals(List.of(), loopProblems(clips, triggerableFields(controllers), controllers, mob.animations()));
+                }));
     }
 
     @Test
@@ -463,7 +496,9 @@ class AnimationPatternTest {
         Mob mob = MobAnimations.mob("TormentedVillagerEntity");
         List<Clip> moods = MobAnimations.moodClips(mob.code(), mob.constants());
         assertEquals(7, moods.size());
-        assertEquals(List.of(), loopProblems(moods, Set.of(), moods.stream().map(Clip::field).reduce("", (a, b) -> a + " " + b), mob.animations()));
+        assertEquals(List.of(), loopProblems(moods, Set.of(), moods.stream()
+                .map(Clip::field)
+                .reduce("", (a, b) -> a + " " + b), mob.animations()));
     }
 
     @Test
@@ -487,15 +522,19 @@ class AnimationPatternTest {
     static List<String> timerProblems(String label, int timer, JsonObject animation, FileLoop effective, int entryBlend) {
         int clip = MobAnimations.lengthTicks(animation);
         List<String> problems = new ArrayList<>();
+
         if (effective == FileLoop.HOLD && timer < clip + entryBlend) {
             problems.add(label + ": timer " + timer + " ends before clip " + clip + " + blend " + entryBlend);
         }
+
         if (effective == FileLoop.LOOP && timer > clip + entryBlend) {
             problems.add(label + ": timer " + timer + " starts a partial pass past clip " + clip + " + blend " + entryBlend);
         }
+
         if (effective == FileLoop.ONCE) {
             problems.add(label + ": clip plays once");
         }
+
         return problems;
     }
 
@@ -504,7 +543,10 @@ class AnimationPatternTest {
         Integer timer = mob.constants().get(rule.constant());
         assertTrue(timer != null, rule.mob() + "." + rule.constant() + " not found");
         JsonObject animations = mob.animations();
-        Clip clip = mob.clips().stream().filter(c -> c.clip().equals(rule.clip()) || c.clip().endsWith("." + rule.clip())).findFirst().orElseThrow();
+        Clip clip = mob.clips().stream()
+                .filter(c -> c.clip().equals(rule.clip()) || c.clip().endsWith("." + rule.clip()))
+                .findFirst()
+                .orElseThrow();
         JsonObject animation = MobAnimations.animation(animations, clip.clip());
         FileLoop effective = MobAnimations.effective(clip.loop(), MobAnimations.fileLoop(animation));
         return timerProblems(rule.mob() + "." + rule.constant(), timer, animation, effective, rule.entryBlend());
@@ -580,8 +622,9 @@ class AnimationPatternTest {
     @TestFactory
     Stream<DynamicTest> everyTimerConstantHasARuleOrAnException() {
         Set<String> covered = coveredTimers();
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
-                assertEquals(List.of(), uncoveredTimers(mob.name(), mob.code(), covered))));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
+                        assertEquals(List.of(), uncoveredTimers(mob.name(), mob.code(), covered))));
     }
 
     @Test
@@ -599,6 +642,7 @@ class AnimationPatternTest {
             if (mood.ticks().orElse(0) <= 0) {
                 continue;
             }
+
             JsonObject animation = MobAnimations.animation(mob.animations(), mood.clip());
             FileLoop effective = MobAnimations.effective(mood.loop(), MobAnimations.fileLoop(animation));
             int blend = mood.field().equals("SPAWNING") ? 0 : mob.constants().get("MOOD_TRANSITION_TICKS");
@@ -622,16 +666,21 @@ class AnimationPatternTest {
         List<String> problems = new ArrayList<>();
         for (Clip clip : MobAnimations.clipsIn(code)) {
             String name = clip.clip().substring(clip.clip().lastIndexOf('.') + 1);
+
             if (!name.equals("death") && !name.equals("blow_apart")) {
                 continue;
             }
+
             List<String> bodies = JavaText.methods(code).get("updatePostDeath");
+
             if (bodies == null) {
                 problems.add(clip.field() + ": a death clip needs an updatePostDeath override");
                 continue;
             }
+
             int removal = removalTick(String.join("\n", bodies), constants);
             int needed = MobAnimations.lengthTicks(MobAnimations.animation(animations, clip.clip())) + MobAnimations.TRANSITION_TICKS;
+
             if (removal == Integer.MAX_VALUE) {
                 problems.add(clip.field() + ": removal tick not readable");
             } else if (removal < needed) {
@@ -649,10 +698,13 @@ class AnimationPatternTest {
             int open = branch.end() - 1;
             int close = JavaText.closing(body, open);
             int block = body.indexOf('{', close);
+
             if (block < 0 || body.substring(close, block).contains(";")) {
                 continue;
             }
+
             Matcher time = DEATH_REMOVAL.matcher(body.substring(open, close));
+
             if (time.find() && JavaText.inside(body, block).contains("remove")) {
                 removal = Math.min(removal, JavaText.evaluate(time.group(1), constants).orElse(Integer.MAX_VALUE));
             }
@@ -662,8 +714,9 @@ class AnimationPatternTest {
 
     @TestFactory
     Stream<DynamicTest> deathClipsOutlastTheRemovalTick() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
-                assertEquals(List.of(), deathRemovalProblems(mob.code(), mob.animations(), mob.constants()))));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
+                        assertEquals(List.of(), deathRemovalProblems(mob.code(), mob.animations(), mob.constants()))));
     }
 
     @Test
@@ -710,6 +763,7 @@ class AnimationPatternTest {
         for (String key : animations.keySet()) {
             Map<String, Boolean> channels = new LinkedHashMap<>();
             JsonObject bones = animations.getAsJsonObject(key).getAsJsonObject("bones");
+
             if (bones != null) {
                 for (String bone : bones.keySet()) {
                     JsonObject bone1 = bones.getAsJsonObject(bone);
@@ -718,6 +772,7 @@ class AnimationPatternTest {
                     }
                 }
             }
+
             perClip.put(key, channels);
         }
         Set<String> result = new TreeSet<>();
@@ -725,9 +780,11 @@ class AnimationPatternTest {
             if (TERMINAL_CLIPS.contains(entry.getKey().substring(entry.getKey().lastIndexOf('.') + 1))) {
                 continue;
             }
+
             Map<String, Boolean> source = entry.getValue();
             source.forEach((channel, neutral) -> {
-                if (!neutral && perClip.values().stream().anyMatch(other -> !other.containsKey(channel))) {
+                if (!neutral && perClip.values().stream()
+                        .anyMatch(other -> !other.containsKey(channel))) {
                     result.add(channel);
                 }
             });
@@ -739,6 +796,7 @@ class AnimationPatternTest {
         if (element.isJsonPrimitive()) {
             return element.getAsJsonPrimitive().isNumber() ? element.getAsDouble() == neutral : isOptionName(element.getAsString());
         }
+
         if (element.isJsonArray()) {
             for (JsonElement child : element.getAsJsonArray()) {
                 if (!isNeutral(child, neutral)) {
@@ -747,8 +805,11 @@ class AnimationPatternTest {
             }
             return true;
         }
+
         for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
-            if (!entry.getKey().equals("lerp_mode") && !entry.getKey().equals("easing") && !isNeutral(entry.getValue(), neutral)) {
+            if (!entry.getKey().equals("lerp_mode")
+                    && !entry.getKey().equals("easing")
+                    && !isNeutral(entry.getValue(), neutral)) {
                 return false;
             }
         }
@@ -764,13 +825,18 @@ class AnimationPatternTest {
         List<String> problems = new ArrayList<>();
         for (String body : JavaText.methods(code).getOrDefault("getBoneResetTime", List.of())) {
             Matcher returned = RETURN_VALUE.matcher(body);
+
             if (!returned.find()) {
                 problems.add("getBoneResetTime returns nothing readable");
                 continue;
             }
+
             do {
-                String expression = returned.group(1).replaceAll("(\\d+)\\.0+(?![\\d])", "$1").replaceAll("(?<=\\d)[dDfFlL]\\b", "");
+                String expression = returned.group(1)
+                        .replaceAll("(\\d+)\\.0+(?![\\d])", "$1")
+                        .replaceAll("(?<=\\d)[dDfFlL]\\b", "");
                 OptionalInt value = JavaText.evaluate(expression, constants);
+
                 if (value.isEmpty()) {
                     problems.add("getBoneResetTime returns '" + expression.trim() + "', which the test cannot read");
                 } else if (value.getAsInt() < 1) {
@@ -783,15 +849,17 @@ class AnimationPatternTest {
 
     @TestFactory
     Stream<DynamicTest> everyMobResetsBonesOrKeepsChannelsInAllClips() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-            if (JavaText.methods(mob.code()).containsKey("getBoneResetTime")) {
-                assertEquals(List.of(), boneResetValueProblems(mob.code(), mob.constants()));
-                return;
-            }
-            Set<String> snapping = new TreeSet<>(snappingChannels(mob.animations()));
-            snapping.removeAll(UNRESET_CHANNELS_ALLOWED.getOrDefault(mob.name(), Set.of()));
-            assertEquals(Set.of(), snapping, mob.name() + " has no getBoneResetTime override");
-        }));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
+                    if (JavaText.methods(mob.code()).containsKey("getBoneResetTime")) {
+                        assertEquals(List.of(), boneResetValueProblems(mob.code(), mob.constants()));
+                        return;
+                    }
+
+                    Set<String> snapping = new TreeSet<>(snappingChannels(mob.animations()));
+                    snapping.removeAll(UNRESET_CHANNELS_ALLOWED.getOrDefault(mob.name(), Set.of()));
+                    assertEquals(Set.of(), snapping, mob.name() + " has no getBoneResetTime override");
+                }));
     }
 
     @Test
@@ -824,6 +892,7 @@ class AnimationPatternTest {
         List<String> rearmPath = rearmPathProblems(entityCode);
         for (String argument : JavaText.callArguments(goalCode, "resetCooldown(")) {
             OptionalInt cooldown = JavaText.evaluate(argument, constants);
+
             if (cooldown.isEmpty()) {
                 problems.add(goalName + ": cooldown '" + argument.trim() + "' is not readable");
             } else if (cooldown.getAsInt() <= duration) {
@@ -838,10 +907,12 @@ class AnimationPatternTest {
     static List<String> rearmPathProblems(String code) {
         List<String> problems = new ArrayList<>();
         int call = code.indexOf("forceAnimationReset(");
+
         if (call < 0) {
             problems.add("The entity never calls forceAnimationReset.");
             return problems;
         }
+
         boolean guarded = false;
         Matcher head = IF_HEAD.matcher(code);
         while (head.find()) {
@@ -851,18 +922,24 @@ class AnimationPatternTest {
             while (block < code.length() && Character.isWhitespace(code.charAt(block))) {
                 block++;
             }
+
             if (block < code.length() && code.charAt(block) == '{' && call > block && call < JavaText.closing(code, block)) {
                 String condition = code.substring(open, close);
-                guarded |= Pattern.compile("(?i)timer|ticks").matcher(condition).find() && Pattern.compile("[<>]").matcher(condition).find();
+                guarded |= Pattern.compile("(?i)timer|ticks").matcher(condition).find()
+                        && Pattern.compile("[<>]").matcher(condition).find();
             }
         }
+
         if (!guarded) {
             problems.add("forceAnimationReset is not inside a timer comparison.");
         }
+
         String method = enclosingMethod(code, call);
+
         if (method == null || Pattern.compile("(?<![\\w.])(?:this\\.)?" + method + "\\s*\\(").matcher(code).results().count() < 2) {
             problems.add("The method around forceAnimationReset is never called.");
         }
+
         return problems;
     }
 
@@ -881,6 +958,7 @@ class AnimationPatternTest {
         for (Path file : ModProject.files(MobAnimations.ENTITIES.resolve("ai/goals"), ".java")) {
             String goal = Sources.code(file);
             Matcher m = owner.matcher(goal);
+
             if (m.find()) {
                 Mob mob = MobAnimations.mob(m.group(1));
                 tests.add(DynamicTest.dynamicTest(file.getFileName().toString(), () ->
@@ -929,8 +1007,9 @@ class AnimationPatternTest {
 
     @TestFactory
     Stream<DynamicTest> everyDeclaredClipIsUsedByTheController() {
-        return MobAnimations.mobs().stream().map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
-                assertEquals(List.of(), unusedClips(mob.code(), mob.controllerBody()))));
+        return MobAnimations.mobs().stream()
+                .map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
+                        assertEquals(List.of(), unusedClips(mob.code(), mob.controllerBody()))));
     }
 
     @Test
@@ -981,7 +1060,9 @@ class AnimationPatternTest {
         String haystack = normalized(text);
         String simple = normalized(simpleName(clip));
         return haystack.contains(normalized(clip.field())) || haystack.contains(simple)
-                || haystack.contains(simple.replace("three", "3").replace("two", "2").replace("one", "1"));
+                || haystack.contains(simple.replace("three", "3")
+                        .replace("two", "2")
+                        .replace("one", "1"));
     }
 
     /// Ticks the code blends into {@code to} after {@code from}. Zero is a hard cut.
@@ -989,10 +1070,14 @@ class AnimationPatternTest {
         if (simpleName(to).equals("spawn") && (cutsIntoSpawn(code) || TORMENTED_CUT.matcher(code).find())) {
             return 0;
         }
+
         Map<String, List<String>> methods = JavaText.methods(code);
         for (String lambda : JavaText.callArguments(code, ".transitionTicks(")) {
             String text = JavaText.reachableText(lambda, methods, 2);
-            if (CURRENT_CLIP.matcher(text).find() && BARE_ZERO.matcher(text).find() && mentions(text, from)) {
+
+            if (CURRENT_CLIP.matcher(text).find()
+                    && BARE_ZERO.matcher(text).find()
+                    && mentions(text, from)) {
                 return 0;
             }
         }
@@ -1003,21 +1088,26 @@ class AnimationPatternTest {
         if (element.isJsonArray()) {
             JsonArray array = element.getAsJsonArray();
             double[] result = new double[3];
+
             if (array.size() != 3) {
                 return null;
             }
+
             for (int i = 0; i < 3; i++) {
                 if (!array.get(i).isJsonPrimitive() || !array.get(i).getAsJsonPrimitive().isNumber()) {
                     return null;
                 }
+
                 result[i] = array.get(i).getAsDouble();
             }
             return result;
         }
+
         if (element.isJsonPrimitive()) {
             double value = element.getAsJsonPrimitive().isNumber() ? element.getAsDouble() : Double.NaN;
             return Double.isNaN(value) ? null : new double[]{value, value, value};
         }
+
         JsonObject object = element.getAsJsonObject();
         for (String key : List.of("post", "vector")) {
             if (object.has(key)) {
@@ -1033,6 +1123,7 @@ class AnimationPatternTest {
             } catch (NumberFormatException e) {
                 continue;
             }
+
             if (chosen == null || (last ? time > chosenTime : time < chosenTime)) {
                 chosen = key;
                 chosenTime = time;
@@ -1043,9 +1134,11 @@ class AnimationPatternTest {
 
     private static double[] rotationAt(JsonObject animation, String bone, boolean last) {
         JsonObject bones = animation.getAsJsonObject("bones");
+
         if (bones == null || !bones.has(bone)) {
             return new double[3];
         }
+
         JsonObject channels = bones.getAsJsonObject(bone);
         return channels.has("rotation") ? vectorOf(channels.get("rotation"), last) : new double[3];
     }
@@ -1061,11 +1154,14 @@ class AnimationPatternTest {
         for (String bone : bones) {
             double[] end = rotationAt(from, bone, true);
             double[] start = rotationAt(to, bone, false);
+
             if (end == null || start == null) {
                 continue;
             }
+
             for (int axis = 0; axis < 3; axis++) {
                 double delta = Math.abs(end[axis] - start[axis]);
+
                 if (delta > worst.degrees()) {
                     worst = new Jump(delta, bone + " axis " + "xyz".charAt(axis) + " from " + end[axis] + " to " + start[axis]);
                 }
@@ -1079,18 +1175,23 @@ class AnimationPatternTest {
         List<String> problems = new ArrayList<>();
         for (Clip from : clips) {
             JsonObject start = MobAnimations.animation(animations, from.clip());
+
             if (start == null || TERMINAL_CLIPS.contains(simpleName(from))
                     || MobAnimations.effective(from.loop(), MobAnimations.fileLoop(start)) != FileLoop.HOLD) {
                 continue;
             }
+
             for (Clip to : clips) {
                 JsonObject end = MobAnimations.animation(animations, to.clip());
                 String pair = mob + ":" + from.field() + ">" + to.field();
                 boolean reachable = !successors.containsKey(from.field()) || successors.get(from.field()).contains(to.field());
+
                 if (end == null || !reachable || !targets.contains(to.field()) || to.clip().equals(from.clip()) || allowed.containsKey(pair)) {
                     continue;
                 }
+
                 Jump jump = rotationJump(start, end);
+
                 if (jump.degrees() > SPIN_LIMIT_DEGREES && blend.apply(from, to) > 0) {
                     problems.add(pair + " turns " + Math.round(jump.degrees()) + " degrees (" + jump.where() + ") over a blend");
                 }
@@ -1101,21 +1202,27 @@ class AnimationPatternTest {
 
     private static Set<String> tableTargets(Mob mob) {
         String body = mob.controllerBody();
-        return mob.clips().stream().map(Clip::field).filter(field -> isReferenced(body, field)).collect(Collectors.toSet());
+        return mob.clips().stream()
+                .map(Clip::field)
+                .filter(field -> isReferenced(body, field))
+                .collect(Collectors.toSet());
     }
 
     @TestFactory
     Stream<DynamicTest> holdClipHandoversDoNotSpinTheBones() {
-        return MobAnimations.mobs().stream().filter(mob -> !mob.name().equals("TormentedVillagerEntity")).map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
-                assertEquals(List.of(), handoverProblems(mob.name(), mob.clips(), tableTargets(mob), mob.animations(), (from, to) -> blendInto(mob.code(), from, to),
-                        HANDOVER_ALLOWED, HANDOVER_SUCCESSORS.getOrDefault(mob.name(), Map.of())))));
+        return MobAnimations.mobs().stream()
+                .filter(mob -> !mob.name().equals("TormentedVillagerEntity")).map(mob -> DynamicTest.dynamicTest(mob.name(), () ->
+                        assertEquals(List.of(), handoverProblems(mob.name(), mob.clips(), tableTargets(mob), mob.animations(), (from, to) -> blendInto(mob.code(), from, to),
+                                HANDOVER_ALLOWED, HANDOVER_SUCCESSORS.getOrDefault(mob.name(), Map.of())))));
     }
 
     @Test
     void tormentedMoodHandoversDoNotSpinTheBones() {
         Mob mob = MobAnimations.mob("TormentedVillagerEntity");
         List<Clip> moods = MobAnimations.moodClips(mob.code(), mob.constants());
-        Set<String> targets = moods.stream().map(Clip::field).collect(Collectors.toSet());
+        Set<String> targets = moods.stream()
+                .map(Clip::field)
+                .collect(Collectors.toSet());
         assertEquals(List.of(), handoverProblems(mob.name(), moods, targets, mob.animations(), (from, to) -> blendInto(mob.code(), from, to), HANDOVER_ALLOWED, Map.of()));
     }
 

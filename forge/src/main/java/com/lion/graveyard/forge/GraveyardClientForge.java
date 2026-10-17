@@ -61,6 +61,7 @@ public class GraveyardClientForge {
                 if (entity != null && stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                     return VialOfBlood.getBlood(stack);
                 }
+
                 return 0.0F;
             });
 

@@ -72,6 +72,7 @@ public class GravestoneScreen extends Screen {
 
     public void removed() {
         ClientPlayNetworkHandler clientPlayNetworkHandler = this.client.getNetworkHandler();
+
         if (clientPlayNetworkHandler != null) {
             clientPlayNetworkHandler.sendPacket(new UpdateSignC2SPacket(this.sign.getPos(), true, this.text[0], this.text[1], this.text[2], this.text[3]));
         }
@@ -80,6 +81,7 @@ public class GravestoneScreen extends Screen {
 
     public void tick() {
         ++this.ticksSinceOpened;
+
         if (!this.sign.getType().supports(this.sign.getCachedState())) {
             this.finishEditing();
         }
@@ -127,6 +129,7 @@ public class GravestoneScreen extends Screen {
         matrices.translate(0.0D, -1.3125D, 0.0D);
         BlockState blockState = this.sign.getCachedState();
         boolean bl = blockState.getBlock() instanceof SignBlock;
+
         if (!bl) {
             matrices.translate(0.0D, -0.3125D, 0.0D);
         }
@@ -159,6 +162,7 @@ public class GravestoneScreen extends Screen {
         int p;
         for(n = 0; n < this.text.length; ++n) {
             string = this.text[n];
+
             if (string != null) {
                 if (this.textRenderer.isRightToLeft()) {
                     string = this.textRenderer.mirror(string);
@@ -166,9 +170,11 @@ public class GravestoneScreen extends Screen {
 
                 float f = (float)(-this.client.textRenderer.getWidth(string) / 2);
                 this.client.textRenderer.draw(string, f, (float)(n * 10 - l), i, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880, false);
+
                 if (n == this.currentRow && j >= 0 && bl) {
                     o = this.client.textRenderer.getWidth(string.substring(0, Math.min(j, string.length())));
                     p = o - this.client.textRenderer.getWidth(string) / 2;
+
                     if (j >= string.length()) {
                         this.client.textRenderer.draw("_", (float)p, (float)m, i, false, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880, false);
                     }
@@ -180,9 +186,11 @@ public class GravestoneScreen extends Screen {
 
         for(n = 0; n < this.text.length; ++n) {
             string = this.text[n];
+
             if (string != null && n == this.currentRow && j >= 0) {
                 int q = this.client.textRenderer.getWidth(string.substring(0, Math.min(j, string.length())));
                 o = q - this.client.textRenderer.getWidth(string) / 2;
+
                 if (bl && j < string.length()) {
                     context.fill(o, m - 1, o + 1, m + 10, -16777216 | i);
                 }

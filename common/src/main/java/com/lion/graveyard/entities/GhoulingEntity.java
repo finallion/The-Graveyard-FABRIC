@@ -63,7 +63,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
 
-
 public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, NamedScreenHandlerFactory {
     /// How often the last known position is recorded; the staff fetches at the same pace.
     public static final int BINDING_INTERVAL = 40;
@@ -186,6 +185,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             if (getTeleportTimer() == 10) {
                 playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 2.0F, -10.0F);
             }
+
             MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getEntityWorld().random, 0.5F);
             MathUtil.createParticleCircle(getEntityWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, getEntityWorld().random, 0.5F);
         }
@@ -198,6 +198,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         if (getSpawnTimer() > 0 && getEntityWorld() != null) {
             Random random = this.getRandom();
             BlockState blockState = this.getSteppingBlockState();
+
             if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
                 for(int i = 0; i < 30; ++i) {
                     double d = this.getX() + (double) MathHelper.nextBetween(random, -0.7F, 0.7F);
@@ -218,6 +219,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             if (getSpawnTimer() > 0) {
                 setSpawnTimer(getSpawnTimer() - 1);
             }
+
             if (age % PICKUP_INTERVAL == 0 && canPickUpPassingItems()) {
                 for (ItemEntity item : getEntityWorld().getEntitiesByClass(ItemEntity.class, getBoundingBox().expand(1.0D, 0.5D, 1.0D), item -> !item.cannotPickup() && mayTake(item))) {
                     storeInCoffin(item);
@@ -229,12 +231,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     // The controller does not restart a running clip.
     private void restartAttackClipOnRearm() {
         int timer = this.getAttackAnimTimer();
+
         if (timer > this.lastAttackAnimTimer + 1) {
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+
             if (controller != null) {
                 controller.forceAnimationReset();
             }
         }
+
         this.lastAttackAnimTimer = timer;
     }
 
@@ -261,20 +266,25 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         if (!hasCoffin() || item.isRemoved()) {
             return false;
         }
+
         ensureInventory();
         ItemStack stack = item.getStack();
         int before = stack.getCount();
         ItemStack rest = inventory instanceof SimpleInventory simple ? simple.addStack(stack.copy()) : stack;
         int taken = before - rest.getCount();
+
         if (taken <= 0) {
             return false;
         }
+
         sendPickup(item, taken);
+
         if (rest.isEmpty()) {
             item.discard();
         } else {
             item.setStack(rest);
         }
+
         return rest.isEmpty();
     }
 
@@ -284,9 +294,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     public boolean isCoffinFull() {
         ensureInventory();
+
         if (inventory == null) {
             return true;
         }
+
         for (int i = 0; i < inventory.size(); i++) {
             if (inventory.getStack(i).isEmpty()) {
                 return false;
@@ -376,21 +388,27 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             if (getSpawnTimer() > 0 || player.getItemCooldownManager().isCoolingDown(staff)) {
                 return ActionResult.success(client);
             }
+
             if (BoneStaffItem.isUnbound(itemStack)) {
                 if (!client) {
                     BoneStaffItem.rebind(itemStack, player, this);
                 }
+
                 return ActionResult.success(client);
             }
+
             if (player.isSneaking()) {
                 if (hasCoffin() && !client) {
                     player.openHandledScreen(this);
                 }
+
                 return ActionResult.success(client);
             }
+
             if (BoneStaffItem.isBoundTo(itemStack, this) && isAlive() && !isDead()) {
                 if (acceptsStaff(itemStack)) {
                     player.setCurrentHand(hand);
+
                     if (!client) {
                         BoneStaffItem.startDrawing(player, this);
                     }
@@ -398,6 +416,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     BoneStaffItem.rejectsStaff(this, itemStack, player);
                 }
             }
+
             return ActionResult.success(client);
         }
 
@@ -405,6 +424,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             if (!client) {
                 player.openHandledScreen(this);
             }
+
             return ActionResult.success(client);
         }
 
@@ -414,14 +434,18 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 this.equipStack(EquipmentSlot.OFFHAND, new ItemStack(itemStack.getItem()));
                 this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 1.0F, -5.0F);
                 TGAdvancements.EQUIP_COFFIN.trigger((ServerPlayerEntity) player);
+
                 if (inventory == null) {
                     inventory = new CoffinInventory(this, 54);
                 }
+
                 this.setHasCoffin(true);
+
                 if (!player.getAbilities().creativeMode) {
                     itemStack.decrement(1);
                 }
             }
+
             return ActionResult.success(client);
         }
 
@@ -440,19 +464,23 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     public NbtCompound removeForStorage() {
         closeCoffinScreens();
+
         if (isLeashed()) {
             detachLeash(true, true);
         }
+
         stopRiding();
         NbtCompound saved = new NbtCompound();
         saveSelfNbt(saved);
         saved.remove("Pos");
         saved.remove("Motion");
         saved.remove("Staff");
+
         if (getWorld() instanceof ServerWorld serverWorld) {
             GhoulingBindings.get(serverWorld).remove(getUuid());
             serverWorld.spawnParticles(TGParticles.GRAVEYARD_SOUL_PARTICLE, getX(), getY() + 1.0D, getZ(), 40, 0.4D, 0.6D, 0.4D, 0.02D);
         }
+
         discard();
         return saved;
     }
@@ -495,13 +523,16 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     public boolean acceptsStaff(ItemStack staff) {
         UUID known = this.bondId;
+
         if (getEntityWorld().isClient()) {
             NbtCompound tracked = getStaff().getNbt();
             known = tracked != null && tracked.containsUuid(BoneStaffItem.BOND_KEY) ? tracked.getUuid(BoneStaffItem.BOND_KEY) : null;
         }
+
         if (known == null) {
             return true;
         }
+
         NbtCompound nbt = staff.getNbt();
         return nbt != null && nbt.containsUuid(BoneStaffItem.BOND_KEY) && known.equals(nbt.getUuid(BoneStaffItem.BOND_KEY));
     }
@@ -525,17 +556,22 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     protected void dropInventory() {
         super.dropInventory();
+
         if (this.hasCoffin()) {
             if (!this.getEntityWorld().isClient) {
                 ItemStack coffin = this.getOffHandStack().copy();
+
                 if (!coffin.isEmpty()) {
                     this.dropStack(coffin);
                 }
+
                 this.equipStack(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+
                 if (this.inventory != null) {
                     closeCoffinScreens();
                     for (int i = 0; i < this.inventory.size(); i++) {
                         ItemStack stack = this.inventory.removeStack(i);
+
                         if (!stack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(stack)) {
                             this.dropStack(stack.copy());
                         }
@@ -543,6 +579,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     this.inventory = null;
                 }
             }
+
             this.setHasCoffin(false);
         }
     }
@@ -593,6 +630,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         if (getWorld() instanceof ServerWorld serverWorld) {
             GhoulingBindings.get(serverWorld).remove(this.getUuid());
         }
+
         super.onDeath(damageSource);
         this.playSound(TGSounds.GHOULING_DEATH.get(), 1.0F, -2.0F);
     }
@@ -617,6 +655,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("CoffinGhouling", this.hasCoffin());
         nbt.putByte("ghoulVariant", getVariant());
+
         if (this.bondId != null) {
             nbt.putUuid(BoneStaffItem.BOND_KEY, this.bondId);
         }
@@ -624,6 +663,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         if (getStaff() != null) {
             nbt.put("Staff", getStaff().writeNbt(new NbtCompound()));
         }
+
         if (inventory != null) {
             final NbtList inv = new NbtList();
             for (int i = 0; i < this.inventory.size(); i++) {
@@ -639,9 +679,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         this.setHasCoffin(nbt.getBoolean("CoffinGhouling"));
         this.setVariant(nbt.getByte("ghoulVariant"));
         this.bondId = nbt.containsUuid(BoneStaffItem.BOND_KEY) ? nbt.getUuid(BoneStaffItem.BOND_KEY) : null;
+
         if (nbt.contains("Staff")) {
             setStaff(ItemStack.fromNbt(nbt.getCompound("Staff")));
         }
+
         if (nbt.contains("Inventory")) {
             final NbtList inv = nbt.getList("Inventory", 10);
             inventory = new CoffinInventory(this, Math.max(54, inv.size()));
@@ -654,9 +696,11 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         ensureInventory();
+
         if (inventory == null) {
             return null;
         }
+
         return GenericContainerScreenHandler.createGeneric9x6(syncId, inv, inventory);
     }
 

@@ -32,6 +32,7 @@ public class CorruptedIllagerGeoRenderer<T extends AnimatedCorruptedIllager> ext
         } else if (bone.getName().equals("right_claw")) {
             bone.setHidden(!animatable.hasRightClaw());
         }
+
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

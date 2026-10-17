@@ -4,7 +4,6 @@ import com.lion.graveyard.entities.GraveyardMinionEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 
-
 import java.util.EnumSet;
 
 public class SitGoal extends Goal {
@@ -26,6 +25,7 @@ public class SitGoal extends Goal {
             return false;
         } else {
             LivingEntity livingEntity = this.tameable.getOwner();
+
             if (livingEntity == null) {
                 return true;
             } else {

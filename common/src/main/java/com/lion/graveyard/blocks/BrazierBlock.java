@@ -43,7 +43,9 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
     public BrazierBlock(Settings settings, ParticleEffect fireType) {
         super(settings);
         this.fireType = fireType;
-        this.setDefaultState((BlockState)((BlockState)((BlockState)((BlockState)((BlockState)this.stateManager.getDefaultState()).with(LIT, false)).with(WATERLOGGED, false))));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(LIT, false)
+                .with(WATERLOGGED, false));
     }
 
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
@@ -64,7 +66,9 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
         WorldAccess worldAccess = ctx.getWorld();
         BlockPos blockPos = ctx.getBlockPos();
         boolean bl = worldAccess.getFluidState(blockPos).getFluid() == Fluids.WATER;
-        return (BlockState)((BlockState)((BlockState)((BlockState)this.getDefaultState().with(WATERLOGGED, bl)).with(LIT, false)));
+        return this.getDefaultState()
+                .with(WATERLOGGED, bl)
+                .with(LIT, false);
     }
 
 
@@ -83,6 +87,7 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
     public boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState state, FluidState fluidState) {
         if (!(Boolean)state.get(WATERLOGGED) && fluidState.getFluid() == Fluids.WATER) {
             BlockState blockState = (BlockState)state.with(WATERLOGGED, true);
+
             if ((Boolean)state.get(LIT)) {
                 extinguish((PlayerEntity)null, blockState, world, pos);
             } else {
@@ -115,6 +120,7 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
 
     public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
         BlockPos blockPos = hit.getBlockPos();
+
         if (!world.isClient && projectile.isOnFire() && projectile.canModifyAt(world, blockPos) && !(Boolean)state.get(LIT) && !(Boolean)state.get(WATERLOGGED)) {
             world.setBlockState(blockPos, (BlockState)state.with(Properties.LIT, true), 11);
         }
@@ -140,6 +146,7 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
 
     public static void extinguish(@Nullable PlayerEntity player, BlockState state, WorldAccess world, BlockPos pos) {
         setLit(world, state, pos, false);
+
         if (state.getBlock() instanceof BrazierBlock) {
             net.minecraft.util.math.random.Random random = world.getRandom();
             world.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + 0.4D, (double)pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
@@ -155,6 +162,7 @@ public class BrazierBlock extends Block implements BlockEntityProvider, Waterlog
         net.minecraft.util.math.random.Random random = world.getRandom();
         DefaultParticleType defaultParticleType = ParticleTypes.CAMPFIRE_COSY_SMOKE;
         world.addImportantParticle(defaultParticleType, true, (double)pos.getX() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + random.nextDouble() + random.nextDouble(), (double)pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
+
         if (lotsOfSmoke) {
             world.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + 0.4D, (double)pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
         }

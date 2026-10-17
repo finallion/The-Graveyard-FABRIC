@@ -56,7 +56,12 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
 
     public SarcophagusBlock(Settings settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false).with(OPEN, false).with(PART, SarcophagusPart.FOOT).with(PLAYER_PLACED, false).with(IS_COFFIN, isCoffin));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(WATERLOGGED, false)
+                .with(OPEN, false)
+                .with(PART, SarcophagusPart.FOOT)
+                .with(PLAYER_PLACED, false)
+                .with(IS_COFFIN, isCoffin));
         this.base = base;
         this.lid = lid;
     }
@@ -108,6 +113,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
             }
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
+
             if (blockEntity instanceof SarcophagusBlockEntity) {
                 player.openHandledScreen((SarcophagusBlockEntity) blockEntity);
             }
@@ -123,6 +129,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
             BlockPos entityPos = pos;
             for (int i = 0; i < 10; i++) { // 10 spawn attempts to find air, else just spawn
                 entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+
                 if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.up()).isAir()) {
                     break;
                 }
@@ -134,9 +141,11 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
             world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
+
             if (player instanceof ServerPlayerEntity) {
                 TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayerEntity) player);
             }
+
             world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
         }
     }
@@ -144,6 +153,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
 
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
+
         if (!world.isClient) {
             BlockPos blockPos = pos.offset((Direction) state.get(FACING));
             world.setBlockState(pos, state.with(PLAYER_PLACED, true));
@@ -175,9 +185,11 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient && player.isCreative()) {
             SarcophagusPart part = (SarcophagusPart) state.get(PART);
+
             if (part == SarcophagusPart.FOOT) {
                 BlockPos blockPos = pos.offset(getDirectionTowardsOtherPart(part, (Direction) state.get(FACING)));
                 BlockState blockState = world.getBlockState(blockPos);
+
                 if (blockState.isOf(this) && blockState.get(PART) == SarcophagusPart.HEAD) {
                     world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 35);
                     world.syncWorldEvent(player, 2001, blockPos, Block.getRawIdFromState(blockState));
@@ -192,6 +204,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.isOf(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
+
             if (blockEntity instanceof Inventory) {
                 ItemScatterer.spawn(world, pos, (Inventory) blockEntity);
                 world.updateComparators(pos, this);
@@ -204,6 +217,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
 
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
+
         if (blockEntity instanceof SarcophagusBlockEntity) {
             ((SarcophagusBlockEntity) blockEntity).onScheduledTick();
         }
@@ -224,7 +238,9 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
         BlockPos blockPos = ctx.getBlockPos();
         BlockPos blockPos2 = blockPos.offset(direction);
         World world = ctx.getWorld();
-        return world.getBlockState(blockPos2).canReplace(ctx) && world.getWorldBorder().contains(blockPos2) ? (BlockState) this.getDefaultState().with(FACING, direction).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER) : null;
+        return world.getBlockState(blockPos2).canReplace(ctx) && world.getWorldBorder().contains(blockPos2) ? this.getDefaultState()
+                .with(FACING, direction)
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER) : null;
     }
 
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {

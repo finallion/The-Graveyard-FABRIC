@@ -27,15 +27,20 @@ public class StartleGoal extends Goal {
         if (this.corvid.isFlying()) {
             return false;
         }
+
         PlayerEntity player = this.corvid.getWorld().getClosestPlayer(this.corvid, this.distance);
+
         if (player == null || player.isSneaking() || player.isSpectator()) {
             return false;
         }
+
         Vec3d away = this.corvid.getPos().subtract(player.getPos()).normalize();
         this.target = AboveGroundTargeting.find(this.corvid, 12, 10, away.x, away.z, (float) (Math.PI / 2), 10, 6);
+
         if (this.target == null) {
             this.target = NoPenaltyTargeting.findFrom(this.corvid, 8, 7, player.getPos());
         }
+
         return this.target != null;
     }
 

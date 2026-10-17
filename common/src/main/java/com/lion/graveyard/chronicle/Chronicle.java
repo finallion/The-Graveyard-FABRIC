@@ -63,21 +63,28 @@ public final class Chronicle {
     }
 
     public static boolean find(ServerPlayerEntity player, String page) {
-        if (!isValidId(page)) return false;
+        if (!isValidId(page)) {
+            return false;
+        }
+
         ChronicleState state = ChronicleState.get(player.server);
         boolean added = state.add(player.getUuid(), page);
         ChronicleSync.send(player, state.found(player.getUuid()), added ? page : null);
+
         if (added) {
             player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS, 1.0f, 1.0f);
             TGAdvancements.FIRST_CHRONICLE_PAGE.trigger(player);
             Set<String> pages = state.found(player.getUuid());
+
             if (pages.containsAll(ACT_ONE)) {
                 TGAdvancements.CHRONICLE_ACT_ONE.trigger(player);
             }
+
             if (pages.containsAll(ACT_TWO)) {
                 TGAdvancements.CHRONICLE_ACT_TWO.trigger(player);
             }
         }
+
         return added;
     }
 
@@ -88,18 +95,30 @@ public final class Chronicle {
     @Nullable
     public static String pageOf(ItemStack book) {
         NbtCompound nbt = book.getNbt();
-        if (nbt == null) return null;
+
+        if (nbt == null) {
+            return null;
+        }
+
         if (book.isOf(Items.WRITTEN_BOOK)) {
             return SIGNED_BOOKS.get(nbt.getString("title"));
         }
+
         if (book.isOf(Items.WRITABLE_BOOK)) {
             NbtList pages = nbt.getList("pages", NbtElement.STRING_TYPE);
-            if (pages.isEmpty()) return null;
+
+            if (pages.isEmpty()) {
+                return null;
+            }
+
             String first = pages.getString(0);
             for (Map.Entry<String, String> entry : UNSIGNED_BOOKS.entrySet()) {
-                if (first.startsWith(entry.getKey())) return entry.getValue();
+                if (first.startsWith(entry.getKey())) {
+                    return entry.getValue();
+                }
             }
         }
+
         return null;
     }
 }

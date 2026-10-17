@@ -42,6 +42,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
     protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
         Entity entity = source.getAttacker();
+
         if (entity instanceof CreeperEntity) {
             CreeperEntity creeperEntity = (CreeperEntity)entity;
             // changed from onHeadsDropped so every skeleton creeper will drop its skeleton instead of only one per charged creeper
@@ -74,6 +75,7 @@ public class SkeletonCreeper extends CreeperEntity {
 
     private void spawnEffectsCloud() {
         Collection<StatusEffectInstance> collection = this.getStatusEffects();
+
         if (!collection.isEmpty()) {
             AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(this.getEntityWorld(), this.getX(), this.getY(), this.getZ());
             areaEffectCloudEntity.setRadius(2.5F);
@@ -97,6 +99,7 @@ public class SkeletonCreeper extends CreeperEntity {
             this.getEntityWorld().addParticle(ParticleTypes.ASH, this.getParticleX(2.0D), this.getRandomBodyY() + new Random().nextInt(1), this.getParticleZ(2.0), 2.0D, 7.0D, 2.0D);
 
         }
+
         super.tickMovement();
     }
 

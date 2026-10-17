@@ -17,7 +17,11 @@ public class CorruptedPillager extends AnimatedCorruptedIllager {
     }
 
     public static DefaultAttributeContainer.Builder createCorruptedPillagerAttributes() {
-        return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D).add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D);
+        return HostileEntity.createHostileAttributes()
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D);
     }
 
     @Override

@@ -55,6 +55,7 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
             poseStack.pop();
             buffer = bufferSource.getBuffer(RenderLayer.getEntityTranslucent(getTexture(animatable)));
         }
+
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

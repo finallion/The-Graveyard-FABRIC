@@ -1,4 +1,5 @@
 package com.lion.graveyard.blocks;
+
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -24,7 +25,9 @@ public class VaseBlock extends Block implements Waterloggable {
 
     public VaseBlock() {
         super(AbstractBlock.Settings.create().breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS));
-        this.setDefaultState(this.stateManager.getDefaultState().with(VASES, 1).with(WATERLOGGED, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(VASES, 1)
+                .with(WATERLOGGED, false));
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
@@ -33,6 +36,7 @@ public class VaseBlock extends Block implements Waterloggable {
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
+
         if (blockState.isOf(this)) {
             return (BlockState)blockState.cycle(VASES);
         } else {

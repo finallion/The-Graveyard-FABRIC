@@ -51,28 +51,36 @@ class ModelReferencesTest {
             if (current.has("textures")) {
                 definedTextureKeys.addAll(current.getAsJsonObject("textures").keySet());
             }
+
             if (!current.has("parent")) {
                 break;
             }
+
             String parent = current.get("parent").getAsString();
+
             if (AssetLookup.isForeign(parent)) {
                 parentChainClosed = false;
                 break;
             }
+
             Path parentFile = assets.model(parent);
+
             if (!assets.exists(parentFile)) {
                 if (current == model) {
                     problems.add("missing parent " + parent);
                 }
+
                 parentChainClosed = false;
                 break;
             }
+
             current = Json.parseObject(ModProject.read(parentFile));
         }
 
         if (model.has("textures")) {
             for (var entry : model.getAsJsonObject("textures").entrySet()) {
                 String value = entry.getValue().getAsString();
+
                 if (!value.startsWith("#") && !AssetLookup.isForeign(value) && !assets.exists(assets.texture(value))) {
                     problems.add("missing texture " + value + " (variable " + entry.getKey() + ")");
                 }
@@ -83,11 +91,14 @@ class ModelReferencesTest {
             Set<String> used = new HashSet<>();
             for (JsonElement element : model.getAsJsonArray("elements")) {
                 JsonObject faces = element.getAsJsonObject().getAsJsonObject("faces");
+
                 if (faces == null) {
                     continue;
                 }
+
                 for (var face : faces.entrySet()) {
                     JsonElement texture = face.getValue().getAsJsonObject().get("texture");
+
                     if (texture != null && texture.getAsString().startsWith("#")) {
                         used.add(texture.getAsString().substring(1));
                     }
@@ -103,91 +114,105 @@ class ModelReferencesTest {
         if (model.has("overrides")) {
             for (JsonElement override : model.getAsJsonArray("overrides")) {
                 String target = override.getAsJsonObject().get("model").getAsString();
+
                 if (!AssetLookup.isForeign(target) && !assets.exists(assets.model(target))) {
                     problems.add("missing override model " + target);
                 }
             }
         }
+
         return problems;
     }
 
     static List<String> particleProblems(String json, AssetLookup assets) {
         List<String> problems = new ArrayList<>();
         JsonObject particle = Json.parseObject(json);
+
         if (particle.has("textures")) {
             for (JsonElement texture : particle.getAsJsonArray("textures")) {
-                Path file = assets.root().resolve(ModProject.TEXTURES).resolve("particle")
+                Path file = assets.root()
+                        .resolve(ModProject.TEXTURES)
+                        .resolve("particle")
                         .resolve(ModProject.stripNamespace(texture.getAsString()) + ".png");
+
                 if (!assets.exists(file)) {
                     problems.add("missing particle texture " + texture.getAsString());
                 }
             }
         }
+
         return problems;
     }
 
     @TestFactory
     Stream<DynamicTest> everyBlockstateReferencesExistingModels() {
         Path dir = ASSETS.root().resolve(ModProject.BLOCKSTATES);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".json"), () -> {
-                    List<String> problems = blockstateProblems(ModProject.read(file), ASSETS);
-                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-                }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".json"), () -> {
+                            List<String> problems = blockstateProblems(ModProject.read(file), ASSETS);
+                            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                        }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyModelReferencesExistingParentsAndTextures() {
         Path dir = ASSETS.root().resolve(ModProject.MODELS);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".json"), () -> {
-                    List<String> problems = modelProblems(ModProject.read(file), ASSETS);
-                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-                }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".json"), () -> {
+                            List<String> problems = modelProblems(ModProject.read(file), ASSETS);
+                            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                        }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyParticleReferencesExistingTextures() {
         Path dir = ASSETS.root().resolve(ModProject.PARTICLES);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".json"), () -> {
-                    List<String> problems = particleProblems(ModProject.read(file), ASSETS);
-                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-                }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".json"), () -> {
+                            List<String> problems = particleProblems(ModProject.read(file), ASSETS);
+                            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                        }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredBlockHasABlockstate() {
-        return RegistryIds.of(RegistryIds.BLOCK).stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(ASSETS.exists(ASSETS.blockstate(id)), "No blockstate for block " + id)));
+        return RegistryIds.of(RegistryIds.BLOCK).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(ASSETS.exists(ASSETS.blockstate(id)), "No blockstate for block " + id)));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredItemHasAnItemModel() {
-        return RegistryIds.of(RegistryIds.ITEM).stream().map(id -> DynamicTest.dynamicTest(id, () ->
-                assertTrue(ASSETS.exists(ASSETS.model("item/" + id)), "No item model for item " + id)));
+        return RegistryIds.of(RegistryIds.ITEM).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () ->
+                        assertTrue(ASSETS.exists(ASSETS.model("item/" + id)), "No item model for item " + id)));
     }
 
     @TestFactory
     Stream<DynamicTest> everyBlockstateBelongsToARegisteredBlock() {
         Path dir = ASSETS.root().resolve(ModProject.BLOCKSTATES);
         Set<String> blocks = RegistryIds.of(RegistryIds.BLOCK);
-        return ModProject.files(dir, ".json").stream().map(file -> {
-            String id = ModProject.idOf(dir, file, ".json");
-            return DynamicTest.dynamicTest(id, () -> assertTrue(blocks.contains(id), "Blockstate without a registered block: " + id));
-        });
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> {
+                    String id = ModProject.idOf(dir, file, ".json");
+                    return DynamicTest.dynamicTest(id, () -> assertTrue(blocks.contains(id), "Blockstate without a registered block: " + id));
+                });
     }
 
     @TestFactory
     Stream<DynamicTest> everyTextureIsAPngFile() {
         Path dir = ASSETS.root().resolve(ModProject.TEXTURES);
         byte[] signature = {(byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A};
-        return ModProject.files(dir, ".png").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".png"), () -> {
-                    try (InputStream in = Files.newInputStream(file)) {
-                        assertTrue(java.util.Arrays.equals(signature, in.readNBytes(8)), "Not a PNG file");
-                    }
-                }));
+        return ModProject.files(dir, ".png").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".png"), () -> {
+                            try (InputStream in = Files.newInputStream(file)) {
+                                assertTrue(java.util.Arrays.equals(signature, in.readNBytes(8)), "Not a PNG file");
+                            }
+                        }));
     }
 
     @Test

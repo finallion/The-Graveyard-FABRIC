@@ -17,6 +17,7 @@ public class SmolderingDebrisBlockEntity extends BlockEntity {
 
     public static void clientTick(World world, BlockPos pos, BlockState state, SmolderingDebrisBlockEntity blockEntity) {
         Random random = world.random;
+
         if (random.nextFloat() < 0.11F && !world.getBlockState(pos.up()).isOpaqueFullCube(world, pos.up())) {
             boolean tallColumn = Math.floorMod(pos.hashCode(), 3) == 0;
             for (int i = 0; i < random.nextInt(2) + 2; i++) {

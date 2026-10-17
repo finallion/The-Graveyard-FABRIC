@@ -14,8 +14,10 @@ public class GhoulingMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Ghouling
     @Override
     protected void attack(LivingEntity target, double squaredDistance) {
         double d = this.getSquaredMaxAttackDistance(target);
+
         if (squaredDistance <= d && this.cooldown <= 0) {
             this.resetCooldown(20);
+
             if (this.mob.getAttackAnimTimer() <= this.mob.ATTACK_ANIM_SYNC_TICKS - this.mob.ATTACK_ANIMATION_DURATION) {
                 this.mob.playSound(TGSounds.GHOULING_ATTACK.get(), 1.0F, -1.0F);
                 this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIM_SYNC_TICKS);

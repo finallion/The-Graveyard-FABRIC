@@ -40,6 +40,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.patrolTarget != null) {
             nbt.put("PatrolTarget", NbtHelper.fromBlockPos(this.patrolTarget));
         }
@@ -51,9 +52,11 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains("PatrolTarget")) {
             this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
         }
+
         this.patrolLeader = nbt.getBoolean("PatrolLeader");
         this.hordeCaptain = nbt.contains("HordeCaptain") ? nbt.getBoolean("HordeCaptain") : this.patrolLeader;
         this.patrolling = nbt.getBoolean("Patrolling");
@@ -147,6 +150,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
         public PatrolGoal(T entity, double leaderSpeed, double followSpeed) {
             this.entity = entity;
+
             if (entity instanceof CorruptedIllager) {
                 this.leaderSpeed = leaderSpeed - 0.5;
                 this.followSpeed = followSpeed - 0.5;
@@ -154,6 +158,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
                 this.leaderSpeed = leaderSpeed;
                 this.followSpeed = followSpeed;
             }
+
             this.nextPatrolSearchTime = -1L;
             this.setControls(EnumSet.of(Control.MOVE));
         }
@@ -172,8 +177,10 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         public void tick() {
             boolean bl = this.entity.isPatrolLeader();
             EntityNavigation entityNavigation = this.entity.getNavigation();
+
             if (entityNavigation.isIdle()) {
                 List<HordeGraveyardEntity> list = this.findPatrolTargets();
+
                 if (this.entity.isRaidCenterSet() && list.isEmpty()) {
                     this.entity.setPatrolling(false);
                 } else if (bl && this.entity.getPatrolTarget().isWithinDistance(this.entity.getPos(), 10.0D)) {
@@ -186,6 +193,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
                     Vec3d vec3d4 = vec3d.subtract(vec3d2).normalize().multiply(10.0D).add(vec3d2);
                     BlockPos blockPos = BlockPos.ofFloored(vec3d4);
                     blockPos = this.entity.getEntityWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, blockPos);
+
                     if (!entityNavigation.startMovingTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), bl ? this.followSpeed : this.leaderSpeed)) {
                         this.wander();
                         this.nextPatrolSearchTime = this.entity.getEntityWorld().getTime() + 200L;
@@ -244,6 +252,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         public void stop() {
             super.stop();
             LivingEntity livingEntity = this.hordeEntity.getTarget();
+
             if (livingEntity != null) {
                 List<HordeGraveyardEntity> list = this.hordeEntity.getEntityWorld().getTargets(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().expand(8.0D, 8.0D, 8.0D));
 
@@ -263,9 +272,11 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
         public void tick() {
             LivingEntity livingEntity = this.hordeEntity.getTarget();
+
             if (livingEntity != null) {
                 if (this.hordeEntity.squaredDistanceTo(livingEntity) > (double)this.squaredDistance) {
                     this.hordeEntity.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+
                     if (this.hordeEntity.random.nextInt(50) == 0) {
                         this.hordeEntity.playAmbientSound();
                     }

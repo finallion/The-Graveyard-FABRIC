@@ -76,10 +76,12 @@ public final class AnimationClock {
             boolean reset = this.shouldResetTick;
             double adjusted = super.adjustTick(tick);
             double offset = 0.0D;
+
             if (reset && getAnimationState() == State.RUNNING && getCurrentAnimation() != null) {
                 String name = getCurrentAnimation().animation().name();
                 boolean firstStart = !name.equals(this.lastStarted);
                 this.lastStarted = name;
+
                 if (firstStart && startOffset != null && name.equals(offsetAnimation)) {
                     offset = Math.max(0.0D, startOffset.applyAsDouble(this.animatable));
                     double speed = getAnimationSpeed();
@@ -87,12 +89,15 @@ public final class AnimationClock {
                     adjusted = offset;
                 }
             }
+
             if (this.animatable instanceof Entity entity && entity.getWorld().isClient()) {
                 LAST_FRAME.put(entity, entity.age);
+
                 if (reset && listener != null && getAnimationState() == State.RUNNING && getCurrentAnimation() != null) {
                     listener.keyframeZero(entity, getCurrentAnimation().animation().name(), offset);
                 }
             }
+
             return adjusted;
         }
     }

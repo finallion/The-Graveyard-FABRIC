@@ -30,6 +30,7 @@ public class CorvidMoveControl extends FlightMoveControl {
             this.coast();
             return;
         }
+
         this.state = State.WAIT;
         // Keep gravity on at ground contact. With zero vertical speed, isOnGround becomes false.
         this.entity.setNoGravity(!this.entity.isOnGround());
@@ -38,6 +39,7 @@ public class CorvidMoveControl extends FlightMoveControl {
         double dy = this.targetY - this.entity.getY();
         double dz = this.targetZ - this.entity.getZ();
         double distanceSq = dx * dx + dy * dy + dz * dz;
+
         if (distanceSq < 2.5E-7D) {
             this.entity.setUpwardSpeed(0.0F);
             this.entity.setForwardSpeed(0.0F);
@@ -60,6 +62,7 @@ public class CorvidMoveControl extends FlightMoveControl {
         double horizontal = Math.sqrt(dx * dx + dz * dz);
         Vec3d velocity = this.entity.getVelocity();
         double desired;
+
         if (Math.abs(dy) < VERTICAL_DEADZONE) {
             desired = 0.0D;
         } else if (horizontal < 1.0D) {
@@ -68,6 +71,7 @@ public class CorvidMoveControl extends FlightMoveControl {
             double cruise = Math.max(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z), CRUISE_SPEED);
             desired = MathHelper.clamp(cruise * dy / horizontal, -MAX_SINK, MAX_CLIMB);
         }
+
         this.entity.setVelocity(velocity.x, MathHelper.lerp(0.3D, velocity.y, desired), velocity.z);
         this.entity.setUpwardSpeed(0.0F);
 

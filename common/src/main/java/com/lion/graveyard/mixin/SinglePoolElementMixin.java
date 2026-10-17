@@ -35,6 +35,7 @@ public abstract class SinglePoolElementMixin {
         if (!this.processors.hasKeyAndValue()) {
             return;
         }
+
         for (StructureProcessor processor : this.processors.value().getList()) {
             if (processor instanceof PoolAliasProcessor poolAliases) {
                 callback.setReturnValue(poolAliases.apply(callback.getReturnValue()));
@@ -48,6 +49,7 @@ public abstract class SinglePoolElementMixin {
         if (!this.processors.hasKeyAndValue()) {
             return;
         }
+
         for (StructureProcessor processor : this.processors.value().getList()) {
             if (processor instanceof RemoveWaterloggedProcessor || processor instanceof RemoveWaterloggedCryptProcessor) {
                 callback.getReturnValue().setPlaceFluids(false);

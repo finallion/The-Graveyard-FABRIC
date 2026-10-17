@@ -40,15 +40,18 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.getOwnerUuid() != null) {
             nbt.putUuid("Owner", this.getOwnerUuid());
         }
+
         nbt.putBoolean("Sitting", this.sitting);
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         UUID uUID;
+
         if (nbt.containsUuid("Owner")) {
             uUID = nbt.getUuid("Owner");
         } else {
@@ -62,6 +65,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
             } catch (Throwable var4) {
             }
         }
+
         this.sitting = nbt.getBoolean("Sitting");
         this.setInSittingPose(this.sitting);
     }
@@ -93,6 +97,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     public void setInSittingPose(boolean inSittingPose) {
         byte b = (Byte)this.dataTracker.get(TAMEABLE_FLAGS);
+
         if (inSittingPose) {
             this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 1));
         } else {
@@ -122,12 +127,15 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     private boolean sharesOwner(LivingEntity target) {
         UUID owner = this.getOwnerUuid();
+
         if (owner == null) {
             return false;
         }
+
         if (target instanceof GraveyardMinionEntity minion) {
             return owner.equals(minion.getOwnerUuid());
         }
+
         return target instanceof TameableEntity tameable && owner.equals(tameable.getOwnerUuid());
     }
 
@@ -137,6 +145,7 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     public boolean isTeammate(Entity other) {
         LivingEntity livingEntity = this.getOwner();
+
         if (other == livingEntity) {
             return true;
         }
@@ -153,9 +162,11 @@ public class GraveyardMinionEntity extends PathAwareEntity {
             if (target instanceof GraveyardMinionEntity) {
                 GraveyardMinionEntity minion = (GraveyardMinionEntity)target;
                 LivingEntity otherOwner = minion.getOwner();
+
                 if (otherOwner == owner) {
                     return false;
                 }
+
                 return !(otherOwner instanceof PlayerEntity otherPlayer && owner instanceof PlayerEntity ownerPlayer
                         && (!this.getWorld().getServer().isPvpEnabled() || !ownerPlayer.shouldDamagePlayer(otherPlayer)));
             } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && (!this.getWorld().getServer().isPvpEnabled() || !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target))) {

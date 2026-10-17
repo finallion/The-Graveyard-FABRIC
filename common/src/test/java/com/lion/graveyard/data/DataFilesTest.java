@@ -33,7 +33,8 @@ class DataFilesTest {
         java.util.regex.Matcher m = java.util.regex.Pattern.compile("registerBlock\\(\\s*\"([^\"]+)\"([^;]*);").matcher(
                 com.lion.graveyard.support.Sources.code(ModProject.JAVA.resolve("init/TGBlocks.java")));
         while (m.find()) {
-            if (m.group(2).contains("dropsLike") || m.group(2).contains("dropsNothing")) {
+            if (m.group(2).contains("dropsLike")
+                    || m.group(2).contains("dropsNothing")) {
                 ids.add(m.group(1));
             }
         }
@@ -42,11 +43,12 @@ class DataFilesTest {
 
     static Stream<DynamicTest> referenceTests(String folder) {
         Path dir = ModProject.DATA.resolve(folder);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(dir, file, ".json"), () -> {
-                    List<String> problems = DataRefs.problems(Json.parseStrict(ModProject.read(file)), INDEX);
-                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-                }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(dir, file, ".json"), () -> {
+                            List<String> problems = DataRefs.problems(Json.parseStrict(ModProject.read(file)), INDEX);
+                            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                        }));
     }
 
     static List<String> tagProblems(String json, java.util.function.Predicate<String> registered, Set<String> tags) {
@@ -55,9 +57,11 @@ class DataFilesTest {
         JsonArray values = tag.has("values") ? tag.getAsJsonArray("values") : new JsonArray();
         for (JsonElement value : values) {
             String raw = value.isJsonObject() ? value.getAsJsonObject().get("id").getAsString() : value.getAsString();
+
             if (!raw.startsWith("#") && !ModProject.isModId(raw)) {
                 continue;
             }
+
             if (raw.startsWith("#")) {
                 if (ModProject.isModId(raw.substring(1)) && !tags.contains(ModProject.stripNamespace(raw.substring(1)))) {
                     problems.add("missing tag " + raw);
@@ -86,83 +90,94 @@ class DataFilesTest {
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredBlockHasALootTable() {
-        return RegistryIds.of(RegistryIds.BLOCK).stream().map(id -> DynamicTest.dynamicTest(id, () -> {
-            if (BLOCKS_WITHOUT_LOOT_TABLE.contains(id)) {
-                return;
-            }
-            assertTrue(ModProject.DATA.resolve(ModProject.BLOCK_LOOT).resolve(id + ".json").toFile().isFile(), "No loot table for block " + id);
-        }));
+        return RegistryIds.of(RegistryIds.BLOCK).stream()
+                .map(id -> DynamicTest.dynamicTest(id, () -> {
+                    if (BLOCKS_WITHOUT_LOOT_TABLE.contains(id)) {
+                        return;
+                    }
+
+                    assertTrue(ModProject.DATA.resolve(ModProject.BLOCK_LOOT).resolve(id + ".json").toFile().isFile(), "No loot table for block " + id);
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyBlockLootTableBelongsToARegisteredBlock() {
         Path dir = ModProject.DATA.resolve(ModProject.BLOCK_LOOT);
         Set<String> blocks = RegistryIds.of(RegistryIds.BLOCK);
-        return ModProject.files(dir, ".json").stream().map(file -> {
-            String id = ModProject.idOf(dir, file, ".json");
-            return DynamicTest.dynamicTest(id, () -> assertTrue(blocks.contains(id), "Loot table without a registered block: " + id));
-        });
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> {
+                    String id = ModProject.idOf(dir, file, ".json");
+                    return DynamicTest.dynamicTest(id, () -> assertTrue(blocks.contains(id), "Loot table without a registered block: " + id));
+                });
     }
 
     @TestFactory
     Stream<DynamicTest> everyRecipeResultIsARegisteredItem() {
         Path dir = ModProject.DATA.resolve(ModProject.RECIPES);
         Set<String> items = RegistryIds.of(RegistryIds.ITEM);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            JsonObject recipe = Json.parseObject(ModProject.read(file));
-            if (!recipe.has("result")) {
-                return;
-            }
-            JsonElement result = recipe.get("result");
-            String id = result.isJsonObject()
-                    ? (result.getAsJsonObject().has("item") ? result.getAsJsonObject().get("item").getAsString() : null)
-                    : result.getAsString();
-            if (id != null && ModProject.isModId(id)) {
-                assertTrue(items.contains(ModProject.stripNamespace(id)), "Result is not a registered item: " + id);
-            }
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    JsonObject recipe = Json.parseObject(ModProject.read(file));
+
+                    if (!recipe.has("result")) {
+                        return;
+                    }
+
+                    JsonElement result = recipe.get("result");
+                    String id = result.isJsonObject()
+                            ? (result.getAsJsonObject().has("item") ? result.getAsJsonObject().get("item").getAsString() : null)
+                            : result.getAsString();
+
+                    if (id != null && ModProject.isModId(id)) {
+                        assertTrue(items.contains(ModProject.stripNamespace(id)), "Result is not a registered item: " + id);
+                    }
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> everyAdvancementTitleAndDescriptionHasAnEnglishText() {
         Path dir = ModProject.DATA.resolve(ModProject.ADVANCEMENTS);
         Map<String, String> english = Json.stringMap(ModProject.read(ModProject.ASSETS.resolve("lang/en_us.json")));
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            List<String> missing = new ArrayList<>();
-            for (Json.KeyedString entry : Json.strings(Json.parseStrict(ModProject.read(file)))) {
-                if (entry.key().equals("translate") && !english.containsKey(entry.value())) {
-                    missing.add(entry.value());
-                }
-            }
-            assertTrue(missing.isEmpty(), "Missing lang keys: " + missing);
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> missing = new ArrayList<>();
+                    for (Json.KeyedString entry : Json.strings(Json.parseStrict(ModProject.read(file)))) {
+                        if (entry.key().equals("translate") && !english.containsKey(entry.value())) {
+                            missing.add(entry.value());
+                        }
+                    }
+                    assertTrue(missing.isEmpty(), "Missing lang keys: " + missing);
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> blockTagsContainOnlyRegisteredBlocksAndExistingTags() {
         Path dir = ModProject.DATA.resolve(ModProject.TAGS_BLOCKS);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            List<String> problems = tagProblems(ModProject.read(file), RegistryIds::isBlock, INDEX.blockTags);
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> problems = tagProblems(ModProject.read(file), RegistryIds::isBlock, INDEX.blockTags);
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> itemTagsContainOnlyRegisteredItemsAndExistingTags() {
         Path dir = ModProject.DATA.resolve(ModProject.TAGS_ITEMS);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            List<String> problems = tagProblems(ModProject.read(file), RegistryIds::isItem, INDEX.itemTags);
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> problems = tagProblems(ModProject.read(file), RegistryIds::isItem, INDEX.itemTags);
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> biomeTagsReferenceExistingTags() {
         Path dir = ModProject.DATA.resolve(ModProject.TAGS_BIOMES);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            List<String> problems = tagProblems(ModProject.read(file), id -> true, INDEX.biomeTags);
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> problems = tagProblems(ModProject.read(file), id -> true, INDEX.biomeTags);
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     @Test

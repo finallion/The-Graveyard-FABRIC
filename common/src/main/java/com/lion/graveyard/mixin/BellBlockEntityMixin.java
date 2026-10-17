@@ -21,10 +21,12 @@ public abstract class BellBlockEntityMixin {
     @Inject(method = "activate", at = @At("TAIL"))
     private void graveyard$redeemTormentedVillagers(Direction direction, CallbackInfo callback) {
         BlockEntity bell = (BlockEntity) (Object) this;
+
         if (bell.getWorld() instanceof ServerWorld world) {
             if (world.getTime() - this.graveyard$lastScanTime < SCAN_COOLDOWN_TICKS) {
                 return;
             }
+
             this.graveyard$lastScanTime = world.getTime();
             TormentedVillagerEntity.onBellRung(world, bell.getPos());
         }

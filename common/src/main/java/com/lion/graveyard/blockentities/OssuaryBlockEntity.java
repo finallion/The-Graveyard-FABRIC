@@ -16,7 +16,6 @@ import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-
 public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation OPEN = RawAnimation.begin().then("open", Animation.LoopType.HOLD_ON_LAST_FRAME);
@@ -32,10 +31,12 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController<>(this, "controller", 0, event -> {
             AnimationController.State state = event.getController().getAnimationState();
+
             if (this.getCachedState().get(OssuaryBlock.OPEN)) {
                 if (state == AnimationController.State.STOPPED || state == AnimationController.State.PAUSED)  {
                     if (world != null && !playedSound) {
                         PlayerEntity playerEntity = world.getClosestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
+
                         if (playerEntity != null) {
                             playerEntity.playSound(TGSounds.OSSUARY_OPEN.get(), SoundCategory.BLOCKS, 1.0F, -2.0F);
                             playedSound = true;
@@ -44,13 +45,18 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
 
                     event.getController().setAnimation(OPEN);
                 }
+
                 return PlayState.CONTINUE;
             } else if (!this.getCachedState().get(OssuaryBlock.OPEN) && state == AnimationController.State.PAUSED) {
                 event.getController().setAnimation(CLOSE);
-                if (playedSound) playedSound = false;
+
+                if (playedSound) {
+                    playedSound = false;
+                }
 
                 return PlayState.CONTINUE;
             }
+
             return PlayState.CONTINUE;
         }));
     }
@@ -70,6 +76,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
         double y = (double) pos.getY() + 0.5D;
         double z = (double) pos.getZ() + 0.5D;
         PlayerEntity playerEntity = world.getClosestPlayer(x, y, z, 4.0D, false);
+
         if (playerEntity != null && !state.get(OssuaryBlock.OPEN)) {
             world.setBlockState(pos, state.with(OssuaryBlock.OPEN, true), 3);
         } else if (state.get(OssuaryBlock.OPEN) && world.getClosestPlayer(x, y, z, 5.0D, false) == null) {

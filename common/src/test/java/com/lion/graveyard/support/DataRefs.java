@@ -34,9 +34,11 @@ public final class DataRefs {
 
     private static void check(String key, String value, JsonObject owner, DataIndex index, List<String> problems) {
         String reference = value.startsWith("#") ? value.substring(1) : value;
+
         if (!ModProject.isModId(reference)) {
             return;
         }
+
         String id = ModProject.stripNamespace(reference);
         boolean ok;
         switch (key) {
@@ -52,6 +54,7 @@ public final class DataRefs {
             }
             default -> ok = value.startsWith("#") ? index.anyTag(id) : index.anyKnownId(id);
         }
+
         if (!ok) {
             problems.add(key + " -> " + value);
         }

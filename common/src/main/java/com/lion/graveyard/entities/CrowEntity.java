@@ -78,6 +78,7 @@ public class CrowEntity extends CorvidEntity {
     @Override
     public void tick() {
         super.tick();
+
         if (this.getWorld().isClient()) {
             return;
         }
@@ -85,12 +86,15 @@ public class CrowEntity extends CorvidEntity {
         if (this.leader != null && !this.leader.isAlive()) {
             this.leaveFlock();
         }
+
         if (this.alarmDelay > 0 && --this.alarmDelay == 0) {
             this.alarm = ALARM_TICKS;
         }
+
         if (this.alarm > 0) {
             this.alarm--;
         }
+
         this.updateAnchor();
     }
 
@@ -132,10 +136,12 @@ public class CrowEntity extends CorvidEntity {
         if (this.hasLeader() || this.groupSize > 1) {
             return;
         }
+
         List<CrowEntity> others = this.getWorld().getEntitiesByClass(CrowEntity.class,
                 this.getBoundingBox().expand(FLOCK_SEARCH_RADIUS), other -> other != this && other.isAlive());
         for (CrowEntity other : others) {
             CrowEntity head = other.getFlockHead();
+
             if (head != this && head.canAcceptMembers()) {
                 this.leader = head;
                 head.groupSize++;
@@ -163,6 +169,7 @@ public class CrowEntity extends CorvidEntity {
         if (this.alarm > 0) {
             return;
         }
+
         this.alarm = ALARM_TICKS;
         this.circling = false;
         this.playSound(TGSounds.CROW_ALARM.get(), 0.7F, 0.9F + this.getRandom().nextFloat() * 0.2F);
@@ -196,11 +203,14 @@ public class CrowEntity extends CorvidEntity {
             this.anchor = null;
             return;
         }
+
         // The entity id offset spreads the scans of different flocks over ticks.
         if ((this.age + this.getId()) % ANCHOR_INTERVAL != 0) {
             return;
         }
+
         this.anchor = CrowAnchors.find((ServerWorld) this.getWorld(), this.getBlockPos());
+
         if (this.anchor == null) {
             this.circling = false;
         }

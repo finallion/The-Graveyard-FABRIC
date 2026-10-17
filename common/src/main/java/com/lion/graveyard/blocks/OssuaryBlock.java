@@ -47,7 +47,9 @@ public class OssuaryBlock extends BlockWithEntity implements BlockEntityProvider
 
     public OssuaryBlock(Settings settings) {
         super(settings);
-        this.setDefaultState((BlockState)((BlockState)this.stateManager.getDefaultState()).with(FACING, Direction.NORTH).with(OPEN, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(OPEN, false));
     }
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {

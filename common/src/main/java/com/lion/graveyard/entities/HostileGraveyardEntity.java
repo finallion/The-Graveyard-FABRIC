@@ -79,11 +79,14 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
     public void tickMovement() {
         if (this.isAlive()) {
             boolean bl = this.burnsInDaylight() && this.isAffectedByDaylight() && Graveyard.getConfig().mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
+
             if (bl) {
                 ItemStack itemStack = this.getEquippedStack(EquipmentSlot.HEAD);
+
                 if (!itemStack.isEmpty()) {
                     if (itemStack.isDamageable()) {
                         itemStack.setDamage(itemStack.getDamage() + this.random.nextInt(2));
+
                         if (itemStack.getDamage() >= itemStack.getMaxDamage()) {
                             this.sendEquipmentBreakStatus(EquipmentSlot.HEAD);
                             this.equipStack(EquipmentSlot.HEAD, ItemStack.EMPTY);
@@ -98,6 +101,7 @@ public abstract class HostileGraveyardEntity extends HostileEntity {
                 }
             }
         }
+
         super.tickMovement();
     }
 

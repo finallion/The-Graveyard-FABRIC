@@ -52,6 +52,7 @@ public final class AnimationPreviewClient {
         @Override
         public void keyframeZero(Entity entity, String animation, double startOffsetTicks) {
             startDig(entity, animation, startOffsetTicks);
+
             if (AnimationPreview.forcedAnimation(entity) != null) {
                 startPreview(entity, animation);
             } else if (entity instanceof AnimatedCorruptedIllager illager) {
@@ -69,6 +70,7 @@ public final class AnimationPreviewClient {
         @Override
         public void playTracked(Entity entity, @Nullable SoundEvent sound) {
             stop(TRACKED.remove(entity));
+
             if (sound != null) {
                 TRACKED.put(entity, play(entity, sound, 1.0F, 1.0F));
             }
@@ -92,18 +94,23 @@ public final class AnimationPreviewClient {
             DIGS.clear();
             lastWorld = client.world;
         }
+
         TRACKED.keySet().removeIf(Entity::isRemoved);
+
         if (client.world != null) {
             long time = client.world.getTime();
             DIGS.entrySet().removeIf(entry -> entry.getKey().isRemoved() || !entry.getValue().tick(entry.getKey(), time));
         }
+
         if (!DevEnvironment.isDevelopment() || client.world == null) {
             return;
         }
+
         long now = client.world.getTime();
         Iterator<Map.Entry<Entity, Playback>> iterator = PLAYBACKS.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<Entity, Playback> entry = iterator.next();
+
             if (entry.getKey().isRemoved() || AnimationPreview.forcedAnimation(entry.getKey()) == null) {
                 entry.getValue().stopSounds();
                 iterator.remove();
@@ -115,10 +122,12 @@ public final class AnimationPreviewClient {
 
     private static void startDig(Entity entity, String animation, double startOffsetTicks) {
         DigSpec spec = DIG_SPECS.get(Registries.ENTITY_TYPE.getId(entity.getType()) + "|" + animation);
+
         if (spec == null) {
             DIGS.remove(entity);
             return;
         }
+
         // Ghoul and ghouling spawn their own earth particles while the spawn timer runs.
         boolean particles = spec.particles() || AnimationPreview.forcedAnimation(entity) != null;
         DIGS.put(entity, new Dig(spec, entity.getWorld().getTime() - (long) startOffsetTicks, particles));
@@ -127,17 +136,22 @@ public final class AnimationPreviewClient {
     private static void startPreview(Entity entity, String animation) {
         MinecraftClient client = MinecraftClient.getInstance();
         Playback old = PLAYBACKS.remove(entity);
+
         if (old != null) {
             old.stopSounds();
         }
+
         if (cues == null) {
             cues = load();
         }
+
         Map<String, List<Cue>> byAnimation = cues.get(Registries.ENTITY_TYPE.getId(entity.getType()).toString());
         List<Cue> list = byAnimation == null ? null : byAnimation.get(animation);
+
         if (list == null || client.world == null) {
             return;
         }
+
         Playback playback = new Playback(list, client.world.getTime());
         PLAYBACKS.put(entity, playback);
         playback.tick(entity, client.world.getTime());
@@ -158,9 +172,11 @@ public final class AnimationPreviewClient {
     private static Map<String, Map<String, List<Cue>>> load() {
         Map<String, Map<String, List<Cue>>> result = new HashMap<>();
         Path file = ConfigDirectory.getConfigDirectory().resolve(FILE);
+
         if (!Files.isRegularFile(file)) {
             return result;
         }
+
         try (Reader reader = Files.newBufferedReader(file)) {
             JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
             for (Map.Entry<String, JsonElement> type : root.entrySet()) {
@@ -169,6 +185,7 @@ public final class AnimationPreviewClient {
                     List<Cue> list = new ArrayList<>();
                     for (JsonElement element : animation.getValue().getAsJsonArray()) {
                         Cue cue = Cue.parse(element.getAsJsonObject());
+
                         if (cue != null) {
                             list.add(cue);
                         }
@@ -188,9 +205,11 @@ public final class AnimationPreviewClient {
         static Cue parse(JsonObject json) {
             Identifier id = Identifier.tryParse(json.get("event").getAsString());
             SoundEvent event = id == null ? null : Registries.SOUND_EVENT.get(id);
+
             if (event == null) {
                 return null;
             }
+
             return new Cue(event,
                     json.has("offsetTicks") ? json.get("offsetTicks").getAsInt() : 0,
                     json.has("repeatTicks") ? json.get("repeatTicks").getAsInt() : 0,
@@ -225,29 +244,36 @@ public final class AnimationPreviewClient {
             if (now == this.lastTick) {
                 return true;
             }
+
             this.lastTick = now;
             long elapsed = now - this.start;
+
             if (elapsed > this.spec.endTick()) {
                 return false;
             }
+
             Random random = entity.getWorld().getRandom();
             BlockState ground = groundBelow(entity);
+
             if (!this.started) {
                 this.started = true;
                 while (this.stroke < this.spec.strokeTicks().length && this.spec.strokeTicks()[this.stroke] < elapsed) {
                     this.stroke++;
                 }
             }
+
             while (this.stroke < this.spec.strokeTicks().length && elapsed >= this.spec.strokeTicks()[this.stroke]) {
                 playDig(entity, 1.0F, 0.5F + random.nextFloat() * 0.08F);
                 playEarth(entity, ground, 0.8F);
                 this.stroke++;
             }
+
             if (now >= this.nextScrape) {
                 playDig(entity, 0.6F, 0.5F + random.nextFloat() * 0.1F);
                 playEarth(entity, ground, 0.35F);
                 this.nextScrape = now + MIN_GAP + random.nextInt(GAP_SPREAD);
             }
+
             if (this.particles) {
                 if (ground.getRenderType() != BlockRenderType.INVISIBLE) {
                     for (int i = 0; i < 10; i++) {
@@ -256,6 +282,7 @@ public final class AnimationPreviewClient {
                     }
                 }
             }
+
             return true;
         }
 
@@ -289,6 +316,7 @@ public final class AnimationPreviewClient {
         void tick(Entity entity, long now) {
             for (int i = 0; i < this.next.length; i++) {
                 Cue cue = this.list.get(i);
+
                 if (now >= this.next[i]) {
                     this.instances.add(play(entity, cue.event(), cue.volume(), cue.pitch()));
                     this.next[i] = cue.repeatTicks() > 0 ? this.next[i] + cue.repeatTicks() : Double.MAX_VALUE;

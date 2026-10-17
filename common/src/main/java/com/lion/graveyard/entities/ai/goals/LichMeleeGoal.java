@@ -21,9 +21,11 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
     @Override
     public boolean shouldContinue() {
         LivingEntity target = this.mob.getTarget();
+
         if (target != null && target.isAlive() && (this.mob.isPouncing() || this.mob.isCharging() || isDirectChase(target))) {
             return true;
         }
+
         return super.shouldContinue();
     }
 
@@ -32,7 +34,9 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
         if (this.mob.isPouncing() || this.mob.isCharging()) {
             return;
         }
+
         LivingEntity target = this.mob.getTarget();
+
         if (target != null && this.mob.getPhase() == 1) {
             // The body stands still in phase 1. A path makes the move control turn the body away from the head.
             this.mob.getLookControl().lookAt(target, 30.0F, 30.0F);
@@ -43,6 +47,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
             attack(target, this.mob.squaredDistanceTo(target.getX(), target.getY(), target.getZ()));
             return;
         }
+
         if (target != null && isDirectChase(target)) {
             this.mob.getLookControl().lookAt(target, 30.0F, 30.0F);
             this.mob.getNavigation().stop();
@@ -53,6 +58,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
             attack(target, this.mob.squaredDistanceTo(target.getX(), target.getY(), target.getZ()));
             return;
         }
+
         super.tick();
     }
 
@@ -77,6 +83,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
             if (this.mob.canMeeleAttack()) {
                 if (squaredDistance <= d && this.cooldown <= 0) {
                     this.resetCooldown(20);
+
                     if (this.mob.getAttackAnimTimer() == 0) {
                         this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
                         animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
@@ -130,6 +137,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
         } else if (this.mob.getPhase() == 3) {
             return (double) (this.mob.getWidth() * 3.0F * this.mob.getWidth() * 3.0F + entity.getWidth());
         }
+
         return (double) (this.mob.getWidth() * 2.0F * this.mob.getWidth() * 2.0F + entity.getWidth());
     }
 }

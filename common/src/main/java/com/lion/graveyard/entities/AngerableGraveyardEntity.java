@@ -37,6 +37,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         if (!this.getEntityWorld().isClient()) {
             this.tickAngerLogic((ServerWorld)this.getEntityWorld(), true);
         }
+
         super.tickMovement();
     }
 
@@ -89,6 +90,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+
         if (target == null) {
             this.ageWhenTargetSet = 0;
             this.dataTracker.set(ANGRY, false);
@@ -98,6 +100,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         } else {
             this.ageWhenTargetSet = this.age;
             this.dataTracker.set(ANGRY, true);
+
             if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
                 entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
             }

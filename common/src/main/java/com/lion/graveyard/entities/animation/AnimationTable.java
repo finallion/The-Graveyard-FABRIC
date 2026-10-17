@@ -91,10 +91,12 @@ public final class AnimationTable<T extends GeoAnimatable> {
     public AnimationController<T> build(T animatable, String name, int transitionTicks) {
         return AnimationClock.controller(animatable, name, transitionTicks, state -> {
             RawAnimation preview = AnimationPreview.frame(state, this::animationNames);
+
             if (preview != null) {
                 state.getController().setAnimation(preview);
                 return PlayState.CONTINUE;
             }
+
             int blend = this.transitionTicks != null ? this.transitionTicks.getAsInt() : transitionTicks;
             state.getController().transitionLength(state.getController().getCurrentAnimation() == null ? 0 : blend);
             for (Entry<T> entry : this.entries) {

@@ -81,6 +81,7 @@ public class MagpieEntity extends CorvidEntity {
     @Override
     protected void loot(ItemEntity item) {
         ItemStack stack = item.getStack();
+
         if (this.canGather(stack)) {
             ItemStack taken = stack.split(1);
             this.equipStack(EquipmentSlot.MAINHAND, taken);
@@ -89,6 +90,7 @@ public class MagpieEntity extends CorvidEntity {
             this.sendPickup(item, 1);
             this.triggerItemPickedUpByEntityCriteria(item);
         }
+
         if (stack.isEmpty()) {
             item.discard();
         } else {
@@ -100,13 +102,16 @@ public class MagpieEntity extends CorvidEntity {
     @Override
     public boolean damage(DamageSource source, float amount) {
         boolean hurt = super.damage(source, amount);
+
         if (hurt && !this.getWorld().isClient() && !this.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty()) {
             if (source.getAttacker() instanceof ServerPlayerEntity player) {
                 TGAdvancements.MAGPIE_LOOT.trigger(player);
             }
+
             this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
             this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
+
         return hurt;
     }
 }

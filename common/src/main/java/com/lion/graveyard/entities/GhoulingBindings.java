@@ -53,9 +53,11 @@ public final class GhoulingBindings extends PersistentState {
 
     public void update(GhoulingEntity ghouling) {
         UUID owner = ghouling.getOwnerUuid();
+
         if (owner == null) {
             return;
         }
+
         this.bindings.put(ghouling.getUuid(), new Binding(owner, ghouling.getWorld().getRegistryKey(),
                 ghouling.getBlockPos(), ghouling.isSitting()));
         this.markDirty();
@@ -75,11 +77,13 @@ public final class GhoulingBindings extends PersistentState {
             entry.putUuid("ghouling", ghouling);
             entry.putUuid("owner", binding.owner());
             entry.putString("dimension", binding.dimension().getValue().toString());
+
             if (binding.pos() != null) {
                 entry.putInt("x", binding.pos().getX());
                 entry.putInt("y", binding.pos().getY());
                 entry.putInt("z", binding.pos().getZ());
             }
+
             entry.putBoolean("sitting", binding.sitting());
             list.add(entry);
         });
@@ -92,13 +96,17 @@ public final class GhoulingBindings extends PersistentState {
         NbtList list = nbt.getList("ghoulings", NbtElement.COMPOUND_TYPE);
         for (int i = 0; i < list.size(); i++) {
             NbtCompound entry = list.getCompound(i);
+
             if (!entry.containsUuid("ghouling") || !entry.containsUuid("owner")) {
                 continue;
             }
+
             Identifier dimension = Identifier.tryParse(entry.getString("dimension"));
+
             if (dimension == null) {
                 continue;
             }
+
             BlockPos pos = entry.contains("x") ? new BlockPos(entry.getInt("x"), entry.getInt("y"), entry.getInt("z")) : null;
             state.bindings.put(entry.getUuid("ghouling"), new Binding(entry.getUuid("owner"),
                     RegistryKey.of(RegistryKeys.WORLD, dimension), pos, entry.getBoolean("sitting")));
@@ -110,12 +118,15 @@ public final class GhoulingBindings extends PersistentState {
     private static GhoulingBindings importLegacy(MinecraftServer server) {
         GhoulingBindings state = new GhoulingBindings();
         Path file = server.getSavePath(WorldSavePath.ROOT).resolve(LEGACY_FILE);
+
         if (!Files.isRegularFile(file)) {
             return state;
         }
+
         try {
             for (String line : Files.readAllLines(file)) {
                 String[] pair = line.split(":", 2);
+
                 if (pair.length == 2) {
                     state.bindings.put(UUID.fromString(pair[0].trim()),
                             new Binding(UUID.fromString(pair[1].trim()), World.OVERWORLD, null, false));

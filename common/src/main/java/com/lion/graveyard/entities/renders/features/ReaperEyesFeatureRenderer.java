@@ -7,13 +7,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class ReaperEyesFeatureRenderer extends GeoRenderLayer<ReaperEntity> {
-    private final RenderLayer TEXTURE = RenderLayer.getEyes(new Identifier(Graveyard.MOD_ID,"textures/entity/reaper_eyes.png"));
+    private final RenderLayer TEXTURE = RenderLayer.getEyes(Graveyard.id("textures/entity/reaper_eyes.png"));
     private final GeoRenderer<ReaperEntity> renderer;
 
     public ReaperEyesFeatureRenderer(GeoRenderer<ReaperEntity> entityRendererIn) {

@@ -19,6 +19,7 @@ public class VialOfBlood extends Item {
 
     public static float getBlood(ItemStack stack) {
         NbtCompound nbtCompound = stack.getNbt();
+
         if (nbtCompound == null) {
             return 0.1F;
         } else {
@@ -28,6 +29,7 @@ public class VialOfBlood extends Item {
 
     public static void setBlood(ItemStack stack, float blood) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
+
         if (blood < 0.9F) {
             nbtCompound.putFloat(BlOOD_KEY, blood);
         }
@@ -37,6 +39,7 @@ public class VialOfBlood extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         float blood = 0;
+
         if (stack.hasNbt()) {
             blood = stack.getNbt().getFloat(BlOOD_KEY);
         }
@@ -47,6 +50,7 @@ public class VialOfBlood extends Item {
             int level = Math.max(1, (int) (blood * 10));
             tooltip.add(Text.translatable("item.graveyard.vial_of_blood.level", level).formatted(Formatting.GRAY));
         }
+
         tooltip.add(Text.translatable("item.graveyard.vial_of_blood.lore").formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
         tooltip.add(Text.translatable("item.graveyard.vial_of_blood.hint").formatted(Formatting.DARK_GRAY));
 

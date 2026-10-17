@@ -34,15 +34,17 @@ class RegistrySnapshotTest {
     @TestFactory
     Stream<DynamicTest> everySnapshotIdIsStillRegistered() {
         Set<String> current = RegistryIds.current();
-        return ModProject.snapshotLines("registry-ids.txt").stream().map(entry ->
-                DynamicTest.dynamicTest(entry, () -> assertTrue(current.contains(entry), "Registered id vanished: " + entry)));
+        return ModProject.snapshotLines("registry-ids.txt").stream()
+                .map(entry ->
+                        DynamicTest.dynamicTest(entry, () -> assertTrue(current.contains(entry), "Registered id vanished: " + entry)));
     }
 
     @TestFactory
     Stream<DynamicTest> everyLegacyIdIsStillRegistered() {
         Set<String> current = RegistryIds.current();
-        return ModProject.snapshotLines("registry-legacy-ids.txt").stream().map(entry ->
-                DynamicTest.dynamicTest(entry, () -> assertTrue(current.contains(entry), "Id from the multiloader rebuild vanished: " + entry)));
+        return ModProject.snapshotLines("registry-legacy-ids.txt").stream()
+                .map(entry ->
+                        DynamicTest.dynamicTest(entry, () -> assertTrue(current.contains(entry), "Id from the multiloader rebuild vanished: " + entry)));
     }
 
     @Test

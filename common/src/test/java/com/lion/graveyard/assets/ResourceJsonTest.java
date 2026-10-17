@@ -29,24 +29,27 @@ class ResourceJsonTest {
 
     @Test
     void jsonFilesWereFound() {
-        assertTrue(allJsonFiles().size() > 500, "Expected the full resource tree, found " + allJsonFiles().size());
+        assertTrue(allJsonFiles().size() > 500,
+                "Expected the full resource tree, found " + allJsonFiles().size());
     }
 
     @TestFactory
     Stream<DynamicTest> everyJsonFileParsesStrictly() {
-        return allJsonFiles().stream().map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> {
-            String text = ModProject.read(file);
-            assertFalse(text.startsWith("﻿"), "File starts with a byte order mark");
-            Json.parseStrict(text);
-        }));
+        return allJsonFiles().stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> {
+                    String text = ModProject.read(file);
+                    assertFalse(text.startsWith("﻿"), "File starts with a byte order mark");
+                    Json.parseStrict(text);
+                }));
     }
 
     @TestFactory
     Stream<DynamicTest> noJsonFileRepeatsAnObjectKey() {
-        return allJsonFiles().stream().map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> {
-            List<String> duplicates = Json.duplicateKeys(ModProject.read(file));
-            assertTrue(duplicates.isEmpty(), () -> String.join("\n", duplicates));
-        }));
+        return allJsonFiles().stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> {
+                    List<String> duplicates = Json.duplicateKeys(ModProject.read(file));
+                    assertTrue(duplicates.isEmpty(), () -> String.join("\n", duplicates));
+                }));
     }
 
     @Test

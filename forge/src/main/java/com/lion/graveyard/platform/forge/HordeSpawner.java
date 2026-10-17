@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Mod.EventBusSubscriber(modid = Graveyard.MOD_ID)
 public class HordeSpawner {
     private static Map<Identifier, GraveyardHordeSpawner> spawners = new HashMap<>();
@@ -33,13 +32,16 @@ public class HordeSpawner {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase != TickEvent.Phase.START)
+        if (event.phase != TickEvent.Phase.START) {
             return;
+        }
 
-        if (event.side != LogicalSide.SERVER)
+        if (event.side != LogicalSide.SERVER) {
             return;
+        }
 
         GraveyardHordeSpawner spawner = spawners.get(event.level.getDimensionKey().getValue());
+
         if (spawner != null) {
             spawner.spawn(event.level.getServer().getOverworld(), true, true);
         }

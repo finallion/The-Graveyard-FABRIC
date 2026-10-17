@@ -9,17 +9,17 @@ public class ReaperModel extends GeoModel<ReaperEntity> {
 
     @Override
     public Identifier getModelResource(ReaperEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "geo/reaper.geo.json");
+        return Graveyard.id("geo/reaper.geo.json");
     }
 
     @Override
     public Identifier getTextureResource(ReaperEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/reaper.png");
+        return Graveyard.id("textures/entity/reaper.png");
     }
 
     @Override
     public Identifier getAnimationResource(ReaperEntity animatable) {
-        return new Identifier(Graveyard.MOD_ID, "animations/reaper/reaper.animation.json");
+        return Graveyard.id("animations/reaper/reaper.animation.json");
     }
 
 

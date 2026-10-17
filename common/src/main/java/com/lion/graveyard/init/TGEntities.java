@@ -15,7 +15,6 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import com.lion.graveyard.config.entries.MobConfigEntry;
@@ -85,12 +84,13 @@ public class TGEntities {
     }
 
     private static TagKey<Biome> biomeTag(String name) {
-        return TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, name));
+        return TagKey.of(RegistryKeys.BIOME, Graveyard.id(name));
     }
 
     private static void addSpawns() {
         for (NaturalSpawn spawn : naturalSpawns()) {
             SpawnSettings.SpawnEntry entry = spawn.entry();
+
             if (entry != null) {
                 BiomeModifications.addMobSpawn(spawn.tag(), spawn.group(), entry.type, entry.getWeight().getValue(), entry.minGroupSize, entry.maxGroupSize);
             }
@@ -132,6 +132,7 @@ public class TGEntities {
             DefaultAttributeContainer.Builder result = base.get();
             for (EntityAttribute attribute : SCALED_ATTRIBUTES) {
                 double factor = factor(entry, attribute);
+
                 if (factor != 1.0D && defaults.has(attribute)) {
                     result.add(attribute, defaults.getBaseValue(attribute) * factor);
                 }
@@ -144,12 +145,15 @@ public class TGEntities {
         if (attribute == EntityAttributes.GENERIC_MAX_HEALTH) {
             return entry.health();
         }
+
         if (attribute == EntityAttributes.GENERIC_ATTACK_DAMAGE) {
             return entry.damage();
         }
+
         if (attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED || attribute == EntityAttributes.GENERIC_FLYING_SPEED) {
             return entry.speed();
         }
+
         return 1.0D;
     }
 

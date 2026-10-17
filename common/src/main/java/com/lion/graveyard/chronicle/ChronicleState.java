@@ -33,23 +33,40 @@ public final class ChronicleState extends PersistentState {
     }
 
     public boolean add(UUID player, String page) {
-        if (!Chronicle.isValidId(page)) return false;
+        if (!Chronicle.isValidId(page)) {
+            return false;
+        }
+
         Set<String> existing = this.found.get(player);
-        if (existing != null && existing.size() >= MAX_PAGES_PER_PLAYER && !existing.contains(page)) return false;
+
+        if (existing != null && existing.size() >= MAX_PAGES_PER_PLAYER && !existing.contains(page)) {
+            return false;
+        }
+
         boolean added = this.found.computeIfAbsent(player, id -> new LinkedHashSet<>()).add(page);
-        if (added) this.markDirty();
+
+        if (added) {
+            this.markDirty();
+        }
+
         return added;
     }
 
     public boolean remove(UUID player, String page) {
         Set<String> pages = this.found.get(player);
         boolean removed = pages != null && pages.remove(page);
-        if (removed) this.markDirty();
+
+        if (removed) {
+            this.markDirty();
+        }
+
         return removed;
     }
 
     public void clear(UUID player) {
-        if (this.found.remove(player) != null) this.markDirty();
+        if (this.found.remove(player) != null) {
+            this.markDirty();
+        }
     }
 
     @Override
@@ -76,7 +93,9 @@ public final class ChronicleState extends PersistentState {
             }
             Set<String> pages = new LinkedHashSet<>();
             for (NbtElement element : players.getList(key, NbtElement.STRING_TYPE)) {
-                if (Chronicle.isValidId(element.asString())) pages.add(element.asString());
+                if (Chronicle.isValidId(element.asString())) {
+                    pages.add(element.asString());
+                }
             }
             state.found.put(player, pages);
         }

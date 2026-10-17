@@ -36,6 +36,7 @@ public class FollowOwnerGoal extends Goal {
         this.maxDistance = maxDistance;
         this.leavesAllowed = leavesAllowed;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+
         if (!(tameable.getNavigation() instanceof MobNavigation) && !(tameable.getNavigation() instanceof BirdNavigation)) {
             throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
         }
@@ -43,6 +44,7 @@ public class FollowOwnerGoal extends Goal {
 
     public boolean canStart() {
         LivingEntity livingEntity = this.tameable.getOwner();
+
         if (livingEntity == null) {
             return false;
         } else if (livingEntity.isSpectator()) {
@@ -81,8 +83,10 @@ public class FollowOwnerGoal extends Goal {
 
     public void tick() {
         this.tameable.getLookControl().lookAt(this.owner, 10.0F, (float)this.tameable.getMaxLookPitchChange());
+
         if (--this.updateCountdownTicks <= 0) {
             this.updateCountdownTicks = this.getTickCount(10);
+
             if (!this.tameable.isLeashed() && !this.tameable.hasVehicle()) {
                 if (this.tameable.squaredDistanceTo(this.owner) >= 288.0D) {
                     this.tryTeleport();
@@ -102,6 +106,7 @@ public class FollowOwnerGoal extends Goal {
             int k = this.getRandomInt(-1, 1);
             int l = this.getRandomInt(-3, 3);
             boolean bl = this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
+
             if (bl) {
                 return;
             }
@@ -123,10 +128,12 @@ public class FollowOwnerGoal extends Goal {
 
     private boolean canTeleportTo(BlockPos pos) {
         PathNodeType pathNodeType = LandPathNodeMaker.getLandNodeType(this.world, pos.mutableCopy());
+
         if (pathNodeType != PathNodeType.WALKABLE) {
             return false;
         } else {
             BlockState blockState = this.world.getBlockState(pos.down());
+
             if (!this.leavesAllowed && blockState.getBlock() instanceof LeavesBlock) {
                 return false;
             } else {

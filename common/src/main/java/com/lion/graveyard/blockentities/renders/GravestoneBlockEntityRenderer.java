@@ -8,7 +8,6 @@ import com.lion.graveyard.util.GravestoneIdentifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -71,6 +70,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         int q;
         boolean bl2;
         int r;
+
         if (signBlockEntity.getText().isGlowing()) {
             q = signBlockEntity.getText().getColor().getSignColor();
             bl2 = shouldRender(signBlockEntity, q);
@@ -84,6 +84,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         for(int s = 0; s < 4; ++s) {
             OrderedText orderedText = orderedTexts[s];
             float t = (float)(-this.textRenderer.getWidth(orderedText) / 2);
+
             if (bl2) {
                 this.textRenderer.drawWithOutline(orderedText, t, (float)(s * 10 - 20), q, m, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, r);
             } else {
@@ -121,6 +122,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         } else {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             ClientPlayerEntity clientPlayerEntity = minecraftClient.player;
+
             if (clientPlayerEntity != null && minecraftClient.options.getPerspective().isFirstPerson() && clientPlayerEntity.isUsingSpyglass()) {
                 return true;
             } else {
@@ -132,6 +134,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
 
     static int getColor(GravestoneBlockEntity sign) {
         int i = sign.getText().getColor().getSignColor();
+
         if (i == DyeColor.BLACK.getSignColor() && sign.getText().isGlowing()) {
             return -988212;
         } else {

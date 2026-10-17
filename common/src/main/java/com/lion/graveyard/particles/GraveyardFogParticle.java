@@ -75,6 +75,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
     public void buildGeometry(VertexConsumer consumer, Camera camera, float tickDelta) {
         float progress = Math.min(1.0F, (this.age + tickDelta) / this.maxAge);
         float fade;
+
         if (progress < FADE_IN_END) {
             fade = progress / FADE_IN_END;
         } else if (progress > FADE_OUT_START) {
@@ -82,6 +83,7 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
         } else {
             fade = 1.0F;
         }
+
         float opacity = this.peakAlpha * fade;
         float half = this.baseSize * (1.0F + GROWTH * progress) * 0.5F;
 

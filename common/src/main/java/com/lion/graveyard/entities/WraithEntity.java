@@ -46,7 +46,6 @@ import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -133,9 +132,11 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             return false;
         } else if (source.isIn(DamageTypeTags.IS_PROJECTILE)) {
             Entity entity = source.getSource();
+
             if (entity instanceof ArrowEntity) {
                return false;
             }
+
             return super.damage(source, amount);
         } else {
             return super.damage(source, amount);
@@ -158,10 +159,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     public void tick() {
         if (!this.getEntityWorld().isClient()) {
             int spawnTicks = this.dataTracker.get(SPAWN_TIMER);
+
             if (spawnTicks > 0) {
                 this.dataTracker.set(SPAWN_TIMER, spawnTicks - 1);
             }
         }
+
         super.tick();
         this.setNoGravity(true);
 
@@ -182,6 +185,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.homePosition != null) {
             nbt.putInt("BoundX", this.homePosition.getX());
             nbt.putInt("BoundY", this.homePosition.getY());
@@ -193,12 +197,14 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains("BoundX")) {
             this.homePosition = new BlockPos(
                     nbt.getInt("BoundX"),
                     nbt.getInt("BoundY"),
                     nbt.getInt("BoundZ"));
         }
+
         this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
     }
 
@@ -213,6 +219,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         if (!getEntityWorld().isClient()) {
             trackChase();
             EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
+
             if (this.getTarget() == null) {
                 entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
             } else if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
@@ -225,6 +232,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         if (!this.isAlive()) {
             addDeathParticles();
         }
+
         super.tickMovement();
     }
 
@@ -243,6 +251,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
+
         if (this.deathTime == DEATH_TICKS && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
@@ -279,8 +288,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     public boolean isInvulnerableTo(DamageSource damageSource) {
         if (damageSource.isIn(DamageTypeTags.BYPASSES_ARMOR) ||
                 damageSource.isIn(DamageTypeTags.BYPASSES_EFFECTS) ||
-                damageSource.isIn(DamageTypeTags.BYPASSES_SHIELD))
+                damageSource.isIn(DamageTypeTags.BYPASSES_SHIELD)) {
             return true;
+        }
 
         return super.isInvulnerableTo(damageSource);
     }
@@ -347,6 +357,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         if (pos == null) {
             return false;
         }
+
         return pos.isWithinDistance(this.getBlockPos(), (double) distance);
     }
 
@@ -378,6 +389,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         if (other instanceof WraithEntity) {
             return false;
         }
+
         return super.collidesWith(other);
     }
 
@@ -421,6 +433,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             if (!WraithEntity.this.getEntityWorld().getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING) || !com.lion.graveyard.Graveyard.getConfig().flag("wraithGriefing", true)) {
                 return false;
             }
+
             if (WraithEntity.this.getTimeSinceExtinguish() >= 10) {
                 return false;
             } else if (WraithEntity.this.random.nextFloat() < 0.3F) {
@@ -443,6 +456,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                     Block block = blockState.getBlock();
                     boolean bl = false;
                     boolean torchAndLantern = false;
+
                     if (blockState.isIn(BlockTags.CANDLES)) {
                         if (block instanceof CandleBlock) {
                             if (blockState.get(Properties.LIT)) {
@@ -453,6 +467,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                                 bl = true;
                             }
                         }
+
                         if (bl) {
                             WraithEntity.this.getEntityWorld().playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             WraithEntity.this.getEntityWorld().setBlockState(blockPos, (BlockState) blockState.with(Properties.LIT, false));
@@ -461,6 +476,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                             return;
                         }
                     }
+
                     if (random.nextInt(10) == 0) {
                         if (blockState.isOf(Blocks.TORCH)) {
                             WraithEntity.this.getEntityWorld().setBlockState(blockPos, Blocks.SOUL_TORCH.getDefaultState());
@@ -491,6 +507,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private static void triggerAdvancement(WraithEntity wraith, boolean bool) {
         if (bool) {
             PlayerEntity player = wraith.getEntityWorld().getClosestPlayer(wraith, 10.0D);
+
             if (player instanceof ServerPlayerEntity) {
                 TGAdvancements.DIM_LIGHT.trigger((ServerPlayerEntity) player);
             }
@@ -517,6 +534,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
         public void start() {
             Vec3d vec3d = this.getRandomLocation();
+
             if (vec3d != null) {
                 WraithEntity.this.navigation.startMovingAlong(WraithEntity.this.navigation.findPathTo(BlockPos.ofFloored(vec3d), 1), 1.0D);
             }
@@ -526,6 +544,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         @Nullable
         private Vec3d getRandomLocation() {
             Vec3d vec3d2;
+
             if (!WraithEntity.this.isWithinDistance(WraithEntity.this.homePosition, MAX_DISTANCE) && WraithEntity.this.hasHomePosition()) {
                 Vec3d vec3dx = Vec3d.ofCenter(WraithEntity.this.homePosition);
                 vec3d2 = vec3dx.subtract(WraithEntity.this.getPos()).normalize();

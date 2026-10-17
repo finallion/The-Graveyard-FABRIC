@@ -83,9 +83,11 @@ public class GraveyardConfig implements Config {
     // generation booleans
     public boolean enabled(Identifier id) {
         String path = id.getPath();
+
         if (!structureSwitch(path)) {
             return false;
         }
+
         return !isOverrunVariant(path) || structureSwitch("overrun_village");
     }
 
@@ -114,9 +116,11 @@ public class GraveyardConfig implements Config {
 
     public boolean mobMayAppear(String mobName) {
         Boolean value = mobSpawnEnabled.get(mobName);
+
         if (value != null && !value) {
             return false;
         }
+
         MobConfigEntry entry = mobConfigEntries.get(mobName);
         return entry == null || entry.enabled || ENABLED_IGNORED.contains(mobName);
     }
@@ -182,14 +186,38 @@ public class GraveyardConfig implements Config {
 
     @Override
     public void fillDefaults() {
-        if (structureConfigEntries == null) structureConfigEntries = new HashMap<>();
-        if (particleConfigEntries == null) particleConfigEntries = new HashMap<>(1);
-        if (mobConfigEntries == null) mobConfigEntries = new HashMap<>();
-        if (hordeConfigEntries == null) hordeConfigEntries = new HashMap<>();
-        if (corruptedChampionConfigEntries == null) corruptedChampionConfigEntries = new HashMap<>();
-        if (booleanEntries == null) booleanEntries = new HashMap<>();
-        if (mobSpawnEnabled == null) mobSpawnEnabled = new HashMap<>();
-        if (numberEntries == null) numberEntries = new HashMap<>();
+        if (structureConfigEntries == null) {
+            structureConfigEntries = new HashMap<>();
+        }
+
+        if (particleConfigEntries == null) {
+            particleConfigEntries = new HashMap<>(1);
+        }
+
+        if (mobConfigEntries == null) {
+            mobConfigEntries = new HashMap<>();
+        }
+
+        if (hordeConfigEntries == null) {
+            hordeConfigEntries = new HashMap<>();
+        }
+
+        if (corruptedChampionConfigEntries == null) {
+            corruptedChampionConfigEntries = new HashMap<>();
+        }
+
+        if (booleanEntries == null) {
+            booleanEntries = new HashMap<>();
+        }
+
+        if (mobSpawnEnabled == null) {
+            mobSpawnEnabled = new HashMap<>();
+        }
+
+        if (numberEntries == null) {
+            numberEntries = new HashMap<>();
+        }
+
         structureConfigEntries.values().removeIf(Objects::isNull);
         particleConfigEntries.values().removeIf(Objects::isNull);
         mobConfigEntries.values().removeIf(Objects::isNull);

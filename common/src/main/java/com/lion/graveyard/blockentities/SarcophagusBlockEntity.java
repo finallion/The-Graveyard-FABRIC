@@ -69,6 +69,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+
         if (!this.deserializeLootTable(nbt)) {
             Inventories.readNbt(nbt, this.inventory);
         }
@@ -76,6 +77,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
 
     protected void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
+
         if (!this.serializeLootTable(nbt)) {
             Inventories.writeNbt(nbt, this.inventory);
         }
@@ -97,6 +99,7 @@ public class SarcophagusBlockEntity extends LootableContainerBlockEntity impleme
         if (this.getCachedState().get(SarcophagusBlock.IS_COFFIN)) {
             return Text.translatable("container.coffin");
         }
+
         return Text.translatable("container.sarcophagus");
     }
 

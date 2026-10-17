@@ -28,10 +28,11 @@ class StructureDataTest {
 
     static Stream<DynamicTest> jsonTests(String folder, java.util.function.Function<String, List<String>> rule) {
         Path dir = ModProject.DATA.resolve(folder);
-        return ModProject.files(dir, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
-            List<String> problems = rule.apply(ModProject.read(file));
-            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-        }));
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> problems = rule.apply(ModProject.read(file));
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
     }
 
     static List<String> structureSetProblems(String json, Set<String> features) {
@@ -49,22 +50,28 @@ class StructureDataTest {
         List<String> problems = new ArrayList<>();
         JsonObject structure = Json.parseObject(json);
         String type = structure.get("type").getAsString();
+
         if (ModProject.isModId(type) && !RegistryIds.of(RegistryIds.STRUCTURE_TYPE).contains(ModProject.stripNamespace(type))) {
             problems.add("unregistered structure type " + type);
         }
+
         if (structure.has("start_pool")) {
             String pool = structure.get("start_pool").getAsString();
+
             if (ModProject.isModId(pool) && !index.templatePools.contains(ModProject.stripNamespace(pool))) {
                 problems.add("missing start pool " + pool);
             }
         }
+
         if (structure.has("biomes")) {
             String biomes = structure.get("biomes").getAsString();
+
             if (biomes.startsWith("#") && ModProject.isModId(biomes.substring(1))
                     && !index.biomeTags.contains(ModProject.stripNamespace(biomes.substring(1)))) {
                 problems.add("missing biome tag " + biomes);
             }
         }
+
         return problems;
     }
 
@@ -74,6 +81,7 @@ class StructureDataTest {
             if (!ModProject.isModId(s.value())) {
                 continue;
             }
+
             String id = ModProject.stripNamespace(s.value());
             switch (s.key()) {
                 case "location" -> {
@@ -104,10 +112,13 @@ class StructureDataTest {
             if (!ModProject.isModId(s.value())) {
                 continue;
             }
+
             String id = ModProject.stripNamespace(s.value());
+
             if (s.key().equals("processor_type") && !RegistryIds.of(RegistryIds.PROCESSOR).contains(id)) {
                 problems.add("unregistered processor type " + s.value());
-            } else if ((s.key().equals("Name") || s.key().equals("block")) && !index.blocks.contains(id)) {
+            } else if ((s.key().equals("Name")
+                    || s.key().equals("block")) && !index.blocks.contains(id)) {
                 problems.add("unregistered block " + s.value());
             }
         }
@@ -118,37 +129,46 @@ class StructureDataTest {
     static List<String> nbtProblems(Map<String, Object> root, DataIndex index) {
         List<String> problems = new ArrayList<>();
         List<Object> palettes = new ArrayList<>();
+
         if (root.get("palette") instanceof List<?> palette) {
             palettes.add(palette);
         }
+
         if (root.get("palettes") instanceof List<?> many) {
             palettes.addAll(many);
         }
+
         for (Object palette : palettes) {
             for (Object entry : (List<Object>) palette) {
                 String name = (String) ((Map<String, Object>) entry).get("Name");
+
                 if (name != null && ModProject.isModId(name) && !index.blocks.contains(ModProject.stripNamespace(name))) {
                     problems.add("palette block not registered: " + name);
                 }
             }
         }
+
         if (root.get("blocks") instanceof List<?> blocks) {
             for (Object block : blocks) {
                 Object nbt = ((Map<String, Object>) block).get("nbt");
+
                 if (nbt instanceof Map<?, ?> tag) {
                     checkBlockEntityTag((Map<String, Object>) tag, index, problems);
                 }
             }
         }
+
         if (root.get("entities") instanceof List<?> entities) {
             for (Object entity : entities) {
                 Object nbt = ((Map<String, Object>) entity).get("nbt");
+
                 if (nbt instanceof Map<?, ?> tag && tag.get("id") instanceof String id && ModProject.isModId(id)
                         && !index.entities.contains(ModProject.stripNamespace(id))) {
                     problems.add("entity not registered: " + id);
                 }
             }
         }
+
         return problems;
     }
 
@@ -157,12 +177,15 @@ class StructureDataTest {
                 && !RegistryIds.of(RegistryIds.BLOCK_ENTITY).contains(ModProject.stripNamespace(id))) {
             problems.add("block entity not registered: " + id);
         }
+
         if (tag.get("pool") instanceof String pool && ModProject.isModId(pool)
                 && !index.templatePools.contains(ModProject.stripNamespace(pool))) {
             problems.add("jigsaw points at missing pool " + pool);
         }
+
         if (tag.get("final_state") instanceof String state && ModProject.isModId(state)) {
             String block = ModProject.stripNamespace(state.split("\\[")[0]);
+
             if (!index.blocks.contains(block)) {
                 problems.add("jigsaw final_state block not registered: " + state);
             }
@@ -193,11 +216,12 @@ class StructureDataTest {
 
     @TestFactory
     Stream<DynamicTest> everyStructureFileUsesRegisteredBlocksEntitiesAndPools() {
-        return ModProject.files(STRUCTURE_NBT_DIR, ".nbt").stream().map(file -> DynamicTest.dynamicTest(
-                ModProject.idOf(STRUCTURE_NBT_DIR, file, ".nbt"), () -> {
-                    List<String> problems = nbtProblems(NbtReader.readGzipped(ModProject.readBytes(file)), INDEX);
-                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
-                }));
+        return ModProject.files(STRUCTURE_NBT_DIR, ".nbt").stream()
+                .map(file -> DynamicTest.dynamicTest(
+                        ModProject.idOf(STRUCTURE_NBT_DIR, file, ".nbt"), () -> {
+                            List<String> problems = nbtProblems(NbtReader.readGzipped(ModProject.readBytes(file)), INDEX);
+                            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                        }));
     }
 
     @Test

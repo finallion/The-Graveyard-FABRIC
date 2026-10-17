@@ -26,16 +26,20 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
         if (structureBlockInfo2.state().getBlock() instanceof SpawnerBlock && Graveyard.getConfig().booleanEntries.get("disableWitherSkeletonSpawner")) {
             BlockPos worldPos = structureBlockInfo2.pos();
             BlockEntity blockEntity = world.getBlockEntity(worldPos);
+
             if (blockEntity instanceof MobSpawnerBlockEntity) {
                 NbtCompound nbt = structureBlockInfo2.nbt();
+
                 if (nbt != null) {
                     NbtCompound nbtCompound = nbt.getCompound("SpawnData");
+
                     if (nbtCompound.toString().contains("wither_skeleton")) {
                         ((MobSpawnerBlockEntity) blockEntity).setEntityType(EntityType.SKELETON, data.getRandom(worldPos));
                     }
                 }
             }
         }
+
         return structureBlockInfo2;
     }
 

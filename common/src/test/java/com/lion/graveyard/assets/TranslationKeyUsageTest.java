@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -40,6 +39,7 @@ class TranslationKeyUsageTest {
         List<String> prefixes = new ArrayList<>();
         for (String args : JavaText.callArguments(code, "Text.translatable(")) {
             String first = JavaText.splitTopLevel(args, ',').get(0).trim();
+
             if (JavaText.splitTopLevel(first, '?').size() > 1) {
                 Matcher literals = LITERAL.matcher(first);
                 while (literals.find()) {
@@ -47,11 +47,13 @@ class TranslationKeyUsageTest {
                 }
                 continue;
             }
+
             StringBuilder prefix = new StringBuilder();
             boolean complete = true;
             for (String part : JavaText.splitTopLevel(first, '+')) {
                 String token = part.trim();
                 Matcher literal = LITERAL.matcher(token);
+
                 if (literal.matches()) {
                     prefix.append(literal.group(1));
                 } else if (token.equals("Graveyard.MOD_ID") || token.equals("MOD_ID")) {
@@ -61,6 +63,7 @@ class TranslationKeyUsageTest {
                     break;
                 }
             }
+
             if (prefix.length() > 0) {
                 (complete ? exact : prefixes).add(prefix.toString());
             }
@@ -90,7 +93,8 @@ class TranslationKeyUsageTest {
         for (String prefix : keys.prefixes()) {
             if (!DYNAMIC_PREFIXES.containsKey(prefix)) {
                 problems.add("dynamic key prefix " + prefix + " is not on the allow list");
-            } else if (english.keySet().stream().noneMatch(k -> k.startsWith(prefix))) {
+            } else if (english.keySet().stream()
+                    .noneMatch(k -> k.startsWith(prefix))) {
                 problems.add("no key starts with " + prefix);
             }
         }
@@ -109,7 +113,8 @@ class TranslationKeyUsageTest {
         int keys = 0;
         for (Path file : sourceFiles()) {
             Keys found = keysIn(Sources.code(file));
-            keys += found.exact().size() + found.prefixes().size();
+            keys += found.exact().size()
+                    + found.prefixes().size();
         }
         assertTrue(keys >= 20, "only " + keys + " keys found");
     }
@@ -128,7 +133,8 @@ class TranslationKeyUsageTest {
         int keys = 0;
         for (Path file : sourceFiles()) {
             Keys found = modKeyLiterals(Sources.code(file));
-            keys += found.exact().size() + found.prefixes().size();
+            keys += found.exact().size()
+                    + found.prefixes().size();
         }
         assertTrue(keys >= 25,"only " + keys + " key literals found");
     }

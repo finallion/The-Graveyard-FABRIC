@@ -55,6 +55,7 @@ public final class ModProject {
         if (!Files.isDirectory(dir)) {
             return List.of();
         }
+
         try (Stream<Path> stream = Files.walk(dir)) {
             return stream.filter(Files::isRegularFile)
                     .filter(p -> p.getFileName().toString().endsWith(suffix))
@@ -104,6 +105,7 @@ public final class ModProject {
             if (in == null) {
                 throw new IllegalStateException("Missing test resource " + name);
             }
+
             return new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -114,6 +116,7 @@ public final class ModProject {
         java.util.Set<String> lines = new java.util.TreeSet<>();
         for (String line : snapshot(name).split("\\R")) {
             String trimmed = line.trim();
+
             if (!trimmed.isEmpty() && !trimmed.startsWith("#")) {
                 lines.add(trimmed);
             }

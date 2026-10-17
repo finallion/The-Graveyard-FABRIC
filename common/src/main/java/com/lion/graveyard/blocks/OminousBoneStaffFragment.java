@@ -36,7 +36,9 @@ public class OminousBoneStaffFragment extends Block {
 
     public OminousBoneStaffFragment() {
         super(AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE).luminance((light) -> 7));
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(WATERLOGGED, false));
     }
 
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
@@ -75,7 +77,9 @@ public class OminousBoneStaffFragment extends Block {
 
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+        return this.getDefaultState()
+                .with(FACING, ctx.getHorizontalPlayerFacing().getOpposite())
+                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
     public FluidState getFluidState(BlockState state) {

@@ -25,12 +25,15 @@ public class JoinFlockGoal extends Goal {
         if (this.crow.isPecking()) {
             return false;
         }
+
         if (this.crow.hasLeader()) {
             return !this.crow.isCloseToLeader();
         }
+
         if (--this.cooldown > 0) {
             return false;
         }
+
         this.cooldown = SEARCH_INTERVAL;
         this.crow.findFlock();
         return this.crow.hasLeader() && !this.crow.isCloseToLeader();

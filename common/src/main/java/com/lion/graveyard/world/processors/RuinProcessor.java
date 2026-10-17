@@ -181,7 +181,7 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     private static TagKey<Block> villageTag(String name) {
-        return TagKey.of(RegistryKeys.BLOCK, new Identifier("graveyard", "overrun_village/" + name));
+        return TagKey.of(RegistryKeys.BLOCK, Graveyard.id("overrun_village/" + name));
     }
 
     @Override
@@ -192,6 +192,7 @@ public class RuinProcessor extends StructureProcessor {
 
         if (this.dry != DryMode.OFF) {
             currentBlockInfos = dried(originalBlockInfos, currentBlockInfos, pos, data);
+
             if (this.dry == DryMode.ONLY) {
                 return currentBlockInfos;
             }
@@ -204,6 +205,7 @@ public class RuinProcessor extends StructureProcessor {
         long worldSeed = world.toServerWorld().getSeed();
         Random random = Random.create(worldSeed).nextSplitter().split(pos);
         Ruin ruin = new Ruin(world, currentBlockInfos, data, random, this.followsTerrain, this.variant, this.smolderChance);
+
         if (this.followsTerrain) {
             ruin.scatterByCell(members(this.litter), this.litterChance, members(this.floorRemains), this.remainsChance);
             ruin.featherPathEdges(worldSeed);
@@ -215,6 +217,7 @@ public class RuinProcessor extends StructureProcessor {
         if (this.collapse) {
             ruin.collapse(MathHelper.lerp(random.nextFloat(), this.minSeverity, this.maxSeverity));
         }
+
         ruin.scorch(burnt);
         ruin.singe();
         ruin.settle();
@@ -247,6 +250,7 @@ public class RuinProcessor extends StructureProcessor {
         List<StructureBlockInfo> result = new ArrayList<>(infos.size());
         for (StructureBlockInfo info : infos) {
             BlockState state = info.state();
+
             if (!templateWater.contains(info.pos())) {
                 result.add(info);
             } else if (state.isOf(Blocks.WATER)) {
@@ -263,15 +267,19 @@ public class RuinProcessor extends StructureProcessor {
     /// Only the lowest water of a contained pool leaves mud. A shaft that continues below the template stays open.
     private static boolean leavesMud(Map<BlockPos, BlockState> states, BlockPos pos) {
         BlockState below = states.get(pos.down());
+
         if (below == null) {
             BlockState above = states.get(pos.up());
             return above == null || !above.isOf(Blocks.WATER);
         }
+
         if (below.isAir() || below.isOf(Blocks.WATER) || below.isOf(Blocks.STRUCTURE_VOID)) {
             return false;
         }
+
         for (Direction side : Direction.Type.HORIZONTAL) {
             BlockState beside = states.get(pos.offset(side));
+
             if (beside != null && !beside.isAir()) {
                 return true;
             }
@@ -282,6 +290,7 @@ public class RuinProcessor extends StructureProcessor {
     /// A piece with a block of two parts moves as one unit. All other pieces move column by column.
     private static List<StructureBlockInfo> dropToGround(ServerWorldAccess world, List<StructureBlockInfo> infos, StructurePlacementData data, boolean asUnit) {
         BlockBox chunkBox = data.getBoundingBox();
+
         if (chunkBox == null) {
             return infos;
         }
@@ -303,17 +312,21 @@ public class RuinProcessor extends StructureProcessor {
         for (StructureBlockInfo info : solid) {
             BlockPos pos = info.pos();
             long column = ChunkPos.toLong(pos.getX(), pos.getZ());
+
             if (isColumnIn(chunkBox, pos.getX(), pos.getZ()) && !shifts.containsKey(column)) {
                 shifts.put(column, groundShift(world, pos.getX(), base, pos.getZ()));
             }
         }
 
         Integer unitShift = null;
+
         if (oneUnit && !shifts.isEmpty()) {
             Set<Integer> distinct = new HashSet<>(shifts.values());
+
             if (distinct.size() > 1 || distinct.contains(NO_GROUND)) {
                 return new ArrayList<>();
             }
+
             unitShift = distinct.iterator().next();
         }
 
@@ -322,6 +335,7 @@ public class RuinProcessor extends StructureProcessor {
         for (StructureBlockInfo info : solid) {
             BlockPos pos = info.pos();
             Integer shift = unitShift != null ? unitShift : shifts.get(ChunkPos.toLong(pos.getX(), pos.getZ()));
+
             if (shift == null) {
                 result.add(info);
                 origins.put(pos, pos);
@@ -346,15 +360,19 @@ public class RuinProcessor extends StructureProcessor {
         List<StructureBlockInfo> result = new ArrayList<>();
         for (StructureBlockInfo info : placed) {
             BlockState state = info.state();
+
             if (state.getBlock() instanceof FenceBlock || state.getBlock() instanceof PaneBlock) {
                 for (Direction side : Direction.Type.HORIZONTAL) {
                     Direction toward = data.getRotation().rotate(data.getMirror().apply(side));
                     BlockPos beside = info.pos().offset(toward);
+
                     if (!isColumnIn(chunkBox, beside.getX(), beside.getZ())) {
                         continue;
                     }
+
                     BlockState neighbor = states.get(beside);
                     boolean inTemplate = templateCells.contains(origins.get(info.pos()).offset(toward));
+
                     if (neighbor != null) {
                         BlockState placedNeighbor = neighbor.mirror(data.getMirror()).rotate(data.getRotation());
                         state = state.with(ConnectingBlock.FACING_PROPERTIES.get(side), connectsTo(state, placedNeighbor, toward));
@@ -363,6 +381,7 @@ public class RuinProcessor extends StructureProcessor {
                     }
                 }
             }
+
             result.add(state == info.state() ? info : new StructureBlockInfo(info.pos(), state, info.nbt()));
         }
         return result;
@@ -370,9 +389,11 @@ public class RuinProcessor extends StructureProcessor {
 
     private static boolean connectsTo(BlockState state, BlockState neighbor, Direction direction) {
         boolean sideSolid = neighbor.isSideSolidFullSquare(EmptyBlockView.INSTANCE, BlockPos.ORIGIN, direction.getOpposite());
+
         if (state.getBlock() instanceof FenceBlock fence) {
             return fence.canConnect(neighbor, sideSolid, direction);
         }
+
         return state.getBlock() instanceof PaneBlock pane && pane.connectsTo(neighbor, sideSolid);
     }
 
@@ -398,9 +419,11 @@ public class RuinProcessor extends StructureProcessor {
         boolean blocked = isGround(world, new BlockPos(x, base + GROUND_SEARCH_UP, z));
         for (int y = base + GROUND_SEARCH_UP; y >= base - GROUND_SEARCH_DOWN; y--) {
             boolean onGround = isGround(world, new BlockPos(x, y - 1, z));
+
             if (onGround && !blocked) {
                 return y - base;
             }
+
             blocked = onGround;
         }
         return NO_GROUND;
@@ -520,10 +543,12 @@ public class RuinProcessor extends StructureProcessor {
             this.followsTerrain = followsTerrain;
             for (StructureBlockInfo info : infos) {
                 this.templateCells.add(info.pos());
+
                 if (info.state().isAir()) {
                     this.air.add(info);
                     continue;
                 }
+
                 BlockPos pos = info.pos();
                 this.blocks.put(pos, info);
                 this.columnBottoms.merge(ChunkPos.toLong(pos.getX(), pos.getZ()), pos.getY(), Math::min);
@@ -536,9 +561,11 @@ public class RuinProcessor extends StructureProcessor {
             }
             this.templateBlocks = new HashSet<>(this.blocks.keySet());
             Block planks = dominantBlock(infos, BlockTags.PLANKS, null);
+
             if (planks == null) {
                 planks = planksOf(dominantBlock(infos, BlockTags.LOGS_THAT_BURN, null));
             }
+
             Block stone = dominantBlock(infos, RUBBLE_STONE, variant.stoneFallback());
             this.woodRubble = planks.getDefaultState();
             this.woodCap = slabOf(planks, Blocks.OAK_SLAB).getDefaultState();
@@ -563,8 +590,11 @@ public class RuinProcessor extends StructureProcessor {
             if (log == null) {
                 return Blocks.OAK_PLANKS;
             }
+
             Identifier id = Registries.BLOCK.getId(log);
-            String stem = id.getPath().replaceFirst("^stripped_", "").replaceFirst("_(log|wood)$", "");
+            String stem = id.getPath()
+                    .replaceFirst("^stripped_", "")
+                    .replaceFirst("_(log|wood)$", "");
             return Registries.BLOCK.getOrEmpty(new Identifier(id.getNamespace(), stem + "_planks")).orElse(Blocks.OAK_PLANKS);
         }
 
@@ -590,21 +620,26 @@ public class RuinProcessor extends StructureProcessor {
             }
             result.putAll(this.outside);
             result.putAll(this.blocks);
+
             if (!smolderingAllowed()) {
                 this.quenchEmbers(result);
             }
+
             if (this.smolderChance > 0.0F && smolderingAllowed()) {
                 result.replaceAll((pos, info) -> this.smoldering(info));
             }
+
             return new ArrayList<>(result.values());
         }
 
         private void quenchEmbers(Map<BlockPos, StructureBlockInfo> result) {
             for (Ember ember : this.embers) {
                 StructureBlockInfo placed = result.get(ember.spot());
+
                 if (placed != null && placed.state().isOf(TGOverrunVillage.SMOLDERING_DEBRIS.get())) {
                     result.put(ember.spot(), ember.replaced());
                 }
+
                 if (ember.cap() != null && !result.containsKey(ember.cap().pos())) {
                     result.put(ember.cap().pos(), ember.cap());
                 }
@@ -621,14 +656,18 @@ public class RuinProcessor extends StructureProcessor {
 
         private StructureBlockInfo smoldering(StructureBlockInfo info) {
             BlockState state = info.state();
+
             if (!state.contains(SmolderingWood.SMOLDERING) || !isCharredWood(state)) {
                 return info;
             }
+
             BlockPos pos = info.pos();
             BlockPos hashed = state.contains(Properties.DOUBLE_BLOCK_HALF) && state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos;
+
             if (hash(SMOLDER_SEED + hashed.getY(), hashed.getX(), hashed.getZ()) < this.smolderChance) {
                 return new StructureBlockInfo(pos, state.with(SmolderingWood.SMOLDERING, true), info.nbt());
             }
+
             return info;
         }
 
@@ -647,6 +686,7 @@ public class RuinProcessor extends StructureProcessor {
 
             for (StructureBlockInfo info : new ArrayList<>(this.blocks.values())) {
                 BlockPos pos = info.pos();
+
                 if (pos.getY() <= this.minY || this.isProtected(info)) {
                     continue;
                 }
@@ -655,21 +695,26 @@ public class RuinProcessor extends StructureProcessor {
                 float depth = 0.0F;
                 for (int i = 0; i < count; i++) {
                     float candidate = bites.get(i).depthAt(pos.getX(), pos.getZ());
+
                     if (candidate > depth) {
                         depth = candidate;
                         deepest = i;
                     }
                 }
+
                 if (deepest < 0) {
                     continue;
                 }
 
                 float surface = this.maxY - depth - valueNoise(noiseSeed, pos.getX(), pos.getZ());
+
                 if (pos.getY() > surface + resistance(info.state())) {
                     this.blocks.remove(pos);
+
                     if (isRubbleMaterial(info.state())) {
                         this.fallen.add(pos);
                     }
+
                     if (this.piles(info.state())) {
                         this.debris.putIfAbsent(ChunkPos.toLong(pos.getX(), pos.getZ()), info.state());
                         sumX[deepest] += pos.getX();
@@ -697,6 +742,7 @@ public class RuinProcessor extends StructureProcessor {
         private Bite randomBite(float severity) {
             float x;
             float z;
+
             if (this.random.nextFloat() < ROOF_HOLE_CHANCE) {
                 x = MathHelper.lerp(this.random.nextFloat(), this.minX, this.maxX);
                 z = MathHelper.lerp(this.random.nextFloat(), this.minZ, this.maxZ);
@@ -734,6 +780,7 @@ public class RuinProcessor extends StructureProcessor {
                     this.scorchBlock(pos);
                 }
             }
+
             if (!burnt) {
                 return;
             }
@@ -776,10 +823,12 @@ public class RuinProcessor extends StructureProcessor {
                 List<Direction> open = new ArrayList<>();
                 for (Direction direction : Direction.values()) {
                     StructureBlockInfo info = this.blocks.get(current.offset(direction));
+
                     if (info != null && this.canChar(info.state())) {
                         open.add(direction);
                     }
                 }
+
                 if (open.isEmpty()) {
                     return;
                 }
@@ -808,6 +857,7 @@ public class RuinProcessor extends StructureProcessor {
         private boolean touchesChar(BlockPos pos) {
             for (Direction direction : Direction.values()) {
                 StructureBlockInfo info = this.blocks.get(pos.offset(direction));
+
                 if (info != null && isCharred(info.state())) {
                     return true;
                 }
@@ -823,6 +873,7 @@ public class RuinProcessor extends StructureProcessor {
             if (this.variant.scorchTerracotta() && state.isIn(SCORCHABLE_TERRACOTTA)) {
                 return Blocks.GRAY_TERRACOTTA.getDefaultState();
             }
+
             int part = woodPart(state);
             boolean darker = indexIn(TGOverrunVillage.CHARRED_WOOD, state) >= 0 || indexIn(TGOverrunVillage.SCORCHED_WOOD, state) >= 0;
             return part < 0 || darker ? null : TGOverrunVillage.SCORCHED_WOOD.get(logKind(part, state)).get().getStateWithProperties(state);
@@ -840,9 +891,11 @@ public class RuinProcessor extends StructureProcessor {
         /// Log, wood, stripped log and stripped wood share one tag. Their targets sit behind the base set in the list.
         private static int logKind(int part, BlockState state) {
             Identifier id = Registries.BLOCK.getId(state.getBlock());
+
             if (part != LOG_PART || id.getNamespace().equals(Graveyard.MOD_ID)) {
                 return part;
             }
+
             String path = id.getPath();
             boolean stripped = path.startsWith("stripped_");
             boolean wood = path.endsWith("_wood");
@@ -861,6 +914,7 @@ public class RuinProcessor extends StructureProcessor {
         private void scorchBlock(BlockPos pos) {
             StructureBlockInfo info = this.blocks.get(pos);
             BlockState charred = info == null ? null : this.charred(info.state(), pos);
+
             if (charred != null) {
                 this.put(pos, charred);
             }
@@ -874,9 +928,11 @@ public class RuinProcessor extends StructureProcessor {
             if (state.isIn(SCORCHABLE_STONE)) {
                 return this.charStone(hash(pos.getY(), pos.getX(), pos.getZ()));
             }
+
             if (this.variant.scorchTerracotta() && state.isIn(SCORCHABLE_TERRACOTTA)) {
                 return Blocks.BLACK_TERRACOTTA.getDefaultState();
             }
+
             int part = woodPart(state);
             boolean done = indexIn(TGOverrunVillage.CHARRED_WOOD, state) >= 0;
             return part < 0 || done ? null : TGOverrunVillage.CHARRED_WOOD.get(logKind(part, state)).get().getStateWithProperties(state);
@@ -896,6 +952,7 @@ public class RuinProcessor extends StructureProcessor {
                 changed = false;
                 for (BlockPos pos : ascending) {
                     StructureBlockInfo info = this.blocks.get(pos);
+
                     if (info != null && (this.lostSupport(pos, info.state()) || this.lostOtherHalf(pos, info.state()))) {
                         this.blocks.remove(pos);
                         changed = true;
@@ -908,21 +965,26 @@ public class RuinProcessor extends StructureProcessor {
             if (state.getBlock() instanceof LadderBlock) {
                 return this.wasRemoved(pos.offset(this.toWorld(state.get(LadderBlock.FACING)).getOpposite()));
             }
+
             if (state.contains(Properties.ATTACHMENT) && state.get(Properties.ATTACHMENT) != Attachment.FLOOR) {
                 boolean atCeiling = state.get(Properties.ATTACHMENT) == Attachment.CEILING;
                 return this.wasRemoved(atCeiling ? pos.up() : pos.offset(this.toWorld(state.get(Properties.HORIZONTAL_FACING))));
             }
+
             if (state.getBlock() instanceof WallTorchBlock) {
                 return this.wasRemoved(pos.offset(this.toWorld(state.get(WallTorchBlock.FACING)).getOpposite()));
             }
+
             if (state.contains(Properties.HANGING) && state.get(Properties.HANGING)) {
                 return this.wasRemoved(pos.up());
             }
+
             return pos.getY() > this.minY && !isFullCube(state) && this.wasRemoved(pos.down());
         }
 
         private boolean lostOtherHalf(BlockPos pos, BlockState state) {
             BlockPos other;
+
             if (state.contains(Properties.DOUBLE_BLOCK_HALF)) {
                 other = state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
             } else if (state.getBlock() instanceof BedBlock) {
@@ -950,10 +1012,13 @@ public class RuinProcessor extends StructureProcessor {
             }
             for (BlockPos pos : layers) {
                 BlockPos below = pos.down();
+
                 if (!this.templateCells.contains(below)) {
                     continue;
                 }
+
                 StructureBlockInfo support = this.blocks.get(below);
+
                 if (support == null || !support.state().isSideSolidFullSquare(EmptyBlockView.INSTANCE, BlockPos.ORIGIN, Direction.UP)) {
                     this.blocks.remove(pos);
                 }
@@ -985,12 +1050,14 @@ public class RuinProcessor extends StructureProcessor {
                 int x = ChunkPos.getPackedX(column.getKey());
                 int z = ChunkPos.getPackedZ(column.getKey());
                 float amount = column.getValue();
+
                 if (amount < 0.5F) {
                     continue;
                 }
 
                 boolean inWorld = !this.standsOnTemplate(x, z);
                 BlockPos base = inWorld ? this.worldBase(x, z) : this.templateBase(x, z);
+
                 if (base == null) {
                     continue;
                 }
@@ -1002,9 +1069,11 @@ public class RuinProcessor extends StructureProcessor {
                     this.pile(free, rubbleBlock(source, burnt, hash(seed + 1 + layer, x, z)), inWorld);
                     free = free.up();
                 }
+
                 if (!inWorld && !free.equals(base)) {
                     this.rubble.add(free.down());
                 }
+
                 if (amount - layers >= 0.5F && this.isFree(free, inWorld)) {
                     this.pile(free, turned(rubbleCap(source, burnt), hash(seed + MAX_HEAP_LAYERS + 1, x, z)), inWorld);
                 }
@@ -1034,9 +1103,11 @@ public class RuinProcessor extends StructureProcessor {
             for (int y = this.columnBottoms.get(ChunkPos.toLong(x, z)) + 1; y <= this.minY + MAX_HEAP_LAYERS; y++) {
                 BlockPos pos = new BlockPos(x, y, z);
                 StructureBlockInfo below = this.blocks.get(pos.down());
+
                 if (below == null) {
                     return null;
                 }
+
                 if (!this.blocks.containsKey(pos)) {
                     return isFloor(below.state()) ? pos : null;
                 }
@@ -1046,13 +1117,17 @@ public class RuinProcessor extends StructureProcessor {
 
         private BlockPos worldBase(int x, int z) {
             BlockBox chunkBox = this.data.getBoundingBox();
+
             if (chunkBox == null || !isColumnIn(chunkBox, x, z)) {
                 return null;
             }
+
             int y = this.world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z);
+
             if (y < this.minY - 2 || y > this.minY + MAX_HEAP_LAYERS) {
                 return null;
             }
+
             BlockPos pos = new BlockPos(x, y, z);
             return isFloor(this.world.getBlockState(pos.down())) ? pos : null;
         }
@@ -1062,6 +1137,7 @@ public class RuinProcessor extends StructureProcessor {
                 for (int offsetX = -reach; offsetX <= reach; offsetX++) {
                     for (int offsetZ = -reach; offsetZ <= reach; offsetZ++) {
                         BlockState state = this.debris.get(ChunkPos.toLong(x + offsetX, z + offsetZ));
+
                         if (state != null) {
                             return state;
                         }
@@ -1075,14 +1151,18 @@ public class RuinProcessor extends StructureProcessor {
             if (roll < GRAVEL_CHANCE) {
                 return this.variant.looseRubble().getDefaultState();
             }
+
             boolean scorched = burnt || roll > 1.0F - STRAY_CHAR_CHANCE;
+
             if (fallen.isBurnable()) {
                 Block planks = scorched ? TGOverrunVillage.CHARRED_PLANKS.get() : (roll < GRAVEL_CHANCE + SINGED_RUBBLE_CHANCE ? TGOverrunVillage.SCORCHED_PLANKS.get() : this.woodRubble.getBlock());
                 return planks.getDefaultState();
             }
+
             if (scorched && roll > 0.5F) {
                 return this.charStone((roll - 0.5F) * 2.0F);
             }
+
             return isFullCube(fallen) ? fallen : this.stoneRubble;
         }
 
@@ -1090,6 +1170,7 @@ public class RuinProcessor extends StructureProcessor {
             if (!state.contains(Properties.HORIZONTAL_FACING)) {
                 return state;
             }
+
             BlockState turned = state.with(Properties.HORIZONTAL_FACING, Direction.fromHorizontal((int) (roll * 4.0F)));
             return turned.contains(Properties.STAIR_SHAPE) ? turned.with(Properties.STAIR_SHAPE, StairShape.STRAIGHT) : turned;
         }
@@ -1098,12 +1179,15 @@ public class RuinProcessor extends StructureProcessor {
             if (burnt && fallen.isBurnable()) {
                 return TGOverrunVillage.CHARRED_SLAB.get().getDefaultState();
             }
+
             if (fallen.contains(Properties.SLAB_TYPE)) {
                 return fallen.with(Properties.SLAB_TYPE, SlabType.BOTTOM);
             }
+
             if (fallen.contains(Properties.BLOCK_HALF)) {
                 return fallen.with(Properties.BLOCK_HALF, BlockHalf.BOTTOM);
             }
+
             return fallen.isBurnable() ? this.woodCap : this.stoneCap;
         }
 
@@ -1122,6 +1206,7 @@ public class RuinProcessor extends StructureProcessor {
                 StructureBlockInfo cap = this.heapBlocks.contains(spot.up()) ? this.blocks.get(spot.up()) : null;
                 this.embers.add(new Ember(spot, this.blocks.get(spot), cap));
                 this.put(spot, TGOverrunVillage.SMOLDERING_DEBRIS.get().getDefaultState());
+
                 if (cap != null) {
                     this.blocks.remove(spot.up());
                 }
@@ -1130,6 +1215,7 @@ public class RuinProcessor extends StructureProcessor {
                     BlockPos ground = spot.down().offset(direction);
                     StructureBlockInfo info = this.blocks.get(ground);
                     boolean open = !this.blocks.containsKey(ground.up());
+
                     if (info != null && open && isFullCube(info.state()) && this.random.nextFloat() < MAGMA_CHANCE) {
                         this.put(ground, Blocks.MAGMA_BLOCK.getDefaultState());
                     }
@@ -1141,6 +1227,7 @@ public class RuinProcessor extends StructureProcessor {
             int neighbors = 0;
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 BlockPos beside = spot.offset(direction);
+
                 if (this.heapBlocks.contains(beside) || this.heapBlocks.contains(beside.down())) {
                     neighbors++;
                 }
@@ -1152,23 +1239,30 @@ public class RuinProcessor extends StructureProcessor {
         void disconnect() {
             for (StructureBlockInfo info : new ArrayList<>(this.blocks.values())) {
                 BlockState state = info.state();
+
                 if (state.getBlock() instanceof WallBlock) {
                     state = this.disconnectedWall(info);
+
                     if (state != info.state()) {
                         this.blocks.put(info.pos(), new StructureBlockInfo(info.pos(), state, info.nbt()));
                     }
+
                     continue;
                 }
+
                 if (!(state.getBlock() instanceof HorizontalConnectingBlock)) {
                     continue;
                 }
+
                 for (Direction direction : Direction.Type.HORIZONTAL) {
                     BooleanProperty connection = ConnectingBlock.FACING_PROPERTIES.get(direction);
                     BlockPos neighbor = info.pos().offset(this.toWorld(direction));
+
                     if (state.get(connection) && this.isDisconnected(neighbor)) {
                         state = state.with(connection, false);
                     }
                 }
+
                 if (state != info.state()) {
                     this.blocks.put(info.pos(), new StructureBlockInfo(info.pos(), state, info.nbt()));
                 }
@@ -1179,6 +1273,7 @@ public class RuinProcessor extends StructureProcessor {
             BlockState state = info.state();
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 EnumProperty<WallShape> side = wallSide(direction);
+
                 if (state.get(side) != WallShape.NONE && this.isDisconnected(info.pos().offset(this.toWorld(direction)))) {
                     state = state.with(side, WallShape.NONE);
                 }
@@ -1205,9 +1300,11 @@ public class RuinProcessor extends StructureProcessor {
 
         private boolean isDisconnected(BlockPos neighbor) {
             StructureBlockInfo info = this.blocks.get(neighbor);
+
             if (info == null) {
                 return this.templateCells.contains(neighbor);
             }
+
             return this.heapBlocks.contains(neighbor) && !isFullCube(info.state());
         }
 
@@ -1222,6 +1319,7 @@ public class RuinProcessor extends StructureProcessor {
         /// A lone block of the base layer stays on a pillar where the terrain is lower.
         void sinkLoneColumns() {
             BlockBox chunkBox = this.data.getBoundingBox();
+
             if (chunkBox == null) {
                 return;
             }
@@ -1230,10 +1328,13 @@ public class RuinProcessor extends StructureProcessor {
                 if (pos.getY() != this.minY || !isColumnIn(chunkBox, pos.getX(), pos.getZ()) || !this.isLone(pos) || this.columnHeight(pos) > MAX_LONE_STACK) {
                     continue;
                 }
+
                 int drop = pos.getY() + 1 - this.world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+
                 if (drop <= 0 || drop > MAX_SINK) {
                     continue;
                 }
+
                 for (BlockPos part = pos; this.blocks.containsKey(part); part = part.up()) {
                     StructureBlockInfo info = this.blocks.remove(part);
                     this.blocks.put(part.down(drop), new StructureBlockInfo(part.down(drop), info.state(), info.nbt()));
@@ -1295,6 +1396,7 @@ public class RuinProcessor extends StructureProcessor {
         /// The street template holds only the path. The grass beside it is in the world.
         void featherPathEdges(long worldSeed) {
             BlockBox chunkBox = this.data.getBoundingBox();
+
             if (chunkBox == null) {
                 return;
             }
@@ -1304,11 +1406,13 @@ public class RuinProcessor extends StructureProcessor {
                 if (!info.state().isOf(Blocks.DIRT_PATH)) {
                     continue;
                 }
+
                 for (int offsetX = -FEATHER_REACH; offsetX <= FEATHER_REACH; offsetX++) {
                     for (int offsetZ = -FEATHER_REACH; offsetZ <= FEATHER_REACH; offsetZ++) {
                         int x = info.pos().getX() + offsetX;
                         int z = info.pos().getZ() + offsetZ;
                         long column = ChunkPos.toLong(x, z);
+
                         if (!this.columnBottoms.containsKey(column) && isColumnIn(chunkBox, x, z)) {
                             distances.merge(column, MathHelper.sqrt(offsetX * offsetX + offsetZ * offsetZ), Math::min);
                         }
@@ -1321,11 +1425,13 @@ public class RuinProcessor extends StructureProcessor {
                 int z = ChunkPos.getPackedZ(column.getKey());
                 float distance = column.getValue();
                 float chance = 1.25F - 0.3F * distance + 0.35F * valueNoise(worldSeed, x, z);
+
                 if (hash(worldSeed, x, z) >= chance) {
                     continue;
                 }
 
                 BlockPos surface = new BlockPos(x, this.world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z) - 1, z);
+
                 if (this.world.getBlockState(surface).isOf(Blocks.GRASS_BLOCK)) {
                     this.outside.put(surface, new StructureBlockInfo(surface, featherState(hash(worldSeed + 1, x, z), distance), null));
                 }
@@ -1337,6 +1443,7 @@ public class RuinProcessor extends StructureProcessor {
             for (StructureBlockInfo info : new ArrayList<>(this.blocks.values())) {
                 BlockPos pos = info.pos();
                 boolean frays = info.state().isOf(Blocks.DIRT_PATH) && isColumnIn(chunkBox, pos.getX(), pos.getZ()) && hash(worldSeed + 2, pos.getX(), pos.getZ()) < PATH_FRAY_CHANCE;
+
                 if (frays && this.isPathEdge(pos)) {
                     this.put(pos, featherState(hash(worldSeed + 3, pos.getX(), pos.getZ()), FEATHER_REACH));
                 }
@@ -1348,6 +1455,7 @@ public class RuinProcessor extends StructureProcessor {
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 BlockPos neighbor = pos.offset(direction);
                 boolean inBounds = neighbor.getX() >= this.minX && neighbor.getX() <= this.maxX && neighbor.getZ() >= this.minZ && neighbor.getZ() <= this.maxZ;
+
                 if (inBounds && !this.columnBottoms.containsKey(ChunkPos.toLong(neighbor.getX(), neighbor.getZ()))) {
                     return true;
                 }
@@ -1359,25 +1467,31 @@ public class RuinProcessor extends StructureProcessor {
             if (roll < FEATHER_PATH_CHANCE && distance < 1.5F) {
                 return Blocks.DIRT_PATH.getDefaultState();
             }
+
             return (roll < FEATHER_COARSE_DIRT_CHANCE ? Blocks.COARSE_DIRT : Blocks.ROOTED_DIRT).getDefaultState();
         }
 
         private BlockState oriented(Block block, Direction worldFacing, int variant) {
             BlockState state = block.getDefaultState();
+
             if (state.contains(Properties.HORIZONTAL_FACING)) {
                 state = state.with(Properties.HORIZONTAL_FACING, this.toTemplate(worldFacing));
             }
+
             if (state.contains(Properties.AXIS)) {
                 state = state.with(Properties.AXIS, worldFacing.getAxis());
             }
+
             if (state.contains(VariantBoneDisplayBlock.VARIANT)) {
                 state = state.with(VariantBoneDisplayBlock.VARIANT, variant);
             }
+
             return state;
         }
 
         void placeLongRemains(List<Block> candidates, int max) {
             candidates.removeIf(block -> !(block instanceof LongDecoBlock));
+
             if (candidates.isEmpty() || max == 0) {
                 return;
             }
@@ -1389,9 +1503,11 @@ public class RuinProcessor extends StructureProcessor {
             for (int i = 0; i < count && !cells.isEmpty(); i++) {
                 BlockPos foot = cells.remove(this.random.nextInt(cells.size()));
                 Direction towardHead = this.freeNeighbor(foot, free);
+
                 if (!free.contains(foot) || towardHead == null) {
                     continue;
                 }
+
                 BlockPos head = foot.offset(towardHead);
 
                 BlockState state = candidates.get(this.random.nextInt(candidates.size())).getDefaultState()
@@ -1427,6 +1543,7 @@ public class RuinProcessor extends StructureProcessor {
             Direction start = Direction.Type.HORIZONTAL.random(this.random);
             for (int turns = 0; turns < 4; turns++) {
                 Direction direction = Direction.fromHorizontal(start.getHorizontal() + turns);
+
                 if (free.contains(cell.offset(direction))) {
                     return direction;
                 }
@@ -1437,6 +1554,7 @@ public class RuinProcessor extends StructureProcessor {
         private Direction adjacentWall(BlockPos cell) {
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 StructureBlockInfo info = this.blocks.get(cell.offset(direction));
+
                 if (info != null && isFullCube(info.state())) {
                     return direction;
                 }
@@ -1449,6 +1567,7 @@ public class RuinProcessor extends StructureProcessor {
             for (Map.Entry<Long, Integer> column : this.columnTops().entrySet()) {
                 int top = column.getValue();
                 BlockPos ground = new BlockPos(ChunkPos.getPackedX(column.getKey()), top, ChunkPos.getPackedZ(column.getKey()));
+
                 if (top <= this.groundLevel(column.getKey()) + 1 && isFloor(this.blocks.get(ground).state())) {
                     cells.add(ground.up());
                 }

@@ -35,11 +35,13 @@ public final class NamelessHangedTrades {
 
     public static void deserializeJson(JsonObject jsonRoot) {
         JsonElement profession = jsonRoot.get("profession");
+
         if (profession == null || !profession.isJsonPrimitive() || !PROFESSION.equals(profession.getAsString())) {
             return;
         }
 
         JsonElement trades = jsonRoot.get("trades");
+
         if (trades == null || !trades.isJsonObject()) {
             Graveyard.getLogger().error("Skipping nameless hanged trade file: no 'trades' object.");
             return;
@@ -59,6 +61,7 @@ public final class NamelessHangedTrades {
 
                 // Null means unusable; the parser has already logged which trade and why.
                 TradeOffers.Factory factory = TradeOfferManager.deserializeTrade(element.getAsJsonObject());
+
                 if (factory != null) {
                     TRADES_REGISTRY.add(factory);
                 }

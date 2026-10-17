@@ -8,13 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
 
-
 public class Graveyard {
 
     public static final String MOD_ID = "graveyard";
-    public static final Identifier SKULL_PACKET_ID = new Identifier(MOD_ID, "spawn_entity");
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
+
+    public static Identifier id(String path) {
+        return new Identifier(MOD_ID, path);
+    }
 
     public static GraveyardConfig getConfig() {
         return CONFIG;

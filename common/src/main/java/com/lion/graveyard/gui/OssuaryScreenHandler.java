@@ -64,12 +64,14 @@ public class OssuaryScreenHandler extends ScreenHandler {
                 stack.onCraft(player.getWorld(), player, stack.getCount());
                 OssuaryScreenHandler.this.output.unlockLastRecipe(player, this.getInputStacks());
                 ItemStack itemStack = OssuaryScreenHandler.this.inputSlot.takeStack(1);
+
                 if (!itemStack.isEmpty()) {
                     OssuaryScreenHandler.this.populateResult();
                 }
 
                 context.run((world, pos) -> {
                     long l = world.getTime();
+
                     if (OssuaryScreenHandler.this.lastTakeTime != l) {
                         world.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_CHAIN_BREAK, SoundCategory.BLOCKS, 1.0F, -3.0F);
                         OssuaryScreenHandler.this.lastTakeTime = l;
@@ -133,6 +135,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
 
     public void onContentChanged(Inventory inventory) {
         ItemStack itemStack = this.inputSlot.getStack();
+
         if (!itemStack.isOf(this.inputStack.getItem())) {
             this.inputStack = itemStack.copy();
             this.updateInput(inventory, itemStack);
@@ -144,6 +147,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         this.availableRecipes.clear();
         this.selectedRecipe.set(-1);
         this.outputSlot.setStack(ItemStack.EMPTY);
+
         if (!stack.isEmpty()) {
             this.availableRecipes = this.world.getRecipeManager().getAllMatches(TGRecipeTypes.OSSUARY_CARVING.get(), input, this.world);
         }
@@ -154,6 +158,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             OssuaryRecipe carvingRecipe = (OssuaryRecipe)this.availableRecipes.get(this.selectedRecipe.get());
             ItemStack itemStack = carvingRecipe.craft(this.input, this.world.getRegistryManager());
+
             if (itemStack.isItemEnabled(this.world.getEnabledFeatures())) {
                 this.output.setLastRecipe(carvingRecipe);
                 this.outputSlot.setStack(itemStack);
@@ -182,12 +187,15 @@ public class OssuaryScreenHandler extends ScreenHandler {
     public ItemStack quickMove(PlayerEntity player, int slot) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot2 = (Slot)this.slots.get(slot);
+
         if (slot2 != null && slot2.hasStack()) {
             ItemStack itemStack2 = slot2.getStack();
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
+
             if (slot == 1) {
                 item.onCraft(itemStack2, player.getWorld(), player);
+
                 if (!this.insertItem(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -214,6 +222,7 @@ public class OssuaryScreenHandler extends ScreenHandler {
             }
 
             slot2.markDirty();
+
             if (itemStack2.getCount() == itemStack.getCount()) {
                 return ItemStack.EMPTY;
             }

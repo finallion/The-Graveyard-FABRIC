@@ -53,6 +53,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
         this.renderRecipeBackground(context, mouseX, mouseY, l, m, n);
         this.renderRecipeIcons(context, l, m, n);
         Slot input = this.handler.getSlot(0);
+
         if (!input.hasStack()) {
             int sx = this.x + input.x;
             int sy = this.y + input.y;
@@ -64,9 +65,11 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
         Slot input = this.handler.getSlot(0);
+
         if (!input.hasStack() && this.handler.getCursorStack().isEmpty() && this.isPointWithinBounds(input.x, input.y, 16, 16, x, y)) {
             context.drawTooltip(this.textRenderer, INPUT_HINT_TEXT, x, y);
         }
+
         if (this.canCraft) {
             int i = this.x + 52;
             int j = this.y + 14;
@@ -77,6 +80,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
                 int m = l - this.scrollOffset;
                 int n = i + m % 4 * 16;
                 int o = j + m / 4 * 18 + 2;
+
                 if (x >= n && x < n + 16 && y >= o && y < o + 18) {
                     context.drawItemTooltip(this.textRenderer, ((OssuaryRecipe)list.get(l)).getOutput(this.client.world.getRegistryManager()), x, y);
                 }
@@ -91,6 +95,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
             int l = j / 4;
             int m = y + l * 18 + 2;
             int n = this.backgroundHeight;
+
             if (i == ((OssuaryScreenHandler)this.handler).getSelectedRecipe()) {
                 n += 18;
             } else if (mouseX >= k && mouseY >= m && mouseX < k + 16 && mouseY < m + 18) {
@@ -117,6 +122,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.mouseClicked = false;
+
         if (this.canCraft) {
             int i = this.x + 52;
             int j = this.y + 14;
@@ -126,6 +132,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
                 int m = l - this.scrollOffset;
                 double d = mouseX - (double)(i + m % 4 * 16);
                 double e = mouseY - (double)(j + m / 4 * 18);
+
                 if (d >= 0.0D && e >= 0.0D && d < 16.0D && e < 18.0D && ((OssuaryScreenHandler)this.handler).onButtonClick(this.client.player, l)) {
                     MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, -1.0F));
                     this.client.interactionManager.clickButton(((OssuaryScreenHandler)this.handler).syncId, l);
@@ -135,6 +142,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
 
             i = this.x + 119;
             j = this.y + 9;
+
             if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 54)) {
                 this.mouseClicked = true;
             }
@@ -177,6 +185,7 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
 
     private void onInventoryChange() {
         this.canCraft = ((OssuaryScreenHandler)this.handler).canCraft();
+
         if (!this.canCraft) {
             this.scrollAmount = 0.0F;
             this.scrollOffset = 0;

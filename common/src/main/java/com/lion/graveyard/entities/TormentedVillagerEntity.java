@@ -141,34 +141,43 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     protected void mobTick() {
         super.mobTick();
         int spawnTicksLeft = this.dataTracker.get(SPAWN_TICKS_LEFT);
+
         if (spawnTicksLeft > 0) {
             this.dataTracker.set(SPAWN_TICKS_LEFT, spawnTicksLeft - 1);
         }
+
         if (this.age % LIGHT_INTERVAL == 0 && Graveyard.getConfig().flag("tormentedVillagerLight", true)) {
             this.carryLight();
         }
 
         Mood mood = this.getMood();
+
         if (mood != Mood.REDEEMING && mood != Mood.SPAWNING && this.age > MIN_AGE_TO_FADE && this.getWorld().isDay()) {
             this.vanish(false);
             return;
         }
+
         if (mood == Mood.WANDERING) {
             if (this.random.nextInt(REST_CHANCE) == 0) {
                 this.startRandomMood();
             }
+
             return;
         }
 
         this.getNavigation().stop();
+
         if (--this.moodTicks > 0) {
             boolean cryLoops = mood == Mood.CRYING && this.moodTicks % Mood.CRYING.ticks == 0;
             boolean rageSoundEnds = mood == Mood.RAGING && this.moodTicks == Mood.RAGING.ticks - RAGE_SOUND_TICKS;
+
             if (cryLoops || rageSoundEnds) {
                 this.playSound(TGSounds.TORMENTED_VILLAGER_CRYING.get(), 1.0F, 1.0F);
             }
+
             return;
         }
+
         if (mood == Mood.REDEEMING) {
             this.vanish(true);
         } else {
@@ -178,6 +187,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
 
     private void startRandomMood() {
         int roll = this.random.nextInt(10);
+
         if (roll < 6) {
             this.setMood(Mood.CRYING, Mood.CRYING.ticks * (1 + this.random.nextInt(3)));
             this.playSound(TGSounds.TORMENTED_VILLAGER_CRYING.get(), 1.0F, 1.0F);
@@ -208,6 +218,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     private void vanish(boolean redeemed) {
         if (this.getWorld() instanceof ServerWorld world) {
             world.spawnParticles(ParticleTypes.SOUL, this.getX(), this.getBodyY(0.5D), this.getZ(), 20, 0.3D, 0.6D, 0.3D, 0.02D);
+
             if (redeemed) {
                 ExperienceOrbEntity.spawn(world, this.getPos(), REDEMPTION_EXPERIENCE);
                 this.rewardRedemption(world);
@@ -215,6 +226,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
                 TGAdvancements.triggerNearby(world, this.getPos(), DAWN_WITNESS_RANGE, TGAdvancements.TORMENTED_VILLAGER_DAWN);
             }
         }
+
         this.playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 1.0F, 1.0F);
         this.discard();
     }
@@ -228,10 +240,13 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
 
     private void carryLight() {
         BlockPos target = this.getBlockPos().up();
+
         if (target.equals(this.lightPos)) {
             return;
         }
+
         this.clearLight();
+
         if (this.getWorld().getBlockState(target).isAir()) {
             this.getWorld().setBlockState(target, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, LIGHT_LEVEL), Block.NOTIFY_LISTENERS);
             this.lightPos = target;
@@ -242,10 +257,12 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
         // A saved position far from the mob is stale. A read there can load a chunk.
         if (this.lightPos != null && this.lightPos.isWithinDistance(this.getBlockPos(), LIGHT_REACH)) {
             BlockState state = this.getWorld().getBlockState(this.lightPos);
+
             if (state.isOf(Blocks.LIGHT) && state.get(LightBlock.LEVEL_15) == LIGHT_LEVEL) {
                 this.getWorld().setBlockState(this.lightPos, state.getFluidState().getBlockState(), Block.NOTIFY_LISTENERS);
             }
         }
+
         this.lightPos = null;
     }
 
@@ -255,6 +272,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
         if (!this.getWorld().isClient && reason.shouldDestroy()) {
             this.clearLight();
         }
+
         super.remove(reason);
     }
 
@@ -263,6 +281,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
         if (original instanceof TormentedVillagerEntity villager && !villager.getWorld().isClient) {
             villager.clearLight();
         }
+
         super.copyFrom(original);
         this.lightPos = null;
     }
@@ -275,6 +294,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
+
         if (this.lightPos != null) {
             nbt.putLong(LIGHT_KEY, this.lightPos.asLong());
         }
@@ -283,6 +303,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
+
         if (nbt.contains(LIGHT_KEY)) {
             this.lightPos = BlockPos.fromLong(nbt.getLong(LIGHT_KEY));
         }
@@ -304,6 +325,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
         if (this.getMood() != Mood.WANDERING) {
             return null;
         }
+
         return this.getNavigation().isIdle() ? TGSounds.TORMENTED_VILLAGER_IDLE.get() : TGSounds.TORMENTED_VILLAGER_LOST.get();
     }
 
@@ -333,16 +355,20 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(AnimationClock.controller(this, "controller", this.getMood() == Mood.SPAWNING ? 0 : MOOD_TRANSITION_TICKS, state -> {
             RawAnimation preview = AnimationPreview.frame(state, Mood::animationNames);
+
             if (preview != null) {
                 return state.setAndContinue(preview);
             }
+
             Mood mood = this.getMood();
             // A blend from the bind pose shows a pose the mob never has.
             boolean cut = mood == Mood.SPAWNING || state.getController().getCurrentAnimation() == null;
             state.getController().transitionLength(cut ? 0 : MOOD_TRANSITION_TICKS);
+
             if (mood == Mood.WANDERING) {
                 return state.setAndContinue(this.isWalking() ? Mood.WALK : mood.animation);
             }
+
             return state.setAndContinue(mood.animation);
         }, Mood.SPAWNING.animation.getAnimationStages().get(0).animationName(), villager -> villager.spawnClipOffset()));
     }

@@ -28,7 +28,7 @@ public final class MobSpawnGate {
             SpawnReason.NATURAL, SpawnReason.CHUNK_GENERATION, SpawnReason.STRUCTURE, SpawnReason.SPAWNER,
             SpawnReason.PATROL, SpawnReason.EVENT, SpawnReason.REINFORCEMENT);
 
-    private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, "no_mob_spawns"));
+    private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.of(RegistryKeys.BIOME, Graveyard.id("no_mob_spawns"));
 
     private MobSpawnGate() {
     }
@@ -45,9 +45,11 @@ public final class MobSpawnGate {
 
     public static boolean isSwitchedOff(EntityType<?> type) {
         Identifier id = Registries.ENTITY_TYPE.getId(type);
+
         if (!Graveyard.MOD_ID.equals(id.getNamespace()) || !MANAGED_MOBS.contains(id.getPath())) {
             return false;
         }
+
         GraveyardConfig config = Graveyard.getConfig();
         return config.structuresOnly() || !config.mobMayAppear(id.getPath());
     }

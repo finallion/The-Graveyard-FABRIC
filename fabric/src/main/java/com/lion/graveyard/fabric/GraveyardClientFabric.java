@@ -1,6 +1,5 @@
 package com.lion.graveyard.fabric;
 
-import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
 import com.lion.graveyard.client.FragmentSpotHints;
 import com.lion.graveyard.gui.OssuaryScreen;
@@ -20,19 +19,12 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.particle.SonicBoomParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-
-import java.util.UUID;
 
 public class GraveyardClientFabric implements ClientModInitializer {
 
@@ -66,34 +58,12 @@ public class GraveyardClientFabric implements ClientModInitializer {
             client.execute(() -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(Graveyard.SKULL_PACKET_ID, (client, handler, byteBuf, responseSender) -> {
-            EntityType<?> type = Registries.ENTITY_TYPE.get(byteBuf.readVarInt());
-            UUID entityUUID = byteBuf.readUuid();
-            int entityID = byteBuf.readVarInt();
-            double x = byteBuf.readDouble();
-            double y = byteBuf.readDouble();
-            double z = byteBuf.readDouble();
-            float pitch = (byteBuf.readByte() * 360) / 256.0F;
-            float yaw = (byteBuf.readByte() * 360) / 256.0F;
-            client.execute(() -> {
-                ClientWorld world = MinecraftClient.getInstance().world;
-                Entity entity = type.create(world);
-                if (entity != null) {
-                    entity.updatePosition(x, y, z);
-                    entity.updateTrackedPosition(x, y, z);
-                    entity.setPitch(pitch);
-                    entity.setYaw(yaw);
-                    entity.setId(entityID);
-                    entity.setUuid(entityUUID);
-                    world.addEntity(entityID, entity);
-                }
-            });
-        });
 
         ModelPredicateProviderRegistry.register(TGItems.VIAL_OF_BLOOD.get(), new Identifier("charged"), (stack, world, entity, seed) -> {
             if (entity != null && stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                 return VialOfBlood.getBlood(stack);
             }
+
             return 0.0F;
         });
     }

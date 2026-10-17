@@ -33,7 +33,10 @@ class PlatformImplTest {
 
     static String simple(String type) {
         String t = type.replaceAll("\\s+", " ").trim().replaceAll("\\bfinal\\s+", "");
-        return t.replaceAll("\\b[a-z][\\w]*\\.", "").replaceAll("\\s*,\\s*", ",").replaceAll("\\s*<\\s*", "<").replaceAll("\\s*>", ">");
+        return t.replaceAll("\\b[a-z][\\w]*\\.", "")
+                .replaceAll("\\s*,\\s*", ",")
+                .replaceAll("\\s*<\\s*", "<")
+                .replaceAll("\\s*>", ">");
     }
 
     static List<String> parameterTypes(String parameters) {
@@ -46,12 +49,15 @@ class PlatformImplTest {
             } else if (c == '>') {
                 depth--;
             }
+
             if (c == ',' && depth == 0) {
                 String parameter = current.toString().replaceAll("@\\w+(\\([^)]*\\))?\\s*", "").trim();
+
                 if (!parameter.isEmpty()) {
                     int split = parameter.lastIndexOf(' ');
                     types.add(simple(split < 0 ? parameter : parameter.substring(0, split)));
                 }
+
                 current.setLength(0);
             } else {
                 current.append(c);
@@ -118,10 +124,12 @@ class PlatformImplTest {
         Set<String> forge = classNames(ModProject.FORGE_JAVA.resolve("platform/forge"));
         Set<String> all = new TreeSet<>(fabric);
         all.addAll(forge);
-        return all.stream().filter(n -> !LOADER_ONLY.contains(n)).map(name -> DynamicTest.dynamicTest(name, () -> {
-            assertTrue(fabric.contains(name), name + " is missing on Fabric");
-            assertTrue(forge.contains(name), name + " is missing on Forge");
-        }));
+        return all.stream()
+                .filter(n -> !LOADER_ONLY.contains(n))
+                .map(name -> DynamicTest.dynamicTest(name, () -> {
+                    assertTrue(fabric.contains(name), name + " is missing on Fabric");
+                    assertTrue(forge.contains(name), name + " is missing on Forge");
+                }));
     }
 
     private static Set<String> classNames(Path dir) {

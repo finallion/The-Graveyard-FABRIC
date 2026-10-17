@@ -50,7 +50,10 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
     public GravestoneBlock(Identifier texture) {
         super(AbstractBlock.Settings.create().noCollision().nonOpaque().sounds(BlockSoundGroup.DEEPSLATE_BRICKS).strength(1.5F), WoodType.OAK);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(FLOOR, true).with(AbstractSignBlock.WATERLOGGED, false));
+        this.setDefaultState(this.stateManager.getDefaultState()
+                .with(FACING, Direction.NORTH)
+                .with(FLOOR, true)
+                .with(AbstractSignBlock.WATERLOGGED, false));
         this.texture = texture;
     }
 
@@ -82,6 +85,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
         Item item = itemStack.getItem();
         Item item2 = itemStack.getItem();
         SignChangingItem signChangingItem;
+
         if (item2 instanceof SignChangingItem) {
             signChangingItem = (SignChangingItem)item2;
         } else {
@@ -91,16 +95,20 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
         SignChangingItem signChangingItem2 = signChangingItem;
         boolean bl = signChangingItem2 != null && player.canModifyBlocks();
         BlockEntity var12 = world.getBlockEntity(pos);
+
         if (var12 instanceof GravestoneBlockEntity) {
             GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)var12;
+
             if (!world.isClient) {
                 SignText signText = signBlockEntity.getText();
                 boolean bl3 = signBlockEntity.runCommandClickEvent(player, world, pos);
+
                 if (signBlockEntity.isWaxed()) {
                     world.playSound(null, signBlockEntity.getPos(), SoundEvents.BLOCK_SIGN_WAXED_INTERACT_FAIL, SoundCategory.BLOCKS);
                     return ActionResult.PASS;
                 } else if (bl && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canUseOnSignText(signText, player)) {
                     boolean useOnSign = false;
+
                     if (signChangingItem2 instanceof DyeItem dyeItem) {
                         useOnSign = useDyeOnSign(world, signBlockEntity, dyeItem.getColor());
                     } else if (signChangingItem2 instanceof InkSacItem) {
@@ -132,6 +140,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
                 return !bl && !signBlockEntity.isWaxed() ? ActionResult.CONSUME : ActionResult.SUCCESS;
             }
         }
+
         return ActionResult.PASS;
     }
 
@@ -192,6 +201,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
     private void openScreen(World world, BlockPos pos, PlayerEntity placer) {
         GravestoneBlockEntity sign = (GravestoneBlockEntity) world.getBlockEntity(pos);
+
         if (!world.isClient) {
             sign.setEditor(placer.getUuid());
             ((ServerPlayerEntity) placer).networkHandler.sendPacket(new SignEditorOpenS2CPacket(pos, true));
@@ -208,7 +218,9 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
         Direction direction = ctx.getHorizontalPlayerFacing();
-        return (BlockState)((BlockState)this.getDefaultState().with(FACING, direction.getOpposite()).with(AbstractSignBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER));
+        return this.getDefaultState()
+                .with(FACING, direction.getOpposite())
+                .with(AbstractSignBlock.WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
     @Override

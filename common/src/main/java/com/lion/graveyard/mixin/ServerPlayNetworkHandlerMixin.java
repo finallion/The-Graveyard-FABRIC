@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
 
@@ -31,6 +30,7 @@ public class ServerPlayNetworkHandlerMixin {
 
         if (serverWorld.isChunkLoaded(blockPos)) {
             BlockEntity blockEntity = serverWorld.getBlockEntity(blockPos);
+
             if (!(blockEntity instanceof GravestoneBlockEntity)) {
                 return;
             }

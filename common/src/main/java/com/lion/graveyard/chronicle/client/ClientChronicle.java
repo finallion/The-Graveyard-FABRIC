@@ -19,6 +19,7 @@ public final class ClientChronicle {
 
     public static void receive(Set<String> pages, @Nullable String newlyFound) {
         found = new LinkedHashSet<>(pages);
+
         if (newlyFound != null && Graveyard.getConfig().flag("chronicleToasts", true)) {
             MinecraftClient client = MinecraftClient.getInstance();
             client.getToastManager().add(new ChronicleToast(newlyFound));

@@ -9,16 +9,16 @@ public class WraithModel extends GeoModel<WraithEntity> {
 
     @Override
     public Identifier getModelResource(WraithEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "geo/wraith.geo.json");
+        return Graveyard.id("geo/wraith.geo.json");
     }
 
     @Override
     public Identifier getTextureResource(WraithEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/wraith_opaque.png");
+        return Graveyard.id("textures/entity/wraith_opaque.png");
     }
 
     @Override
     public Identifier getAnimationResource(WraithEntity animatable) {
-        return new Identifier(Graveyard.MOD_ID, "animations/wraith/wraith.animation.json");
+        return Graveyard.id("animations/wraith/wraith.animation.json");
     }
 }

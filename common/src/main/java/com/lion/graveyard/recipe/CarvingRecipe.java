@@ -80,6 +80,7 @@ public abstract class CarvingRecipe implements Recipe<Inventory> {
         public T read(Identifier identifier, JsonObject jsonObject) {
             String string = JsonHelper.getString(jsonObject, "group", "");
             Ingredient ingredient;
+
             if (JsonHelper.hasArray(jsonObject, "ingredient")) {
                 ingredient = Ingredient.fromJson(JsonHelper.getArray(jsonObject, "ingredient"));
             } else {

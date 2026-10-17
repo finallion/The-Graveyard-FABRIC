@@ -21,6 +21,7 @@ public class TrackOwnerAttackerGoal extends TrackTargetGoal {
     public boolean canStart() {
         if (!this.tameable.isSitting()) {
             LivingEntity livingEntity = this.tameable.getOwner();
+
             if (livingEntity == null) {
                 return false;
             } else {
@@ -37,6 +38,7 @@ public class TrackOwnerAttackerGoal extends TrackTargetGoal {
     public void start() {
         this.mob.setTarget(this.attacker);
         LivingEntity livingEntity = this.tameable.getOwner();
+
         if (livingEntity != null) {
             this.lastAttackedTime = livingEntity.getLastAttackedTime();
         }

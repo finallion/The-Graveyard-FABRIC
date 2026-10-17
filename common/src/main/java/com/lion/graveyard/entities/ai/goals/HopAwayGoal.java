@@ -28,13 +28,17 @@ public class HopAwayGoal extends HopGoal {
             this.cooldown--;
             return false;
         }
+
         if (!this.magpie.isOnGround()) {
             return false;
         }
+
         PlayerEntity player = this.magpie.getWorld().getClosestPlayer(this.magpie, PLAYER_RANGE);
+
         if (player == null || player.isSneaking() || player.isSpectator()) {
             return false;
         }
+
         this.awayFrom = player.getPos();
         this.target = this.findTarget();
         return this.target != null;
@@ -46,10 +50,12 @@ public class HopAwayGoal extends HopGoal {
         if (this.awayFrom == null) {
             return null;
         }
+
         double baseAngle = MathHelper.atan2(this.magpie.getZ() - this.awayFrom.z, this.magpie.getX() - this.awayFrom.x);
         for (int i = 0; i < FIND_ATTEMPTS; i++) {
             double angle = baseAngle + Math.toRadians(this.magpie.getRandom().nextDouble() * ANGLE_SPREAD_DEGREES - ANGLE_SPREAD_DEGREES / 2.0D);
             Vec3d direction = new Vec3d(Math.cos(angle), 0.0D, Math.sin(angle));
+
             if (this.isHopPathClear(direction)) {
                 double distance = MIN_DISTANCE + this.magpie.getRandom().nextDouble() * DISTANCE_SPREAD;
                 return new Vec3d(this.magpie.getX() + direction.x * distance, this.magpie.getY(), this.magpie.getZ() + direction.z * distance);

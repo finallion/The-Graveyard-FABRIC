@@ -20,6 +20,7 @@ public abstract class MobEntitySpawnMixin {
     @Inject(method = "canSpawn(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/entity/SpawnReason;)Z", at = @At("HEAD"), cancellable = true)
     private void graveyard$gateAutomaticSpawn(WorldAccess world, SpawnReason spawnReason, CallbackInfoReturnable<Boolean> callback) {
         MobEntity mob = (MobEntity) (Object) this;
+
         if (MobSpawnGate.blocks(mob.getType(), spawnReason) || MobSpawnGate.inForbiddenBiome(world, mob.getBlockPos(), mob.getType(), spawnReason)) {
             callback.setReturnValue(false);
         }
@@ -29,6 +30,7 @@ public abstract class MobEntitySpawnMixin {
     @Inject(method = "initialize", at = @At("HEAD"))
     private void graveyard$discardGatedStructureMob(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt, CallbackInfoReturnable<EntityData> callback) {
         MobEntity mob = (MobEntity) (Object) this;
+
         if ((spawnReason == SpawnReason.STRUCTURE || spawnReason == SpawnReason.SPAWNER) && MobSpawnGate.blocks(mob.getType(), spawnReason)) {
             mob.discard();
         }

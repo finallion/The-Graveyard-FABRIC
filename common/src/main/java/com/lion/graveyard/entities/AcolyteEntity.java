@@ -9,7 +9,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.World;
@@ -22,7 +21,7 @@ public class AcolyteEntity extends CorruptedIllager {
     }
 
     protected void initEquipment(Random random, LocalDifficulty localDifficulty) {
-        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Registries.ITEM.get(new Identifier(Graveyard.MOD_ID, "bone_dagger"))));
+        this.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Registries.ITEM.get(Graveyard.id("bone_dagger"))));
     }
 
     @Override
