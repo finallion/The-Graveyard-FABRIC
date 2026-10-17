@@ -5,15 +5,6 @@ import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.Targeting;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -113,6 +104,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
 
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new ChasePlayerGoal(this));
@@ -149,8 +141,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.lastAttackAnimTimer = timer;
     }
 
+    @Override
     protected void customServerAiStep() {
-        // ATTACK TIMER
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimation(ANIMATION_ATTACK);
         }
@@ -173,6 +165,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
 
+    @Override
     public void aiStep() {
         this.jumping = false;
 
@@ -189,11 +182,13 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         super.aiStep();
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         this.addPersistentAngerSaveData(nbt);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         this.readPersistentAngerSaveData(this.getCommandSenderWorld(), nbt);
@@ -219,6 +214,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         }
     }
 
+    @Override
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
@@ -305,6 +301,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         }
     }
 
+    @Override
     protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
         return 2.55F;
     }
@@ -326,17 +323,17 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         }
 
         BlockState blockState = this.getCommandSenderWorld().getBlockState(mutable);
-        boolean bl = blockState.blocksMotion();
-        boolean bl2 = blockState.getFluidState().is(FluidTags.WATER);
+        boolean solid = blockState.blocksMotion();
+        boolean inWater = blockState.getFluidState().is(FluidTags.WATER);
 
-        if (bl && !bl2) {
-            boolean bl3 = this.randomTeleport(x, y, z, false);
+        if (solid && !inWater) {
+            boolean teleported = this.randomTeleport(x, y, z, false);
 
-            if (bl3 && !this.isSilent()) {
+            if (teleported && !this.isSilent()) {
                 this.playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, -10.0F);
             }
 
-            return bl3;
+            return teleported;
         } else {
             return false;
         }
@@ -358,10 +355,12 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         return this.entityData.get(ANGRY);
     }
 
+    @Override
     public void setRemainingPersistentAngerTime(int ticks) {
         this.angerTime = ticks;
     }
 
+    @Override
     public int getRemainingPersistentAngerTime() {
         return this.angerTime;
     }
@@ -382,10 +381,12 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.target = uuid;
     }
 
+    @Override
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(ANGER_TIME.sample(this.random));
     }
 
+    @Override
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
 
@@ -429,6 +430,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             this.setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
         }
 
+        @Override
         public boolean canUse() {
             this.target = this.nightmare.getTarget();
 
@@ -440,10 +442,12 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             }
         }
 
+        @Override
         public void start() {
             this.nightmare.getNavigation().stop();
         }
 
+        @Override
         public void tick() {
             this.nightmare.getLookControl().setLookAt(this.target.getX(), this.target.getEyeY(), this.target.getZ());
         }
@@ -466,22 +470,26 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             });
         }
 
+        @Override
         public boolean canUse() {
             this.targetPlayer = this.nightmare.getCommandSenderWorld().getNearestPlayer(this.staringPlayerPredicate, this.nightmare);
             return this.targetPlayer != null;
         }
 
+        @Override
         public void start() {
             this.lookAtPlayerWarmup = this.adjustedTickDelay(5);
             this.ticksSinceUnseenTeleport = 0;
             this.nightmare.setProvoked();
         }
 
+        @Override
         public void stop() {
             this.targetPlayer = null;
             super.stop();
         }
 
+        @Override
         public boolean canContinueToUse() {
             if (this.targetPlayer != null) {
                 if (!this.nightmare.isPlayerStaring(this.targetPlayer)) {
@@ -495,6 +503,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             }
         }
 
+        @Override
         public void tick() {
             if (this.nightmare.getTarget() == null) {
                 super.setTarget((LivingEntity)null);
@@ -508,7 +517,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                 }
             } else {
                 if (this.target != null && !this.nightmare.isPassenger()) {
-                    // custom teleport injection
                     if (this.nightmare.isPlayerStaring((Player)this.target)) {
                         if (target.distanceToSqr(this.nightmare) <= 384.0D && target != null) {
                             if (target.distanceToSqr(this.nightmare) > 24.0D) {
@@ -518,7 +526,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                         }
 
                         this.ticksSinceUnseenTeleport = 0;
-                    // custom stop
                     } else if (this.target.distanceToSqr(this.nightmare) > 256.0D && this.ticksSinceUnseenTeleport++ >= this.adjustedTickDelay(80) && this.nightmare.teleportTo(this.target)) {
                         this.ticksSinceUnseenTeleport = 0;
                     }

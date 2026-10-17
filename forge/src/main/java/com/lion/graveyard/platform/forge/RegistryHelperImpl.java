@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.EggItem;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -137,7 +135,6 @@ public class RegistryHelperImpl {
     }
 
     public static void registerRenderType(RenderType type, Block... blocks) {
-        // done block model JSON
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {
@@ -157,7 +154,6 @@ public class RegistryHelperImpl {
     }
 
     public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
-        // registered via event
     }
 
     public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {

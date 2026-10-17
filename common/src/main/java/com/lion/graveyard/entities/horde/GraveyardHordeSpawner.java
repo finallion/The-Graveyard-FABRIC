@@ -36,6 +36,7 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                 && world.getServer().isSpawningMonsters();
     }
 
+    @Override
     public int tick(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals) {
         if (!spawnMonsters) {
             return 0;
@@ -82,11 +83,10 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                                         return 0;
                                     } else {
                                         int n = 0;
-                                        // how many entities will spawn
-                                        int o = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;
+                                        int spawnAttempts = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;
                                         boolean illagerSpawn = random.nextBoolean();
 
-                                        for (int p = 0; p < o; ++p) {
+                                        for (int p = 0; p < spawnAttempts; ++p) {
                                             ++n;
                                             mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
 

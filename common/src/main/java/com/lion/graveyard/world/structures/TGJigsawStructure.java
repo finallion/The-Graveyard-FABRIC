@@ -68,6 +68,7 @@ public class TGJigsawStructure extends Structure {
         this.structureName = structureName;
     }
 
+    @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
         if (!Graveyard.getConfig().enabled(Graveyard.id(structureName))) {
             return Optional.empty();
@@ -143,7 +144,6 @@ public class TGJigsawStructure extends Structure {
         NoiseColumn sample4 = generator.getBaseColumn(chunkX, chunkZ - size, heightLimitView, noiseConfig);
         NoiseColumn sample5 = generator.getBaseColumn(chunkX - size, chunkZ, heightLimitView, noiseConfig);
 
-        // subtract -1 if getHeightOnGround
         if (!name.equals("haunted_house")) {
             if (sample1.getBlock(i1).getFluidState().is(FluidTags.WATER)
                     || sample2.getBlock(j1).getFluidState().is(FluidTags.WATER)
@@ -163,6 +163,7 @@ public class TGJigsawStructure extends Structure {
         return Math.abs(maxHeight - minHeight) <= maxHeightDifference;
     }
 
+    @Override
     public StructureType<?> type() {
         return TGStructures.TG_JIGSAW;
     }

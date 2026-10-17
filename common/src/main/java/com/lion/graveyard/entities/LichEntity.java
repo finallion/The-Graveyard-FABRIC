@@ -16,14 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.Targeting;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.sensing.Sensing;
-import net.minecraft.world.entity.monster.Evoker;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -39,8 +31,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.core.Position;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -258,6 +248,7 @@ public class LichEntity extends Monster implements GeoEntity {
         return factory;
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(2, new LichMeleeGoal(this, 1.0D, false));
@@ -393,10 +384,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
         if (canHuntStart()) {
             List<Player> playersInRange = getPlayersInRange(30.0D);
-            Iterator<Player> iterator = playersInRange.iterator();
-            while (iterator.hasNext()) {
-                Player player = iterator.next();
-
+            for (Player player : playersInRange) {
                 if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                     player.playSound(SoundEvents.CHORUS_FRUIT_TELEPORT, 2.5F, -5.0F);
                     for (int i = 0; i < 10; i++) {
@@ -523,6 +511,7 @@ public class LichEntity extends Monster implements GeoEntity {
         super.baseTick();
     }
 
+    @Override
     protected void customServerAiStep() {
         if (homePos == null) {
             homePos = BlockPos.containing(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
@@ -577,10 +566,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
             if (canHuntStart()) {
                 List<Player> playersInRange = getPlayersInRange(30.0D);
-                Iterator<Player> iterator = playersInRange.iterator();
-                while (iterator.hasNext()) {
-                    Player player = iterator.next();
-
+                for (Player player : playersInRange) {
                     if ((getHuntTimer() == 0 || getHuntTimer() % 300 == 0) && !player.isCreative() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                         for (int i = 0; i <= 5; i++) {
                             BlockPos targetPos = BlockPos.containing(this.getX() + Mth.nextInt(random, -10, 10), this.getY(), this.getZ() + Mth.nextInt(random, -10, 10));
@@ -713,13 +699,9 @@ public class LichEntity extends Monster implements GeoEntity {
             this.setPhaseInvulTimer(timer);
         }
 
-        // during healing phase, damage player and hinder to escape room where they were teleported to
         if (getHealTimer() > 0) {
             List<Player> playersInRange = getPlayersInRange(30.0D);
-            Iterator<Player> iterator = playersInRange.iterator();
-            while (iterator.hasNext()) {
-                Player player = iterator.next();
-
+            for (Player player : playersInRange) {
                 if (getHealTimer() == HEALING_DURATION && !player.isCreative()) {
                     player.teleportToWithTicket(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
                 }
@@ -1023,6 +1005,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
 
+    @Override
     public void setCustomName(@Nullable Component name) {
         super.setCustomName(name);
         this.bossBar.setName(this.getDisplayName());
@@ -1086,6 +1069,7 @@ public class LichEntity extends Monster implements GeoEntity {
         }
     }
 
+    @Override
     public float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
         if (pose == Pose.CROUCHING) {
             return 2.0F;
@@ -1104,26 +1088,32 @@ public class LichEntity extends Monster implements GeoEntity {
         return super.getDimensions(pose);
     }
 
+    @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
+    @Override
     public boolean addEffect(MobEffectInstance effect, @Nullable Entity source) {
         return false;
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
 
+    @Override
     protected boolean canRide(Entity entity) {
         return false;
     }
 
+    @Override
     public boolean canChangeDimensions() {
         return false;
     }
 
+    @Override
     public void startSeenByPlayer(ServerPlayer player) {
         super.startSeenByPlayer(player);
 
@@ -1132,11 +1122,13 @@ public class LichEntity extends Monster implements GeoEntity {
         }
     }
 
+    @Override
     public void stopSeenByPlayer(ServerPlayer player) {
         super.stopSeenByPlayer(player);
         this.bossBar.removePlayer(player);
     }
 
+    @Override
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
@@ -1149,7 +1141,7 @@ public class LichEntity extends Monster implements GeoEntity {
                     return false;
                 }
 
-                // damage stops healing, set to one to add particle effect
+                // Damage stops the healing. The timer value 1 triggers the particle effect.
                 if (getHealTimer() > 0) {
                     setHealTimer(1);
                 } else {
@@ -1538,6 +1530,7 @@ public class LichEntity extends Monster implements GeoEntity {
         return player != null && distanceTo(player) < 2500;
     }
 
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(CAN_MOVE, false);
@@ -1559,6 +1552,7 @@ public class LichEntity extends Monster implements GeoEntity {
         this.entityData.define(CAN_HUNT_START, false);
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         nbt.putInt("Invul", getInvulnerableTimer());
         nbt.putInt("PhaseInvul", getPhaseInvulnerableTimer());
@@ -1586,6 +1580,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         if (!nbt.contains("Invul")) {
             this.setInvulTimer(0);
@@ -1691,7 +1686,7 @@ public class LichEntity extends Monster implements GeoEntity {
                 return true;
             }
 
-            return getCorpseSpellTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell // cooldown
+            return getCorpseSpellTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownCorpseSpell
                     && (openingTicks > 0 && getTarget() == null || random.nextInt(75) == 0)
                     && canSpellCast();
         }
@@ -1699,7 +1694,7 @@ public class LichEntity extends Monster implements GeoEntity {
         @Override
         public void start() {
             if (getCorpseSpellTimer() <= 0) {
-                // make invulnerable during spell, prevents lich melee attack
+                // The invulnerability during the spell stops the melee attack.
                 if (Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells) {
                     setPhaseInvulTimer(CORPSE_SPELL_DURATION);
                 }
@@ -1763,6 +1758,7 @@ public class LichEntity extends Monster implements GeoEntity {
             return super.canContinueToUse();
         }
 
+        @Override
         public void tick() {
             if (getCorpseSpellTimer() > 1) {
                 setAnimationState(ANIMATION_CORPSE_SPELL);
@@ -1811,14 +1807,17 @@ public class LichEntity extends Monster implements GeoEntity {
             this.mob = mob;
         }
 
+        @Override
         public boolean canUse() {
             return this.mob.getTarget() != null && canSpellCast();
         }
 
+        @Override
         public void start() {
             this.cooldown = 0;
         }
 
+        @Override
         public boolean requiresUpdateEveryTick() {
             return true;
         }
@@ -1832,6 +1831,7 @@ public class LichEntity extends Monster implements GeoEntity {
             super.stop();
         }
 
+        @Override
         public void tick() {
             LivingEntity livingEntity = this.mob.getTarget();
 
@@ -1885,6 +1885,7 @@ public class LichEntity extends Monster implements GeoEntity {
             this.mob = mob;
         }
 
+        @Override
         public boolean canUse() {
             if (getPhase() == 1 && this.mob.getHealTimer() > 1) {
                 return true;
@@ -1896,6 +1897,7 @@ public class LichEntity extends Monster implements GeoEntity {
                     && canSpellCast();
         }
 
+        @Override
         public void start() {
             if (getHealTimer() > 0) {
                 return;
@@ -1911,6 +1913,7 @@ public class LichEntity extends Monster implements GeoEntity {
             playHealSound();
         }
 
+        @Override
         public boolean requiresUpdateEveryTick() {
             return true;
         }
@@ -1933,6 +1936,7 @@ public class LichEntity extends Monster implements GeoEntity {
             return super.canContinueToUse();
         }
 
+        @Override
         public void tick() {
             if (getHealTimer() > 1) {
                 setAnimationState(ANIMATION_SUMMON);
@@ -1952,6 +1956,7 @@ public class LichEntity extends Monster implements GeoEntity {
             this.mob = mob;
         }
 
+        @Override
         public boolean canUse() {
             if (getPhase() == 1 && this.mob.getLevitationDurationTimer() > 1) {
                 return true;
@@ -1962,6 +1967,7 @@ public class LichEntity extends Monster implements GeoEntity {
                     && this.mob.getLevitationDurationTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownLevitationSpell;
         }
 
+        @Override
         public void start() {
             if (getLevitationDurationTimer() > 0) {
                 return;
@@ -1970,13 +1976,9 @@ public class LichEntity extends Monster implements GeoEntity {
             setLevitationDurationTimer(LEVITATION_DURATION);
             openingTicks = 0;
 
-            List<Player> player = getPlayersInRange(30.0D);
-            Iterator<Player> it = player.iterator();
-            Player playerEntity;
+            List<Player> players = getPlayersInRange(30.0D);
 
-            while (it.hasNext()) {
-                playerEntity = (Player) it.next();
-
+            for (Player playerEntity : players) {
                 if (!playerEntity.isCreative()) {
                     playerEntity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, LEVITATION_DURATION, 1));
                 }
@@ -1985,6 +1987,7 @@ public class LichEntity extends Monster implements GeoEntity {
             playLevitationSound();
         }
 
+        @Override
         public boolean requiresUpdateEveryTick() {
             return true;
         }
@@ -2007,6 +2010,7 @@ public class LichEntity extends Monster implements GeoEntity {
             return super.canContinueToUse();
         }
 
+        @Override
         public void tick() {
             if (getLevitationDurationTimer() > 1) {
                 setAnimationState(ANIMATION_SUMMON);
@@ -2035,6 +2039,7 @@ public class LichEntity extends Monster implements GeoEntity {
                     && this.mob.getTarget() != null && this.mob.distanceToSqr(this.mob.getTarget()) <= 64.0D;
         }
 
+        @Override
         public boolean requiresUpdateEveryTick() {
             return true;
         }
@@ -2057,6 +2062,7 @@ public class LichEntity extends Monster implements GeoEntity {
             return super.canContinueToUse();
         }
 
+        @Override
         public void start() {
             LivingEntity livingEntity = this.mob.getTarget();
 
@@ -2081,6 +2087,7 @@ public class LichEntity extends Monster implements GeoEntity {
             }
         }
 
+        @Override
         public void tick() {
             if (getConjureFangTimer() > 1) {
                 setAnimationState(ANIMATION_CONJURE_FANG);
@@ -2093,7 +2100,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
         private void conjureFangs(double x, double z, double maxY, double y, float yaw, int warmup) {
             BlockPos blockPos = BlockPos.containing(x, y, z);
-            boolean bl = false;
+            boolean foundGround = false;
             double d = 0.0D;
 
             do {
@@ -2110,14 +2117,14 @@ public class LichEntity extends Monster implements GeoEntity {
                         }
                     }
 
-                    bl = true;
+                    foundGround = true;
                     break;
                 }
 
                 blockPos = blockPos.below();
             } while (blockPos.getY() >= Mth.floor(maxY) - 1);
 
-            if (bl) {
+            if (foundGround) {
                 this.mob.getCommandSenderWorld().addFreshEntity(new EvokerFangs(this.mob.getCommandSenderWorld(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
             }
         }

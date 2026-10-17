@@ -41,9 +41,10 @@ public class OminousBoneStaffFragment extends Block {
                 .setValue(WATERLOGGED, false));
     }
 
+    @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         if (world.getGameTime() % 25 == 0) {
-            world.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_AMBIENT.get(), SoundSource.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
+            world.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, TGSounds.BONE_AMBIENT.get(), SoundSource.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
         }
     }
 
@@ -57,7 +58,7 @@ public class OminousBoneStaffFragment extends Block {
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        world.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_PLACED.get(), SoundSource.BLOCKS, 15.0F,1.5F, true);
+        world.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, TGSounds.BONE_PLACED.get(), SoundSource.BLOCKS, 15.0F,1.5F, true);
         super.setPlacedBy(world, pos, state, placer, itemStack);
     }
 
@@ -71,10 +72,12 @@ public class OminousBoneStaffFragment extends Block {
         return 1.0F;
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, WATERLOGGED);
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
         return this.defaultBlockState()
@@ -82,12 +85,14 @@ public class OminousBoneStaffFragment extends Block {
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override

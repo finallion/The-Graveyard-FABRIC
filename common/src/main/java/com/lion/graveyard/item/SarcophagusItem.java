@@ -10,6 +10,7 @@ public class SarcophagusItem extends BlockItem {
         super(block, settings);
     }
 
+    @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         return context.getLevel().setBlock(context.getClickedPos(), state, 26);
     }

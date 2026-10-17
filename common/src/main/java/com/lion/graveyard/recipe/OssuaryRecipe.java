@@ -14,10 +14,12 @@ public class OssuaryRecipe extends CarvingRecipe {
         super(TGRecipeTypes.OSSUARY_CARVING.get(), TGRecipeTypes.OSSUARY_CARVING_SERIALIZER.get(), id, group, input, output);
     }
 
+    @Override
     public boolean matches(Container inventory, Level world) {
         return this.input.test(inventory.getItem(0));
     }
 
+    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(TGBlocks.LEANING_SKELETON.get());
     }

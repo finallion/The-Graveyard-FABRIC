@@ -10,7 +10,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -25,8 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -50,6 +47,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         this.textRenderer = ctx.getFont();
     }
 
+    @Override
     public void render(GravestoneBlockEntity signBlockEntity, float f, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, int j) {
         BlockState blockState = signBlockEntity.getBlockState();
         Level world = signBlockEntity.getLevel();
@@ -75,16 +73,16 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         });
 
         int q;
-        boolean bl2;
+        boolean outlined;
         int r;
 
         if (signBlockEntity.getText().hasGlowingText()) {
             q = signBlockEntity.getText().getColor().getTextColor();
-            bl2 = shouldRender(signBlockEntity, q);
+            outlined = shouldRender(signBlockEntity, q);
             r = 15728880;
         } else {
             q = m;
-            bl2 = false;
+            outlined = false;
             r = i;
         }
 
@@ -92,7 +90,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
             FormattedCharSequence orderedText = orderedTexts[s];
             float t = (float)(-this.textRenderer.width(orderedText) / 2);
 
-            if (bl2) {
+            if (outlined) {
                 this.textRenderer.drawInBatch8xOutline(orderedText, t, (float)(s * 10 - 20), q, m, matrixStack.last().pose(), vertexConsumerProvider, r);
             } else {
                 this.textRenderer.drawInBatch(orderedText, t, (float)(s * 10 - 20), q, false, matrixStack.last().pose(), vertexConsumerProvider, Font.DisplayMode.NORMAL, 0, r);

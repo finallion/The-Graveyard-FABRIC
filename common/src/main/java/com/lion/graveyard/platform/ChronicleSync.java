@@ -13,7 +13,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-/// Server → client: the full set of found pages, plus the one that was just found (for the toast).
 public final class ChronicleSync {
     public static final ResourceLocation CHANNEL = Graveyard.id("chronicle");
 

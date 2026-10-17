@@ -57,6 +57,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
     }
 
     // mobTick discards the mob, because a kill shows the red overlay.
+    @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         if (!impacted && impactTicks < 0) {
             impactTicks = IMPACT_DELAY;
@@ -65,6 +66,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
         return false;
     }
 
+    @Override
     public boolean hurt(DamageSource source, float amount) {
         if (source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
@@ -79,6 +81,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
         super.resetFallDistance();
     }
 
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(IS_FALLING, true);

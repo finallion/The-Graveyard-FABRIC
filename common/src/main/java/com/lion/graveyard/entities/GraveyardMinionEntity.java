@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -32,12 +33,14 @@ public class GraveyardMinionEntity extends PathfinderMob {
         this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
     }
 
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(OWNER_UUID, Optional.empty());
         this.entityData.define(TAMEABLE_FLAGS, (byte)0);
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
@@ -48,21 +51,23 @@ public class GraveyardMinionEntity extends PathfinderMob {
         nbt.putBoolean("Sitting", this.sitting);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
-        UUID uUID;
+        UUID ownerId;
 
         if (nbt.hasUUID("Owner")) {
-            uUID = nbt.getUUID("Owner");
+            ownerId = nbt.getUUID("Owner");
         } else {
             String string = nbt.getString("Owner");
-            uUID = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
+            ownerId = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
         }
 
-        if (uUID != null) {
+        if (ownerId != null) {
             try {
-                this.setOwnerUuid(uUID);
-            } catch (Throwable var4) {
+                this.setOwnerUuid(ownerId);
+            } catch (Throwable exception) {
+                Graveyard.LOGGER.warn("Cannot set the owner {}", ownerId, exception);
             }
         }
 
@@ -108,13 +113,14 @@ public class GraveyardMinionEntity extends PathfinderMob {
     @Nullable
     public LivingEntity getOwner() {
         try {
-            UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.getCommandSenderWorld().getPlayerByUUID(uUID);
-        } catch (IllegalArgumentException var2) {
+            UUID ownerId = this.getOwnerUuid();
+            return ownerId == null ? null : this.getCommandSenderWorld().getPlayerByUUID(ownerId);
+        } catch (IllegalArgumentException exception) {
             return null;
         }
     }
 
+    @Override
     public boolean canAttack(LivingEntity target) {
         return this.isOwner(target) || this.sharesOwner(target) ? false : super.canAttack(target);
     }
@@ -143,6 +149,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
         return entity == this.getOwner();
     }
 
+    @Override
     public boolean isAlliedTo(Entity other) {
         LivingEntity livingEntity = this.getOwner();
 

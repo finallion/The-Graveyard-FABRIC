@@ -16,19 +16,7 @@ import java.util.function.IntSupplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.Predicate;
 
-/// Declares which animation plays when, as an ordered table instead of a hand-written if-chain.
-/// The first entry whose condition holds wins, so the order *is* the priority and no condition has
-/// to spell out which other cases it is not.
-///
-/// Two rules this shape enforces, both of which the if-chains broke:
-///
-/// 1. **Conditions must not change anything.** They run on the render thread, once per frame - not
-///    once per tick. State that has to change belongs in the entity's tick, where it is counted and
-///    synchronised.
-/// 2. **Animations blend.** A controller built here transitions over [#TRANSITION_TICKS] ticks.
-///
-/// A condition may read the frame's [AnimationState] (for movement) or only the entity (for timers
-/// and flags), which is why both `when` overloads exist.
+/// Conditions run on the render thread once per frame. They must not change state.
 public final class AnimationTable<T extends GeoAnimatable> {
 
     /// Blend length in ticks. Zero gives a hard cut, which looks like stutter.

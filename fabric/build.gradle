@@ -28,15 +28,13 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
 	modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-	//modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
 
 	common(project(path: ":common", configuration: "namedElements")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-	// changing = true: the library is consumed from mavenLocal under a fixed version, so without
-	// this Gradle keeps the first copy it ever resolved and a republish never reaches the run.
+	// changing = true makes Gradle re-read the mavenLocal copy.
 	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
 	}
@@ -93,8 +91,6 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
 	}
 }

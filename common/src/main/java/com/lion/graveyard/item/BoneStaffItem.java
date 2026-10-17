@@ -1,5 +1,6 @@
 package com.lion.graveyard.item;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.GhoulingBindings;
 import com.lion.graveyard.entities.GhoulingEntity;
 import com.lion.graveyard.entities.GraveyardMinionEntity;
@@ -269,6 +270,7 @@ public class BoneStaffItem extends Item {
             NbtIo.read(new DataInputStream(new ByteArrayInputStream(bytes.toByteArray())), new NbtAccounter(MAX_STORED_NBT));
             return true;
         } catch (IOException | RuntimeException e) {
+            Graveyard.LOGGER.debug("The Ghouling does not fit into the staff stack", e);
             return false;
         }
     }
@@ -354,6 +356,7 @@ public class BoneStaffItem extends Item {
                 try {
                     name = Component.Serializer.fromJson(saved.getString("CustomName"));
                 } catch (RuntimeException e) {
+                    Graveyard.LOGGER.debug("Cannot read the stored Ghouling name", e);
                     name = null;
                 }
             }

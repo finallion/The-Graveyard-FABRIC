@@ -12,8 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/// A placed chronicle page. Only the page id is stored; the text lives in the chronicle assets, so
-/// a structure can drop one of these anywhere with a single NBT key.
 public class LoreBookBlockEntity extends BlockEntity {
     public static final String PAGE_KEY = "page";
 

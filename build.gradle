@@ -8,9 +8,6 @@ architectury {
 	minecraft = rootProject.minecraft_version
 }
 
-// Loom caches a remapped copy of VillagerTradingPlus per version.
-// Run this task alone before the build to pick up a republished library.
-// Do not chain it with the build, because the jar can vanish while a task resolves it.
 tasks.register("dropLibraryCache", Delete) {
 	description = "Removes the cached remap of VillagerTradingPlus so a fresh publishToMavenLocal is picked up. Run on its own, before the build."
 	group = "build"

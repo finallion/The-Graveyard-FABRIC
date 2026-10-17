@@ -48,8 +48,6 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = Graveyard.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class GraveyardClientForge {
 
-
-    /// Poses are client resources, so they hang off the client reload rather than the data reload.
     @SubscribeEvent
     public static void clientInit(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {

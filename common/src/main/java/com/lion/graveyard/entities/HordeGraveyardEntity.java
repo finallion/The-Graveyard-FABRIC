@@ -2,8 +2,6 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGAdvancements;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Targeting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +21,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -37,12 +34,14 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         super(entityType, world, name);
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(2, new PatrolApproachGoal(this, 10.0F));
         this.goalSelector.addGoal(4, new HordeGraveyardEntity.PatrolGoal<>(this, 1.0D, 0.9D));
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
@@ -55,6 +54,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         nbt.putBoolean("Patrolling", this.patrolling);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
@@ -67,6 +67,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         this.patrolling = nbt.getBoolean("Patrolling");
     }
 
+    @Override
     public double getMyRidingOffset() {
         return -0.45D;
     }
@@ -76,6 +77,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     }
 
     @Nullable
+    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
         if (spawnReason != MobSpawnType.PATROL && spawnReason != MobSpawnType.EVENT && spawnReason != MobSpawnType.STRUCTURE && this.random.nextFloat() < 0.06F && this.canLead()) {
             this.patrolLeader = true;
@@ -88,6 +90,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
+    @Override
     public boolean removeWhenFarAway(double distanceSquared) {
         return !this.patrolling || distanceSquared > 16384.0D;
     }
@@ -168,19 +171,23 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
             this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
+        @Override
         public boolean canUse() {
-            boolean bl = this.entity.getCommandSenderWorld().getGameTime() < this.nextPatrolSearchTime;
-            return this.entity.isRaidCenterSet() && this.entity.getTarget() == null && !this.entity.isVehicle() && this.entity.hasPatrolTarget() && !bl;
+            boolean searchCoolingDown = this.entity.getCommandSenderWorld().getGameTime() < this.nextPatrolSearchTime;
+            return this.entity.isRaidCenterSet() && this.entity.getTarget() == null && !this.entity.isVehicle() && this.entity.hasPatrolTarget() && !searchCoolingDown;
         }
 
+        @Override
         public void start() {
         }
 
+        @Override
         public void stop() {
         }
 
+        @Override
         public void tick() {
-            boolean bl = this.entity.isPatrolLeader();
+            boolean isLeader = this.entity.isPatrolLeader();
             PathNavigation entityNavigation = this.entity.getNavigation();
 
             if (entityNavigation.isDone()) {
@@ -188,7 +195,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
                 if (this.entity.isRaidCenterSet() && list.isEmpty()) {
                     this.entity.setPatrolling(false);
-                } else if (bl && this.entity.getPatrolTarget().closerToCenterThan(this.entity.position(), 10.0D)) {
+                } else if (isLeader && this.entity.getPatrolTarget().closerToCenterThan(this.entity.position(), 10.0D)) {
                     this.entity.setRandomPatrolTarget();
                 } else {
                     Vec3 vec3d = Vec3.atBottomCenterOf(this.entity.getPatrolTarget());
@@ -199,13 +206,11 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
                     BlockPos blockPos = BlockPos.containing(vec3d4);
                     blockPos = this.entity.getCommandSenderWorld().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos);
 
-                    if (!entityNavigation.moveTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), bl ? this.followSpeed : this.leaderSpeed)) {
+                    if (!entityNavigation.moveTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), isLeader ? this.followSpeed : this.leaderSpeed)) {
                         this.wander();
                         this.nextPatrolSearchTime = this.entity.getCommandSenderWorld().getGameTime() + 200L;
-                    } else if (bl) {
-                        Iterator var9 = list.iterator();
-                        while(var9.hasNext()) {
-                            HordeGraveyardEntity patrolEntity = (HordeGraveyardEntity)var9.next();
+                    } else if (isLeader) {
+                        for (HordeGraveyardEntity patrolEntity : list) {
                             patrolEntity.setPatrolTarget(blockPos);
                         }
                     }
@@ -238,11 +243,13 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
             this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         }
 
+        @Override
         public boolean canUse() {
             LivingEntity livingEntity = this.hordeEntity.getLastHurtByMob();
             return this.hordeEntity.isRaidCenterSet() && this.hordeEntity.getTarget() != null && !this.hordeEntity.isAggressive() && (livingEntity == null || livingEntity.getType() != EntityType.PLAYER);
         }
 
+        @Override
         public void start() {
             super.start();
             this.hordeEntity.getNavigation().stop();
@@ -254,6 +261,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
         }
 
+        @Override
         public void stop() {
             super.stop();
             LivingEntity livingEntity = this.hordeEntity.getTarget();
@@ -271,10 +279,12 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
         }
 
+        @Override
         public boolean requiresUpdateEveryTick() {
             return true;
         }
 
+        @Override
         public void tick() {
             LivingEntity livingEntity = this.hordeEntity.getTarget();
 

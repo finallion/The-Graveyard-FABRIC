@@ -16,7 +16,6 @@ public class PagesInLootCondition implements LootItemCondition {
 
     public static final PagesInLootCondition INSTANCE = new PagesInLootCondition();
 
-    /// Assigned once at registration; a condition instance has to be able to name its own type.
     public static LootItemConditionType TYPE;
 
     private PagesInLootCondition() {}

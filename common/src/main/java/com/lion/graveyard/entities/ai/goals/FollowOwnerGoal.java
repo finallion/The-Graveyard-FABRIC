@@ -2,9 +2,6 @@ package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.GraveyardMinionEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.pathfinder.Node;
-import net.minecraft.world.level.pathfinder.NodeEvaluator;
-import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -48,6 +45,7 @@ public class FollowOwnerGoal extends Goal {
         }
     }
 
+    @Override
     public boolean canUse() {
         LivingEntity livingEntity = this.tameable.getOwner();
 
@@ -65,6 +63,7 @@ public class FollowOwnerGoal extends Goal {
         }
     }
 
+    @Override
     public boolean canContinueToUse() {
         if (this.navigation.isDone()) {
             return false;
@@ -75,18 +74,21 @@ public class FollowOwnerGoal extends Goal {
         }
     }
 
+    @Override
     public void start() {
         this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.tameable.getPathfindingMalus(BlockPathTypes.WATER);
         this.tameable.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
+    @Override
     public void stop() {
         this.owner = null;
         this.navigation.stop();
         this.tameable.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterPathfindingPenalty);
     }
 
+    @Override
     public void tick() {
         this.tameable.getLookControl().setLookAt(this.owner, 10.0F, (float)this.tameable.getMaxHeadXRot());
 
@@ -111,9 +113,9 @@ public class FollowOwnerGoal extends Goal {
             int j = this.getRandomInt(-3, 3);
             int k = this.getRandomInt(-1, 1);
             int l = this.getRandomInt(-3, 3);
-            boolean bl = this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
+            boolean teleported = this.tryTeleportTo(blockPos.getX() + j, blockPos.getY() + k, blockPos.getZ() + l);
 
-            if (bl) {
+            if (teleported) {
                 return;
             }
         }

@@ -11,7 +11,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-/// `/chronicle find <page> | forget <page> | reset | page <page>` — for testing; pages are found in the world.
 public final class ChronicleCommand {
     private ChronicleCommand() {}
 

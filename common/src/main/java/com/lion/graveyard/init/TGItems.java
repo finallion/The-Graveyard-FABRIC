@@ -5,10 +5,6 @@ import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.world.item.EggItem;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
@@ -70,7 +66,6 @@ public class TGItems {
     public static final Supplier<Item> TG_MOSS_BLOCK = RegistryHelper.registerItem("tg_moss_block", () -> new BlockItem(TGBlocks.TG_MOSS_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Item> TG_DEEPSLATE = RegistryHelper.registerItem("tg_deepslate", () -> new BlockItem(TGBlocks.TG_DEEPSLATE.get(), new Item.Properties()));
 
-    // helper blocks that get don't get replaced on world generation, generate ores or generate trees on
     public static final Supplier<Item> TG_GRASS_BLOCK = RegistryHelper.registerItem("tg_grass_block", () -> new BlockItem(TGBlocks.TG_GRASS_BLOCK.get(), new Item.Properties()));
     public static final Supplier<Item> TG_DIRT = RegistryHelper.registerItem("tg_dirt", () -> new BlockItem(TGBlocks.TG_DIRT.get(), new Item.Properties()));
     public static final Supplier<Item> TG_COARSE_DIRT = RegistryHelper.registerItem("tg_coarse_dirt", () -> new BlockItem(TGBlocks.TG_COARSE_DIRT.get(), new Item.Properties()));

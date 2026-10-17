@@ -40,6 +40,7 @@ public class TGAdvancementTrigger extends SimpleCriterionTrigger<TGAdvancementTr
             super(identifier, player);
         }
 
+        @Override
         public JsonObject serializeToJson(SerializationContext predicateSerializer) {
             JsonObject jsonObject = super.serializeToJson(predicateSerializer);
             return jsonObject;

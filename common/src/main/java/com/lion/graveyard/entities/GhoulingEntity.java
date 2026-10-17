@@ -16,13 +16,6 @@ import com.lion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -77,7 +70,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.*;
 
 public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, MenuProvider {
-    /// How often the last known position is recorded; the staff fetches at the same pace.
     public static final int BINDING_INTERVAL = 40;
     public static final int SPAWN_ANIMATION_DURATION = 68;
     private static final int PICKUP_INTERVAL = 5;
@@ -118,6 +110,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         super(entityType, world);
     }
 
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(1, new GhoulingEntity.GhoulingEscapeDangerGoal(1.5D));
@@ -145,6 +138,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
 
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(ANIMATION, ANIMATION_IDLE);
@@ -157,8 +151,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
 
+    @Override
     protected void customServerAiStep() {
-        // ATTACK TIMER
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
         }
@@ -389,6 +383,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
 
+    @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean client = getCommandSenderWorld().isClientSide();
@@ -558,7 +553,6 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         entityData.set(STAFF, staff);
     }
 
-    /* INVENTORY */
     public boolean hasCoffin() {
         return (Boolean) this.entityData.get(COFFIN);
     }
@@ -567,6 +561,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         this.entityData.set(COFFIN, hasCoffin);
     }
 
+    @Override
     protected void dropEquipment() {
         super.dropEquipment();
 
@@ -734,6 +729,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             super(GhoulingEntity.this, speed);
         }
 
+        @Override
         protected boolean shouldPanic() {
             return this.mob.isFreezing() || this.mob.isOnFire();
         }

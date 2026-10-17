@@ -28,10 +28,12 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         this.z = boss.getZ();
     }
 
+    @Override
     public boolean canPlaySound() {
         return BossMusicPlayer.music == this;
     }
 
+    @Override
     public boolean isStopped() {
         return this.done;
     }
@@ -40,6 +42,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         this.done = true;
     }
 
+    @Override
     public void tick() {
         if (boss == null || !boss.isAlive() || boss.isSilent()) {
             boss = null;

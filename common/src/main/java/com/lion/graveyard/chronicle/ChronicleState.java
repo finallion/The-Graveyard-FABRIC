@@ -1,5 +1,6 @@
 package com.lion.graveyard.chronicle;
 
+import com.lion.graveyard.Graveyard;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -88,6 +89,7 @@ public final class ChronicleState extends SavedData {
             try {
                 player = UUID.fromString(key);
             } catch (IllegalArgumentException e) {
+                Graveyard.LOGGER.warn("Skipping the chronicle entry with the invalid player id {}", key, e);
                 continue;
             }
             Set<String> pages = new LinkedHashSet<>();

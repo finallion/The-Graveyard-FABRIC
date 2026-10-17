@@ -33,13 +33,13 @@ public class ClientPlayNetworkHandlerMixin {
         PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, this.minecraft);
         BlockPos blockPos = packet.getPos();
 
-        BlockEntity var4 = this.level.getBlockEntity(blockPos);
+        BlockEntity foundEntity = this.level.getBlockEntity(blockPos);
 
-        if (var4 instanceof GravestoneBlockEntity) {
+        if (foundEntity instanceof GravestoneBlockEntity) {
             BlockState blockState = this.level.getBlockState(blockPos);
             GravestoneBlockEntity signBlockEntity2 = new GravestoneBlockEntity(blockPos, blockState);
             signBlockEntity2.setLevel(this.level);
-            Minecraft.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
+            Minecraft.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) foundEntity,  false));
             info.cancel();
         }
     }

@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/// The client's copy of the found pages; replaced wholesale by every sync from the server.
 @Environment(EnvType.CLIENT)
 public final class ClientChronicle {
     private static Set<String> found = new LinkedHashSet<>();

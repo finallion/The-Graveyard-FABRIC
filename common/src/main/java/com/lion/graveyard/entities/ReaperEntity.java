@@ -2,9 +2,6 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.Targeting;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -90,6 +87,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.entityData.define(ATTACK_TIMER, 0);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
@@ -98,6 +96,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
@@ -108,6 +107,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -120,15 +120,18 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
 
+    @Override
     public void move(MoverType movementType, Vec3 movement) {
         super.move(movementType, movement);
         this.checkInsideBlocks();
     }
 
+    @Override
     public void tick() {
         if (!this.getCommandSenderWorld().isClientSide()) {
             tickDown(SPAWN_TIMER);
@@ -233,6 +236,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
 
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<ReaperEntity>create()
                 .transitionTicks(() -> isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS)
@@ -273,6 +277,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             super(owner);
         }
 
+        @Override
         public void tick() {
             if (this.operation == Operation.MOVE_TO) {
                 Vec3 vec3d = new Vec3(this.wantedX - ReaperEntity.this.getX(), this.wantedY - ReaperEntity.this.getY(), this.wantedZ - ReaperEntity.this.getZ());
@@ -305,6 +310,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
+        @Override
         public boolean canUse() {
             if (ReaperEntity.this.getTarget() != null && !ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.random.nextInt(7) == 0) {
                 return ReaperEntity.this.distanceToSqr(ReaperEntity.this.getTarget()) > 4.0D;
@@ -313,10 +319,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             }
         }
 
+        @Override
         public boolean canContinueToUse() {
             return ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.isCharging() && ReaperEntity.this.getTarget() != null && ReaperEntity.this.getTarget().isAlive();
         }
 
+        @Override
         public void start() {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
             Vec3 vec3d = livingEntity.getEyePosition();
@@ -325,10 +333,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE.get(), 1.0F, -10.0F);
         }
 
+        @Override
         public void stop() {
             ReaperEntity.this.setCharging(false);
         }
 
+        @Override
         public void tick() {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
 
@@ -352,14 +362,17 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
+        @Override
         public boolean canUse() {
             return !ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.random.nextInt(7) == 0;
         }
 
+        @Override
         public boolean canContinueToUse() {
             return false;
         }
 
+        @Override
         public void tick() {
             BlockPos blockPos = ReaperEntity.this.getBounds();
 
@@ -391,10 +404,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             super(mob, false);
         }
 
+        @Override
         public boolean canUse() {
             return ReaperEntity.this.owner != null && ReaperEntity.this.owner.getTarget() != null && this.canAttack(ReaperEntity.this.owner.getTarget(), this.TRACK_OWNER_PREDICATE);
         }
 
+        @Override
         public void start() {
             ReaperEntity.this.setTarget(ReaperEntity.this.owner.getTarget());
             super.start();

@@ -35,30 +35,35 @@ public class VaseBlock extends Block implements SimpleWaterloggedBlock {
                 .setValue(WATERLOGGED, false));
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, VASES);
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 
         if (blockState.is(this)) {
-            return (BlockState)blockState.cycle(VASES);
+            return blockState.cycle(VASES);
         } else {
             FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
-            boolean bl = fluidState.getType() == Fluids.WATER;
-            return (BlockState)super.getStateForPlacement(ctx).setValue(WATERLOGGED, bl);
+            boolean waterlogged = fluidState.getType() == Fluids.WATER;
+            return super.getStateForPlacement(ctx).setValue(WATERLOGGED, waterlogged);
         }
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
+    @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
         return !context.isSecondaryUseActive() && context.getItemInHand().getItem() == this.asItem() && (Integer)state.getValue(VASES) < 4 ? true : super.canBeReplaced(state, context);
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         switch((Integer)state.getValue(VASES)) {
             case 1:
@@ -73,6 +78,7 @@ public class VaseBlock extends Block implements SimpleWaterloggedBlock {
         }
     }
 
+    @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         return Block.canSupportCenter(world, pos.below(), Direction.UP);
     }

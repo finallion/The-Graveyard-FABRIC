@@ -54,8 +54,9 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
                 .setValue(WATERLOGGED, false));
     }
 
+    @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (player.getAbilities().mayBuild && player.getItemInHand(hand).isEmpty() && (Boolean)state.getValue(LIT)) {
+        if (player.getAbilities().mayBuild && player.getItemInHand(hand).isEmpty() && state.getValue(LIT)) {
             extinguish(player, state, world, pos);
             return InteractionResult.sidedSuccess(world.isClientSide);
         } else {
@@ -63,38 +64,43 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
         }
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Nullable
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         LevelAccessor worldAccess = ctx.getLevel();
         BlockPos blockPos = ctx.getClickedPos();
-        boolean bl = worldAccess.getFluidState(blockPos).getType() == Fluids.WATER;
+        boolean waterlogged = worldAccess.getFluidState(blockPos).getType() == Fluids.WATER;
         return this.defaultBlockState()
-                .setValue(WATERLOGGED, bl)
+                .setValue(WATERLOGGED, waterlogged)
                 .setValue(LIT, false);
     }
 
 
+    @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean)state.getValue(WATERLOGGED)) {
+        if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
-        return direction == Direction.DOWN ? (BlockState)state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return direction == Direction.DOWN ? state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
+    @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
 
+    @Override
     public boolean placeLiquid(LevelAccessor world, BlockPos pos, BlockState state, FluidState fluidState) {
-        if (!(Boolean)state.getValue(WATERLOGGED) && fluidState.getType() == Fluids.WATER) {
-            BlockState blockState = (BlockState)state.setValue(WATERLOGGED, true);
+        if (!state.getValue(WATERLOGGED) && fluidState.getType() == Fluids.WATER) {
+            BlockState blockState = state.setValue(WATERLOGGED, true);
 
-            if ((Boolean)state.getValue(LIT)) {
+            if (state.getValue(LIT)) {
                 extinguish((Player)null, blockState, world, pos);
             } else {
                 world.setBlock(pos, blockState, 3);
@@ -107,28 +113,31 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
         }
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
+    @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
-        if ((Boolean)state.getValue(LIT)) {
+        if (state.getValue(LIT)) {
             if (random.nextInt(20) == 0) {
-                world.playLocalSound((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.2F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
+                world.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.2F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
             }
 
             for (int i = 0; i < 20; ++i) {
-                world.addParticle(fireType, (double)pos.getX() + 0.25 + Math.abs(random.nextDouble() - 0.5D), (double)pos.getY() + 1.1D, (double)pos.getZ() + 0.25 + Math.abs(random.nextDouble() - 0.5D), 0, 0.01, 0);
+                world.addParticle(fireType, pos.getX() + 0.25 + Math.abs(random.nextDouble() - 0.5D), pos.getY() + 1.1D, pos.getZ() + 0.25 + Math.abs(random.nextDouble() - 0.5D), 0, 0.01, 0);
             }
 
         }
     }
 
+    @Override
     public void onProjectileHit(Level world, BlockState state, BlockHitResult hit, Projectile projectile) {
         BlockPos blockPos = hit.getBlockPos();
 
-        if (!world.isClientSide && projectile.isOnFire() && projectile.mayInteract(world, blockPos) && !(Boolean)state.getValue(LIT) && !(Boolean)state.getValue(WATERLOGGED)) {
-            world.setBlock(blockPos, (BlockState)state.setValue(BlockStateProperties.LIT, true), 11);
+        if (!world.isClientSide && projectile.isOnFire() && projectile.mayInteract(world, blockPos) && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
+            world.setBlock(blockPos, state.setValue(BlockStateProperties.LIT, true), 11);
         }
 
     }
@@ -146,6 +155,7 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(new Property[]{LIT, WATERLOGGED});
     }
@@ -155,8 +165,8 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
 
         if (state.getBlock() instanceof BrazierBlock) {
             net.minecraft.util.RandomSource random = world.getRandom();
-            world.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + 0.4D, (double)pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
-            world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, (double)pos.getX() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + random.nextDouble() + random.nextDouble(), (double)pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
+            world.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), pos.getY() + 0.4D, pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
+            world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.getX() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + random.nextDouble() + random.nextDouble(), pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
 
         }
 
@@ -167,23 +177,23 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     public static void spawnSmokeParticle(Level world, BlockPos pos, boolean lotsOfSmoke) {
         net.minecraft.util.RandomSource random = world.getRandom();
         SimpleParticleType defaultParticleType = ParticleTypes.CAMPFIRE_COSY_SMOKE;
-        world.addAlwaysVisibleParticle(defaultParticleType, true, (double)pos.getX() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + random.nextDouble() + random.nextDouble(), (double)pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
+        world.addAlwaysVisibleParticle(defaultParticleType, true, pos.getX() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + random.nextDouble() + random.nextDouble(), pos.getZ() + 0.5D + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
 
         if (lotsOfSmoke) {
-            world.addParticle(ParticleTypes.SMOKE, (double)pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), (double)pos.getY() + 0.4D, (double)pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
+            world.addParticle(ParticleTypes.SMOKE, pos.getX() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), pos.getY() + 0.4D, pos.getZ() + 0.5D + random.nextDouble() / 4.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.005D, 0.0D);
         }
 
     }
 
     private static void setLit(LevelAccessor world, BlockState state, BlockPos pos, boolean lit) {
-        world.setBlock(pos, (BlockState)state.setValue(LIT, lit), 11);
+        world.setBlock(pos, state.setValue(LIT, lit), 11);
     }
 
     static {
         LIT = BlockStateProperties.LIT;
         WATERLOGGED = BlockStateProperties.WATERLOGGED;
         STATE_TO_LUMINANCE = (state) -> {
-            return (Boolean)state.getValue(LIT) ? 11 : 0;
+            return state.getValue(LIT) ? 11 : 0;
         };
     }
 }

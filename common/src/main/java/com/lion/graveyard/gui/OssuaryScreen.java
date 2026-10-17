@@ -34,11 +34,13 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         --this.titleLabelY;
     }
 
+    @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         this.renderTooltip(context, mouseX, mouseY);
     }
 
+    @Override
     protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
         this.renderBackground(context);
         int i = this.leftPos;
@@ -61,6 +63,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         }
     }
 
+    @Override
     protected void renderTooltip(GuiGraphics context, int x, int y) {
         super.renderTooltip(context, x, y);
         Slot input = this.menu.getSlot(0);
@@ -119,6 +122,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
 
     }
 
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.mouseClicked = false;
 
@@ -150,6 +154,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (this.mouseClicked && this.shouldScroll()) {
             int i = this.topPos + 14;
@@ -163,6 +168,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         }
     }
 
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         if (this.shouldScroll()) {
             int i = this.getMaxScroll();

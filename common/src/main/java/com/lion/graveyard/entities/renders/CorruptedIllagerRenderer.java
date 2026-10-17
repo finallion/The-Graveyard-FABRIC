@@ -16,6 +16,7 @@ public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> exten
         this.addLayer(new CustomHeadLayer(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));
     }
 
+    @Override
     protected void scale(T illagerEntity, PoseStack matrixStack, float f) {
         matrixStack.scale(0.9375F, 0.9375F, 0.9375F);
     }

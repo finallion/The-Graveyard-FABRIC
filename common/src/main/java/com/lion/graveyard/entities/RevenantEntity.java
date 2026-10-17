@@ -4,14 +4,6 @@ import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -75,14 +67,16 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     protected static final int ANIMATION_RUNNING = 3;
     protected static final int ANIMATION_MELEE = 4;
     protected static final int ANIMATION_REANIMATE = 5;
-    protected static final int ANIMATION_FAKE_DEATH = 6; // necessary because anim can't be hold on last frame
+    // An animation cannot hold its last frame. A fake death state holds it.
+    protected static final int ANIMATION_FAKE_DEATH = 6;
 
     public final int ATTACK_ANIMATION_DURATION = 15;
     public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
     private int lastAttackAnimTimer;
     private int ticksWithoutTarget;
 
-    public final int REANIMATE_DURATION = 120; // duration reanimation anim: 40 + duration death animation: 30 + waiting time: 30
+    // Reanimation animation 40 ticks, death animation 30 ticks, wait 30 ticks.
+    public final int REANIMATE_DURATION = 120;
 
     public RevenantEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "revenant");
@@ -99,6 +93,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.entityData.define(CHASING, false);
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
@@ -112,6 +107,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
@@ -151,15 +147,14 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.lastAttackAnimTimer = timer;
     }
 
+    @Override
     protected void customServerAiStep() {
         trackChase();
 
-        // ATTACK TIMER
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
         }
 
-        // REANIMATE TIMER
         if (this.getReanimateAnimTimer() > 40) {
             setAnimationState(ANIMATION_FAKE_DEATH);
         }
@@ -251,7 +246,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             return false;
         }
 
-        if (getReanimateAnimTimer() > 0) { // negate damage while reanimating
+        if (getReanimateAnimTimer() > 0) {
             return false;
         }
 
@@ -336,12 +331,14 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.entityData.set(CAN_REANIMATE, bool);
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putBoolean("canReanimate", canReanimate());
         nbt.putInt("ReanimateTimer", getReanimateAnimTimer());
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setCanReanimate(nbt.getBoolean("canReanimate"));

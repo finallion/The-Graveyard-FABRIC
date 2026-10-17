@@ -18,13 +18,7 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 /// Shared behaviour for decoration that stands two blocks tall.
-///
-/// Deliberately a helper and not a base class: the blocks that need it sit in unrelated hierarchies
-/// already - a gravestone is a sign, an urn has an inventory - so they mix this in instead of
-/// inheriting it. Each of them overrides the five hooks below with a one-line delegation.
-///
-/// The pattern follows the vanilla door and tall flower: the lower half is the real block, the upper
-/// half is a marker that breaks with it and drops nothing on its own.
+/// Each block overrides the five hooks below with a one-line delegation.
 public final class TallDeco {
 
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
@@ -32,8 +26,6 @@ public final class TallDeco {
     private TallDeco() {
     }
 
-    /// Returns null when there is no room for the upper half, which makes the placement fail rather
-    /// than leave a half block behind.
     @Nullable
     public static BlockState placementState(BlockPlaceContext ctx, BlockState lowerHalf) {
         BlockPos pos = ctx.getClickedPos();
@@ -62,8 +54,6 @@ public final class TallDeco {
         return world.getBlockState(pos.below()).isSolid();
     }
 
-    /// Hanging decoration is anchored the other way round: the half that is clicked is the upper one,
-    /// because that is the half touching the ceiling.
     @Nullable
     public static BlockState hangingPlacementState(BlockPlaceContext ctx, BlockState upperHalf) {
         BlockPos pos = ctx.getClickedPos();
@@ -92,8 +82,6 @@ public final class TallDeco {
         return world.getBlockState(ceiling).isFaceSturdy(world, ceiling, Direction.DOWN);
     }
 
-    /// Takes the other half with it. Called from `getStateForNeighborUpdate`, so breaking either half
-    /// removes both without the block having to react to its own removal.
     public static BlockState onNeighborUpdate(BlockState state, Direction direction, BlockState neighbor, LevelAccessor world, BlockPos pos) {
         DoubleBlockHalf half = state.getValue(HALF);
         boolean towardsOtherHalf = direction.getAxis() == Direction.Axis.Y

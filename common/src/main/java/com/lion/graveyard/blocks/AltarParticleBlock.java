@@ -13,6 +13,7 @@ public class AltarParticleBlock extends Block {
         super(settings);
     }
 
+    @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         super.animateTick(state, world, pos, random);
 

@@ -4,10 +4,6 @@ import com.lion.graveyard.blockentities.*;
 import com.lion.graveyard.blocks.*;
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.util.GravestoneIdentifier;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.MossBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,7 +22,6 @@ public class TGBlocks {
     public static final Supplier<Block> TG_MOSS_BLOCK = RegistryHelper.registerBlock("tg_moss_block", () -> new TGMossBlock(BlockBehaviour.Properties.copy(Blocks.MOSS_BLOCK).dropsLike(Blocks.MOSS_BLOCK)));
     public static final Supplier<Block> TG_DEEPSLATE = RegistryHelper.registerBlock("tg_deepslate", () -> new TGDeepslateBlock(() -> Blocks.DEEPSLATE, BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).dropsLike(Blocks.DEEPSLATE)));
 
-    // helper blocks that get don't get replaced on world generation, generate ores or generate trees on
     public static final Supplier<Block> TG_GRASS_BLOCK = RegistryHelper.registerBlock("tg_grass_block", () -> new TGGrassBlock(BlockBehaviour.Properties.copy(Blocks.GRASS_BLOCK).dropsLike(Blocks.GRASS_BLOCK)));
     public static final Supplier<Block> TG_DIRT = RegistryHelper.registerBlock("tg_dirt", () -> new TGStoneBlock(() -> Blocks.DIRT, BlockBehaviour.Properties.copy(Blocks.DIRT).dropsLike(Blocks.DIRT)));
     public static final Supplier<Block> TG_COARSE_DIRT = RegistryHelper.registerBlock("tg_coarse_dirt", () -> new TGStoneBlock(() -> Blocks.COARSE_DIRT, BlockBehaviour.Properties.copy(Blocks.COARSE_DIRT).dropsLike(Blocks.COARSE_DIRT)));

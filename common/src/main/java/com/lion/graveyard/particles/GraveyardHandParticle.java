@@ -26,14 +26,17 @@ public class GraveyardHandParticle extends RisingParticle {
         this.setSpriteFromAge(spriteProvider);
     }
 
+    @Override
     public int getLightColor(float tint) {
         return this.sculk ? 240 : super.getLightColor(tint);
     }
 
+    @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
+    @Override
     public void tick() {
         super.tick();
         this.setSpriteFromAge(this.spriteProvider);
@@ -48,6 +51,7 @@ public class GraveyardHandParticle extends RisingParticle {
             this.spriteProvider = spriteProvider;
         }
 
+        @Override
         public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
             GraveyardHandParticle soulParticle = new GraveyardHandParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);

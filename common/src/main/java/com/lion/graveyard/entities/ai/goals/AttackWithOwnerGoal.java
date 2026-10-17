@@ -17,6 +17,7 @@ public class AttackWithOwnerGoal extends TargetGoal {
         this.setFlags(EnumSet.of(Flag.TARGET));
     }
 
+    @Override
     public boolean canUse() {
         if (!this.tameable.isSitting()) {
             LivingEntity livingEntity = this.tameable.getOwner();
@@ -33,6 +34,7 @@ public class AttackWithOwnerGoal extends TargetGoal {
         }
     }
 
+    @Override
     public void start() {
         this.mob.setTarget(this.attacking);
         LivingEntity livingEntity = this.tameable.getOwner();

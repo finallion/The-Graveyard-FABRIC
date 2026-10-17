@@ -1,6 +1,5 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,6 +34,7 @@ public class CandleHolderBlock extends Block implements SimpleWaterloggedBlock {
                 .setValue(WATERLOGGED, false));
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         switch (state.getValue(FACING)) {
             case SOUTH -> {
@@ -52,6 +52,7 @@ public class CandleHolderBlock extends Block implements SimpleWaterloggedBlock {
         }
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
         return this.defaultBlockState()
@@ -60,25 +61,29 @@ public class CandleHolderBlock extends Block implements SimpleWaterloggedBlock {
     }
 
 
+    @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean)state.getValue(WATERLOGGED)) {
+        if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
-        return direction == Direction.DOWN ? (BlockState)state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return direction == Direction.DOWN ? state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, WATERLOGGED);
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
 

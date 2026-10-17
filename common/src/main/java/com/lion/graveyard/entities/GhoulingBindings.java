@@ -24,14 +24,11 @@ import java.util.UUID;
 
 /// Which Ghouling belongs to which staff, and where it was last seen.
 ///
-/// A Ghouling that sits in an unloaded chunk cannot be asked anything, so the last known position
-/// lives here instead; the staff uses it to fetch the Ghouling back. Hangs off the overworld so the
-/// record survives dimension changes and restarts alike.
+/// An unloaded Ghouling cannot be queried, so its last position is stored here.
 public final class GhoulingBindings extends SavedData {
 
     private static final String KEY = "graveyard_ghoulings";
 
-    /// Older versions kept the bond as `ghoulingUUID:ownerUUID` lines in this file at the save root.
     private static final String LEGACY_FILE = "graveyardGhoulingUUIDmapping.txt";
 
     private final Map<UUID, Binding> bindings = new HashMap<>();

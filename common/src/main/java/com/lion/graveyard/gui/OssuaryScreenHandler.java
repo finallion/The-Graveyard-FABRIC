@@ -48,6 +48,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         this.contentsChangedListener = () -> {
         };
         this.input = new SimpleContainer(1) {
+            @Override
             public void setChanged() {
                 super.setChanged();
                 OssuaryScreenHandler.this.slotsChanged(this);
@@ -59,10 +60,12 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         this.world = playerInventory.player.level();
         this.inputSlot = this.addSlot(new Slot(this.input, 0, 20, 33));
         this.outputSlot = this.addSlot(new Slot(this.output, 1, 143, 33) {
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
 
+            @Override
             public void onTake(Player player, ItemStack stack) {
                 stack.onCraftedBy(player.level(), player, stack.getCount());
                 OssuaryScreenHandler.this.output.awardUsedRecipes(player, this.getInputStacks());
@@ -119,10 +122,12 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         return this.inputSlot.hasItem() && !this.availableRecipes.isEmpty();
     }
 
+    @Override
     public boolean stillValid(Player player) {
         return AbstractContainerMenu.stillValid(this.context, player, TGBlocks.OSSUARY.get());
     }
 
+    @Override
     public boolean clickMenuButton(Player player, int id) {
         if (this.isInBounds(id)) {
             this.selectedRecipe.set(id);
@@ -136,6 +141,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         return id >= 0 && id < this.availableRecipes.size();
     }
 
+    @Override
     public void slotsChanged(Container inventory) {
         ItemStack itemStack = this.inputSlot.getItem();
 
@@ -175,6 +181,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         this.broadcastChanges();
     }
 
+    @Override
     public MenuType<?> getType() {
         return TGScreens.OSSUARY_SCREEN_HANDLER;
     }
@@ -183,10 +190,12 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         this.contentsChangedListener = contentsChangedListener;
     }
 
+    @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
         return slot.container != this.output && super.canTakeItemForPickAll(stack, slot);
     }
 
+    @Override
     public ItemStack quickMoveStack(Player player, int slot) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot2 = (Slot)this.slots.get(slot);
@@ -237,6 +246,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         return itemStack;
     }
 
+    @Override
     public void removed(Player player) {
         super.removed(player);
         this.output.removeItemNoUpdate(1);

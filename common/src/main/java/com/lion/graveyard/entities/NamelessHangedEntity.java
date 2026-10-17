@@ -6,7 +6,6 @@ import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
 import net.minecraft.core.particles.ParticleTypes;
 
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -55,6 +54,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         super(entityType, world);
     }
 
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new LookAtTradingPlayerGoal(this));
         this.goalSelector.addGoal(9, new InteractGoal(this, Player.class, 3.0F, 1.0F));
@@ -83,10 +83,12 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         return false;
     }
 
+    @Override
     public boolean isPushable() {
         return false;
     }
 
+    @Override
     protected void doPush(Entity entity) {
     }
 
@@ -102,26 +104,32 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         return false;
     }
 
+    @Override
     public boolean ignoreExplosion() {
         return true;
     }
 
+    @Override
     public void thunderHit(ServerLevel world, LightningBolt lightning) {
     }
 
+    @Override
     public boolean isAffectedByPotions() {
         return false;
     }
 
     @Nullable
+    @Override
     public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         return null;
     }
 
+    @Override
     public boolean showProgressBar() {
         return false;
     }
 
+    @Override
     public void aiStep() {
         if (this.getCommandSenderWorld().isClientSide) {
             this.getCommandSenderWorld().addParticle(ParticleTypes.ASH, this.getRandomX(0.5D), this.getY() + 1.75D, this.getRandomZ(0.5D), 0, 0, 0);
@@ -155,6 +163,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         return this.getCommandSenderWorld().getDayTime() / 24000L;
     }
 
+    @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (this.offers != null && this.offersDay != currentDay() && !this.isTrading()) {
             this.offers = null;
@@ -180,6 +189,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         }
     }
 
+    @Override
     protected void updateTrades() {
         List<VillagerTrades.ItemListing> factorys = NamelessHangedTrades.TRADES_REGISTRY;
         MerchantOffers tradeOfferList = this.getOffers();
@@ -191,6 +201,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         this.addOffersFromItemListings(tradeOfferList, factorys.toArray(new VillagerTrades.ItemListing[0]), offers);
     }
 
+    @Override
     protected void rewardTradeXp(MerchantOffer offer) {
         if (offer.shouldRewardExp()) {
             int i = 3 + this.random.nextInt(4);
@@ -199,6 +210,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     }
 
+    @Override
     public boolean removeWhenFarAway(double distanceSquared) {
         return false;
     }

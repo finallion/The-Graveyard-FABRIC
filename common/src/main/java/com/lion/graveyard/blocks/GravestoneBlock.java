@@ -1,7 +1,6 @@
 package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -94,15 +93,18 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
         }
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Nullable
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new GravestoneBlockEntity(pos, state);
     }
 
+    @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getItemInHand(hand);
         Item item = itemStack.getItem();
@@ -116,20 +118,20 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
         }
 
         SignApplicator signChangingItem2 = signChangingItem;
-        boolean bl = signChangingItem2 != null && player.mayBuild();
-        BlockEntity var12 = world.getBlockEntity(pos);
+        boolean canApplySignItem = signChangingItem2 != null && player.mayBuild();
+        BlockEntity foundEntity = world.getBlockEntity(pos);
 
-        if (var12 instanceof GravestoneBlockEntity) {
-            GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)var12;
+        if (foundEntity instanceof GravestoneBlockEntity) {
+            GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)foundEntity;
 
             if (!world.isClientSide) {
                 SignText signText = signBlockEntity.getText();
-                boolean bl3 = signBlockEntity.runCommandClickEvent(player, world, pos);
+                boolean ranCommand = signBlockEntity.runCommandClickEvent(player, world, pos);
 
                 if (signBlockEntity.isWaxed()) {
                     world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS);
                     return InteractionResult.PASS;
-                } else if (bl && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, player)) {
+                } else if (canApplySignItem && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, player)) {
                     boolean useOnSign = false;
 
                     if (signChangingItem2 instanceof DyeItem dyeItem) {
@@ -151,7 +153,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
                         player.awardStat(Stats.ITEM_USED.get(item));
                         return InteractionResult.SUCCESS;
                     }
-                } else if (bl3) {
+                } else if (ranCommand) {
                     return InteractionResult.SUCCESS;
                 } else if (!this.isOtherPlayerEditing(player, signBlockEntity) && player.mayBuild() && this.isTextLiteralOrEmpty(player, signBlockEntity)) {
                     this.openEditScreen(player, signBlockEntity, world, pos, state);
@@ -160,7 +162,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
                     return InteractionResult.PASS;
                 }
             } else {
-                return !bl && !signBlockEntity.isWaxed() ? InteractionResult.CONSUME : InteractionResult.SUCCESS;
+                return !canApplySignItem && !signBlockEntity.isWaxed() ? InteractionResult.CONSUME : InteractionResult.SUCCESS;
             }
         }
 
@@ -233,11 +235,12 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
 
 
     private boolean isOtherPlayerEditing(Player player, GravestoneBlockEntity blockEntity) {
-        UUID uUID = blockEntity.getEditor();
-        return uUID != null && !uUID.equals(player.getUUID()) && !blockEntity.isPlayerTooFarToEdit(uUID);
+        UUID editorId = blockEntity.getEditor();
+        return editorId != null && !editorId.equals(player.getUUID()) && !blockEntity.isPlayerTooFarToEdit(editorId);
     }
 
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
         Direction direction = ctx.getHorizontalDirection();
@@ -257,6 +260,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     }
 
 
+    @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
         return world.getBlockState(pos.below()).isSolid();
     }
@@ -270,6 +274,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
         }
     }
 
+    @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }

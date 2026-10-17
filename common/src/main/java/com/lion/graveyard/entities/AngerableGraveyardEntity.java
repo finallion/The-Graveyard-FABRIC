@@ -33,6 +33,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         super(entityType, world, name);
     }
 
+    @Override
     public void aiStep() {
         if (!this.getCommandSenderWorld().isClientSide()) {
             this.updatePersistentAnger((ServerLevel)this.getCommandSenderWorld(), true);
@@ -49,11 +50,13 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         this.entityData.define(PROVOKED, false);
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         this.addPersistentAngerSaveData(nbt);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         this.readPersistentAngerSaveData(this.getCommandSenderWorld(), nbt);
@@ -64,10 +67,12 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         return this.entityData.get(ANGRY);
     }
 
+    @Override
     public void setRemainingPersistentAngerTime(int ticks) {
         this.angerTime = ticks;
     }
 
+    @Override
     public int getRemainingPersistentAngerTime() {
         return this.angerTime;
     }
@@ -83,10 +88,12 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         this.target = uuid;
     }
 
+    @Override
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(ANGER_TIME.sample(this.random));
     }
 
+    @Override
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
         AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);

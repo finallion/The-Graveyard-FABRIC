@@ -32,18 +32,22 @@ public abstract class CarvingRecipe implements Recipe<Container> {
         this.output = output;
     }
 
+    @Override
     public RecipeType<?> getType() {
         return this.type;
     }
 
+    @Override
     public RecipeSerializer<?> getSerializer() {
         return this.serializer;
     }
 
+    @Override
     public ResourceLocation getId() {
         return this.id;
     }
 
+    @Override
     public String getGroup() {
         return this.group;
     }
@@ -52,20 +56,24 @@ public abstract class CarvingRecipe implements Recipe<Container> {
         return this.output;
     }
 
+    @Override
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> defaultedList = NonNullList.create();
         defaultedList.add(this.input);
         return defaultedList;
     }
 
+    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
+    @Override
     public ItemStack assemble(Container inventory, RegistryAccess registryManager) {
         return this.output.copy();
     }
 
+    @Override
     public ItemStack getResultItem(RegistryAccess registryManager) {
         return this.output;
     }
@@ -77,6 +85,7 @@ public abstract class CarvingRecipe implements Recipe<Container> {
             this.recipeFactory = recipeFactory;
         }
 
+        @Override
         public T fromJson(ResourceLocation identifier, JsonObject jsonObject) {
             String string = GsonHelper.getAsString(jsonObject, "group", "");
             Ingredient ingredient;
@@ -93,6 +102,7 @@ public abstract class CarvingRecipe implements Recipe<Container> {
             return this.recipeFactory.create(identifier, string, ingredient, itemStack);
         }
 
+        @Override
         public T fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
             String string = packetByteBuf.readUtf();
             Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
@@ -100,6 +110,7 @@ public abstract class CarvingRecipe implements Recipe<Container> {
             return this.recipeFactory.create(identifier, string, ingredient, itemStack);
         }
 
+        @Override
         public void toNetwork(FriendlyByteBuf packetByteBuf, T cuttingRecipe) {
             packetByteBuf.writeUtf(cuttingRecipe.group);
             cuttingRecipe.input.toNetwork(packetByteBuf);

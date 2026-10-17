@@ -24,6 +24,7 @@ public class TGMossBlock extends MossBlock {
         return new ItemStack(Blocks.MOSS_BLOCK);
     }
 
+    @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         super.animateTick(state, world, pos, random);
 

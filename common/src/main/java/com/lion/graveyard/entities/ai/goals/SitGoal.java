@@ -13,10 +13,12 @@ public class SitGoal extends Goal {
         this.setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
     }
 
+    @Override
     public boolean canContinueToUse() {
         return this.tameable.isSitting();
     }
 
+    @Override
     public boolean canUse() {
         if (this.tameable.isInWaterOrBubble()) {
             return false;
@@ -33,11 +35,13 @@ public class SitGoal extends Goal {
         }
     }
 
+    @Override
     public void start() {
         this.tameable.getNavigation().stop();
         this.tameable.setInSittingPose(true);
     }
 
+    @Override
     public void stop() {
         this.tameable.setInSittingPose(false);
     }

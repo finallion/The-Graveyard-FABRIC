@@ -1,7 +1,6 @@
 package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.UrnBlockEntity;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -65,10 +64,12 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
         return 1.0F;
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, FACING, OPEN);
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
         return this.defaultBlockState()
@@ -76,8 +77,9 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
@@ -104,6 +106,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
     }
 
 
+    @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide) {
             return InteractionResult.SUCCESS;
@@ -118,6 +121,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
         }
     }
 
+    @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -131,6 +135,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
     }
 
 
+    @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, net.minecraft.util.RandomSource random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
@@ -140,6 +145,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
 
     }
 
+    @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
@@ -147,14 +153,17 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
 
 
     @Nullable
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new UrnBlockEntity(pos, state);
     }
 
+    @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
+    @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         if (itemStack.hasCustomHoverName()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -166,14 +175,17 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
 
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
+    @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation((Direction)state.getValue(FACING)));
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
+    @Override
     public boolean hasAnalogOutputSignal(BlockState state) {
         return false;
     }

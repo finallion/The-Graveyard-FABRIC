@@ -6,14 +6,6 @@ import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -133,6 +125,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         this.entityData.define(RUNNING, false);
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
@@ -157,6 +150,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
@@ -237,6 +231,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         }
     }
 
+    @Override
     protected void customServerAiStep() {
         trackChase();
         this.entityData.set(NAVIGATING, !this.getNavigation().isDone());
@@ -370,12 +365,14 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         }
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putByte("ghoulVariant", getVariant());
         nbt.putInt("spawnTimer", getSpawnTimer());
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 

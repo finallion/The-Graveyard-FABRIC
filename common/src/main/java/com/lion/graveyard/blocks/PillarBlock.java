@@ -25,39 +25,45 @@ public class PillarBlock extends Block implements SimpleWaterloggedBlock {
 
     public PillarBlock(Properties settings) {
         super(settings);
-        this.registerDefaultState((BlockState)((BlockState)((BlockState)((BlockState)((BlockState)this.stateDefinition.any()).setValue(WATERLOGGED, false)))));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Nullable
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         LevelAccessor worldAccess = ctx.getLevel();
         BlockPos blockPos = ctx.getClickedPos();
-        boolean bl = worldAccess.getFluidState(blockPos).getType() == Fluids.WATER;
-        return (BlockState)((BlockState)((BlockState)((BlockState)this.defaultBlockState().setValue(WATERLOGGED, bl))));
+        boolean waterlogged = worldAccess.getFluidState(blockPos).getType() == Fluids.WATER;
+        return this.defaultBlockState().setValue(WATERLOGGED, waterlogged);
     }
 
 
+    @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if ((Boolean)state.getValue(WATERLOGGED)) {
+        if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
-        return direction == Direction.DOWN ? (BlockState)state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return direction == Direction.DOWN ? state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
+    @Override
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED);
     }
 
+    @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }

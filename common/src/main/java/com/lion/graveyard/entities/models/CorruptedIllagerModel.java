@@ -71,10 +71,12 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
         return LayerDefinition.create(modelData, 64, 64);
     }
 
+    @Override
     public ModelPart root() {
         return this.root;
     }
 
+    @Override
     public void setupAnim(T illagerEntity, float f, float g, float h, float i, float j) {
 
         this.head.yRot = i * 0.017453292F;
@@ -181,10 +183,10 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
         }
 
         if (!illagerEntity.isModelDamaged()) {
-            boolean bl = state == CorruptedIllager.State.CROSSED;
-            this.arms.visible = bl;
-            this.leftArm.visible = !bl;
-            this.rightArm.visible = !bl;
+            boolean crossed = state == CorruptedIllager.State.CROSSED;
+            this.arms.visible = crossed;
+            this.leftArm.visible = !crossed;
+            this.rightArm.visible = !crossed;
         }
 
     }
@@ -197,10 +199,12 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
         return this.hat;
     }
 
+    @Override
     public ModelPart getHead() {
         return this.head;
     }
 
+    @Override
     public void translateToHand(HumanoidArm arm, PoseStack matrices) {
         this.getAttackingArm(arm).translateAndRotate(matrices);
     }

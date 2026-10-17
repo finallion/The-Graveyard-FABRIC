@@ -39,16 +39,18 @@ public class SkeletonCreeper extends Creeper {
         return this.closestPlayer != null;
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
 
+    @Override
     protected void dropCustomDeathLoot(DamageSource source, int lootingMultiplier, boolean allowDrops) {
         Entity entity = source.getEntity();
 
         if (entity instanceof Creeper) {
             Creeper creeperEntity = (Creeper)entity;
-            // changed from onHeadsDropped so every skeleton creeper will drop its skeleton instead of only one per charged creeper
+
             if (creeperEntity.isPowered() && random.nextBoolean()) {
                 this.spawnAtLocation(TGBlocks.CREEPER_SKELETON.get().asItem());
             }

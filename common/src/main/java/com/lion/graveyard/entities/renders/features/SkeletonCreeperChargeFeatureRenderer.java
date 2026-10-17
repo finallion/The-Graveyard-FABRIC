@@ -18,14 +18,17 @@ public class SkeletonCreeperChargeFeatureRenderer<T extends Creeper> extends Ene
         this.model = new CreeperModel<>(loader.bakeLayer(ModelLayers.CREEPER_ARMOR));
     }
 
+    @Override
     protected float xOffset(float partialAge) {
         return partialAge * 0.01F;
     }
 
+    @Override
     protected ResourceLocation getTextureLocation() {
         return SKIN;
     }
 
+    @Override
     protected EntityModel<T> model() {
         return (EntityModel<T>) this.model;
     }

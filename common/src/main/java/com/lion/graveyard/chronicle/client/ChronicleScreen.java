@@ -94,7 +94,6 @@ public class ChronicleScreen extends Screen {
         this.updateButtons();
     }
 
-    /// Paragraphs are wrapped to the book column and cut into pages; a blank line separates paragraphs.
     private List<List<FormattedCharSequence>> paginate(ChronicleChapters.Chapter chapter) {
         List<FormattedCharSequence> lines = new ArrayList<>();
         for (String paragraph : chapter.pages()) {

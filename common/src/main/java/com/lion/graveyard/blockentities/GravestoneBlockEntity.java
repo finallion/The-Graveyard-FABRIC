@@ -67,27 +67,29 @@ public class GravestoneBlockEntity extends BlockEntity {
         return 90;
     }
 
+    @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
-        DataResult<Tag> var10000 = SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, this.text);
-        Logger var10001 = LOGGER;
-        Objects.requireNonNull(var10001);
-        var10000.resultOrPartial(var10001::error).ifPresent((frontText) -> {
+        DataResult<Tag> encodedText = SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, this.text);
+        Logger errorLogger = LOGGER;
+        Objects.requireNonNull(errorLogger);
+        encodedText.resultOrPartial(errorLogger::error).ifPresent((frontText) -> {
             nbt.put("front_text", frontText);
         });
         nbt.putBoolean("is_waxed", this.waxed);
     }
 
+    @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        DataResult<SignText> var10000;
-        Logger var10001;
+        DataResult<SignText> parsedText;
+        Logger errorLogger;
 
         if (nbt.contains("front_text")) {
-            var10000 = SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
-            var10001 = LOGGER;
-            Objects.requireNonNull(var10001);
-            var10000.resultOrPartial(var10001::error).ifPresent((signText) -> {
+            parsedText = SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
+            errorLogger = LOGGER;
+            Objects.requireNonNull(errorLogger);
+            parsedText.resultOrPartial(errorLogger::error).ifPresent((signText) -> {
                 this.text = this.parseLines(signText);
             });
         }
@@ -106,14 +108,15 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     private Component parseLine(Component text) {
-        Level var3 = this.level;
+        Level world = this.level;
 
-        if (var3 instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel)var3;
+        if (world instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel)world;
 
             try {
                 return ComponentUtils.updateForEntity(createCommandSource((Player)null, serverWorld, this.worldPosition), text, (Entity)null, 0);
-            } catch (CommandSyntaxException ignored) {
+            } catch (CommandSyntaxException exception) {
+                LOGGER.debug("Cannot resolve the sign text {}", text.getString(), exception);
             }
         }
 
@@ -168,20 +171,20 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     public boolean runCommandClickEvent(Player player, Level world, BlockPos pos) {
-        boolean bl = false;
-        Component[] var6 = this.getText().getMessages(player.isTextFilteringEnabled());
+        boolean ranCommand = false;
+        Component[] lines = this.getText().getMessages(player.isTextFilteringEnabled());
 
-        for (Component text : var6) {
+        for (Component text : lines) {
             Style style = text.getStyle();
             ClickEvent clickEvent = style.getClickEvent();
 
             if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
                 player.getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), clickEvent.getValue());
-                bl = true;
+                ranCommand = true;
             }
         }
 
-        return bl;
+        return ranCommand;
     }
 
     private static CommandSourceStack createCommandSource(@Nullable Player player, Level world, BlockPos pos) {
@@ -190,14 +193,17 @@ public class GravestoneBlockEntity extends BlockEntity {
         return new CommandSourceStack(CommandSource.NULL, Vec3.atCenterOf(pos), Vec2.ZERO, (ServerLevel)world, 2, string, (Component)text, world.getServer(), player);
     }
 
+    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    @Override
     public CompoundTag getUpdateTag() {
         return this.saveWithoutMetadata();
     }
 
+    @Override
     public boolean onlyOpCanSetNbt() {
         return true;
     }
@@ -236,10 +242,10 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, GravestoneBlockEntity blockEntity) {
-        UUID uUID = blockEntity.getEditor();
+        UUID editorId = blockEntity.getEditor();
 
-        if (uUID != null) {
-            blockEntity.tryClearInvalidEditor(blockEntity, world, uUID);
+        if (editorId != null) {
+            blockEntity.tryClearInvalidEditor(blockEntity, world, editorId);
         }
     }
 

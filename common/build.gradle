@@ -3,7 +3,7 @@ dependencies {
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
 
-	// Gradle caches a fixed version; changing = true makes it check mavenLocal again.
+	// changing = true makes Gradle re-read the mavenLocal copy.
 	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
 	}

@@ -56,6 +56,7 @@ public class GravestoneScreen extends Screen {
     }
 
 
+    @Override
     protected void init() {
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
             this.finishEditing();
@@ -74,6 +75,7 @@ public class GravestoneScreen extends Screen {
         this.sign.setText(this.signText);
     }
 
+    @Override
     public void removed() {
         ClientPacketListener clientPlayNetworkHandler = this.minecraft.getConnection();
 
@@ -83,6 +85,7 @@ public class GravestoneScreen extends Screen {
 
     }
 
+    @Override
     public void tick() {
         ++this.ticksSinceOpened;
 
@@ -97,15 +100,18 @@ public class GravestoneScreen extends Screen {
         this.minecraft.setScreen(null);
     }
 
+    @Override
     public boolean charTyped(char chr, int modifiers) {
         this.selectionManager.charTyped(chr);
         return true;
     }
 
+    @Override
     public void onClose() {
         this.finishEditing();
     }
 
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == 265) {
             this.currentRow = this.currentRow - 1 & 3;
@@ -120,6 +126,7 @@ public class GravestoneScreen extends Screen {
         }
     }
 
+    @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         PoseStack matrices = context.pose();
 
@@ -132,9 +139,9 @@ public class GravestoneScreen extends Screen {
         matrices.scale(93.75F, -93.75F, 93.75F);
         matrices.translate(0.0D, -1.3125D, 0.0D);
         BlockState blockState = this.sign.getBlockState();
-        boolean bl = blockState.getBlock() instanceof StandingSignBlock;
+        boolean standingSign = blockState.getBlock() instanceof StandingSignBlock;
 
-        if (!bl) {
+        if (!standingSign) {
             matrices.translate(0.0D, -0.3125D, 0.0D);
         }
 
@@ -142,8 +149,8 @@ public class GravestoneScreen extends Screen {
         matrices.scale(0.6666667F, -0.6666667F, -0.6666667F);
         MultiBufferSource.BufferSource immediate = this.minecraft.renderBuffers().bufferSource();
 
-        SignRenderer.SignModel var10002 = this.model;
-        Objects.requireNonNull(var10002);
+        SignRenderer.SignModel signModel = this.model;
+        Objects.requireNonNull(signModel);
 
         VertexConsumer vertexConsumer2 = GravestoneBlockEntityRenderer.getConsumer(immediate, this.sign.getBlockState().getBlock());
 
@@ -175,7 +182,7 @@ public class GravestoneScreen extends Screen {
                 float f = (float)(-this.minecraft.font.width(string) / 2);
                 this.minecraft.font.drawInBatch(string, f, (float)(n * 10 - l), i, false, matrix4f, immediate, Font.DisplayMode.NORMAL, 0, 15728880, false);
 
-                if (n == this.currentRow && j >= 0 && bl) {
+                if (n == this.currentRow && j >= 0 && standingSign) {
                     o = this.minecraft.font.width(string.substring(0, Math.min(j, string.length())));
                     p = o - this.minecraft.font.width(string) / 2;
 
@@ -195,7 +202,7 @@ public class GravestoneScreen extends Screen {
                 int q = this.minecraft.font.width(string.substring(0, Math.min(j, string.length())));
                 o = q - this.minecraft.font.width(string) / 2;
 
-                if (bl && j < string.length()) {
+                if (standingSign && j < string.length()) {
                     context.fill(o, m - 1, o + 1, m + 10, -16777216 | i);
                 }
 

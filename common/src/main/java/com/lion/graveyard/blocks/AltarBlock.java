@@ -14,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
@@ -35,7 +34,6 @@ import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 public class AltarBlock extends Block {
@@ -55,6 +53,7 @@ public class AltarBlock extends Block {
     }
 
 
+    @Override
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         super.animateTick(state, world, pos, random);
 
@@ -202,10 +201,7 @@ public class AltarBlock extends Block {
                     lich.moveTo((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
                     lich.onSummoned(direction.getOpposite(), pos.above());
 
-                    Iterator var13 = world.getEntitiesOfClass(ServerPlayer.class, lich.getBoundingBox().inflate(50.0D)).iterator();
-
-                    while (var13.hasNext()) {
-                        ServerPlayer serverPlayerEntity = (ServerPlayer) var13.next();
+                    for (ServerPlayer serverPlayerEntity : world.getEntitiesOfClass(ServerPlayer.class, lich.getBoundingBox().inflate(50.0D))) {
                         CriteriaTriggers.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
                     }
 

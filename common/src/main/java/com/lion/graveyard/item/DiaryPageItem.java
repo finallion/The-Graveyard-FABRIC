@@ -20,8 +20,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-/// A loose leaf of the chronicle. Placed on a block it becomes a lore book; read in the air it
-/// records the page and is used up. The text lives in the chronicle screen, never on the item.
 public class DiaryPageItem extends BlockItem {
     public static final String PAGE_KEY = "page";
 

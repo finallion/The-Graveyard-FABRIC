@@ -4,13 +4,8 @@ import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.blocks.BrazierBlock;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -110,11 +105,13 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
 
+    @Override
     public void move(MoverType movementType, Vec3 movement) {
         super.move(movementType, movement);
         this.checkInsideBlocks();
     }
 
+    @Override
     public void makeStuckInBlock(BlockState state, Vec3 multiplier) {
         if (!state.is(Blocks.COBWEB)) {
             super.makeStuckInBlock(state, multiplier);
@@ -123,6 +120,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -135,12 +133,15 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
+    @Override
     protected PathNavigation createNavigation(Level world) {
         FlyingPathNavigation birdNavigation = new FlyingPathNavigation(this, world) {
+            @Override
             public boolean isStableDestination(BlockPos pos) {
                 return !this.level.getBlockState(pos.below()).isAir();
             }
 
+            @Override
             public void tick() {
                 super.tick();
             }
@@ -151,6 +152,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return birdNavigation;
     }
 
+    @Override
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
@@ -180,6 +182,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
     }
 
+    @Override
     public void tick() {
         if (!this.getCommandSenderWorld().isClientSide()) {
             int spawnTicks = this.entityData.get(SPAWN_TIMER);
@@ -207,6 +210,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return homePosition;
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
@@ -219,6 +223,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         nbt.putInt("timeSinceExtinguish", this.timeSinceExtinguish);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
 
@@ -268,6 +273,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
     }
@@ -354,6 +360,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
 
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<WraithEntity>create()
                 .transitionTicks(() -> isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS)
@@ -425,10 +432,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     protected void playStepSound(BlockPos pos, BlockState state) {
     }
 
+    @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
+    @Override
     protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
     }
 
@@ -437,10 +446,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             super(mob, speed, pauseWhenMobIdle);
         }
 
+        @Override
         public boolean canUse() {
             return super.canUse();
         }
 
+        @Override
         public boolean canContinueToUse() {
             return super.canContinueToUse();
         }
@@ -453,6 +464,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             super();
         }
 
+        @Override
         public boolean canUse() {
             if (!WraithEntity.this.getCommandSenderWorld().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING) || !com.lion.graveyard.Graveyard.getConfig().flag("wraithGriefing", true)) {
                 return false;
@@ -472,31 +484,32 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             return this.canUse();
         }
 
+        @Override
         public void tick() {
             if (WraithEntity.this.random.nextInt(this.adjustedTickDelay(10)) == 0) {
                 for (int i = 1; i <= 2; ++i) {
                     BlockPos blockPos = WraithEntity.this.blockPosition().below(i);
                     BlockState blockState = WraithEntity.this.getCommandSenderWorld().getBlockState(blockPos);
                     Block block = blockState.getBlock();
-                    boolean bl = false;
+                    boolean litCandle = false;
                     boolean torchAndLantern = false;
 
                     if (blockState.is(BlockTags.CANDLES)) {
                         if (block instanceof CandleBlock) {
                             if (blockState.getValue(BlockStateProperties.LIT)) {
-                                bl = true;
+                                litCandle = true;
                             }
                         } else if (block instanceof BrazierBlock) {
                             if (blockState.getValue(BlockStateProperties.LIT)) {
-                                bl = true;
+                                litCandle = true;
                             }
                         }
 
-                        if (bl) {
+                        if (litCandle) {
                             WraithEntity.this.getCommandSenderWorld().playSound((Player) null, blockPos, SoundEvents.CANDLE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
-                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(blockPos, (BlockState) blockState.setValue(BlockStateProperties.LIT, false));
+                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(blockPos, blockState.setValue(BlockStateProperties.LIT, false));
                             WraithEntity.this.addExtinguishCounter();
-                            triggerAdvancement(WraithEntity.this, bl);
+                            triggerAdvancement(WraithEntity.this, litCandle);
                             return;
                         }
                     }
@@ -546,16 +559,19 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
+        @Override
         public boolean canUse() {
             return WraithEntity.this.navigation.isDone() && WraithEntity.this.random.nextInt(10) == 0;
         }
 
 
+        @Override
         public boolean canContinueToUse() {
             return WraithEntity.this.navigation.isInProgress();
         }
 
 
+        @Override
         public void start() {
             Vec3 vec3d = this.getRandomLocation();
 

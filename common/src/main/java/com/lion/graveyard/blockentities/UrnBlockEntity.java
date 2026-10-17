@@ -31,18 +31,22 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
         super(TGBlockEntities.URN_BLOCK_ENTITY.get(), pos, state);
         this.inventory = NonNullList.withSize(54, ItemStack.EMPTY);
         this.stateManager = new ContainerOpenersCounter() {
+            @Override
             protected void onOpen(Level world, BlockPos pos, BlockState state) {
                 UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_OPEN.get());
             }
 
+            @Override
             protected void onClose(Level world, BlockPos pos, BlockState state) {
                 UrnBlockEntity.playSound(world, pos, state, TGSounds.URN_CLOSE.get());
             }
 
+            @Override
             protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
                 UrnBlockEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
             }
 
+            @Override
             protected boolean isOwnContainer(Player player) {
                 if (!(player.containerMenu instanceof ChestMenu)) {
                     return false;
@@ -54,6 +58,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
         };
     }
 
+    @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
@@ -64,6 +69,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
 
     }
 
+    @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
 
@@ -73,22 +79,27 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
 
     }
 
+    @Override
     public int getContainerSize() {
         return 54;
     }
 
+    @Override
     protected NonNullList<ItemStack> getItems() {
         return this.inventory;
     }
 
+    @Override
     protected void setItems(NonNullList<ItemStack> list) {
         this.inventory = list;
     }
 
+    @Override
     protected Component getDefaultName() {
         return Component.translatable("container.urn");
     }
 
+    @Override
     protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
         boolean large = Graveyard.CONFIG.booleanEntries.get("urnHasDoubleInventory");
 
@@ -99,6 +110,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
         return ChestMenu.threeRows(syncId, playerInventory, this);
     }
 
+    @Override
     public void startOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
             this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
@@ -106,6 +118,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
 
     }
 
+    @Override
     public void stopOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
             this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());

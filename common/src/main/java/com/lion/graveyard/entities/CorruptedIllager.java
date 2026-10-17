@@ -1,10 +1,6 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.ChaseTarget;
-import net.minecraft.world.entity.Attackable;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -55,6 +51,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         this.entityData.define(CHASING, false);
     }
 
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
@@ -73,19 +70,22 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         return 0.6D;
     }
 
+    @Override
     public MobType getMobType() {
         return MobType.ILLAGER;
     }
 
 
+    @Override
     public boolean canAttack(LivingEntity target) {
         return target instanceof AbstractVillager && target.isBaby() ? false : super.canAttack(target);
     }
 
+    @Override
     protected void customServerAiStep() {
         if (!this.isNoAi() && GoalUtils.hasGroundPathNavigation(this)) {
-            boolean bl = ((ServerLevel)this.getCommandSenderWorld()).isRaided(this.blockPosition());
-            ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(bl);
+            boolean inRaid = ((ServerLevel)this.getCommandSenderWorld()).isRaided(this.blockPosition());
+            ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(inRaid);
         }
 
         trackChase();
@@ -136,6 +136,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Nullable
+    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
         SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
         ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
@@ -146,6 +147,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
 
+    @Override
     public boolean isAlliedTo(Entity other) {
         if (super.isAlliedTo(other)) {
             return true;
@@ -165,6 +167,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
             super(illager, 1.0D, false);
         }
 
+        @Override
         protected double getAttackReachSqr(LivingEntity entity) {
             if (this.mob.getVehicle() instanceof Ravager) {
                 float f = this.mob.getVehicle().getBbWidth() - 0.1F;

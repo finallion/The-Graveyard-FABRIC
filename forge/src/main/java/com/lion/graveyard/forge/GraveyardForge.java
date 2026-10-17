@@ -85,7 +85,6 @@ public class GraveyardForge {
         bus.addListener(GraveyardForge::registerEntityAttributes);
         bus.addListener(GraveyardForge::addItemsToTabs);
 
-        forgeBus.register(this);
         forgeBus.addListener(GraveyardForge::registerCommands);
         forgeBus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {

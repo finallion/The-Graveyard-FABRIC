@@ -2,7 +2,6 @@ package com.lion.graveyard.item;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGItems;
-import net.minecraft.world.level.block.Block;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +24,7 @@ public class DaggerItem extends SwordItem {
         super(material, (int) (effectiveDamage - material.getAttackDamageBonus()), effectiveSpeed, settings);
     }
 
+    @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         if (state.is(Blocks.COBWEB) || state.getBlock() instanceof GlassBlock || state.getBlock() instanceof IronBarsBlock || state.getBlock() instanceof StainedGlassBlock || state.getBlock() instanceof StainedGlassPaneBlock) {
             return 30.0F;

@@ -4,7 +4,6 @@ import com.lion.graveyard.blockentities.OssuaryBlockEntity;
 import com.lion.graveyard.gui.OssuaryScreenHandler;
 import com.lion.graveyard.init.TGBlockEntities;
 import net.minecraft.ChatFormatting;
-import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -58,15 +57,18 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
                 .setValue(OPEN, false));
     }
 
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        return (BlockState)this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
     }
 
     @Nullable
+    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
         return BaseEntityBlock.createTickerHelper(type, TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntity::tick);
     }
 
+    @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide) {
             return InteractionResult.SUCCESS;
@@ -86,24 +88,29 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Nullable
+    @Override
     public MenuProvider getMenuProvider(BlockState state, Level world, BlockPos pos) {
         return new SimpleMenuProvider((syncId, playerInventory, player) -> {
             return new OssuaryScreenHandler(syncId, playerInventory, ContainerLevelAccess.create(world, pos));
         }, TITLE);
     }
 
+    @Override
     public BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
+    @Override
     public BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation((Direction)state.getValue(FACING)));
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, OPEN);
     }
 
+    @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }

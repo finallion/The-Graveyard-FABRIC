@@ -53,10 +53,12 @@ public class GraveyardFogParticle extends TextureSheetParticle {
         this.alpha = 0.0F;
     }
 
+    @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
+    @Override
     public void tick() {
         this.xo = this.x;
         this.yo = this.y;
@@ -135,6 +137,7 @@ public class GraveyardFogParticle extends TextureSheetParticle {
             this.spriteProvider = spriteProvider;
         }
 
+        @Override
         public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
             GraveyardFogParticle fog = new GraveyardFogParticle(clientWorld, d, e, f);
             fog.pickSprite(this.spriteProvider);

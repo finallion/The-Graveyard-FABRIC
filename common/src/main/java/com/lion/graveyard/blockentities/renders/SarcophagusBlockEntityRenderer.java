@@ -8,9 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -71,7 +69,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
 
         if (isLid) {
             matrixStack.mulPose(Axis.ZN.rotationDegrees(g * 45));
-            matrixStack.translate(g * 0.3, g * 0.3, 0.0F); // moves lid away from body
+            matrixStack.translate(g * 0.3, g * 0.3, 0.0F);
         }
 
         client.getBlockRenderer().getModelRenderer().renderModel(matrixStack.last(), vertexConsumer.getBuffer(ItemBlockRenderTypes.getRenderType(entity.getBlockState(), false)), entity.getBlockState(), model, 1.0F, 1.0F, 1.0F, light, overlay);

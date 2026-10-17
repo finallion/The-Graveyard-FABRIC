@@ -11,23 +11,18 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 
 /// Trade pool of the Nameless Hanged, read from `data/graveyard/nameless_hanged_trades/`.
 ///
-/// He is a `MerchantEntity` without a villager profession, so VillagerTradingPlus' file loader
-/// cannot take these files - it keys them by profession. Only its per-trade parser is used, which
-/// is what gives him every trade type, conditions and dynamic pricing without a parser of our own.
+/// The VillagerTradingPlus file loader keys files by profession, so it cannot take these files.
 public final class NamelessHangedTrades {
 
     /// The folder is his, but a datapack can drop anything into it, so files still have to name him.
     private static final String PROFESSION = "graveyard:nameless_hanged";
 
-    /// Flat pool the entity draws its offers from at random. Group keys in the file are for the
-    /// author's benefit only - he has no levels to tie them to.
     public static final List<VillagerTrades.ItemListing> TRADES_REGISTRY = new ArrayList<>();
 
     private NamelessHangedTrades() {
     }
 
-    /// Rebuilt from scratch per reload; appending would hand him a second copy of every trade
-    /// after each `/reload`.
+    /// Rebuilt per reload, so `/reload` does not duplicate trades.
     public static void clear() {
         TRADES_REGISTRY.clear();
     }
@@ -58,7 +53,7 @@ public final class NamelessHangedTrades {
                     continue;
                 }
 
-                // Null means unusable; the parser has already logged which trade and why.
+                // Null means unusable. The parser already logged the reason.
                 VillagerTrades.ItemListing factory = TradeOfferManager.deserializeTrade(element.getAsJsonObject());
 
                 if (factory != null) {

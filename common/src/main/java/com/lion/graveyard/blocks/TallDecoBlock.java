@@ -33,11 +33,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/// Plain decoration that stands - or hangs - two blocks tall and faces a direction.
-///
-/// Everything specific to a piece is a constructor argument, so a new one costs a registration, a
-/// model and a texture. Blocks that carry data of their own (a gravestone, an urn) cannot use this and
-/// mix in [TallDeco] directly instead.
 public class TallDecoBlock extends Block implements SimpleWaterloggedBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

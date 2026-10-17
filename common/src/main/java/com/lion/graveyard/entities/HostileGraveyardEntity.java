@@ -50,13 +50,13 @@ public abstract class HostileGraveyardEntity extends Monster {
     }
 
 
-    // on game stop
+    @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
         nbt.putBoolean("canBurn", canBurnInSunlight());
         super.addAdditionalSaveData(nbt);
     }
 
-    // on game load
+    @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         if (!nbt.contains("canBurn")) {
             this.setCanBurnInSunlight(canBurnInSunlight());
@@ -67,6 +67,7 @@ public abstract class HostileGraveyardEntity extends Monster {
         super.readAdditionalSaveData(nbt);
     }
 
+    @Override
     public boolean canBeAffected(MobEffectInstance effect) {
         if (effect.getEffect() == MobEffects.WITHER) {
             return Graveyard.getConfig().mobConfigEntries.get(name).canBeWithered;
@@ -78,9 +79,9 @@ public abstract class HostileGraveyardEntity extends Monster {
     @Override
     public void aiStep() {
         if (this.isAlive()) {
-            boolean bl = this.burnsInDaylight() && this.isSunBurnTick() && Graveyard.getConfig().mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
+            boolean burning = this.burnsInDaylight() && this.isSunBurnTick() && Graveyard.getConfig().mobConfigEntries.get(name).canBurnInSunlight && canBurnInSunlight();
 
-            if (bl) {
+            if (burning) {
                 ItemStack itemStack = this.getItemBySlot(EquipmentSlot.HEAD);
 
                 if (!itemStack.isEmpty()) {
@@ -93,10 +94,10 @@ public abstract class HostileGraveyardEntity extends Monster {
                         }
                     }
 
-                    bl = false;
+                    burning = false;
                 }
 
-                if (bl) {
+                if (burning) {
                     this.setSecondsOnFire(8);
                 }
             }

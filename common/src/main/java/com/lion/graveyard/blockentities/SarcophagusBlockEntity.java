@@ -34,6 +34,7 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         super(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), pos, state);
         this.inventory = NonNullList.withSize(54, ItemStack.EMPTY);
         this.stateManager = new ContainerOpenersCounter() {
+            @Override
             protected void onOpen(Level world, BlockPos pos, BlockState state) {
                 if (state.getValue(SarcophagusBlock.IS_COFFIN)) {
                     SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.COFFIN_OPEN.get());
@@ -42,6 +43,7 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
                 }
             }
 
+            @Override
             protected void onClose(Level world, BlockPos pos, BlockState state) {
                 if (state.getValue(SarcophagusBlock.IS_COFFIN)) {
                     SarcophagusBlockEntity.playSound(world, pos, state, TGSounds.COFFIN_CLOSE.get());
@@ -50,10 +52,12 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
                 }
             }
 
+            @Override
             protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
                 SarcophagusBlockEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
             }
 
+            @Override
             protected boolean isOwnContainer(Player player) {
                 if (!(player.containerMenu instanceof ChestMenu)) {
                     return false;
@@ -66,6 +70,7 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         this.lidAnimator = new SarcophagusLidAnimator();
     }
 
+    @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
@@ -75,6 +80,7 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         }
     }
 
+    @Override
     protected void saveAdditional(CompoundTag nbt) {
         super.saveAdditional(nbt);
 
@@ -83,18 +89,22 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         }
     }
 
+    @Override
     public int getContainerSize() {
         return 54;
     }
 
+    @Override
     protected NonNullList<ItemStack> getItems() {
         return this.inventory;
     }
 
+    @Override
     protected void setItems(NonNullList<ItemStack> list) {
         this.inventory = list;
     }
 
+    @Override
     protected Component getDefaultName() {
         if (this.getBlockState().getValue(SarcophagusBlock.IS_COFFIN)) {
             return Component.translatable("container.coffin");
@@ -103,16 +113,19 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         return Component.translatable("container.sarcophagus");
     }
 
+    @Override
     protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
         return ChestMenu.sixRows(syncId, playerInventory, this);
     }
 
+    @Override
     public void startOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
             this.stateManager.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
+    @Override
     public void stopOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
             this.stateManager.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
@@ -138,11 +151,11 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
         world.playSound((Player) null, d, e, f, soundEvent, SoundSource.BLOCKS, 0.75F, -70.0F);
     }
 
-    /* ANIMATION STUFF */
     public static void clientTick(Level world, BlockPos pos, BlockState state, SarcophagusBlockEntity blockEntity) {
         blockEntity.lidAnimator.step();
     }
 
+    @Override
     public boolean triggerEvent(int type, int data) {
         if (type == 1) {
             this.lidAnimator.setOpen(data > 0);

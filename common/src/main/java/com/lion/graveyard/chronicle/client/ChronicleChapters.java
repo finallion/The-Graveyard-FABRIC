@@ -19,13 +19,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-/// Chapter texts are resource-pack assets (`assets/<ns>/chronicle/<id>.json`), read fresh each
-/// time the book opens — a handful of small files, and it keeps the server out of the loop.
 @Environment(EnvType.CLIENT)
 public final class ChronicleChapters {
     private static final String DIRECTORY = "chronicle";
 
-    /// `pages` are raw paragraphs; the screen wraps and splits them. Titles come from the language file.
     public record Chapter(String id, int act, int order, String source, List<String> pages) {
         public String titleKey() {
             return "chronicle." + Graveyard.MOD_ID + ".page." + id + ".title";

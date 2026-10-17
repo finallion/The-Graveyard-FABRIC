@@ -30,6 +30,7 @@ public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
         return 15;
     }
 
+    @Override
     public void render(SkullEntity skullEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
         matrixStack.pushPose();
         matrixStack.scale(-1.0F, -1.0F, 1.0F);

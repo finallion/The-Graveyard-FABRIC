@@ -15,6 +15,5 @@ public class BiomeModificationsImpl {
     }
 
     public static void addPlacedFeature(TagKey<Biome> tag, GenerationStep.Decoration step, ResourceKey<PlacedFeature> featureKey) {
-        // empty
     }
 }
