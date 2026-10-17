@@ -534,9 +534,11 @@
   },
   "entity.lich.theme_01": {
     "sounds": [
-      "graveyard:entity/lich/theme_01"
+      {
+        "name": "graveyard:entity/lich/theme_01",
+        "stream": true
+      }
     ],
-    "stream": "true",
     "subtitle": "subtitles.entity.graveyard.lich.theme_01"
   },
   "entity.crow.ambient": {
