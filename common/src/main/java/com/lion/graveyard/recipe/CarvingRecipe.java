@@ -1,29 +1,29 @@
 package com.lion.graveyard.recipe;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 
-public abstract class CarvingRecipe implements Recipe<Inventory> {
+public abstract class CarvingRecipe implements Recipe<Container> {
     protected final Ingredient input;
     protected final ItemStack output;
     private final RecipeType<?> type;
     private final RecipeSerializer<?> serializer;
-    protected final Identifier id;
+    protected final ResourceLocation id;
     protected final String group;
 
-    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, Identifier id, String group, Ingredient input, ItemStack output) {
+    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, ResourceLocation id, String group, Ingredient input, ItemStack output) {
         this.type = type;
         this.serializer = serializer;
         this.id = id;
@@ -40,7 +40,7 @@ public abstract class CarvingRecipe implements Recipe<Inventory> {
         return this.serializer;
     }
 
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return this.id;
     }
 
@@ -52,21 +52,21 @@ public abstract class CarvingRecipe implements Recipe<Inventory> {
         return this.output;
     }
 
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> defaultedList = NonNullList.create();
         defaultedList.add(this.input);
         return defaultedList;
     }
 
-    public boolean fits(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
-    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
+    public ItemStack assemble(Container inventory, RegistryAccess registryManager) {
         return this.output.copy();
     }
 
-    public ItemStack getOutput(DynamicRegistryManager registryManager) {
+    public ItemStack getResultItem(RegistryAccess registryManager) {
         return this.output;
     }
 
@@ -77,37 +77,37 @@ public abstract class CarvingRecipe implements Recipe<Inventory> {
             this.recipeFactory = recipeFactory;
         }
 
-        public T read(Identifier identifier, JsonObject jsonObject) {
-            String string = JsonHelper.getString(jsonObject, "group", "");
+        public T fromJson(ResourceLocation identifier, JsonObject jsonObject) {
+            String string = GsonHelper.getAsString(jsonObject, "group", "");
             Ingredient ingredient;
 
-            if (JsonHelper.hasArray(jsonObject, "ingredient")) {
-                ingredient = Ingredient.fromJson(JsonHelper.getArray(jsonObject, "ingredient"));
+            if (GsonHelper.isArrayNode(jsonObject, "ingredient")) {
+                ingredient = Ingredient.fromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredient"));
             } else {
-                ingredient = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "ingredient"));
+                ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(jsonObject, "ingredient"));
             }
 
-            String string2 = JsonHelper.getString(jsonObject, "result");
-            int i = JsonHelper.getInt(jsonObject, "count");
-            ItemStack itemStack = new ItemStack((ItemConvertible) Registries.ITEM.get(new Identifier(string2)), i);
+            String string2 = GsonHelper.getAsString(jsonObject, "result");
+            int i = GsonHelper.getAsInt(jsonObject, "count");
+            ItemStack itemStack = new ItemStack((ItemLike) BuiltInRegistries.ITEM.get(new ResourceLocation(string2)), i);
             return this.recipeFactory.create(identifier, string, ingredient, itemStack);
         }
 
-        public T read(Identifier identifier, PacketByteBuf packetByteBuf) {
-            String string = packetByteBuf.readString();
-            Ingredient ingredient = Ingredient.fromPacket(packetByteBuf);
-            ItemStack itemStack = packetByteBuf.readItemStack();
+        public T fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
+            String string = packetByteBuf.readUtf();
+            Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
+            ItemStack itemStack = packetByteBuf.readItem();
             return this.recipeFactory.create(identifier, string, ingredient, itemStack);
         }
 
-        public void write(PacketByteBuf packetByteBuf, T cuttingRecipe) {
-            packetByteBuf.writeString(cuttingRecipe.group);
-            cuttingRecipe.input.write(packetByteBuf);
-            packetByteBuf.writeItemStack(cuttingRecipe.output);
+        public void toNetwork(FriendlyByteBuf packetByteBuf, T cuttingRecipe) {
+            packetByteBuf.writeUtf(cuttingRecipe.group);
+            cuttingRecipe.input.toNetwork(packetByteBuf);
+            packetByteBuf.writeItem(cuttingRecipe.output);
         }
 
         public interface RecipeFactory<T extends CarvingRecipe> {
-            T create(Identifier id, String group, Ingredient input, ItemStack output);
+            T create(ResourceLocation id, String group, Ingredient input, ItemStack output);
         }
     }
 }

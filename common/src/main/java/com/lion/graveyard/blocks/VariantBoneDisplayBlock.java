@@ -1,52 +1,52 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
 /// Client and server derive the variant from the block position.
 public class VariantBoneDisplayBlock extends BoneDisplayBlock {
-    public static final IntProperty VARIANT = IntProperty.of("variant", 0, 3);
+    public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 3);
 
     public VariantBoneDisplayBlock() {
         super();
-        this.setDefaultState(this.getDefaultState().with(VARIANT, 0));
+        this.registerDefaultState(this.defaultBlockState().setValue(VARIANT, 0));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(VARIANT);
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState state = super.getPlacementState(ctx);
-        BlockPos pos = ctx.getBlockPos();
-        int variant = Math.floorMod(MathHelper.hashCode(pos.getX(), pos.getY(), pos.getZ()), 4);
-        return state == null ? null : state.with(VARIANT, variant);
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        BlockState state = super.getStateForPlacement(ctx);
+        BlockPos pos = ctx.getClickedPos();
+        int variant = Math.floorMod(Mth.getSeed(pos.getX(), pos.getY(), pos.getZ()), 4);
+        return state == null ? null : state.setValue(VARIANT, variant);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (hand != Hand.MAIN_HAND || !player.getMainHandStack().isEmpty() || !player.canModifyBlocks()) {
-            return ActionResult.PASS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty() || !player.mayBuild()) {
+            return InteractionResult.PASS;
         }
 
-        if (!world.isClient) {
-            int next = (state.get(VARIANT) + 1) % 4;
-            world.setBlockState(pos, state.with(VARIANT, next), Block.NOTIFY_ALL);
+        if (!world.isClientSide) {
+            int next = (state.getValue(VARIANT) + 1) % 4;
+            world.setBlock(pos, state.setValue(VARIANT, next), Block.UPDATE_ALL);
         }
 
-        return ActionResult.success(world.isClient);
+        return InteractionResult.sidedSuccess(world.isClientSide);
     }
 }

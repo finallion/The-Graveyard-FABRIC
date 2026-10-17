@@ -7,56 +7,59 @@ import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGItems;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.VialOfBlood;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.*;
-import net.minecraft.block.pattern.BlockPattern;
-import net.minecraft.block.pattern.BlockPatternBuilder;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.predicate.block.BlockStatePredicate;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriteriaTriggers;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.block.state.pattern.BlockPattern;
+import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
+import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
 public class AltarBlock extends Block {
-    public static final BooleanProperty BLOODY = BooleanProperty.of("bloody");
+    public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
     private static BlockPattern COMPLETED_ALTAR;
     private static BlockPattern ANY_ORDER_ALTAR;
 
 
-    public AltarBlock(Settings settings) {
+    public AltarBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(BLOODY, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(BLOODY, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BLOODY);
     }
 
 
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        super.randomDisplayTick(state, world, pos, random);
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        super.animateTick(state, world, pos, random);
 
-        if (state.get(BLOODY)) {
+        if (state.getValue(BLOODY)) {
             if (random.nextInt(10) == 0) {
-                world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.ALTAR_AMBIENT.get(), SoundCategory.BLOCKS, 0.05F, random.nextFloat() * 0.4F + 0.8F, true);
+                world.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.ALTAR_AMBIENT.get(), SoundSource.BLOCKS, 0.05F, random.nextFloat() * 0.4F + 0.8F, true);
             }
         }
 
@@ -65,11 +68,11 @@ public class AltarBlock extends Block {
     public static BlockPattern getCompletedFramePattern() {
         if (COMPLETED_ALTAR == null) {
             COMPLETED_ALTAR = BlockPatternBuilder.start().aisle("???x???", "???????", "???????", "???????", "???????", "???????", "???????", "a??b??c")
-                    .where('?', CachedBlockPosition.matchesBlockState(BlockStatePredicate.ANY))
-                    .where('a', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()))))
-                    .where('b', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF.get())))
-                    .where('c', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()))))
-                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
+                    .where('?', BlockInWorld.hasState(BlockStatePredicate.ANY))
+                    .where('a', BlockInWorld.hasState(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()))))
+                    .where('b', BlockInWorld.hasState(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF.get())))
+                    .where('c', BlockInWorld.hasState(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()).or(BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get()))))
+                    .where('x', BlockInWorld.hasState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
                     .build();
         }
 
@@ -82,21 +85,21 @@ public class AltarBlock extends Block {
                     .or(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF.get()))
                     .or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()));
             ANY_ORDER_ALTAR = BlockPatternBuilder.start().aisle("???x???", "???????", "???????", "???????", "???????", "???????", "???????", "f??f??f")
-                    .where('?', CachedBlockPosition.matchesBlockState(BlockStatePredicate.ANY))
-                    .where('f', CachedBlockPosition.matchesBlockState(anyFragment))
-                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
+                    .where('?', BlockInWorld.hasState(BlockStatePredicate.ANY))
+                    .where('f', BlockInWorld.hasState(anyFragment))
+                    .where('x', BlockInWorld.hasState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
                     .build();
         }
 
         return ANY_ORDER_ALTAR;
     }
 
-    private static String findSummonFailure(World world, BlockPos pos, float blood) {
+    private static String findSummonFailure(Level world, BlockPos pos, float blood) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
             return "block.graveyard.altar.peaceful";
         }
 
-        if (!world.isNight() && !world.getDimension().hasFixedTime()) {
+        if (!world.isNight() && !world.dimensionType().hasFixedTime()) {
             return "block.graveyard.altar.night_only";
         }
 
@@ -105,8 +108,8 @@ public class AltarBlock extends Block {
         }
 
         if (Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments
-                && getCompletedFramePattern().searchAround(world, pos) == null) {
-            return getAnyOrderFramePattern().searchAround(world, pos) != null
+                && getCompletedFramePattern().find(world, pos) == null) {
+            return getAnyOrderFramePattern().find(world, pos) != null
                     ? "block.graveyard.altar.wrong_order"
                     : "block.graveyard.altar.missing_fragments";
         }
@@ -115,35 +118,35 @@ public class AltarBlock extends Block {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!player.canModifyBlocks()) {
-            return ActionResult.PASS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!player.mayBuild()) {
+            return InteractionResult.PASS;
         }
 
-        ItemStack stack = player.getStackInHand(hand);
+        ItemStack stack = player.getItemInHand(hand);
         float blood = 0.0F;
 
-        if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
+        if (stack.is(TGItems.VIAL_OF_BLOOD.get())) {
             blood = VialOfBlood.getBlood(stack);
         }
 
-        if (!world.isClient && stack.isOf(TGItems.VIAL_OF_BLOOD.get()) && state.isOf(TGBlocks.ALTAR.get()) && !state.get(BLOODY)) {
+        if (!world.isClientSide && stack.is(TGItems.VIAL_OF_BLOOD.get()) && state.is(TGBlocks.ALTAR.get()) && !state.getValue(BLOODY)) {
             String failure = findSummonFailure(world, pos, blood);
 
             if (failure != null) {
-                player.sendMessage(Text.translatable(failure), true);
+                player.displayClientMessage(Component.translatable(failure), true);
             }
         }
 
-        if (state.isOf(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
-            BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
+        if (state.is(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getDescriptionId())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.dimensionType().hasFixedTime())) {
+            BlockPattern.BlockPatternMatch result = AltarBlock.getCompletedFramePattern().find(world, pos);
 
-            if (!state.get(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
-                if (!world.isClient) {
-                    world.playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH.get(), SoundCategory.BLOCKS, 5.0F, 1.0F);
+            if (!state.getValue(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
+                if (!world.isClientSide) {
+                    world.playSound(null, player.blockPosition(), TGSounds.VIAL_SPLASH.get(), SoundSource.BLOCKS, 5.0F, 1.0F);
                 }
 
-                world.setBlockState(pos, state.with(AltarBlock.BLOODY, true));
+                world.setBlockAndUpdate(pos, state.setValue(AltarBlock.BLOODY, true));
                 Direction direction;
 
                 if (result == null) {
@@ -152,58 +155,58 @@ public class AltarBlock extends Block {
                     direction = result.getUp();
                 }
 
-                if (!world.isClient()) {
-                    if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
+                if (!world.isClientSide()) {
+                    if (stack.is(TGItems.VIAL_OF_BLOOD.get())) {
                         VialOfBlood.setBlood(stack, 0.1F);
                     }
 
                     if (!player.isCreative()) {
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 430));
+                        player.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 430));
                     }
 
 
-                    BlockPos corner = pos.add(-8, 0, -8);
+                    BlockPos corner = pos.offset(-8, 0, -8);
 
                     for (int i = 0; i < 16; ++i) {
                         for (int j = 0; j < 16; ++j) {
                             for (int k = 0; k < 2; ++k) {
-                                BlockPos iteratorPos = new BlockPos(corner.add(i, k, j));
+                                BlockPos iteratorPos = new BlockPos(corner.offset(i, k, j));
                                 BlockState blockState = world.getBlockState(iteratorPos);
 
                                 if (blockState.getBlock() instanceof OminousBoneStaffFragment) {
-                                    world.setBlockState(iteratorPos, Blocks.AIR.getDefaultState());
+                                    world.setBlockAndUpdate(iteratorPos, Blocks.AIR.defaultBlockState());
                                 }
                             }
                         }
                     }
 
                     LichEntity lich = (LichEntity) TGEntities.LICH.get().create(world);
-                    BlockPos blockPos = pos.up();
-                    lich.setYaw(direction.getOpposite().asRotation());
-                    lich.setBodyYaw(direction.getOpposite().asRotation());
-                    lich.setHeadYaw(direction.getOpposite().asRotation());
-                    lich.refreshPositionAndAngles((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
-                    lich.onSummoned(direction.getOpposite(), pos.up());
+                    BlockPos blockPos = pos.above();
+                    lich.setYRot(direction.getOpposite().toYRot());
+                    lich.setYBodyRot(direction.getOpposite().toYRot());
+                    lich.setYHeadRot(direction.getOpposite().toYRot());
+                    lich.moveTo((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
+                    lich.onSummoned(direction.getOpposite(), pos.above());
 
-                    Iterator var13 = world.getNonSpectatingEntities(ServerPlayerEntity.class, lich.getBoundingBox().expand(50.0D)).iterator();
+                    Iterator var13 = world.getEntitiesOfClass(ServerPlayer.class, lich.getBoundingBox().inflate(50.0D)).iterator();
 
                     while (var13.hasNext()) {
-                        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var13.next();
-                        Criteria.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
+                        ServerPlayer serverPlayerEntity = (ServerPlayer) var13.next();
+                        CriteriaTriggers.SUMMONED_ENTITY.trigger(serverPlayerEntity, lich);
                     }
 
 
                     lich.setInvisible(true);
-                    world.spawnEntity(lich);
+                    world.addFreshEntity(lich);
 
-                    return ActionResult.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
 
-                return ActionResult.success(player.getWorld().isClient);
+                return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }
 
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 }

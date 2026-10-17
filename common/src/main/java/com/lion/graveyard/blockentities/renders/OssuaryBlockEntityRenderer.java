@@ -2,17 +2,17 @@ package com.lion.graveyard.blockentities.renders;
 
 import com.lion.graveyard.blockentities.OssuaryBlockEntity;
 import com.lion.graveyard.blockentities.models.OssuaryModel;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.texture.AnimatableTexture;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
 public class OssuaryBlockEntityRenderer extends GeoBlockRenderer<OssuaryBlockEntity> {
 
-    public OssuaryBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
+    public OssuaryBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(new OssuaryModel());
     }
 
@@ -23,8 +23,8 @@ public class OssuaryBlockEntityRenderer extends GeoBlockRenderer<OssuaryBlockEnt
     }
 
     @Override
-    public RenderLayer getRenderType(OssuaryBlockEntity animatable, Identifier texture, @Nullable VertexConsumerProvider bufferSource, float partialTick) {
-        return RenderLayer.getEntityCutout(getTextureLocation(animatable));
+    public RenderType getRenderType(OssuaryBlockEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return RenderType.entityCutout(getTextureLocation(animatable));
     }
 
 }

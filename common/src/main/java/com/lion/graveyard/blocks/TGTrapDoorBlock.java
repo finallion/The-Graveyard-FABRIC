@@ -1,12 +1,12 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
-public class TGTrapDoorBlock extends TrapdoorBlock {
+public class TGTrapDoorBlock extends TrapDoorBlock {
 
     // access to private trap door constructor
-    public TGTrapDoorBlock(Settings settings) {
+    public TGTrapDoorBlock(Properties settings) {
         super(settings, BlockSetType.IRON);
     }
 }

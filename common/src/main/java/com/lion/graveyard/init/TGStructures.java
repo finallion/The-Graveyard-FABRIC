@@ -2,7 +2,7 @@ package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.structures.TGJigsawStructure;
-import net.minecraft.world.gen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 
 public class TGStructures {
     public static StructureType<TGJigsawStructure> TG_JIGSAW = () -> TGJigsawStructure.CODEC;

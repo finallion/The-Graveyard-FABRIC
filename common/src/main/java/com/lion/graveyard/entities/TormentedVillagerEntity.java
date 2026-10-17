@@ -5,42 +5,6 @@ import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LightBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ExperienceOrbEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -51,12 +15,48 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LightBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 /// An entity cannot emit block light. Thus the mob carries a light block with it.
-public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntity {
+public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity {
 
-    private static final TrackedData<Integer> MOOD = DataTracker.registerData(TormentedVillagerEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Integer> SPAWN_TICKS_LEFT = DataTracker.registerData(TormentedVillagerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final EntityDataAccessor<Integer> MOOD = SynchedEntityData.defineId(TormentedVillagerEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> SPAWN_TICKS_LEFT = SynchedEntityData.defineId(TormentedVillagerEntity.class, EntityDataSerializers.INT);
 
     private static final int BELL_RANGE = 48;
     private static final int REST_CHANCE = 350;
@@ -78,81 +78,81 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     private int moodTicks;
     private BlockPos lightPos;
 
-    public TormentedVillagerEntity(EntityType<? extends TormentedVillagerEntity> type, World world) {
+    public TormentedVillagerEntity(EntityType<? extends TormentedVillagerEntity> type, Level world) {
         super(type, world);
-        this.experiencePoints = 0;
+        this.xpReward = 0;
     }
 
-    public static DefaultAttributeContainer.Builder createTormentedVillagerAttributes() {
-        return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2D);
+    public static AttributeSupplier.Builder createTormentedVillagerAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
-    public static boolean canSpawn(EntityType<TormentedVillagerEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-        return world.toServerWorld().isNight() && MobEntity.canMobSpawn(type, world, reason, pos, random);
+    public static boolean canSpawn(EntityType<TormentedVillagerEntity> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
+        return world.getLevel().isNight() && Mob.checkMobSpawnRules(type, world, reason, pos, random);
     }
 
-    public static void onBellRung(ServerWorld world, BlockPos bell) {
-        for (TormentedVillagerEntity villager : world.getEntitiesByClass(TormentedVillagerEntity.class, new Box(bell).expand(BELL_RANGE), entity -> true)) {
+    public static void onBellRung(ServerLevel world, BlockPos bell) {
+        for (TormentedVillagerEntity villager : world.getEntitiesOfClass(TormentedVillagerEntity.class, new AABB(bell).inflate(BELL_RANGE), entity -> true)) {
             villager.redeem();
         }
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(MOOD, Mood.WANDERING.ordinal());
-        this.dataTracker.startTracking(SPAWN_TICKS_LEFT, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(MOOD, Mood.WANDERING.ordinal());
+        this.entityData.define(SPAWN_TICKS_LEFT, 0);
     }
 
     @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new WanderAroundFarGoal(this, 0.6D) {
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 0.6D) {
             @Override
-            public boolean canStart() {
-                return TormentedVillagerEntity.this.getMood() == Mood.WANDERING && super.canStart();
+            public boolean canUse() {
+                return TormentedVillagerEntity.this.getMood() == Mood.WANDERING && super.canUse();
             }
         });
-        this.goalSelector.add(2, new LookAtEntityGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.add(3, new LookAroundGoal(this));
+        this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
     }
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
         this.setMood(Mood.SPAWNING, Mood.SPAWNING.ticks);
-        this.dataTracker.set(SPAWN_TICKS_LEFT, Mood.SPAWNING.ticks);
+        this.entityData.set(SPAWN_TICKS_LEFT, Mood.SPAWNING.ticks);
         this.playSound(TGSounds.TORMENTED_VILLAGER_SPAWN.get(), 1.0F, 1.0F);
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
     public Mood getMood() {
-        return Mood.values()[this.dataTracker.get(MOOD)];
+        return Mood.values()[this.entityData.get(MOOD)];
     }
 
     private void setMood(Mood mood, int ticks) {
-        this.dataTracker.set(MOOD, mood.ordinal());
+        this.entityData.set(MOOD, mood.ordinal());
         this.moodTicks = ticks;
     }
 
     @Override
-    protected void mobTick() {
-        super.mobTick();
-        int spawnTicksLeft = this.dataTracker.get(SPAWN_TICKS_LEFT);
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        int spawnTicksLeft = this.entityData.get(SPAWN_TICKS_LEFT);
 
         if (spawnTicksLeft > 0) {
-            this.dataTracker.set(SPAWN_TICKS_LEFT, spawnTicksLeft - 1);
+            this.entityData.set(SPAWN_TICKS_LEFT, spawnTicksLeft - 1);
         }
 
-        if (this.age % LIGHT_INTERVAL == 0 && Graveyard.getConfig().flag("tormentedVillagerLight", true)) {
+        if (this.tickCount % LIGHT_INTERVAL == 0 && Graveyard.getConfig().flag("tormentedVillagerLight", true)) {
             this.carryLight();
         }
 
         Mood mood = this.getMood();
 
-        if (mood != Mood.REDEEMING && mood != Mood.SPAWNING && this.age > MIN_AGE_TO_FADE && this.getWorld().isDay()) {
+        if (mood != Mood.REDEEMING && mood != Mood.SPAWNING && this.tickCount > MIN_AGE_TO_FADE && this.level().isDay()) {
             this.vanish(false);
             return;
         }
@@ -204,8 +204,8 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        return source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.damage(source, amount);
+    public boolean hurt(DamageSource source, float amount) {
+        return source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurt(source, amount);
     }
 
     public void redeem() {
@@ -216,30 +216,30 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     }
 
     private void vanish(boolean redeemed) {
-        if (this.getWorld() instanceof ServerWorld world) {
-            world.spawnParticles(ParticleTypes.SOUL, this.getX(), this.getBodyY(0.5D), this.getZ(), 20, 0.3D, 0.6D, 0.3D, 0.02D);
+        if (this.level() instanceof ServerLevel world) {
+            world.sendParticles(ParticleTypes.SOUL, this.getX(), this.getY(0.5D), this.getZ(), 20, 0.3D, 0.6D, 0.3D, 0.02D);
 
             if (redeemed) {
-                ExperienceOrbEntity.spawn(world, this.getPos(), REDEMPTION_EXPERIENCE);
+                ExperienceOrb.award(world, this.position(), REDEMPTION_EXPERIENCE);
                 this.rewardRedemption(world);
             } else {
-                TGAdvancements.triggerNearby(world, this.getPos(), DAWN_WITNESS_RANGE, TGAdvancements.TORMENTED_VILLAGER_DAWN);
+                TGAdvancements.triggerNearby(world, this.position(), DAWN_WITNESS_RANGE, TGAdvancements.TORMENTED_VILLAGER_DAWN);
             }
         }
 
-        this.playSound(SoundEvents.PARTICLE_SOUL_ESCAPE, 1.0F, 1.0F);
+        this.playSound(SoundEvents.SOUL_ESCAPE, 1.0F, 1.0F);
         this.discard();
     }
 
-    private void rewardRedemption(ServerWorld world) {
-        for (ServerPlayerEntity player : world.getPlayers(candidate -> !candidate.isSpectator() && candidate.squaredDistanceTo(this) <= REDEMPTION_WITNESS_RANGE * REDEMPTION_WITNESS_RANGE)) {
+    private void rewardRedemption(ServerLevel world) {
+        for (ServerPlayer player : world.getPlayers(candidate -> !candidate.isSpectator() && candidate.distanceToSqr(this) <= REDEMPTION_WITNESS_RANGE * REDEMPTION_WITNESS_RANGE)) {
             TGAdvancements.REDEEM_TORMENTED_VILLAGER.trigger(player);
             TGAdvancements.grantNextStep(player, TGAdvancements.REDEEM_TEN_ADVANCEMENT, TGAdvancements.REDEEM_TEN_STEPS);
         }
     }
 
     private void carryLight() {
-        BlockPos target = this.getBlockPos().up();
+        BlockPos target = this.blockPosition().above();
 
         if (target.equals(this.lightPos)) {
             return;
@@ -247,19 +247,19 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
 
         this.clearLight();
 
-        if (this.getWorld().getBlockState(target).isAir()) {
-            this.getWorld().setBlockState(target, Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, LIGHT_LEVEL), Block.NOTIFY_LISTENERS);
+        if (this.level().getBlockState(target).isAir()) {
+            this.level().setBlock(target, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, LIGHT_LEVEL), Block.UPDATE_CLIENTS);
             this.lightPos = target;
         }
     }
 
     private void clearLight() {
         // A saved position far from the mob is stale. A read there can load a chunk.
-        if (this.lightPos != null && this.lightPos.isWithinDistance(this.getBlockPos(), LIGHT_REACH)) {
-            BlockState state = this.getWorld().getBlockState(this.lightPos);
+        if (this.lightPos != null && this.lightPos.closerThan(this.blockPosition(), LIGHT_REACH)) {
+            BlockState state = this.level().getBlockState(this.lightPos);
 
-            if (state.isOf(Blocks.LIGHT) && state.get(LightBlock.LEVEL_15) == LIGHT_LEVEL) {
-                this.getWorld().setBlockState(this.lightPos, state.getFluidState().getBlockState(), Block.NOTIFY_LISTENERS);
+            if (state.is(Blocks.LIGHT) && state.getValue(LightBlock.LEVEL) == LIGHT_LEVEL) {
+                this.level().setBlock(this.lightPos, state.getFluidState().createLegacyBlock(), Block.UPDATE_CLIENTS);
             }
         }
 
@@ -269,7 +269,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     /// An unload keeps the light block. The saved position lets the mob remove it after the next load.
     @Override
     public void remove(RemovalReason reason) {
-        if (!this.getWorld().isClient && reason.shouldDestroy()) {
+        if (!this.level().isClientSide && reason.shouldDestroy()) {
             this.clearLight();
         }
 
@@ -277,23 +277,23 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     }
 
     @Override
-    public void copyFrom(Entity original) {
-        if (original instanceof TormentedVillagerEntity villager && !villager.getWorld().isClient) {
+    public void restoreFrom(Entity original) {
+        if (original instanceof TormentedVillagerEntity villager && !villager.level().isClientSide) {
             villager.clearLight();
         }
 
-        super.copyFrom(original);
+        super.restoreFrom(original);
         this.lightPos = null;
     }
 
     @Override
-    public boolean canUsePortals() {
+    public boolean canChangeDimensions() {
         return false;
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
 
         if (this.lightPos != null) {
             nbt.putLong(LIGHT_KEY, this.lightPos.asLong());
@@ -301,21 +301,21 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
 
         if (nbt.contains(LIGHT_KEY)) {
-            this.lightPos = BlockPos.fromLong(nbt.getLong(LIGHT_KEY));
+            this.lightPos = BlockPos.of(nbt.getLong(LIGHT_KEY));
         }
     }
 
     @Override
-    public boolean isFireImmune() {
+    public boolean fireImmune() {
         return true;
     }
 
     @Override
-    public boolean canBreatheInWater() {
+    public boolean canBreatheUnderwater() {
         return true;
     }
 
@@ -326,28 +326,28 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
             return null;
         }
 
-        return this.getNavigation().isIdle() ? TGSounds.TORMENTED_VILLAGER_IDLE.get() : TGSounds.TORMENTED_VILLAGER_LOST.get();
+        return this.getNavigation().isDone() ? TGSounds.TORMENTED_VILLAGER_IDLE.get() : TGSounds.TORMENTED_VILLAGER_LOST.get();
     }
 
     @Override
-    public int getMinAmbientSoundDelay() {
+    public int getAmbientSoundInterval() {
         return AMBIENT_SOUND_DELAY;
     }
 
     private boolean isWalking() {
-        double dx = this.getX() - this.prevX;
-        double dz = this.getZ() - this.prevZ;
+        double dx = this.getX() - this.xo;
+        double dz = this.getZ() - this.zo;
         return dx * dx + dz * dz > 1.0E-5D;
     }
 
     @Override
-    protected float calculateNextStepSoundDistance() {
-        return this.distanceTraveled + STEP_DISTANCE;
+    protected float nextStep() {
+        return this.moveDist + STEP_DISTANCE;
     }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        BlockSoundGroup group = state.getSoundGroup();
+        SoundType group = state.getSoundType();
         this.playSound(group.getStepSound(), group.getVolume() * STEP_VOLUME, group.getPitch());
     }
 
@@ -374,7 +374,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     }
 
     private double spawnClipOffset() {
-        int left = this.dataTracker.get(SPAWN_TICKS_LEFT);
+        int left = this.entityData.get(SPAWN_TICKS_LEFT);
         return left > 0 && AnimationPreview.forcedAnimation(this) == null ? Math.max(0, Mood.SPAWNING.ticks - left) : 0;
     }
 

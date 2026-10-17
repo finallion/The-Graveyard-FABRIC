@@ -2,14 +2,14 @@ package com.lion.graveyard.blockentities;
 
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.init.TGBlockEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /// A placed chronicle page. Only the page id is stored; the text lives in the chronicle assets, so
@@ -30,12 +30,12 @@ public class LoreBookBlockEntity extends BlockEntity {
 
     public void setPage(@Nullable String page) {
         this.page = Chronicle.isValidId(page) ? page : null;
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    protected void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
 
         if (this.page != null) {
             nbt.putString(PAGE_KEY, this.page);
@@ -43,20 +43,20 @@ public class LoreBookBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        String stored = nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE) ? nbt.getString(PAGE_KEY) : null;
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        String stored = nbt.contains(PAGE_KEY, Tag.TAG_STRING) ? nbt.getString(PAGE_KEY) : null;
         this.page = Chronicle.isValidId(stored) ? stored : null;
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return this.createNbt();
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 }

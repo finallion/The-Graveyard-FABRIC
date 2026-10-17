@@ -51,15 +51,15 @@ class AnimationPatternTest {
     private static final Pattern ZERO_BRANCH = Pattern.compile("\\?\\s*0\\s*:");
     private static final Pattern DEATH_REMOVAL = Pattern.compile("deathTime\\s*(?:==|>=)\\s*(\\w+)");
     private static final Pattern SOUND_METHOD = Pattern.compile("\\w*Sound|\\w*AnimationSound\\w*");
-    private static final Pattern FORBIDDEN_STATE_SOURCE = Pattern.compile("\\bisAttacking\\(\\)|\\bgetNavigation\\(\\)\\s*\\.\\s*isIdle\\(\\)");
+    private static final Pattern FORBIDDEN_STATE_SOURCE = Pattern.compile("\\bisAggressive\\(\\)|\\bgetNavigation\\(\\)\\s*\\.\\s*isDone\\(\\)");
 
     /// Each entry gives the reason that the state source is safe.
     private static final Map<String, String> STATE_SOURCE_ALLOWED = Map.of(
-            "GhoulingEntity.when:isAttacking",
+            "GhoulingEntity.when:isAggressive",
             "The ghouling melee goal never pauses on an idle path, so the flag does not flicker.",
-            "TormentedVillagerEntity.getAmbientSound:isIdle",
+            "TormentedVillagerEntity.getAmbientSound:isDone",
             "The server picks the ambient sound once per trigger. No clip follows it.",
-            "GhoulEntity.NAVIGATING:isIdle",
+            "GhoulEntity.NAVIGATING:isDone",
             "The table ORs the flag with limb swing. A path restart cannot drop the walk clip while the limbs still swing.");
 
     private static final Map<String, Set<String>> UNRESET_CHANNELS_ALLOWED = Map.of(
@@ -292,7 +292,7 @@ class AnimationPatternTest {
         scopes.forEach((scope, text) -> {
             Matcher m = FORBIDDEN_STATE_SOURCE.matcher(text);
             while (m.find()) {
-                String token = m.group().contains("isIdle") ? "isIdle" : "isAttacking";
+                String token = m.group().contains("isDone") ? "isDone" : "isAggressive";
                 String scopeName = scope.startsWith("when#") ? "when" : scope;
 
                 if (!STATE_SOURCE_ALLOWED.containsKey(owner + "." + scopeName + ":" + token)) {
@@ -319,7 +319,7 @@ class AnimationPatternTest {
         }
         Set<String> read = JavaText.identifiers(tables.toString());
         List<String> problems = new ArrayList<>();
-        for (String args : JavaText.callArguments(code, "dataTracker.set(")) {
+        for (String args : JavaText.callArguments(code, "entityData.set(")) {
             List<String> parts = JavaText.splitTopLevel(args, ',');
             String tracked = parts.get(0).trim();
             Matcher source = FORBIDDEN_STATE_SOURCE.matcher(String.join(",", parts.subList(1, parts.size())));
@@ -328,7 +328,7 @@ class AnimationPatternTest {
                 continue;
             }
 
-            String token = source.group().contains("isIdle") ? "isIdle" : "isAttacking";
+            String token = source.group().contains("isDone") ? "isDone" : "isAggressive";
 
             if (!STATE_SOURCE_ALLOWED.containsKey(owner + "." + tracked + ":" + token)) {
                 problems.add(owner + " copies " + token + "() into " + tracked + " and a table reads it");
@@ -345,10 +345,10 @@ class AnimationPatternTest {
 
     @Test
     void launderingCheckCatchesCopiedStateSources() {
-        String washed = "class E { void tick() { this.dataTracker.set(NAV, !getNavigation().isIdle()); } void c() { x.when(() -> dataTracker.get(NAV), A); } }";
-        String viaGetter = "class E { void tick() { dataTracker.set(HIT, isAttacking()); } boolean hit() { return dataTracker.get(HIT); } void c() { x.when(this::hit, A); } }";
-        String unread = "class E { void tick() { dataTracker.set(NAV, !getNavigation().isIdle()); } void c() { x.when(() -> other, A); } }";
-        String stable = "class E { void tick() { dataTracker.set(NAV, limbSwing > 0.1F); } void c() { x.when(() -> dataTracker.get(NAV), A); } }";
+        String washed = "class E { void tick() { this.entityData.set(NAV, !getNavigation().isDone()); } void c() { x.when(() -> entityData.get(NAV), A); } }";
+        String viaGetter = "class E { void tick() { entityData.set(HIT, isAggressive()); } boolean hit() { return entityData.get(HIT); } void c() { x.when(this::hit, A); } }";
+        String unread = "class E { void tick() { entityData.set(NAV, !getNavigation().isDone()); } void c() { x.when(() -> other, A); } }";
+        String stable = "class E { void tick() { entityData.set(NAV, limbSwing > 0.1F); } void c() { x.when(() -> entityData.get(NAV), A); } }";
         assertEquals(1, launderedStateProblems("Canary", washed).size());
         assertEquals(1, launderedStateProblems("Canary", viaGetter).size());
         assertEquals(List.of(), launderedStateProblems("Canary", unread));
@@ -383,15 +383,15 @@ class AnimationPatternTest {
 
     @Test
     void stateSourceCheckCatchesBadReads() {
-        String table = "x.when(() -> isAttacking() && c, A).stopWhen(() -> getNavigation().isIdle())";
+        String table = "x.when(() -> isAggressive() && c, A).stopWhen(() -> getNavigation().isDone())";
         assertEquals(2, stateSourceProblems("Canary", table, false).size());
-        String sound = "SoundEvent getAmbientSound() { return getNavigation().isIdle() ? A : B; } void playHit() { isAttacking(); }";
+        String sound = "SoundEvent getAmbientSound() { return getNavigation().isDone() ? A : B; } void playHit() { isAggressive(); }";
         assertEquals(1, stateSourceProblems("Canary", sound, false).size());
-        assertEquals(1, stateSourceProblems("Canary", "void render(M m) { if (m.isAttacking()) { } }", true).size());
+        assertEquals(1, stateSourceProblems("Canary", "void render(M m) { if (m.isAggressive()) { } }", true).size());
         assertEquals(List.of(), stateSourceProblems("Canary", ".when(() -> chasing, A)", false));
-        String viaReference = "class E { boolean running() { return isAttacking(); } void c() { x.when(this::running, A); } }";
+        String viaReference = "class E { boolean running() { return isAggressive(); } void c() { x.when(this::running, A); } }";
         assertEquals(1, stateSourceProblems("Canary", viaReference, false).size());
-        String viaCall = "class E { boolean running() { return getNavigation().isIdle(); } void c() { x.when(() -> !running(), A); } }";
+        String viaCall = "class E { boolean running() { return getNavigation().isDone(); } void c() { x.when(() -> !running(), A); } }";
         assertEquals(1, stateSourceProblems("Canary", viaCall, false).size());
     }
 
@@ -671,10 +671,10 @@ class AnimationPatternTest {
                 continue;
             }
 
-            List<String> bodies = JavaText.methods(code).get("updatePostDeath");
+            List<String> bodies = JavaText.methods(code).get("tickDeath");
 
             if (bodies == null) {
-                problems.add(clip.field() + ": a death clip needs an updatePostDeath override");
+                problems.add(clip.field() + ": a death clip needs a tickDeath override");
                 continue;
             }
 
@@ -724,19 +724,19 @@ class AnimationPatternTest {
         JsonObject animations = Json.parseObject("{\"animations\":{\"death\":{\"animation_length\":2.2}}}").getAsJsonObject("animations");
         String clip = "RawAnimation D = RawAnimation.begin().thenPlayAndHold(\"death\");";
         Map<String, Integer> constants = Map.of("TRANSITION_TICKS", 5);
-        assertEquals(List.of(), deathRemovalProblems(clip + "void updatePostDeath() { if (deathTime == 49) { remove(); } }", animations, constants));
-        assertEquals(1, deathRemovalProblems(clip + "void updatePostDeath() { if (deathTime == 48) { remove(); } }", animations, constants).size());
+        assertEquals(List.of(), deathRemovalProblems(clip + "void tickDeath() { if (deathTime == 49) { remove(); } }", animations, constants));
+        assertEquals(1, deathRemovalProblems(clip + "void tickDeath() { if (deathTime == 48) { remove(); } }", animations, constants).size());
         assertEquals(1, deathRemovalProblems(clip, animations, constants).size());
-        String sound = clip + "void updatePostDeath() { if (deathTime == 5) { playSound(); } if (deathTime == 49) { remove(); } }";
+        String sound = clip + "void tickDeath() { if (deathTime == 5) { playSound(); } if (deathTime == 49) { remove(); } }";
         assertEquals(List.of(), deathRemovalProblems(sound, animations, constants));
         assertEquals(List.of(), deathRemovalProblems("RawAnimation I = RawAnimation.begin().thenLoop(\"idle\");", animations, constants));
     }
 
     static List<String> deathSuperProblems(String code) {
         List<String> problems = new ArrayList<>();
-        for (String body : JavaText.methods(code).getOrDefault("updatePostDeath", List.of())) {
-            if (body.contains("super.updatePostDeath(")) {
-                problems.add("updatePostDeath calls super.updatePostDeath(), which removes the mob before the clip ends");
+        for (String body : JavaText.methods(code).getOrDefault("tickDeath", List.of())) {
+            if (body.contains("super.tickDeath(")) {
+                problems.add("tickDeath calls super.tickDeath(), which removes the mob before the clip ends");
             }
         }
         return problems;
@@ -751,8 +751,8 @@ class AnimationPatternTest {
 
     @Test
     void deathSuperCheckCatchesTheSuperCall() {
-        assertEquals(1, deathSuperProblems("void updatePostDeath() { super.updatePostDeath(); ++deathTime; }").size());
-        assertEquals(List.of(), deathSuperProblems("void updatePostDeath() { ++deathTime; }"));
+        assertEquals(1, deathSuperProblems("void tickDeath() { super.tickDeath(); ++deathTime; }").size());
+        assertEquals(List.of(), deathSuperProblems("void tickDeath() { ++deathTime; }"));
         assertEquals(List.of(), deathSuperProblems("void tick() { super.tick(); }"));
     }
 

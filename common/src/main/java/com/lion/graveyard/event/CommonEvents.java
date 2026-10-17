@@ -7,32 +7,32 @@ import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.mixin.MobEntityAccessor;
 import com.lion.graveyard.entities.CorvidEntity;
 import com.lion.graveyard.util.CrowAnchors;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.LecternBlockEntity;
-import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public final class CommonEvents {
@@ -41,56 +41,56 @@ public final class CommonEvents {
     }
 
     public static void onEntityLoad(Entity entity) {
-        if (entity.getWorld().isClient) {
+        if (entity.level().isClientSide) {
             return;
         }
 
-        if (entity instanceof VillagerEntity villager) {
+        if (entity instanceof Villager villager) {
             addFleeGoal(villager, 0.7D, 1.0D);
-        } else if (entity instanceof WanderingTraderEntity trader) {
+        } else if (entity instanceof WanderingTrader trader) {
             addFleeGoal(trader, 0.5D, 0.5D);
-        } else if (entity instanceof ItemEntity item && item.getStack().getItem() instanceof BoneStaffItem
-                && item.getStack().hasNbt() && item.getStack().getNbt().contains("StoredGhouling")) {
-            item.setNeverDespawn();
+        } else if (entity instanceof ItemEntity item && item.getItem().getItem() instanceof BoneStaffItem
+                && item.getItem().hasTag() && item.getItem().getTag().contains("StoredGhouling")) {
+            item.setUnlimitedLifetime();
             item.setInvulnerable(true);
         }
     }
 
-    private static void addFleeGoal(MerchantEntity merchant, double slowSpeed, double fastSpeed) {
+    private static void addFleeGoal(AbstractVillager merchant, double slowSpeed, double fastSpeed) {
         GoalSelector goals = ((MobEntityAccessor) merchant).graveyard$getGoalSelector();
         // The same entity instance loads again when its chunk becomes tracked again.
-        if (goals.getGoals().stream()
+        if (goals.getAvailableGoals().stream()
                 .noneMatch(goal -> goal.getGoal() instanceof FleeGraveyardMobsGoal)) {
-            goals.add(1, new FleeGraveyardMobsGoal(merchant, slowSpeed, fastSpeed));
+            goals.addGoal(1, new FleeGraveyardMobsGoal(merchant, slowSpeed, fastSpeed));
         }
     }
 
     public static void onDeath(LivingEntity entity) {
-        if (entity instanceof MobEntity && !(entity instanceof CorvidEntity)) {
-            CrowAnchors.recordDeath(entity.getWorld(), entity.getBlockPos());
+        if (entity instanceof Mob && !(entity instanceof CorvidEntity)) {
+            CrowAnchors.recordDeath(entity.level(), entity.blockPosition());
         }
     }
 
-    public static void onUseItem(PlayerEntity user, Hand hand) {
-        if (user instanceof ServerPlayerEntity player && !player.isSpectator()) {
-            findPage(player, player.getStackInHand(hand));
+    public static void onUseItem(Player user, InteractionHand hand) {
+        if (user instanceof ServerPlayer player && !player.isSpectator()) {
+            findPage(player, player.getItemInHand(hand));
         }
     }
 
     /// A lectern book is read without a use in the hand. Opening the lectern marks its page as found.
-    public static void onUseBlock(PlayerEntity user, World world, BlockPos pos) {
-        if (user instanceof ServerPlayerEntity player && usesBlock(player)
+    public static void onUseBlock(Player user, Level world, BlockPos pos) {
+        if (user instanceof ServerPlayer player && usesBlock(player)
                 && world.getBlockEntity(pos) instanceof LecternBlockEntity lectern && lectern.hasBook()) {
             findPage(player, lectern.getBook());
         }
     }
 
-    private static boolean usesBlock(PlayerEntity player) {
-        boolean holdsItem = !player.getMainHandStack().isEmpty() || !player.getOffHandStack().isEmpty();
-        return player.isSpectator() || !(player.shouldCancelInteraction() && holdsItem);
+    private static boolean usesBlock(Player player) {
+        boolean holdsItem = !player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty();
+        return player.isSpectator() || !(player.isSecondaryUseActive() && holdsItem);
     }
 
-    private static void findPage(ServerPlayerEntity player, ItemStack book) {
+    private static void findPage(ServerPlayer player, ItemStack book) {
         String page = Chronicle.pageOf(book);
 
         if (page != null) {
@@ -104,37 +104,37 @@ public final class CommonEvents {
     }
 
     /// Strips axes on loaders without a tool-modification event.
-    public static ActionResult stripSmolderingPillar(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
+    public static InteractionResult stripSmolderingPillar(Player player, Level world, InteractionHand hand, BlockHitResult hit) {
         BlockPos pos = hit.getBlockPos();
-        ItemStack stack = player.getStackInHand(hand);
+        ItemStack stack = player.getItemInHand(hand);
         BlockState stripped = smolderingStrippedState(world.getBlockState(pos));
 
         if (stripped == null || !(stack.getItem() instanceof AxeItem) || player.isSpectator() || shieldTakesPriority(player, hand) || !mayModify(player, world, pos, stack)) {
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
 
-        world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-        if (!world.isClient) {
-            world.setBlockState(pos, stripped, 11);
-            world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(player, stripped));
+        if (!world.isClientSide) {
+            world.setBlock(pos, stripped, 11);
+            world.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, stripped));
 
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                Criteria.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+            if (player instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
             }
 
-            stack.damage(1, player, user -> user.sendToolBreakStatus(hand));
+            stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
         }
 
-        return ActionResult.success(world.isClient);
+        return InteractionResult.sidedSuccess(world.isClientSide);
     }
 
-    private static boolean shieldTakesPriority(PlayerEntity player, Hand hand) {
-        return hand == Hand.MAIN_HAND && player.getOffHandStack().isOf(Items.SHIELD) && !player.shouldCancelInteraction();
+    private static boolean shieldTakesPriority(Player player, InteractionHand hand) {
+        return hand == InteractionHand.MAIN_HAND && player.getOffhandItem().is(Items.SHIELD) && !player.isSecondaryUseActive();
     }
 
-    private static boolean mayModify(PlayerEntity player, World world, BlockPos pos, ItemStack stack) {
-        return player.getAbilities().allowModifyWorld
-                || stack.canPlaceOn(world.getRegistryManager().get(RegistryKeys.BLOCK), new CachedBlockPosition(world, pos, false));
+    private static boolean mayModify(Player player, Level world, BlockPos pos, ItemStack stack) {
+        return player.getAbilities().mayBuild
+                || stack.hasAdventureModePlaceTagForBlock(world.registryAccess().registryOrThrow(Registries.BLOCK), new BlockInWorld(world, pos, false));
     }
 }

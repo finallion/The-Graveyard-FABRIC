@@ -3,11 +3,11 @@ package com.lion.graveyard.entities.ai.goals;
 import com.lion.graveyard.entities.CrowEntity;
 import com.lion.graveyard.util.CrowAnchors;
 import com.lion.graveyard.util.Scarecrows;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /// Searches around a perched flock member, so the flock lands in one place.
 public class SettleGoal extends FlyOntoPerchGoal {
@@ -22,46 +22,46 @@ public class SettleGoal extends FlyOntoPerchGoal {
     }
 
     @Override
-    public boolean canStart() {
-        return !this.crow.isAlarmed() && super.canStart();
+    public boolean canUse() {
+        return !this.crow.isAlarmed() && super.canUse();
     }
 
     @Override
-    protected Vec3d getSearchCenter() {
+    protected Vec3 getSearchCenter() {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
 
         if (anchor != null && anchor.kind() == CrowAnchors.Kind.DEATH
-                && anchor.pos().getSquaredDistance(this.crow.getBlockPos()) <= DEATH_ANCHOR_RANGE_SQ) {
-            return Vec3d.ofCenter(anchor.pos());
+                && anchor.pos().distSqr(this.crow.blockPosition()) <= DEATH_ANCHOR_RANGE_SQ) {
+            return Vec3.atCenterOf(anchor.pos());
         }
 
         CrowEntity head = this.crow.getFlockHead();
-        return head != this.crow && head.isPerched() ? head.getPos() : super.getSearchCenter();
+        return head != this.crow && head.isPerched() ? head.position() : super.getSearchCenter();
     }
 
     @Override
-    protected boolean canPerchOn(World world, BlockPos pos) {
+    protected boolean canPerchOn(Level world, BlockPos pos) {
         return super.canPerchOn(world, pos) || this.isNearDeathSite(world, pos);
     }
 
     @Override
-    protected boolean isRepelled(World world, BlockPos pos) {
+    protected boolean isRepelled(Level world, BlockPos pos) {
         return Scarecrows.isNear(world, pos, Scarecrows.RADIUS);
     }
 
     @Override
     protected int scorePerch(BlockState ground, BlockPos pos) {
-        return Math.max(super.scorePerch(ground, pos), this.isNearDeathSite(this.crow.getWorld(), pos) ? 2 : 0);
+        return Math.max(super.scorePerch(ground, pos), this.isNearDeathSite(this.crow.level(), pos) ? 2 : 0);
     }
 
-    private boolean isNearDeathSite(World world, BlockPos pos) {
+    private boolean isNearDeathSite(Level world, BlockPos pos) {
         CrowAnchors.Anchor anchor = this.crow.getAnchor();
 
         if (anchor == null || anchor.kind() != CrowAnchors.Kind.DEATH
-                || anchor.pos().getSquaredDistance(pos) > DEATH_LANDING_RANGE_SQ) {
+                || anchor.pos().distSqr(pos) > DEATH_LANDING_RANGE_SQ) {
             return false;
         }
 
-        return world.getBlockState(pos).isSideSolidFullSquare(world, pos, Direction.UP);
+        return world.getBlockState(pos).isFaceSturdy(world, pos, Direction.UP);
     }
 }

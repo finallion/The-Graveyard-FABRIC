@@ -4,7 +4,7 @@ import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.world.processors.RemoveWaterloggedCryptProcessor;
 import com.lion.graveyard.world.processors.RemoveWaterloggedProcessor;
 import com.lion.graveyard.world.processors.SwitchSpawnerProcessor;
-import net.minecraft.structure.processor.StructureProcessorType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 
 
 public class TGProcessors {

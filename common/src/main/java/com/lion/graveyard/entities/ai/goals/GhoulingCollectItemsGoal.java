@@ -1,10 +1,9 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.GhoulingEntity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.ai.goal.Goal;
-
 import java.util.EnumSet;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.item.ItemEntity;
 
 public class GhoulingCollectItemsGoal extends Goal {
     private static final double COLLECT_RANGE = 1.5D;
@@ -18,26 +17,26 @@ public class GhoulingCollectItemsGoal extends Goal {
     public GhoulingCollectItemsGoal(GhoulingEntity mob, double speed) {
         this.mob = mob;
         this.speed = speed;
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     public void collect(ItemEntity item) {
         this.item = item;
-        this.orderedAge = mob.age;
+        this.orderedAge = mob.tickCount;
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         return isValid();
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return isValid();
     }
 
     private boolean isValid() {
-        return item != null && item.isAlive() && mob.age - orderedAge < MAX_TICKS && mob.hasCoffin() && !mob.isCoffinFull()
+        return item != null && item.isAlive() && mob.tickCount - orderedAge < MAX_TICKS && mob.hasCoffin() && !mob.isCoffinFull()
                 && mob.getTarget() == null && !mob.isSitting();
     }
 
@@ -49,17 +48,17 @@ public class GhoulingCollectItemsGoal extends Goal {
 
     @Override
     public void tick() {
-        if (mob.squaredDistanceTo(item) > COLLECT_RANGE * COLLECT_RANGE) {
-            mob.getNavigation().startMovingTo(item, speed);
+        if (mob.distanceToSqr(item) > COLLECT_RANGE * COLLECT_RANGE) {
+            mob.getNavigation().moveTo(item, speed);
             return;
         }
 
-        if (item.cannotPickup()) {
+        if (item.hasPickUpDelay()) {
             return;
         }
 
-        var nearby = mob.getWorld().getEntitiesByClass(ItemEntity.class, item.getBoundingBox().expand(COLLECT_RANGE),
-                other -> !other.cannotPickup() && other.squaredDistanceTo(mob) <= COLLECT_RANGE * COLLECT_RANGE * 4);
+        var nearby = mob.level().getEntitiesOfClass(ItemEntity.class, item.getBoundingBox().inflate(COLLECT_RANGE),
+                other -> !other.hasPickUpDelay() && other.distanceToSqr(mob) <= COLLECT_RANGE * COLLECT_RANGE * 4);
         mob.storeInCoffin(item);
         for (ItemEntity other : nearby) {
             if (other != item) {

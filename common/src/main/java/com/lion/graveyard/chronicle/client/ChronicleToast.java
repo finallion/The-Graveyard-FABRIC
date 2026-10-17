@@ -4,35 +4,35 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 /// The small "page found" notice, drawn on the vanilla advancement-toast frame.
 @Environment(EnvType.CLIENT)
 public class ChronicleToast implements Toast {
-    private static final Identifier TEXTURE = new Identifier("textures/gui/toasts.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/toasts.png");
     private static final long DURATION = 5000L;
 
-    private final Text title;
-    private final Text description;
+    private final Component title;
+    private final Component description;
     private final ItemStack icon;
 
     public ChronicleToast(String page) {
-        this.title = Text.translatable("chronicle." + Graveyard.MOD_ID + ".toast");
-        this.description = Text.translatable("chronicle." + Graveyard.MOD_ID + ".page." + page + ".title");
+        this.title = Component.translatable("chronicle." + Graveyard.MOD_ID + ".toast");
+        this.description = Component.translatable("chronicle." + Graveyard.MOD_ID + ".page." + page + ".title");
         this.icon = new ItemStack(TGItems.DIARY_PAGE.get());
     }
 
     @Override
-    public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
-        context.drawTexture(TEXTURE, 0, 0, 0, 0, this.getWidth(), this.getHeight());
-        context.drawText(manager.getClient().textRenderer, this.title, 30, 7, 0xFF500050, false);
-        context.drawText(manager.getClient().textRenderer, this.description, 30, 18, 0xFF000000, false);
-        context.drawItem(this.icon, 8, 8);
+    public Visibility render(GuiGraphics context, ToastComponent manager, long startTime) {
+        context.blit(TEXTURE, 0, 0, 0, 0, this.width(), this.height());
+        context.drawString(manager.getMinecraft().font, this.title, 30, 7, 0xFF500050, false);
+        context.drawString(manager.getMinecraft().font, this.description, 30, 18, 0xFF000000, false);
+        context.renderItem(this.icon, 8, 8);
         return startTime >= DURATION ? Visibility.HIDE : Visibility.SHOW;
     }
 }

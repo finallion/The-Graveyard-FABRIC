@@ -1,8 +1,8 @@
 package com.lion.graveyard.blockentities.enums;
 
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
-public enum SarcophagusPart implements StringIdentifiable {
+public enum SarcophagusPart implements StringRepresentable {
     HEAD("head"),
     FOOT("foot");
 
@@ -16,7 +16,7 @@ public enum SarcophagusPart implements StringIdentifiable {
         return this.name;
     }
 
-    public String asString() {
+    public String getSerializedName() {
         return this.name;
     }
 }

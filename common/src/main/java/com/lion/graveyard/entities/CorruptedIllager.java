@@ -1,81 +1,95 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.ai.ChaseTarget;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.NavigationConditions;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.ai.pathing.MobNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.RavagerEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Attackable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.util.GoalUtils;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Ravager;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CorruptedIllager extends HordeGraveyardEntity {
     private static final int CHASE_END_TICKS = 20;
-    private static final TrackedData<Boolean> CHASING = DataTracker.registerData(CorruptedIllager.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> CHASING = SynchedEntityData.defineId(CorruptedIllager.class, EntityDataSerializers.BOOLEAN);
 
     private int ticksWithoutTarget;
 
-    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
+    public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(CHASING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CHASING, false);
     }
 
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(2, new PatrolApproachGoal(this, 10.0F));
-        this.goalSelector.add(3, new AttackGoal(this));
-        this.targetSelector.add(1, (new RevengeGoal(this, RaiderEntity.class)).setGroupRevenge());
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true));
-        this.goalSelector.add(8, new WanderAroundGoal(this, this.getWanderSpeed()));
-        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-        this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new PatrolApproachGoal(this, 10.0F));
+        this.goalSelector.addGoal(3, new AttackGoal(this));
+        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, Raider.class)).setAlertOthers());
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.goalSelector.addGoal(8, new RandomStrollGoal(this, this.getWanderSpeed()));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
     }
 
     protected double getWanderSpeed() {
         return 0.6D;
     }
 
-    public EntityGroup getGroup() {
-        return EntityGroup.ILLAGER;
+    public MobType getMobType() {
+        return MobType.ILLAGER;
     }
 
 
-    public boolean canTarget(LivingEntity target) {
-        return target instanceof MerchantEntity && target.isBaby() ? false : super.canTarget(target);
+    public boolean canAttack(LivingEntity target) {
+        return target instanceof AbstractVillager && target.isBaby() ? false : super.canAttack(target);
     }
 
-    protected void mobTick() {
-        if (!this.isAiDisabled() && NavigationConditions.hasMobNavigation(this)) {
-            boolean bl = ((ServerWorld)this.getEntityWorld()).hasRaidAt(this.getBlockPos());
-            ((MobNavigation)this.getNavigation()).setCanPathThroughDoors(bl);
+    protected void customServerAiStep() {
+        if (!this.isNoAi() && GoalUtils.hasGroundPathNavigation(this)) {
+            boolean bl = ((ServerLevel)this.getCommandSenderWorld()).isRaided(this.blockPosition());
+            ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(bl);
         }
 
         trackChase();
-        super.mobTick();
+        super.customServerAiStep();
     }
 
     /// The vanilla melee goal stops at each path end.
@@ -89,12 +103,12 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     public boolean isChasing() {
-        return this.dataTracker.get(CHASING);
+        return this.entityData.get(CHASING);
     }
 
     protected void setChasing(boolean chasing) {
-        if (this.dataTracker.get(CHASING) != chasing) {
-            this.dataTracker.set(CHASING, chasing);
+        if (this.entityData.get(CHASING) != chasing) {
+            this.entityData.set(CHASING, chasing);
         }
     }
 
@@ -104,13 +118,13 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
 
-    public static DefaultAttributeContainer.Builder createCorruptedIllagerAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D)
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 2.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D);
+    public static AttributeSupplier.Builder createCorruptedIllagerAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MOVEMENT_SPEED, 0.3499999940395355D)
+                .add(Attributes.FOLLOW_RANGE, 12.0D)
+                .add(Attributes.MAX_HEALTH, 24.0D)
+                .add(Attributes.ARMOR, 2.0D)
+                .add(Attributes.ATTACK_DAMAGE, 5.0D);
     }
 
     public State getState() {
@@ -122,21 +136,21 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Nullable
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
-        EntityData entityData2 = super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
-        ((MobNavigation)this.getNavigation()).setCanPathThroughDoors(true);
-        Random random = world.getRandom();
-        this.initEquipment(random, difficulty);
-        this.updateEnchantments(random, difficulty);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+        SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
+        RandomSource random = world.getRandom();
+        this.populateDefaultEquipmentSlots(random, difficulty);
+        this.populateDefaultEquipmentEnchantments(random, difficulty);
         return entityData2;
     }
 
 
-    public boolean isTeammate(Entity other) {
-        if (super.isTeammate(other)) {
+    public boolean isAlliedTo(Entity other) {
+        if (super.isAlliedTo(other)) {
             return true;
-        } else if (other instanceof LivingEntity && ((LivingEntity)other).getGroup() == EntityGroup.ILLAGER) {
-            return this.getScoreboardTeam() == null && other.getScoreboardTeam() == null;
+        } else if (other instanceof LivingEntity && ((LivingEntity)other).getMobType() == MobType.ILLAGER) {
+            return this.getTeam() == null && other.getTeam() == null;
         } else {
             return false;
         }
@@ -151,12 +165,12 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
             super(illager, 1.0D, false);
         }
 
-        protected double getSquaredMaxAttackDistance(LivingEntity entity) {
-            if (this.mob.getVehicle() instanceof RavagerEntity) {
-                float f = this.mob.getVehicle().getWidth() - 0.1F;
-                return (double)(f * 2.0F * f * 2.0F + entity.getWidth());
+        protected double getAttackReachSqr(LivingEntity entity) {
+            if (this.mob.getVehicle() instanceof Ravager) {
+                float f = this.mob.getVehicle().getBbWidth() - 0.1F;
+                return (double)(f * 2.0F * f * 2.0F + entity.getBbWidth());
             } else {
-                return super.getSquaredMaxAttackDistance(entity);
+                return super.getAttackReachSqr(entity);
             }
         }
     }

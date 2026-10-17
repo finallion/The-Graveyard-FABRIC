@@ -7,20 +7,20 @@ import com.lion.graveyard.entities.ai.goals.SettleGoal;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.init.TGTags;
 import com.lion.graveyard.util.CrowAnchors;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /// The flock is not saved to NBT. It forms again after a world load.
 public class CrowEntity extends CorvidEntity {
@@ -45,7 +45,7 @@ public class CrowEntity extends CorvidEntity {
     private CrowAnchors.Anchor anchor;
     private boolean gliding;
 
-    public CrowEntity(EntityType<? extends CorvidEntity> type, World world) {
+    public CrowEntity(EntityType<? extends CorvidEntity> type, Level world) {
         super(type, world);
     }
 
@@ -60,26 +60,26 @@ public class CrowEntity extends CorvidEntity {
     }
 
     @Override
-    public int getLimitPerChunk() {
+    public int getMaxSpawnClusterSize() {
         return MAX_FLOCK;
     }
 
     @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new FlockStartleGoal(this));
-        this.goalSelector.add(2, new CircleAnchorGoal(this));
-        this.goalSelector.add(3, new JoinFlockGoal(this));
-        this.goalSelector.add(4, new SettleGoal(this, 1.0D));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new FlockStartleGoal(this));
+        this.goalSelector.addGoal(2, new CircleAnchorGoal(this));
+        this.goalSelector.addGoal(3, new JoinFlockGoal(this));
+        this.goalSelector.addGoal(4, new SettleGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.getWorld().isClient()) {
+        if (this.level().isClientSide()) {
             return;
         }
 
@@ -121,13 +121,13 @@ public class CrowEntity extends CorvidEntity {
     }
 
     public boolean isCloseToLeader() {
-        return this.hasLeader() && this.squaredDistanceTo(this.leader) <= CLOSE_TO_LEADER_SQ;
+        return this.hasLeader() && this.distanceToSqr(this.leader) <= CLOSE_TO_LEADER_SQ;
     }
 
     public void moveTowardLeader() {
         if (this.hasLeader()) {
             this.takeOff();
-            this.getNavigation().startMovingTo(this.leader, 1.0D);
+            this.getNavigation().moveTo(this.leader, 1.0D);
         }
     }
 
@@ -137,8 +137,8 @@ public class CrowEntity extends CorvidEntity {
             return;
         }
 
-        List<CrowEntity> others = this.getWorld().getEntitiesByClass(CrowEntity.class,
-                this.getBoundingBox().expand(FLOCK_SEARCH_RADIUS), other -> other != this && other.isAlive());
+        List<CrowEntity> others = this.level().getEntitiesOfClass(CrowEntity.class,
+                this.getBoundingBox().inflate(FLOCK_SEARCH_RADIUS), other -> other != this && other.isAlive());
         for (CrowEntity other : others) {
             CrowEntity head = other.getFlockHead();
 
@@ -175,12 +175,12 @@ public class CrowEntity extends CorvidEntity {
         this.playSound(TGSounds.CROW_ALARM.get(), 0.7F, 0.9F + this.getRandom().nextFloat() * 0.2F);
 
         CrowEntity head = this.getFlockHead();
-        List<CrowEntity> flock = this.getWorld().getEntitiesByClass(CrowEntity.class,
-                this.getBoundingBox().expand(ALARM_SPREAD_RADIUS),
+        List<CrowEntity> flock = this.level().getEntitiesOfClass(CrowEntity.class,
+                this.getBoundingBox().inflate(ALARM_SPREAD_RADIUS),
                 other -> other != this && other.isAlive() && other.getFlockHead() == head);
         for (CrowEntity other : flock) {
             if (other.alarm == 0 && other.alarmDelay == 0) {
-                other.alarmDelay = 1 + MathHelper.floor(this.distanceTo(other) * ALARM_TICKS_PER_BLOCK);
+                other.alarmDelay = 1 + Mth.floor(this.distanceTo(other) * ALARM_TICKS_PER_BLOCK);
             }
         }
     }
@@ -205,11 +205,11 @@ public class CrowEntity extends CorvidEntity {
         }
 
         // The entity id offset spreads the scans of different flocks over ticks.
-        if ((this.age + this.getId()) % ANCHOR_INTERVAL != 0) {
+        if ((this.tickCount + this.getId()) % ANCHOR_INTERVAL != 0) {
             return;
         }
 
-        this.anchor = CrowAnchors.find((ServerWorld) this.getWorld(), this.getBlockPos());
+        this.anchor = CrowAnchors.find((ServerLevel) this.level(), this.blockPosition());
 
         if (this.anchor == null) {
             this.circling = false;
@@ -223,7 +223,7 @@ public class CrowEntity extends CorvidEntity {
     }
 
     @Override
-    public int getMinAmbientSoundDelay() {
+    public int getAmbientSoundInterval() {
         return 300;
     }
 

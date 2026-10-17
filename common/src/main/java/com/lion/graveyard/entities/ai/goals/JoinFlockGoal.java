@@ -1,9 +1,8 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.CrowEntity;
-import net.minecraft.entity.ai.goal.Goal;
-
 import java.util.EnumSet;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 /// `FollowGroupLeaderGoal` accepts only a `SchoolingFishEntity`, so crows need their own goal.
 public class JoinFlockGoal extends Goal {
@@ -17,11 +16,11 @@ public class JoinFlockGoal extends Goal {
     public JoinFlockGoal(CrowEntity crow) {
         this.crow = crow;
         this.cooldown = crow.getRandom().nextInt(SEARCH_INTERVAL);
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         if (this.crow.isPecking()) {
             return false;
         }
@@ -40,7 +39,7 @@ public class JoinFlockGoal extends Goal {
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return this.crow.hasLeader() && !this.crow.isCloseToLeader();
     }
 

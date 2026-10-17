@@ -2,19 +2,19 @@ package com.lion.graveyard.entities;
 
 
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CorruptedVindicator extends AnimatedCorruptedIllager {
 
-    public CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, World world) {
+    public CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, Level world) {
         this(entityType, world, "corrupted_vindicator");
     }
 
-    protected CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
+    protected CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, Level world, String name) {
         super(entityType, world, name);
     }
 

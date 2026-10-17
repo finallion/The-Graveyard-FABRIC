@@ -1,13 +1,12 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.GraveyardMinionEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.TrackTargetGoal;
-
 import java.util.EnumSet;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
-public class TrackOwnerAttackerGoal extends TrackTargetGoal {
+public class TrackOwnerAttackerGoal extends TargetGoal {
     private final GraveyardMinionEntity tameable;
     private LivingEntity attacker;
     private int lastAttackedTime;
@@ -15,19 +14,19 @@ public class TrackOwnerAttackerGoal extends TrackTargetGoal {
     public TrackOwnerAttackerGoal(GraveyardMinionEntity tameable) {
         super(tameable, false);
         this.tameable = tameable;
-        this.setControls(EnumSet.of(Control.TARGET));
+        this.setFlags(EnumSet.of(Flag.TARGET));
     }
 
-    public boolean canStart() {
+    public boolean canUse() {
         if (!this.tameable.isSitting()) {
             LivingEntity livingEntity = this.tameable.getOwner();
 
             if (livingEntity == null) {
                 return false;
             } else {
-                this.attacker = livingEntity.getAttacker();
-                int i = livingEntity.getLastAttackedTime();
-                return i != this.lastAttackedTime && this.canTrack(this.attacker, TargetPredicate.DEFAULT) && this.tameable.canAttackWithOwner(this.attacker, livingEntity);
+                this.attacker = livingEntity.getLastHurtByMob();
+                int i = livingEntity.getLastHurtByMobTimestamp();
+                return i != this.lastAttackedTime && this.canAttack(this.attacker, TargetingConditions.DEFAULT) && this.tameable.canAttackWithOwner(this.attacker, livingEntity);
             }
         } else {
             return false;
@@ -40,7 +39,7 @@ public class TrackOwnerAttackerGoal extends TrackTargetGoal {
         LivingEntity livingEntity = this.tameable.getOwner();
 
         if (livingEntity != null) {
-            this.lastAttackedTime = livingEntity.getLastAttackedTime();
+            this.lastAttackedTime = livingEntity.getLastHurtByMobTimestamp();
         }
 
         super.start();

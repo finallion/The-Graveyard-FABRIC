@@ -1,28 +1,43 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Attackable;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.entity.Targeting;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
@@ -47,44 +62,44 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     protected final byte ANIMATION_SPAWN = 2;
     protected final byte ANIMATION_DEATH = 3;
     protected final byte ANIMATION_ATTACK = 4;
-    protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.BYTE);
 
-    protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);
+    protected static final EntityDataAccessor<Byte> VEX_FLAGS = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.BYTE);
     private static final int CHARGING_FLAG = 1;
     private static final int SPAWN_TICKS = 14;
     private static final int ATTACK_TICKS = 31;
     private static final int DEATH_TICKS = 25;
-    private static final TrackedData<Integer> SPAWN_TIMER = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Integer> ATTACK_TIMER = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    MobEntity owner;
+    private static final EntityDataAccessor<Integer> SPAWN_TIMER = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ATTACK_TIMER = SynchedEntityData.defineId(ReaperEntity.class, EntityDataSerializers.INT);
+    Mob owner;
     @Nullable
     private BlockPos bounds;
 
-    public ReaperEntity(EntityType<? extends ReaperEntity> entityType, World world) {
+    public ReaperEntity(EntityType<? extends ReaperEntity> entityType, Level world) {
         super(entityType, world, "reaper");
         this.moveControl = new ReaperMoveControl(this);
     }
 
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(VEX_FLAGS, (byte)0);
-        this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-        this.dataTracker.startTracking(SPAWN_TIMER, 0);
-        this.dataTracker.startTracking(ATTACK_TIMER, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(VEX_FLAGS, (byte)0);
+        this.entityData.define(ANIMATION, ANIMATION_IDLE);
+        this.entityData.define(SPAWN_TIMER, 0);
+        this.entityData.define(ATTACK_TIMER, 0);
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
 
         if (nbt.contains("BoundX")) {
             this.bounds = new BlockPos(nbt.getInt("BoundX"), nbt.getInt("BoundY"), nbt.getInt("BoundZ"));
         }
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
 
         if (this.bounds != null) {
             nbt.putInt("BoundX", this.bounds.getX());
@@ -93,75 +108,75 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(4, new ChargeTargetGoal());
-        this.goalSelector.add(8, new LookAtTargetGoal());
-        this.goalSelector.add(9, new LookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
-        this.goalSelector.add(10, new LookAtEntityGoal(this, MobEntity.class, 8.0F));
-        this.targetSelector.add(1, (new RevengeGoal(this, RaiderEntity.class)).setGroupRevenge());
-        this.targetSelector.add(2, new TrackOwnerTargetGoal(this));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(4, new ChargeTargetGoal());
+        this.goalSelector.addGoal(8, new LookAtTargetGoal());
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, Raider.class)).setAlertOthers());
+        this.targetSelector.addGoal(2, new TrackOwnerTargetGoal(this));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
+    public MobType getMobType() {
+        return MobType.UNDEAD;
     }
 
-    public void move(MovementType movementType, Vec3d movement) {
+    public void move(MoverType movementType, Vec3 movement) {
         super.move(movementType, movement);
-        this.checkBlockCollision();
+        this.checkInsideBlocks();
     }
 
     public void tick() {
-        if (!this.getEntityWorld().isClient()) {
+        if (!this.getCommandSenderWorld().isClientSide()) {
             tickDown(SPAWN_TIMER);
             tickDown(ATTACK_TIMER);
         }
 
-        this.noClip = true;
+        this.noPhysics = true;
         super.tick();
-        this.noClip = false;
+        this.noPhysics = false;
         this.setNoGravity(true);
     }
 
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
-        this.dataTracker.set(SPAWN_TIMER, SPAWN_TICKS);
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+        this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
 
-    private void tickDown(TrackedData<Integer> timer) {
-        int ticks = this.dataTracker.get(timer);
+    private void tickDown(EntityDataAccessor<Integer> timer) {
+        int ticks = this.entityData.get(timer);
 
         if (ticks > 0) {
-            this.dataTracker.set(timer, ticks - 1);
+            this.entityData.set(timer, ticks - 1);
         }
     }
 
     private boolean isSpawning() {
-        return this.dataTracker.get(SPAWN_TIMER) > 0;
+        return this.entityData.get(SPAWN_TIMER) > 0;
     }
 
     @Override
-    public boolean tryAttack(Entity target) {
-        if (!this.getEntityWorld().isClient()) {
-            this.dataTracker.set(ATTACK_TIMER, ATTACK_TICKS);
+    public boolean doHurtTarget(Entity target) {
+        if (!this.getCommandSenderWorld().isClientSide()) {
+            this.entityData.set(ATTACK_TIMER, ATTACK_TICKS);
         }
 
-        return super.tryAttack(target);
+        return super.doHurtTarget(target);
     }
 
     @Override
-    protected void updatePostDeath() {
+    protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == DEATH_TICKS && !this.getEntityWorld().isClient()) {
-            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
+        if (this.deathTime == DEATH_TICKS && !this.getCommandSenderWorld().isClientSide()) {
+            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -178,12 +193,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
     private boolean areFlagsSet(int mask) {
-        int i = (Byte)this.dataTracker.get(VEX_FLAGS);
+        int i = (Byte)this.entityData.get(VEX_FLAGS);
         return (i & mask) != 0;
     }
 
     private void setVexFlag(int mask, boolean value) {
-        int i = (Byte)this.dataTracker.get(VEX_FLAGS);
+        int i = (Byte)this.entityData.get(VEX_FLAGS);
 
         if (value) {
             i = i | mask;
@@ -191,7 +206,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             i = i & ~mask;
         }
 
-        this.dataTracker.set(VEX_FLAGS, (byte)(i & 255));
+        this.entityData.set(VEX_FLAGS, (byte)(i & 255));
     }
 
     public boolean isCharging() {
@@ -202,31 +217,31 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.setVexFlag(1, charging);
     }
 
-    public static DefaultAttributeContainer.Builder createReaperAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D);
+    public static AttributeSupplier.Builder createReaperAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
 
     public byte getAnimation() {
-        return dataTracker.get(ANIMATION);
+        return entityData.get(ANIMATION);
     }
 
     public void setAnimation(byte animation) {
-        dataTracker.set(ANIMATION, animation);
+        entityData.set(ANIMATION, animation);
     }
 
 
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<ReaperEntity>create()
                 .transitionTicks(() -> isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS)
-                .when(this::isDead, DEATH_ANIMATION)
+                .when(this::isDeadOrDying, DEATH_ANIMATION)
                 .when(this::isSpawning, SPAWN_ANIMATION)
-                .when(() -> isCharging() || this.dataTracker.get(ATTACK_TIMER) > 0, ATTACK_ANIMATION)
+                .when(() -> isCharging() || this.entityData.get(ATTACK_TIMER) > 0, ATTACK_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .startAt(SPAWN_ANIMATION, reaper -> reaper.isSpawning() && AnimationPreview.forcedAnimation(reaper) == null ? Math.max(0, SPAWN_TICKS - reaper.dataTracker.get(SPAWN_TIMER)) : 0)
+                .startAt(SPAWN_ANIMATION, reaper -> reaper.isSpawning() && AnimationPreview.forcedAnimation(reaper) == null ? Math.max(0, SPAWN_TICKS - reaper.entityData.get(SPAWN_TIMER)) : 0)
                 .build(this, "controller"));
     }
 
@@ -248,8 +263,8 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
+    public void die(DamageSource source) {
+        super.die(source);
         this.playSound(TGSounds.REAPER_DEATH.get(), 1.0F, -10.0F);
     }
 
@@ -259,25 +274,25 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
 
         public void tick() {
-            if (this.state == State.MOVE_TO) {
-                Vec3d vec3d = new Vec3d(this.targetX - ReaperEntity.this.getX(), this.targetY - ReaperEntity.this.getY(), this.targetZ - ReaperEntity.this.getZ());
+            if (this.operation == Operation.MOVE_TO) {
+                Vec3 vec3d = new Vec3(this.wantedX - ReaperEntity.this.getX(), this.wantedY - ReaperEntity.this.getY(), this.wantedZ - ReaperEntity.this.getZ());
                 double d = vec3d.length();
 
-                if (d < ReaperEntity.this.getBoundingBox().getAverageSideLength()) {
-                    this.state = State.WAIT;
-                    ReaperEntity.this.setVelocity(ReaperEntity.this.getVelocity().multiply(0.5D));
+                if (d < ReaperEntity.this.getBoundingBox().getSize()) {
+                    this.operation = Operation.WAIT;
+                    ReaperEntity.this.setDeltaMovement(ReaperEntity.this.getDeltaMovement().scale(0.5D));
                 } else {
-                    ReaperEntity.this.setVelocity(ReaperEntity.this.getVelocity().add(vec3d.multiply(this.speed * 0.05D / d)));
+                    ReaperEntity.this.setDeltaMovement(ReaperEntity.this.getDeltaMovement().add(vec3d.scale(this.speedModifier * 0.05D / d)));
 
                     if (ReaperEntity.this.getTarget() == null) {
-                        Vec3d vec3d2 = ReaperEntity.this.getVelocity();
-                        ReaperEntity.this.setYaw(-((float)MathHelper.atan2(vec3d2.x, vec3d2.z)) * 57.295776F);
-                        ReaperEntity.this.bodyYaw = ReaperEntity.this.getYaw();
+                        Vec3 vec3d2 = ReaperEntity.this.getDeltaMovement();
+                        ReaperEntity.this.setYRot(-((float)Mth.atan2(vec3d2.x, vec3d2.z)) * 57.295776F);
+                        ReaperEntity.this.yBodyRot = ReaperEntity.this.getYRot();
                     } else {
                         double e = ReaperEntity.this.getTarget().getX() - ReaperEntity.this.getX();
                         double f = ReaperEntity.this.getTarget().getZ() - ReaperEntity.this.getZ();
-                        ReaperEntity.this.setYaw(-((float)MathHelper.atan2(e, f)) * 57.295776F);
-                        ReaperEntity.this.bodyYaw = ReaperEntity.this.getYaw();
+                        ReaperEntity.this.setYRot(-((float)Mth.atan2(e, f)) * 57.295776F);
+                        ReaperEntity.this.yBodyRot = ReaperEntity.this.getYRot();
                     }
                 }
 
@@ -287,25 +302,25 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     class ChargeTargetGoal extends Goal {
         public ChargeTargetGoal() {
-            this.setControls(EnumSet.of(Control.MOVE));
+            this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
-        public boolean canStart() {
-            if (ReaperEntity.this.getTarget() != null && !ReaperEntity.this.getMoveControl().isMoving() && ReaperEntity.this.random.nextInt(7) == 0) {
-                return ReaperEntity.this.squaredDistanceTo(ReaperEntity.this.getTarget()) > 4.0D;
+        public boolean canUse() {
+            if (ReaperEntity.this.getTarget() != null && !ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.random.nextInt(7) == 0) {
+                return ReaperEntity.this.distanceToSqr(ReaperEntity.this.getTarget()) > 4.0D;
             } else {
                 return false;
             }
         }
 
-        public boolean shouldContinue() {
-            return ReaperEntity.this.getMoveControl().isMoving() && ReaperEntity.this.isCharging() && ReaperEntity.this.getTarget() != null && ReaperEntity.this.getTarget().isAlive();
+        public boolean canContinueToUse() {
+            return ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.isCharging() && ReaperEntity.this.getTarget() != null && ReaperEntity.this.getTarget().isAlive();
         }
 
         public void start() {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
-            Vec3d vec3d = livingEntity.getEyePos();
-            ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
+            Vec3 vec3d = livingEntity.getEyePosition();
+            ReaperEntity.this.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 1.0D);
             ReaperEntity.this.setCharging(true);
             ReaperEntity.this.playSound(TGSounds.REAPER_CHARGE.get(), 1.0F, -10.0F);
         }
@@ -318,14 +333,14 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
 
             if (ReaperEntity.this.getBoundingBox().intersects(livingEntity.getBoundingBox())) {
-                ReaperEntity.this.tryAttack(livingEntity);
+                ReaperEntity.this.doHurtTarget(livingEntity);
                 ReaperEntity.this.setCharging(false);
             } else {
-                double d = ReaperEntity.this.squaredDistanceTo(livingEntity);
+                double d = ReaperEntity.this.distanceToSqr(livingEntity);
 
                 if (d < 9.0D) {
-                    Vec3d vec3d = livingEntity.getEyePos();
-                    ReaperEntity.this.moveControl.moveTo(vec3d.x, vec3d.y, vec3d.z, 1.0D);
+                    Vec3 vec3d = livingEntity.getEyePosition();
+                    ReaperEntity.this.moveControl.setWantedPosition(vec3d.x, vec3d.y, vec3d.z, 1.0D);
                 }
             }
 
@@ -334,14 +349,14 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     private class LookAtTargetGoal extends Goal {
         public LookAtTargetGoal() {
-            this.setControls(EnumSet.of(Control.MOVE));
+            this.setFlags(EnumSet.of(Flag.MOVE));
         }
 
-        public boolean canStart() {
-            return !ReaperEntity.this.getMoveControl().isMoving() && ReaperEntity.this.random.nextInt(7) == 0;
+        public boolean canUse() {
+            return !ReaperEntity.this.getMoveControl().hasWanted() && ReaperEntity.this.random.nextInt(7) == 0;
         }
 
-        public boolean shouldContinue() {
+        public boolean canContinueToUse() {
             return false;
         }
 
@@ -349,17 +364,17 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             BlockPos blockPos = ReaperEntity.this.getBounds();
 
             if (blockPos == null) {
-                blockPos = ReaperEntity.this.getBlockPos();
+                blockPos = ReaperEntity.this.blockPosition();
             }
 
             for(int i = 0; i < 3; ++i) {
-                BlockPos blockPos2 = blockPos.add(ReaperEntity.this.random.nextInt(15) - 7, ReaperEntity.this.random.nextInt(11) - 5, ReaperEntity.this.random.nextInt(15) - 7);
+                BlockPos blockPos2 = blockPos.offset(ReaperEntity.this.random.nextInt(15) - 7, ReaperEntity.this.random.nextInt(11) - 5, ReaperEntity.this.random.nextInt(15) - 7);
 
-                if (ReaperEntity.this.getEntityWorld().isAir(blockPos2)) {
-                    ReaperEntity.this.moveControl.moveTo((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 0.25D);
+                if (ReaperEntity.this.getCommandSenderWorld().isEmptyBlock(blockPos2)) {
+                    ReaperEntity.this.moveControl.setWantedPosition((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 0.25D);
 
                     if (ReaperEntity.this.getTarget() == null) {
-                        ReaperEntity.this.getLookControl().lookAt((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 180.0F, 20.0F);
+                        ReaperEntity.this.getLookControl().setLookAt((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 180.0F, 20.0F);
                     }
 
                     break;
@@ -369,15 +384,15 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-    class TrackOwnerTargetGoal extends TrackTargetGoal {
-        private final TargetPredicate TRACK_OWNER_PREDICATE = TargetPredicate.createNonAttackable().ignoreVisibility().ignoreDistanceScalingFactor();
+    class TrackOwnerTargetGoal extends TargetGoal {
+        private final TargetingConditions TRACK_OWNER_PREDICATE = TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
 
-        public TrackOwnerTargetGoal(PathAwareEntity mob) {
+        public TrackOwnerTargetGoal(PathfinderMob mob) {
             super(mob, false);
         }
 
-        public boolean canStart() {
-            return ReaperEntity.this.owner != null && ReaperEntity.this.owner.getTarget() != null && this.canTrack(ReaperEntity.this.owner.getTarget(), this.TRACK_OWNER_PREDICATE);
+        public boolean canUse() {
+            return ReaperEntity.this.owner != null && ReaperEntity.this.owner.getTarget() != null && this.canAttack(ReaperEntity.this.owner.getTarget(), this.TRACK_OWNER_PREDICATE);
         }
 
         public void start() {

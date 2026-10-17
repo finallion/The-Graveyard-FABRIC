@@ -1,25 +1,24 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-
 import java.util.function.Supplier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class TGDeepslateBlock extends PillarBlock {
+public class TGDeepslateBlock extends RotatedPillarBlock {
 
     private final Supplier<Block> clickedBlock;
 
-    public TGDeepslateBlock(Supplier<Block> clickedBlock, Settings settings) {
+    public TGDeepslateBlock(Supplier<Block> clickedBlock, Properties settings) {
         super(settings);
         this.clickedBlock = clickedBlock;
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         return new ItemStack(clickedBlock.get());
     }
 }

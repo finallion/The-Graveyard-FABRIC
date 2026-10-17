@@ -1,14 +1,6 @@
 package com.lion.graveyard.util;
 
 import com.lion.graveyard.init.TGTags;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -16,6 +8,14 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 public final class CrowAnchors {
 
@@ -30,25 +30,25 @@ public final class CrowAnchors {
     private static final int DEATH_SEARCH_RADIUS_SQ = 48 * 48;
 
     /// Server thread only. The map is not thread-safe.
-    private static final Map<RegistryKey<World>, Deque<DeathSite>> DEATH_SITES = new HashMap<>();
+    private static final Map<ResourceKey<Level>, Deque<DeathSite>> DEATH_SITES = new HashMap<>();
 
     private CrowAnchors() {
     }
 
-    public static void recordDeath(World world, BlockPos pos) {
-        if (world.isClient()) {
+    public static void recordDeath(Level world, BlockPos pos) {
+        if (world.isClientSide()) {
             return;
         }
 
-        Deque<DeathSite> sites = DEATH_SITES.computeIfAbsent(world.getRegistryKey(), key -> new ArrayDeque<>());
-        sites.addLast(new DeathSite(pos.toImmutable(), world.getTime() + DEATH_MEMORY_TICKS));
+        Deque<DeathSite> sites = DEATH_SITES.computeIfAbsent(world.dimension(), key -> new ArrayDeque<>());
+        sites.addLast(new DeathSite(pos.immutable(), world.getGameTime() + DEATH_MEMORY_TICKS));
         while (sites.size() > MAX_DEATH_SITES) {
             sites.removeFirst();
         }
     }
 
     @Nullable
-    public static Anchor find(ServerWorld world, BlockPos origin) {
+    public static Anchor find(ServerLevel world, BlockPos origin) {
         BlockPos death = findDeathSite(world, origin);
 
         if (death != null) {
@@ -64,21 +64,21 @@ public final class CrowAnchors {
         int landmarkX = 0;
         int landmarkZ = 0;
 
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int dx = -RADIUS; dx <= RADIUS; dx += STEP) {
             for (int dz = -RADIUS; dz <= RADIUS; dz += STEP) {
                 int x = origin.getX() + dx;
                 int z = origin.getZ() + dz;
                 long distance = (long) dx * dx + (long) dz * dz;
                 // Skip unloaded chunks. A heightmap lookup loads the chunk.
-                if (!world.isChunkLoaded(x >> 4, z >> 4)) {
+                if (!world.hasChunk(x >> 4, z >> 4)) {
                     continue;
                 }
 
-                int topY = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
+                int topY = world.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
                 BlockState ground = world.getBlockState(pos.set(x, topY - 1, z));
 
-                if (ground.isOf(Blocks.FARMLAND) || ground.isIn(BlockTags.CROPS)) {
+                if (ground.is(Blocks.FARMLAND) || ground.is(BlockTags.CROPS)) {
                     fieldHits++;
 
                     if (distance < nearestField) {
@@ -86,7 +86,7 @@ public final class CrowAnchors {
                         fieldX = x;
                         fieldZ = z;
                     }
-                } else if (ground.isIn(TGTags.CROW_LANDMARKS)) {
+                } else if (ground.is(TGTags.CROW_LANDMARKS)) {
                     landmarkHits++;
 
                     if (distance < nearestLandmark) {
@@ -98,7 +98,7 @@ public final class CrowAnchors {
                     // The heightmap ignores blocks without collision, such as skeletons.
                     BlockState surface = world.getBlockState(pos.set(x, topY, z));
 
-                    if (surface.isIn(BlockTags.CROPS)) {
+                    if (surface.is(BlockTags.CROPS)) {
                         fieldHits++;
 
                         if (distance < nearestField) {
@@ -106,7 +106,7 @@ public final class CrowAnchors {
                             fieldX = x;
                             fieldZ = z;
                         }
-                    } else if (surface.isIn(TGTags.CORVID_BONES)) {
+                    } else if (surface.is(TGTags.CORVID_BONES)) {
                         landmarkHits++;
 
                         if (distance < nearestLandmark) {
@@ -131,14 +131,14 @@ public final class CrowAnchors {
     }
 
     @Nullable
-    private static BlockPos findDeathSite(ServerWorld world, BlockPos origin) {
-        Deque<DeathSite> sites = DEATH_SITES.get(world.getRegistryKey());
+    private static BlockPos findDeathSite(ServerLevel world, BlockPos origin) {
+        Deque<DeathSite> sites = DEATH_SITES.get(world.dimension());
 
         if (sites == null) {
             return null;
         }
 
-        long now = world.getTime();
+        long now = world.getGameTime();
         BlockPos closest = null;
         double closestDistance = Double.MAX_VALUE;
 
@@ -151,7 +151,7 @@ public final class CrowAnchors {
                 continue;
             }
 
-            double distance = site.pos().getSquaredDistance(origin);
+            double distance = site.pos().distSqr(origin);
 
             if (distance < DEATH_SEARCH_RADIUS_SQ && distance < closestDistance) {
                 closest = site.pos();
@@ -161,8 +161,8 @@ public final class CrowAnchors {
         return closest;
     }
 
-    private static BlockPos surface(ServerWorld world, int x, int z) {
-        return new BlockPos(x, world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z), z);
+    private static BlockPos surface(ServerLevel world, int x, int z) {
+        return new BlockPos(x, world.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), z);
     }
 
     private record DeathSite(BlockPos pos, long expiresAt) {

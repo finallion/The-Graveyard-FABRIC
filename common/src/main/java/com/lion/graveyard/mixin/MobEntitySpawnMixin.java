@@ -1,37 +1,37 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.entities.MobSpawnGate;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(MobEntity.class)
+@Mixin(Mob.class)
 public abstract class MobEntitySpawnMixin {
 
-    @Inject(method = "canSpawn(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/entity/SpawnReason;)Z", at = @At("HEAD"), cancellable = true)
-    private void graveyard$gateAutomaticSpawn(WorldAccess world, SpawnReason spawnReason, CallbackInfoReturnable<Boolean> callback) {
-        MobEntity mob = (MobEntity) (Object) this;
+    @Inject(method = "checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/MobSpawnType;)Z", at = @At("HEAD"), cancellable = true)
+    private void graveyard$gateAutomaticSpawn(LevelAccessor world, MobSpawnType spawnReason, CallbackInfoReturnable<Boolean> callback) {
+        Mob mob = (Mob) (Object) this;
 
-        if (MobSpawnGate.blocks(mob.getType(), spawnReason) || MobSpawnGate.inForbiddenBiome(world, mob.getBlockPos(), mob.getType(), spawnReason)) {
+        if (MobSpawnGate.blocks(mob.getType(), spawnReason) || MobSpawnGate.inForbiddenBiome(world, mob.blockPosition(), mob.getType(), spawnReason)) {
             callback.setReturnValue(false);
         }
     }
 
     // Structure entities and spawners with custom rules never call canSpawn.
-    @Inject(method = "initialize", at = @At("HEAD"))
-    private void graveyard$discardGatedStructureMob(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt, CallbackInfoReturnable<EntityData> callback) {
-        MobEntity mob = (MobEntity) (Object) this;
+    @Inject(method = "finalizeSpawn", at = @At("HEAD"))
+    private void graveyard$discardGatedStructureMob(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt, CallbackInfoReturnable<SpawnGroupData> callback) {
+        Mob mob = (Mob) (Object) this;
 
-        if ((spawnReason == SpawnReason.STRUCTURE || spawnReason == SpawnReason.SPAWNER) && MobSpawnGate.blocks(mob.getType(), spawnReason)) {
+        if ((spawnReason == MobSpawnType.STRUCTURE || spawnReason == MobSpawnType.SPAWNER) && MobSpawnGate.blocks(mob.getType(), spawnReason)) {
             mob.discard();
         }
     }

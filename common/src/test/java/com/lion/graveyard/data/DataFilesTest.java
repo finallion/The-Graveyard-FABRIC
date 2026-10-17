@@ -34,7 +34,7 @@ class DataFilesTest {
                 com.lion.graveyard.support.Sources.code(ModProject.JAVA.resolve("init/TGBlocks.java")));
         while (m.find()) {
             if (m.group(2).contains("dropsLike")
-                    || m.group(2).contains("dropsNothing")) {
+                    || m.group(2).contains("noLootTable")) {
                 ids.add(m.group(1));
             }
         }

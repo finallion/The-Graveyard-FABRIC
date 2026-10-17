@@ -1,62 +1,62 @@
 package com.lion.graveyard.entities;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.mob.GhastEntity;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.ServerConfigHandler;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
-public class GraveyardMinionEntity extends PathAwareEntity {
-    protected static final TrackedData<Optional<UUID>> OWNER_UUID;
-    protected static final TrackedData<Byte> TAMEABLE_FLAGS;
+public class GraveyardMinionEntity extends PathfinderMob {
+    protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID;
+    protected static final EntityDataAccessor<Byte> TAMEABLE_FLAGS;
     private boolean sitting;
 
-    public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, World world) {
+    public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, Level world) {
         super(entityType, world);
-        this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0F);
-        this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
     }
 
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(OWNER_UUID, Optional.empty());
-        this.dataTracker.startTracking(TAMEABLE_FLAGS, (byte)0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(OWNER_UUID, Optional.empty());
+        this.entityData.define(TAMEABLE_FLAGS, (byte)0);
     }
 
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
 
         if (this.getOwnerUuid() != null) {
-            nbt.putUuid("Owner", this.getOwnerUuid());
+            nbt.putUUID("Owner", this.getOwnerUuid());
         }
 
         nbt.putBoolean("Sitting", this.sitting);
     }
 
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         UUID uUID;
 
-        if (nbt.containsUuid("Owner")) {
-            uUID = nbt.getUuid("Owner");
+        if (nbt.hasUUID("Owner")) {
+            uUID = nbt.getUUID("Owner");
         } else {
             String string = nbt.getString("Owner");
-            uUID = ServerConfigHandler.getPlayerUuidByName(this.getServer(), string);
+            uUID = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
         }
 
         if (uUID != null) {
@@ -72,15 +72,15 @@ public class GraveyardMinionEntity extends PathAwareEntity {
 
     @Nullable
     public UUID getOwnerUuid() {
-        return this.dataTracker.get(OWNER_UUID).orElse(null);
+        return this.entityData.get(OWNER_UUID).orElse(null);
     }
 
     public void setOwnerUuid(@Nullable UUID uuid) {
-        this.dataTracker.set(OWNER_UUID, Optional.ofNullable(uuid));
+        this.entityData.set(OWNER_UUID, Optional.ofNullable(uuid));
     }
 
-    public void setOwner(PlayerEntity player) {
-        this.setOwnerUuid(player.getUuid());
+    public void setOwner(Player player) {
+        this.setOwnerUuid(player.getUUID());
     }
 
     public boolean isSitting() {
@@ -92,16 +92,16 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     public boolean isInSittingPose() {
-        return ((Byte)this.dataTracker.get(TAMEABLE_FLAGS) & 1) != 0;
+        return ((Byte)this.entityData.get(TAMEABLE_FLAGS) & 1) != 0;
     }
 
     public void setInSittingPose(boolean inSittingPose) {
-        byte b = (Byte)this.dataTracker.get(TAMEABLE_FLAGS);
+        byte b = (Byte)this.entityData.get(TAMEABLE_FLAGS);
 
         if (inSittingPose) {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b | 1));
+            this.entityData.set(TAMEABLE_FLAGS, (byte)(b | 1));
         } else {
-            this.dataTracker.set(TAMEABLE_FLAGS, (byte)(b & -2));
+            this.entityData.set(TAMEABLE_FLAGS, (byte)(b & -2));
         }
     }
 
@@ -109,20 +109,20 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     public LivingEntity getOwner() {
         try {
             UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.getEntityWorld().getPlayerByUuid(uUID);
+            return uUID == null ? null : this.getCommandSenderWorld().getPlayerByUUID(uUID);
         } catch (IllegalArgumentException var2) {
             return null;
         }
     }
 
-    public boolean canTarget(LivingEntity target) {
-        return this.isOwner(target) || this.sharesOwner(target) ? false : super.canTarget(target);
+    public boolean canAttack(LivingEntity target) {
+        return this.isOwner(target) || this.sharesOwner(target) ? false : super.canAttack(target);
     }
 
     /// Every target path, revenge included, goes through this check.
     @Override
     public void setTarget(@Nullable LivingEntity target) {
-        super.setTarget(target != null && !this.canTarget(target) ? null : target);
+        super.setTarget(target != null && !this.canAttack(target) ? null : target);
     }
 
     private boolean sharesOwner(LivingEntity target) {
@@ -136,14 +136,14 @@ public class GraveyardMinionEntity extends PathAwareEntity {
             return owner.equals(minion.getOwnerUuid());
         }
 
-        return target instanceof TameableEntity tameable && owner.equals(tameable.getOwnerUuid());
+        return target instanceof TamableAnimal tameable && owner.equals(tameable.getOwnerUUID());
     }
 
     public boolean isOwner(LivingEntity entity) {
         return entity == this.getOwner();
     }
 
-    public boolean isTeammate(Entity other) {
+    public boolean isAlliedTo(Entity other) {
         LivingEntity livingEntity = this.getOwner();
 
         if (other == livingEntity) {
@@ -151,14 +151,14 @@ public class GraveyardMinionEntity extends PathAwareEntity {
         }
 
         if (livingEntity != null) {
-            return livingEntity.isTeammate(other);
+            return livingEntity.isAlliedTo(other);
         }
 
-        return super.isTeammate(other);
+        return super.isAlliedTo(other);
     }
 
     public boolean canAttackWithOwner(LivingEntity target, LivingEntity owner) {
-        if (!(target instanceof CreeperEntity) && !(target instanceof GhastEntity)) {
+        if (!(target instanceof Creeper) && !(target instanceof Ghast)) {
             if (target instanceof GraveyardMinionEntity) {
                 GraveyardMinionEntity minion = (GraveyardMinionEntity)target;
                 LivingEntity otherOwner = minion.getOwner();
@@ -167,14 +167,14 @@ public class GraveyardMinionEntity extends PathAwareEntity {
                     return false;
                 }
 
-                return !(otherOwner instanceof PlayerEntity otherPlayer && owner instanceof PlayerEntity ownerPlayer
-                        && (!this.getWorld().getServer().isPvpEnabled() || !ownerPlayer.shouldDamagePlayer(otherPlayer)));
-            } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && (!this.getWorld().getServer().isPvpEnabled() || !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target))) {
+                return !(otherOwner instanceof Player otherPlayer && owner instanceof Player ownerPlayer
+                        && (!this.level().getServer().isPvpAllowed() || !ownerPlayer.canHarmPlayer(otherPlayer)));
+            } else if (target instanceof Player && owner instanceof Player && (!this.level().getServer().isPvpAllowed() || !((Player)owner).canHarmPlayer((Player)target))) {
                 return false;
-            } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
+            } else if (target instanceof AbstractHorse && ((AbstractHorse)target).isTamed()) {
                 return false;
             } else {
-                return !(target instanceof TameableEntity) || !((TameableEntity)target).isTamed();
+                return !(target instanceof TamableAnimal) || !((TamableAnimal)target).isTame();
             }
         } else {
             return false;
@@ -182,8 +182,8 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     static {
-        TAMEABLE_FLAGS = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.BYTE);
-        OWNER_UUID = DataTracker.registerData(GraveyardMinionEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
+        TAMEABLE_FLAGS = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.BYTE);
+        OWNER_UUID = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     }
 
 }

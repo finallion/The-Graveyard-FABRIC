@@ -1,5 +1,6 @@
 package com.lion.graveyard.assets;
 
+import com.lion.graveyard.support.Floors;
 import com.lion.graveyard.support.JavaText;
 import com.lion.graveyard.support.ModProject;
 import com.lion.graveyard.support.Sources;
@@ -37,7 +38,7 @@ class TranslationKeyUsageTest {
     static Keys keysIn(String code) {
         List<String> exact = new ArrayList<>();
         List<String> prefixes = new ArrayList<>();
-        for (String args : JavaText.callArguments(code, "Text.translatable(")) {
+        for (String args : JavaText.callArguments(code, "Component.translatable(")) {
             String first = JavaText.splitTopLevel(args, ',').get(0).trim();
 
             if (JavaText.splitTopLevel(first, '?').size() > 1) {
@@ -122,10 +123,10 @@ class TranslationKeyUsageTest {
     @TestFactory
     Stream<DynamicTest> everyNamedTranslationKeyExistsInEnglish() {
         Map<String, String> english = LangTest.english();
-        return sourceFiles().stream()
-                .filter(file -> Sources.code(file).contains("Text.translatable("))
+        return Floors.atLeast(12, "files with translatable calls", sourceFiles().stream()
+                .filter(file -> Sources.code(file).contains("Component.translatable("))
                 .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () ->
-                        assertEquals(List.of(), missingKeys(keysIn(Sources.code(file)), english))));
+                        assertEquals(List.of(), missingKeys(keysIn(Sources.code(file)), english)))));
     }
 
     @Test
@@ -142,10 +143,10 @@ class TranslationKeyUsageTest {
     @TestFactory
     Stream<DynamicTest> everyKeyLiteralExistsInEnglish() {
         Map<String, String> english = LangTest.english();
-        return sourceFiles().stream()
+        return Floors.atLeast(5, "files with key literals", sourceFiles().stream()
                 .filter(file -> !modKeyLiterals(Sources.code(file)).exact().isEmpty() || !modKeyLiterals(Sources.code(file)).prefixes().isEmpty())
                 .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () ->
-                        assertEquals(List.of(), missingKeys(modKeyLiterals(Sources.code(file)), english))));
+                        assertEquals(List.of(), missingKeys(modKeyLiterals(Sources.code(file)), english)))));
     }
 
     @Test
@@ -161,11 +162,11 @@ class TranslationKeyUsageTest {
     @Test
     void keyCheckCatchesMissingAndDynamicKeys() {
         Map<String, String> english = Map.of("a.b", "x", "chronicle.graveyard.page.1", "y");
-        assertEquals(1, missingKeys(keysIn("Text.translatable(\"a.missing\")"), english).size());
-        assertEquals(List.of(), missingKeys(keysIn("Text.translatable(\"a.b\", 1, 2)"), english));
-        assertEquals(1, missingKeys(keysIn("Text.translatable(sit ? \"a.b\" : \"a.gone\")"), english).size());
-        assertEquals(List.of(), missingKeys(keysIn("Text.translatable(\"chronicle.\" + Graveyard.MOD_ID + \".page.\" + page)"), english));
-        assertEquals(1, missingKeys(keysIn("Text.translatable(\"nothing.\" + page)"), english).size());
-        assertEquals(List.of(), missingKeys(keysIn("Text.translatable(failure)"), english));
+        assertEquals(1, missingKeys(keysIn("Component.translatable(\"a.missing\")"), english).size());
+        assertEquals(List.of(), missingKeys(keysIn("Component.translatable(\"a.b\", 1, 2)"), english));
+        assertEquals(1, missingKeys(keysIn("Component.translatable(sit ? \"a.b\" : \"a.gone\")"), english).size());
+        assertEquals(List.of(), missingKeys(keysIn("Component.translatable(\"chronicle.\" + Graveyard.MOD_ID + \".page.\" + page)"), english));
+        assertEquals(1, missingKeys(keysIn("Component.translatable(\"nothing.\" + page)"), english).size());
+        assertEquals(List.of(), missingKeys(keysIn("Component.translatable(failure)"), english));
     }
 }

@@ -2,21 +2,21 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.CorruptedIllager;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.feature.HeadFeatureRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 
 @Environment(EnvType.CLIENT)
-public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> extends MobEntityRenderer<T, CorruptedIllagerModel<T>> {
-    protected CorruptedIllagerRenderer(EntityRendererFactory.Context ctx, CorruptedIllagerModel<T> model, float shadowRadius) {
+public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> extends MobRenderer<T, CorruptedIllagerModel<T>> {
+    protected CorruptedIllagerRenderer(EntityRendererProvider.Context ctx, CorruptedIllagerModel<T> model, float shadowRadius) {
         super(ctx, model, shadowRadius);
-        this.addFeature(new HeadFeatureRenderer(this, ctx.getModelLoader(), ctx.getHeldItemRenderer()));
+        this.addLayer(new CustomHeadLayer(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));
     }
 
-    protected void scale(T illagerEntity, MatrixStack matrixStack, float f) {
+    protected void scale(T illagerEntity, PoseStack matrixStack, float f) {
         matrixStack.scale(0.9375F, 0.9375F, 0.9375F);
     }
 }

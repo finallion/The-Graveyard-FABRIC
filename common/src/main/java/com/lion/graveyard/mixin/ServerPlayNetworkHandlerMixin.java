@@ -1,13 +1,6 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
-import net.minecraft.server.filter.FilteredMessage;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,20 +8,27 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.FilteredText;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-@Mixin(ServerPlayNetworkHandler.class)
+@Mixin(ServerGamePacketListenerImpl.class)
 public class ServerPlayNetworkHandlerMixin {
 
     @Shadow
-    public ServerPlayerEntity player;
+    public ServerPlayer player;
 
-    @Inject(method = "onSignUpdate(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;Ljava/util/List;)V", at = @At(value = "HEAD"))
-    private void signUpdate(UpdateSignC2SPacket packet, List<FilteredMessage> signText, CallbackInfo info) {
-        this.player.updateLastActionTime();
-        ServerWorld serverWorld = this.player.getServerWorld();
+    @Inject(method = "updateSignText(Lnet/minecraft/network/protocol/game/ServerboundSignUpdatePacket;Ljava/util/List;)V", at = @At(value = "HEAD"))
+    private void signUpdate(ServerboundSignUpdatePacket packet, List<FilteredText> signText, CallbackInfo info) {
+        this.player.resetLastActionTime();
+        ServerLevel serverWorld = this.player.serverLevel();
         BlockPos blockPos = packet.getPos();
 
-        if (serverWorld.isChunkLoaded(blockPos)) {
+        if (serverWorld.hasChunkAt(blockPos)) {
             BlockEntity blockEntity = serverWorld.getBlockEntity(blockPos);
 
             if (!(blockEntity instanceof GravestoneBlockEntity)) {

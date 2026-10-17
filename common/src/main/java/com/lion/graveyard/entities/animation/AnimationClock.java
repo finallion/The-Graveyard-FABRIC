@@ -1,7 +1,5 @@
 package com.lion.graveyard.entities.animation;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimationController;
@@ -9,6 +7,8 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.ToDoubleFunction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 
 /// Reports keyframe 0 of each animation start and each loop restart.
 public final class AnimationClock {
@@ -34,7 +34,7 @@ public final class AnimationClock {
 
     public static boolean isRendered(Entity entity) {
         Integer frame = LAST_FRAME.get(entity);
-        return frame != null && entity.age - frame <= RENDER_GRACE_TICKS;
+        return frame != null && entity.tickCount - frame <= RENDER_GRACE_TICKS;
     }
 
     public static void playTracked(Entity entity, @Nullable SoundEvent sound) {
@@ -90,8 +90,8 @@ public final class AnimationClock {
                 }
             }
 
-            if (this.animatable instanceof Entity entity && entity.getWorld().isClient()) {
-                LAST_FRAME.put(entity, entity.age);
+            if (this.animatable instanceof Entity entity && entity.level().isClientSide()) {
+                LAST_FRAME.put(entity, entity.tickCount);
 
                 if (reset && listener != null && getAnimationState() == State.RUNNING && getCurrentAnimation() != null) {
                     listener.keyframeZero(entity, getCurrentAnimation().animation().name(), offset);

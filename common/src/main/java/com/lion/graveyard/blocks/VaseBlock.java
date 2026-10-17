@@ -1,22 +1,27 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.*;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldView;
 
-public class VaseBlock extends Block implements Waterloggable {
-    public static final IntProperty VASES;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+public class VaseBlock extends Block implements SimpleWaterloggedBlock {
+    public static final IntegerProperty VASES;
     public static final BooleanProperty WATERLOGGED;
     private static final VoxelShape VASE_SHAPE_ONE;
     private static final VoxelShape VASE_SHAPE_TWO;
@@ -24,38 +29,38 @@ public class VaseBlock extends Block implements Waterloggable {
     private static final VoxelShape VASE_SHAPE_FOUR;
 
     public VaseBlock() {
-        super(AbstractBlock.Settings.create().breakInstantly().noCollision().nonOpaque().sounds(BlockSoundGroup.GLASS));
-        this.setDefaultState(this.stateManager.getDefaultState()
-                .with(VASES, 1)
-                .with(WATERLOGGED, false));
+        super(BlockBehaviour.Properties.of().instabreak().noCollission().noOcclusion().sound(SoundType.GLASS));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(VASES, 1)
+                .setValue(WATERLOGGED, false));
     }
 
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, VASES);
     }
 
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState blockState = ctx.getWorld().getBlockState(ctx.getBlockPos());
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        BlockState blockState = ctx.getLevel().getBlockState(ctx.getClickedPos());
 
-        if (blockState.isOf(this)) {
+        if (blockState.is(this)) {
             return (BlockState)blockState.cycle(VASES);
         } else {
-            FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-            boolean bl = fluidState.getFluid() == Fluids.WATER;
-            return (BlockState)super.getPlacementState(ctx).with(WATERLOGGED, bl);
+            FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+            boolean bl = fluidState.getType() == Fluids.WATER;
+            return (BlockState)super.getStateForPlacement(ctx).setValue(WATERLOGGED, bl);
         }
     }
 
     public FluidState getFluidState(BlockState state) {
-        return (Boolean)state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return (Boolean)state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        return !context.shouldCancelInteraction() && context.getStack().getItem() == this.asItem() && (Integer)state.get(VASES) < 4 ? true : super.canReplace(state, context);
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+        return !context.isSecondaryUseActive() && context.getItemInHand().getItem() == this.asItem() && (Integer)state.getValue(VASES) < 4 ? true : super.canBeReplaced(state, context);
     }
 
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch((Integer)state.get(VASES)) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        switch((Integer)state.getValue(VASES)) {
             case 1:
             default:
                 return VASE_SHAPE_ONE;
@@ -68,16 +73,16 @@ public class VaseBlock extends Block implements Waterloggable {
         }
     }
 
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return Block.sideCoversSmallSquare(world, pos.down(), Direction.UP);
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return Block.canSupportCenter(world, pos.below(), Direction.UP);
     }
 
     static {
-        VASES = Properties.CANDLES;
-        WATERLOGGED = Properties.WATERLOGGED;
-        VASE_SHAPE_ONE = Block.createCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 12.0D, 12.0D);
-        VASE_SHAPE_TWO = Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 15.0D, 13.0D);
-        VASE_SHAPE_THREE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        VASE_SHAPE_FOUR = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        VASES = BlockStateProperties.CANDLES;
+        WATERLOGGED = BlockStateProperties.WATERLOGGED;
+        VASE_SHAPE_ONE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 12.0D, 12.0D);
+        VASE_SHAPE_TWO = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 15.0D, 13.0D);
+        VASE_SHAPE_THREE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        VASE_SHAPE_FOUR = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     }
 }

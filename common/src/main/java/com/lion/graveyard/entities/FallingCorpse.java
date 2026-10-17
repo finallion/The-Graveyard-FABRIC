@@ -1,25 +1,25 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.util.MathUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -28,14 +28,14 @@ import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class FallingCorpse extends HostileEntity implements GeoEntity {
+public class FallingCorpse extends Monster implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation FALLING_ANIMATION = RawAnimation.begin().then("falling", Animation.LoopType.LOOP);
     private final RawAnimation LANDING_ANIMATION = RawAnimation.begin().then("landing", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private final RawAnimation DESPAWN_ANIMATION = RawAnimation.begin().then("despawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private static final TrackedData<Boolean> IS_FALLING;
-    private static final TrackedData<Boolean> HAS_COLLIDED;
-    private static final TrackedData<Boolean> SINKING;
+    private static final EntityDataAccessor<Boolean> IS_FALLING;
+    private static final EntityDataAccessor<Boolean> HAS_COLLIDED;
+    private static final EntityDataAccessor<Boolean> SINKING;
     private final float DAMAGE = 10.0F;
     private static final int LANDING_TICKS = 52;
     private static final int SINK_START_TICKS = 26;
@@ -47,17 +47,17 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     private int impactTicks = -1;
     private boolean impacted;
 
-    public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
+    public FallingCorpse(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        experiencePoints = 0;
+        xpReward = 0;
     }
 
     public float getRotation() {
-        return Math.floorMod(getUuid().hashCode(), 361);
+        return Math.floorMod(getUUID().hashCode(), 361);
     }
 
     // mobTick discards the mob, because a kill shows the red overlay.
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         if (!impacted && impactTicks < 0) {
             impactTicks = IMPACT_DELAY;
         }
@@ -65,8 +65,8 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         return false;
     }
 
-    public boolean damage(DamageSource source, float amount) {
-        if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
         }
 
@@ -74,16 +74,16 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     }
 
     @Override
-    public void onLanding() {
+    public void resetFallDistance() {
         setIsFalling(false);
-        super.onLanding();
+        super.resetFallDistance();
     }
 
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(IS_FALLING, true);
-        this.dataTracker.startTracking(HAS_COLLIDED, false);
-        this.dataTracker.startTracking(SINKING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(IS_FALLING, true);
+        this.entityData.define(HAS_COLLIDED, false);
+        this.entityData.define(SINKING, false);
     }
 
 
@@ -103,36 +103,36 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     }
 
 
-    public static DefaultAttributeContainer.Builder createFallingCorpseAttributes() {
-        return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 5.0D);
+    public static AttributeSupplier.Builder createFallingCorpseAttributes() {
+        return Monster.createMonsterAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 5.0D);
     }
 
     @Override
-    public void tickMovement() {
-        if (this.getBlockStateAtPos().isAir()) {
+    public void aiStep() {
+        if (this.getFeetBlockState().isAir()) {
             for (int i = 0; i < 10; i++) {
-                BlockPos pos = this.getBlockPos().add(0, -i, 0);
-                BlockState state = this.getEntityWorld().getBlockState(pos);
+                BlockPos pos = this.blockPosition().offset(0, -i, 0);
+                BlockState state = this.getCommandSenderWorld().getBlockState(pos);
 
-                if (!state.isAir() && state.isSolidBlock(getEntityWorld(), pos)) {
-                    MathUtil.createParticleDisk(this.getWorld(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleEffect.DEFAULT, this.getRandom());
+                if (!state.isAir() && state.isRedstoneConductor(getCommandSenderWorld(), pos)) {
+                    MathUtil.createParticleDisk(this.level(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleOptions.REDSTONE, this.getRandom());
                     break;
                 }
             }
         }
 
-        super.tickMovement();
+        super.aiStep();
     }
 
     @Override
-    protected void mobTick() {
+    protected void customServerAiStep() {
         if (levitationCounter > 0) {
             levitationCounter--;
-            this.setVelocity(this.getVelocity().add(0.0D, 0.04D, 0.0D));
+            this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.04D, 0.0D));
         } else {
-            this.setVelocity(this.getVelocity().add(0.0D, -0.04D, 0.0D));
+            this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
         }
 
         if (impactTicks > 0 && --impactTicks == 0) {
@@ -151,67 +151,67 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
             this.discard();
         }
 
-        if (!getEntityWorld().getBlockState(this.getBlockPos().down()).isAir()) {
+        if (!getCommandSenderWorld().getBlockState(this.blockPosition().below()).isAir()) {
             setIsFalling(false);
         }
 
-        if (this.getBlockStateAtPos().isAir()) {
+        if (this.getFeetBlockState().isAir()) {
             setIsFalling(true);
         }
 
-        super.mobTick();
+        super.customServerAiStep();
     }
 
     private void impact() {
         impactTicks = -1;
         impacted = true;
-        getEntityWorld().playSound(null, getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 0.8F);
-        getEntityWorld().playSound(null, getBlockPos(), SoundEvents.BLOCK_BONE_BLOCK_BREAK, SoundCategory.HOSTILE, 1.2F, 0.6F);
-        BlockState ground = getEntityWorld().getBlockState(getBlockPos().down());
+        getCommandSenderWorld().playSound(null, blockPosition(), SoundEvents.HOSTILE_BIG_FALL, SoundSource.HOSTILE, 2.0F, 0.8F);
+        getCommandSenderWorld().playSound(null, blockPosition(), SoundEvents.BONE_BLOCK_BREAK, SoundSource.HOSTILE, 1.2F, 0.6F);
+        BlockState ground = getCommandSenderWorld().getBlockState(blockPosition().below());
 
-        if (getEntityWorld() instanceof ServerWorld world && !ground.isAir()) {
-            world.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, ground), getX(), getY() + 0.1D, getZ(), 30, 0.6D, 0.05D, 0.6D, 0.15D);
+        if (getCommandSenderWorld() instanceof ServerLevel world && !ground.isAir()) {
+            world.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, ground), getX(), getY() + 0.1D, getZ(), 30, 0.6D, 0.05D, 0.6D, 0.15D);
         }
     }
 
     @Override
-    public void onPlayerCollision(PlayerEntity player) {
+    public void playerTouch(Player player) {
         if (!hasCollided() && isFalling()) {
-            player.damage(this.getDamageSources().fall(), DAMAGE);
+            player.hurt(this.damageSources().fall(), DAMAGE);
             setHasCollided(true);
         }
 
-        super.onPlayerCollision(player);
+        super.playerTouch(player);
     }
 
     public boolean isFalling() {
-        return this.dataTracker.get(IS_FALLING);
+        return this.entityData.get(IS_FALLING);
     }
 
     public void setIsFalling(boolean isFalling) {
-        this.dataTracker.set(IS_FALLING, isFalling);
+        this.entityData.set(IS_FALLING, isFalling);
     }
 
     public boolean isSinking() {
-        return this.dataTracker.get(SINKING);
+        return this.entityData.get(SINKING);
     }
 
     public void setSinking(boolean sinking) {
-        this.dataTracker.set(SINKING, sinking);
+        this.entityData.set(SINKING, sinking);
     }
 
     public boolean hasCollided() {
-        return this.dataTracker.get(HAS_COLLIDED);
+        return this.entityData.get(HAS_COLLIDED);
     }
 
     public void setHasCollided(boolean hasCollided) {
-        this.dataTracker.set(HAS_COLLIDED, hasCollided);
+        this.entityData.set(HAS_COLLIDED, hasCollided);
     }
 
     static {
-        IS_FALLING = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
-        HAS_COLLIDED = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
-        SINKING = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
+        IS_FALLING = SynchedEntityData.defineId(FallingCorpse.class, EntityDataSerializers.BOOLEAN);
+        HAS_COLLIDED = SynchedEntityData.defineId(FallingCorpse.class, EntityDataSerializers.BOOLEAN);
+        SINKING = SynchedEntityData.defineId(FallingCorpse.class, EntityDataSerializers.BOOLEAN);
     }
 
 

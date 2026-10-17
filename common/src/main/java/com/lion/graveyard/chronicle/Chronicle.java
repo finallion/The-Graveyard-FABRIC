@@ -2,20 +2,20 @@ package com.lion.graveyard.chronicle;
 
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.platform.ChronicleSync;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public final class Chronicle {
 
@@ -62,19 +62,19 @@ public final class Chronicle {
         return pages;
     }
 
-    public static boolean find(ServerPlayerEntity player, String page) {
+    public static boolean find(ServerPlayer player, String page) {
         if (!isValidId(page)) {
             return false;
         }
 
         ChronicleState state = ChronicleState.get(player.server);
-        boolean added = state.add(player.getUuid(), page);
-        ChronicleSync.send(player, state.found(player.getUuid()), added ? page : null);
+        boolean added = state.add(player.getUUID(), page);
+        ChronicleSync.send(player, state.found(player.getUUID()), added ? page : null);
 
         if (added) {
-            player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            player.playNotifySound(SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0f, 1.0f);
             TGAdvancements.FIRST_CHRONICLE_PAGE.trigger(player);
-            Set<String> pages = state.found(player.getUuid());
+            Set<String> pages = state.found(player.getUUID());
 
             if (pages.containsAll(ACT_ONE)) {
                 TGAdvancements.CHRONICLE_ACT_ONE.trigger(player);
@@ -88,24 +88,24 @@ public final class Chronicle {
         return added;
     }
 
-    public static void syncAll(ServerPlayerEntity player) {
-        ChronicleSync.send(player, ChronicleState.get(player.server).found(player.getUuid()), null);
+    public static void syncAll(ServerPlayer player) {
+        ChronicleSync.send(player, ChronicleState.get(player.server).found(player.getUUID()), null);
     }
 
     @Nullable
     public static String pageOf(ItemStack book) {
-        NbtCompound nbt = book.getNbt();
+        CompoundTag nbt = book.getTag();
 
         if (nbt == null) {
             return null;
         }
 
-        if (book.isOf(Items.WRITTEN_BOOK)) {
+        if (book.is(Items.WRITTEN_BOOK)) {
             return SIGNED_BOOKS.get(nbt.getString("title"));
         }
 
-        if (book.isOf(Items.WRITABLE_BOOK)) {
-            NbtList pages = nbt.getList("pages", NbtElement.STRING_TYPE);
+        if (book.is(Items.WRITABLE_BOOK)) {
+            ListTag pages = nbt.getList("pages", Tag.TAG_STRING);
 
             if (pages.isEmpty()) {
                 return null;

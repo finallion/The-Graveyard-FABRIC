@@ -2,32 +2,32 @@ package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGAdvancements;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 /// Shared behavior of the charred and scorched blocks that can smolder.
 /// The player lights them with fire and puts them out with a shovel or water.
 public final class SmolderingWood {
 
-    public static final BooleanProperty SMOLDERING = BooleanProperty.of("smoldering");
+    public static final BooleanProperty SMOLDERING = BooleanProperty.create("smoldering");
     public static final String ASH_CONFIG_KEY = "ashParticles";
 
     private static final int LIGHT_LEVEL = 3;
@@ -39,108 +39,108 @@ public final class SmolderingWood {
     }
 
     public static int light(BlockState state) {
-        return state.get(SMOLDERING) ? LIGHT_LEVEL : 0;
+        return state.getValue(SMOLDERING) ? LIGHT_LEVEL : 0;
     }
 
     private static boolean isFlooded(BlockState state) {
-        return state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED);
+        return state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED);
     }
 
-    public static ActionResult use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
+    public static InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
 
-        if (!player.getAbilities().allowModifyWorld) {
-            return ActionResult.PASS;
+        if (!player.getAbilities().mayBuild) {
+            return InteractionResult.PASS;
         }
 
-        boolean lit = state.get(SMOLDERING);
+        boolean lit = state.getValue(SMOLDERING);
 
-        if (!lit && !isFlooded(state) && (stack.isOf(Items.FLINT_AND_STEEL) || stack.isOf(Items.FIRE_CHARGE))) {
-            boolean charge = stack.isOf(Items.FIRE_CHARGE);
-            SoundEvent sound = charge ? SoundEvents.ITEM_FIRECHARGE_USE : SoundEvents.ITEM_FLINTANDSTEEL_USE;
-            world.playSound(player, pos, sound, SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
+        if (!lit && !isFlooded(state) && (stack.is(Items.FLINT_AND_STEEL) || stack.is(Items.FIRE_CHARGE))) {
+            boolean charge = stack.is(Items.FIRE_CHARGE);
+            SoundEvent sound = charge ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE;
+            world.playSound(player, pos, sound, SoundSource.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
 
-            if (!world.isClient) {
+            if (!world.isClientSide) {
                 setLit(world, pos, state, true);
 
-                if (player instanceof ServerPlayerEntity serverPlayer) {
+                if (player instanceof ServerPlayer serverPlayer) {
                     TGAdvancements.IGNITE_SMOLDERING.trigger(serverPlayer);
                 }
 
                 if (charge) {
                     if (!player.isCreative()) {
-                        stack.decrement(1);
+                        stack.shrink(1);
                     }
                 } else {
-                    stack.damage(1, player, user -> user.sendToolBreakStatus(hand));
+                    stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
                 }
             }
 
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        if (lit && (stack.getItem() instanceof ShovelItem || stack.isOf(Items.WATER_BUCKET))) {
-            world.playSound(player, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        if (lit && (stack.getItem() instanceof ShovelItem || stack.is(Items.WATER_BUCKET))) {
+            world.playSound(player, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-            if (world.isClient) {
+            if (world.isClientSide) {
                 for (int i = 0; i < 6; i++) {
                     world.addParticle(ParticleTypes.SMOKE, pos.getX() + world.random.nextDouble(), pos.getY() + 1.0D, pos.getZ() + world.random.nextDouble(), 0.0D, 0.05D, 0.0D);
                 }
             } else {
                 setLit(world, pos, state, false);
 
-                if (player instanceof ServerPlayerEntity serverPlayer) {
+                if (player instanceof ServerPlayer serverPlayer) {
                     TGAdvancements.EXTINGUISH_SMOLDERING.trigger(serverPlayer);
                 }
 
-                if (!stack.isOf(Items.WATER_BUCKET)) {
-                    stack.damage(1, player, user -> user.sendToolBreakStatus(hand));
+                if (!stack.is(Items.WATER_BUCKET)) {
+                    stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
                 }
             }
 
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
-    public static void setLit(World world, BlockPos pos, BlockState state, boolean lit) {
-        world.setBlockState(pos, state.with(SMOLDERING, lit));
+    public static void setLit(Level world, BlockPos pos, BlockState state, boolean lit) {
+        world.setBlockAndUpdate(pos, state.setValue(SMOLDERING, lit));
 
-        if (!state.contains(Properties.DOUBLE_BLOCK_HALF)) {
+        if (!state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
             return;
         }
 
-        BlockPos other = pos.offset(state.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN);
+        BlockPos other = pos.relative(state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN);
         BlockState otherState = world.getBlockState(other);
 
-        if (otherState.isOf(state.getBlock()) && otherState.contains(SMOLDERING)) {
-            world.setBlockState(other, otherState.with(SMOLDERING, lit));
+        if (otherState.is(state.getBlock()) && otherState.hasProperty(SMOLDERING)) {
+            world.setBlockAndUpdate(other, otherState.setValue(SMOLDERING, lit));
         }
     }
 
-    public static void extinguish(World world, BlockPos pos, Entity owner) {
+    public static void extinguish(Level world, BlockPos pos, Entity owner) {
         BlockState state = world.getBlockState(pos);
 
-        if (!state.contains(SMOLDERING) || !state.get(SMOLDERING)) {
+        if (!state.hasProperty(SMOLDERING) || !state.getValue(SMOLDERING)) {
             return;
         }
 
         setLit(world, pos, state, false);
-        world.playSound(null, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-        if (owner instanceof ServerPlayerEntity player) {
+        if (owner instanceof ServerPlayer player) {
             TGAdvancements.EXTINGUISH_SMOLDERING.trigger(player);
         }
     }
 
-    public static void displayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (!state.get(SMOLDERING) || isFlooded(state)) {
+    public static void displayTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        if (!state.getValue(SMOLDERING) || isFlooded(state)) {
             return;
         }
 
         if (random.nextInt(10) == 0) {
-            world.playSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_CAMPFIRE_CRACKLE, SoundCategory.BLOCKS, 0.5F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
+            world.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 0.5F + random.nextFloat(), random.nextFloat() * 0.7F + 0.6F, false);
         }
 
         if (random.nextInt(2) == 0) {
@@ -154,7 +154,7 @@ public final class SmolderingWood {
         ash(world, pos, random);
     }
 
-    public static void ash(World world, BlockPos pos, Random random) {
+    public static void ash(Level world, BlockPos pos, RandomSource random) {
         if (!Graveyard.getConfig().booleanEntries.getOrDefault(ASH_CONFIG_KEY, true)) {
             return;
         }

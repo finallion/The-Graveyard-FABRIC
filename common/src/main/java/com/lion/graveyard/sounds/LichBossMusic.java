@@ -2,12 +2,12 @@ package com.lion.graveyard.sounds;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.LichEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.AbstractSoundInstance;
-import net.minecraft.client.sound.TickableSoundInstance;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.AbstractSoundInstance;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 
 public class LichBossMusic extends AbstractSoundInstance implements TickableSoundInstance {
     public LichEntity boss;
@@ -15,24 +15,24 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
     private boolean done;
     public final SoundEvent soundEvent;
 
-    public LichBossMusic(SoundEvent sound, LichEntity boss, Random random) {
-        super(sound, SoundCategory.MUSIC, random);
+    public LichBossMusic(SoundEvent sound, LichEntity boss, RandomSource random) {
+        super(sound, SoundSource.MUSIC, random);
         this.boss = boss;
         this.soundEvent = sound;
-        this.attenuationType = AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = Attenuation.NONE;
+        this.looping = true;
+        this.delay = 0;
         this.volume = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").bossMusicVolume();
         this.x = boss.getX();
         this.y = boss.getY();
         this.z = boss.getZ();
     }
 
-    public boolean canPlay() {
+    public boolean canPlaySound() {
         return BossMusicPlayer.music == this;
     }
 
-    public boolean isDone() {
+    public boolean isStopped() {
         return this.done;
     }
 
@@ -53,7 +53,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         }
 
         if (ticksExisted % 100 == 0) {
-            MinecraftClient.getInstance().getMusicTracker().stop();
+            Minecraft.getInstance().getMusicManager().stopPlaying();
         }
 
         ticksExisted++;

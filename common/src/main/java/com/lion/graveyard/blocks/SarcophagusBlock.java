@@ -7,78 +7,96 @@ import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.LidOpenable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.*;
-import net.minecraft.util.*;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.properties.Property;
+
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, BlockEntityProvider {
+public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, EntityBlock {
     public static final BooleanProperty WATERLOGGED;
     public static final BooleanProperty OPEN;
     public static final BooleanProperty PLAYER_PLACED;
-    public static final BooleanProperty IS_COFFIN = BooleanProperty.of("is_coffin");
+    public static final BooleanProperty IS_COFFIN = BooleanProperty.create("is_coffin");
     public static final DirectionProperty FACING;
     protected static final VoxelShape DOUBLE_NORTH_SHAPE;
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
     protected static final VoxelShape DOUBLE_EAST_SHAPE;
-    public static final EnumProperty<SarcophagusPart> PART = EnumProperty.of("part", SarcophagusPart.class);
+    public static final EnumProperty<SarcophagusPart> PART = EnumProperty.create("part", SarcophagusPart.class);
     private final Supplier<Item> lid;
     private final Supplier<Item> base;
 
-    public SarcophagusBlock(Settings settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
+    public SarcophagusBlock(Properties settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState()
-                .with(WATERLOGGED, false)
-                .with(OPEN, false)
-                .with(PART, SarcophagusPart.FOOT)
-                .with(PLAYER_PLACED, false)
-                .with(IS_COFFIN, isCoffin));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(WATERLOGGED, false)
+                .setValue(OPEN, false)
+                .setValue(PART, SarcophagusPart.FOOT)
+                .setValue(PLAYER_PLACED, false)
+                .setValue(IS_COFFIN, isCoffin));
         this.base = base;
         this.lid = lid;
     }
 
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, OPEN, FACING, PART, PLAYER_PLACED, IS_COFFIN);
     }
 
     public FluidState getFluidState(BlockState state) {
-        return (Boolean) state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : super.getFluidState(state);
+        return (Boolean) state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (direction == getDirectionTowardsOtherPart((SarcophagusPart) state.get(PART), (Direction) state.get(FACING))) {
-            return neighborState.isOf(this) && neighborState.get(PART) != state.get(PART) ? (BlockState) state : Blocks.AIR.getDefaultState();
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == getDirectionTowardsOtherPart((SarcophagusPart) state.getValue(PART), (Direction) state.getValue(FACING))) {
+            return neighborState.is(this) && neighborState.getValue(PART) != state.getValue(PART) ? (BlockState) state : Blocks.AIR.defaultBlockState();
         } else {
-            return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+            return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
         }
     }
 
@@ -86,8 +104,8 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
         return part == SarcophagusPart.FOOT ? direction : direction.getOpposite();
     }
 
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        switch (state.get(FACING)) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        switch (state.getValue(FACING)) {
             case NORTH:
             default:
                 return DOUBLE_NORTH_SHAPE;
@@ -100,122 +118,122 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
         }
     }
 
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         Random random = new Random();
 
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
             BlockPos original = pos;
             // if part is head, offset to the blockentity of the foot
-            if (state.get(PART) == SarcophagusPart.HEAD) {
-                pos = pos.offset((Direction) state.get(FACING).getOpposite());
+            if (state.getValue(PART) == SarcophagusPart.HEAD) {
+                pos = pos.relative((Direction) state.getValue(FACING).getOpposite());
             }
 
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
             if (blockEntity instanceof SarcophagusBlockEntity) {
-                player.openHandledScreen((SarcophagusBlockEntity) blockEntity);
+                player.openMenu((SarcophagusBlockEntity) blockEntity);
             }
 
             spawnGhost(state, world, original, player, random);
 
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
-    public static void spawnGhost(BlockState state, World world, BlockPos pos, PlayerEntity player, Random random) {
-        if (!state.get(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 62) {
+    public static void spawnGhost(BlockState state, Level world, BlockPos pos, Player player, Random random) {
+        if (!state.getValue(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 62) {
             BlockPos entityPos = pos;
             for (int i = 0; i < 10; i++) { // 10 spawn attempts to find air, else just spawn
-                entityPos = player.getBlockPos().add(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+                entityPos = player.blockPosition().offset(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
 
-                if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.up()).isAir()) {
+                if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.above()).isAir()) {
                     break;
                 }
             }
             WraithEntity ghost = TGEntities.WRAITH.get().create(world);
-            ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
+            ghost.moveTo(entityPos, 0.0F, 0.0F);
             ghost.startSpawnAnimation();
-            world.spawnEntity(ghost);
-            world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
-            BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));
+            world.addFreshEntity(ghost);
+            world.setBlock(pos, state.setValue(PLAYER_PLACED, true), 3);
+            BlockPos otherPartPos = pos.relative(getDirectionTowardsOtherPart(state.getValue(PART), state.getValue(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
 
-            if (player instanceof ServerPlayerEntity) {
-                TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayerEntity) player);
+            if (player instanceof ServerPlayer) {
+                TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayer) player);
             }
 
-            world.setBlockState(otherPartPos, otherPart.with(PLAYER_PLACED, true), 3);
+            world.setBlock(otherPartPos, otherPart.setValue(PLAYER_PLACED, true), 3);
         }
     }
 
 
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        super.setPlacedBy(world, pos, state, placer, itemStack);
 
-        if (!world.isClient) {
-            BlockPos blockPos = pos.offset((Direction) state.get(FACING));
-            world.setBlockState(pos, state.with(PLAYER_PLACED, true));
-            world.setBlockState(blockPos, (BlockState) state.with(PART, SarcophagusPart.HEAD).with(PLAYER_PLACED, true), 3);
-            world.updateNeighbors(pos, Blocks.AIR);
-            state.updateNeighbors(world, pos, 3);
+        if (!world.isClientSide) {
+            BlockPos blockPos = pos.relative((Direction) state.getValue(FACING));
+            world.setBlockAndUpdate(pos, state.setValue(PLAYER_PLACED, true));
+            world.setBlock(blockPos, (BlockState) state.setValue(PART, SarcophagusPart.HEAD).setValue(PLAYER_PLACED, true), 3);
+            world.blockUpdated(pos, Blocks.AIR);
+            state.updateNeighbourShapes(world, pos, 3);
         }
 
     }
 
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return (BlockState)state.setValue(FACING, rotation.rotate((Direction)state.getValue(FACING)));
     }
 
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation((Direction)state.get(FACING)));
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation((Direction)state.getValue(FACING)));
     }
 
-    public long getRenderingSeed(BlockState state, BlockPos pos) {
-        BlockPos blockPos = pos.offset((Direction) state.get(FACING), state.get(PART) == SarcophagusPart.HEAD ? 0 : 1);
-        return MathHelper.hashCode(blockPos.getX(), pos.getY(), blockPos.getZ());
+    public long getSeed(BlockState state, BlockPos pos) {
+        BlockPos blockPos = pos.relative((Direction) state.getValue(FACING), state.getValue(PART) == SarcophagusPart.HEAD ? 0 : 1);
+        return Mth.getSeed(blockPos.getX(), pos.getY(), blockPos.getZ());
     }
 
-    public static DoubleBlockProperties.Type getSarcophagusPart(BlockState state) {
-        SarcophagusPart bedPart = (SarcophagusPart) state.get(PART);
-        return bedPart == SarcophagusPart.HEAD ? DoubleBlockProperties.Type.FIRST : DoubleBlockProperties.Type.SECOND;
+    public static DoubleBlockCombiner.BlockType getSarcophagusPart(BlockState state) {
+        SarcophagusPart bedPart = (SarcophagusPart) state.getValue(PART);
+        return bedPart == SarcophagusPart.HEAD ? DoubleBlockCombiner.BlockType.FIRST : DoubleBlockCombiner.BlockType.SECOND;
     }
 
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (!world.isClient && player.isCreative()) {
-            SarcophagusPart part = (SarcophagusPart) state.get(PART);
+    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+        if (!world.isClientSide && player.isCreative()) {
+            SarcophagusPart part = (SarcophagusPart) state.getValue(PART);
 
             if (part == SarcophagusPart.FOOT) {
-                BlockPos blockPos = pos.offset(getDirectionTowardsOtherPart(part, (Direction) state.get(FACING)));
+                BlockPos blockPos = pos.relative(getDirectionTowardsOtherPart(part, (Direction) state.getValue(FACING)));
                 BlockState blockState = world.getBlockState(blockPos);
 
-                if (blockState.isOf(this) && blockState.get(PART) == SarcophagusPart.HEAD) {
-                    world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 35);
-                    world.syncWorldEvent(player, 2001, blockPos, Block.getRawIdFromState(blockState));
+                if (blockState.is(this) && blockState.getValue(PART) == SarcophagusPart.HEAD) {
+                    world.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 35);
+                    world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
                 }
             }
         }
 
-        super.onBreak(world, pos, state, player);
+        super.playerWillDestroy(world, pos, state, player);
     }
 
 
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
 
-            if (blockEntity instanceof Inventory) {
-                ItemScatterer.spawn(world, pos, (Inventory) blockEntity);
-                world.updateComparators(pos, this);
+            if (blockEntity instanceof Container) {
+                Containers.dropContents(world, pos, (Container) blockEntity);
+                world.updateNeighbourForOutputSignal(pos, this);
             }
 
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onRemove(state, world, pos, newState, moved);
         }
     }
 
 
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random random) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, net.minecraft.util.RandomSource random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
         if (blockEntity instanceof SarcophagusBlockEntity) {
@@ -224,58 +242,58 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
     }
 
     @Nullable
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new SarcophagusBlockEntity(pos, state);
     }
 
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        Direction direction = ctx.getHorizontalPlayerFacing();
-        BlockPos blockPos = ctx.getBlockPos();
-        BlockPos blockPos2 = blockPos.offset(direction);
-        World world = ctx.getWorld();
-        return world.getBlockState(blockPos2).canReplace(ctx) && world.getWorldBorder().contains(blockPos2) ? this.getDefaultState()
-                .with(FACING, direction)
-                .with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER) : null;
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+        Direction direction = ctx.getHorizontalDirection();
+        BlockPos blockPos = ctx.getClickedPos();
+        BlockPos blockPos2 = blockPos.relative(direction);
+        Level world = ctx.getLevel();
+        return world.getBlockState(blockPos2).canBeReplaced(ctx) && world.getWorldBorder().isWithinBounds(blockPos2) ? this.defaultBlockState()
+                .setValue(FACING, direction)
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER) : null;
     }
 
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
 
     public static Direction getOppositePartDirection(BlockState state) {
-        Direction direction = (Direction) state.get(FACING);
-        return state.get(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
+        Direction direction = (Direction) state.getValue(FACING);
+        return state.getValue(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
     }
 
     // ANIMATION STUFF
 
 
-    public static DoubleBlockProperties.PropertyRetriever<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidOpenable progress) {
-        return new DoubleBlockProperties.PropertyRetriever<>() {
-            public Float2FloatFunction getFromBoth(SarcophagusBlockEntity chestBlockEntity, SarcophagusBlockEntity chestBlockEntity2) {
-                return (tickDelta) -> Math.max(chestBlockEntity.getAnimationProgress(tickDelta), chestBlockEntity2.getAnimationProgress(tickDelta));
+    public static DoubleBlockCombiner.Combiner<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidBlockEntity progress) {
+        return new DoubleBlockCombiner.Combiner<>() {
+            public Float2FloatFunction acceptDouble(SarcophagusBlockEntity chestBlockEntity, SarcophagusBlockEntity chestBlockEntity2) {
+                return (tickDelta) -> Math.max(chestBlockEntity.getOpenNess(tickDelta), chestBlockEntity2.getOpenNess(tickDelta));
             }
 
-            public Float2FloatFunction getFrom(SarcophagusBlockEntity chestBlockEntity) {
+            public Float2FloatFunction acceptSingle(SarcophagusBlockEntity chestBlockEntity) {
                 Objects.requireNonNull(chestBlockEntity);
-                return chestBlockEntity::getAnimationProgress;
+                return chestBlockEntity::getOpenNess;
             }
 
-            public Float2FloatFunction getFallback() {
+            public Float2FloatFunction acceptNone() {
                 Objects.requireNonNull(progress);
-                return progress::getAnimationProgress;
+                return progress::getOpenNess;
             }
         };
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return world.isClient ? checkType(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return world.isClientSide ? createTickerHelper(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
     }
 
     public Supplier<Item> getLid() {
@@ -288,14 +306,14 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
 
 
     static {
-        PLAYER_PLACED = Properties.LOCKED;
-        OPEN = Properties.OPEN;
-        WATERLOGGED = Properties.WATERLOGGED;
-        FACING = Properties.HORIZONTAL_FACING;
-        DOUBLE_NORTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        DOUBLE_SOUTH_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        DOUBLE_WEST_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
-        DOUBLE_EAST_SHAPE = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        PLAYER_PLACED = BlockStateProperties.LOCKED;
+        OPEN = BlockStateProperties.OPEN;
+        WATERLOGGED = BlockStateProperties.WATERLOGGED;
+        FACING = BlockStateProperties.HORIZONTAL_FACING;
+        DOUBLE_NORTH_SHAPE = Block.box(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        DOUBLE_SOUTH_SHAPE = Block.box(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        DOUBLE_WEST_SHAPE = Block.box(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
+        DOUBLE_EAST_SHAPE = Block.box(1.0D, 1.0D, 1.0D, 15.0D, 14.0D, 15.0D);
     }
 
 }

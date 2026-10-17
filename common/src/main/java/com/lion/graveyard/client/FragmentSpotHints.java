@@ -5,16 +5,15 @@ import com.lion.graveyard.blocks.OminousBoneStaffFragment;
 import com.lion.graveyard.init.TGBlocks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,18 +32,18 @@ public final class FragmentSpotHints {
     private FragmentSpotHints() {
     }
 
-    public static void clientTick(MinecraftClient client) {
-        ClientWorld world = client.world;
-        ClientPlayerEntity player = client.player;
+    public static void clientTick(Minecraft client) {
+        ClientLevel world = client.level;
+        LocalPlayer player = client.player;
 
-        if (world == null || player == null || !holdsFragment(player) || !(world.isNight() || world.getDimension().hasFixedTime())) {
+        if (world == null || player == null || !holdsFragment(player) || !(world.isNight() || world.dimensionType().hasFixedTime())) {
             ALTARS.clear();
             ticks = 0;
             return;
         }
 
         if (ticks % SCAN_INTERVAL == 0) {
-            scanAltars(world, player.getBlockPos());
+            scanAltars(world, player.blockPosition());
         }
 
         if (ticks % PARTICLE_INTERVAL == 0) {
@@ -56,38 +55,38 @@ public final class FragmentSpotHints {
         ticks++;
     }
 
-    private static boolean holdsFragment(ClientPlayerEntity player) {
-        return isFragment(player.getMainHandStack()) || isFragment(player.getOffHandStack());
+    private static boolean holdsFragment(LocalPlayer player) {
+        return isFragment(player.getMainHandItem()) || isFragment(player.getOffhandItem());
     }
 
     private static boolean isFragment(ItemStack stack) {
         return stack.getItem() instanceof BlockItem item && item.getBlock() instanceof OminousBoneStaffFragment;
     }
 
-    private static void scanAltars(ClientWorld world, BlockPos center) {
+    private static void scanAltars(ClientLevel world, BlockPos center) {
         ALTARS.clear();
-        BlockPos.Mutable cursor = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = -RANGE; dx <= RANGE; dx++) {
             for (int dy = -RANGE_UP_DOWN; dy <= RANGE_UP_DOWN; dy++) {
                 for (int dz = -RANGE; dz <= RANGE; dz++) {
                     cursor.set(center.getX() + dx, center.getY() + dy, center.getZ() + dz);
                     BlockState state = world.getBlockState(cursor);
 
-                    if (state.isOf(TGBlocks.ALTAR.get()) && !state.get(AltarBlock.BLOODY)) {
-                        ALTARS.add(cursor.toImmutable());
+                    if (state.is(TGBlocks.ALTAR.get()) && !state.getValue(AltarBlock.BLOODY)) {
+                        ALTARS.add(cursor.immutable());
                     }
                 }
             }
         }
     }
 
-    private static void spawnParticles(ClientWorld world, BlockPos altar) {
-        for (Direction direction : Direction.Type.HORIZONTAL) {
-            BlockPos middle = altar.offset(direction, ROW_DISTANCE);
+    private static void spawnParticles(ClientLevel world, BlockPos altar) {
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            BlockPos middle = altar.relative(direction, ROW_DISTANCE);
             BlockPos[] spots = {
-                    middle.offset(direction.rotateYClockwise(), END_OFFSET),
+                    middle.relative(direction.getClockWise(), END_OFFSET),
                     middle,
-                    middle.offset(direction.rotateYCounterclockwise(), END_OFFSET)
+                    middle.relative(direction.getCounterClockWise(), END_OFFSET)
             };
 
             if (!isUsableRow(world, spots)) {
@@ -106,12 +105,12 @@ public final class FragmentSpotHints {
         }
     }
 
-    private static boolean isUsableRow(ClientWorld world, BlockPos[] spots) {
+    private static boolean isUsableRow(ClientLevel world, BlockPos[] spots) {
         for (BlockPos spot : spots) {
             BlockState state = world.getBlockState(spot);
             boolean free = state.isAir() || state.getBlock() instanceof OminousBoneStaffFragment;
 
-            if (!free || !world.getBlockState(spot.down()).isSideSolidFullSquare(world, spot.down(), Direction.UP)) {
+            if (!free || !world.getBlockState(spot.below()).isFaceSturdy(world, spot.below(), Direction.UP)) {
                 return false;
             }
         }

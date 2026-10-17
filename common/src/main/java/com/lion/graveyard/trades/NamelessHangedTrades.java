@@ -4,11 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.lion.graveyard.Graveyard;
 import com.lion.villagertradingplus.tradeoffers.TradeOfferManager;
-import net.minecraft.village.TradeOffers;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.world.entity.npc.VillagerTrades;
 
 /// Trade pool of the Nameless Hanged, read from `data/graveyard/nameless_hanged_trades/`.
 ///
@@ -22,7 +21,7 @@ public final class NamelessHangedTrades {
 
     /// Flat pool the entity draws its offers from at random. Group keys in the file are for the
     /// author's benefit only - he has no levels to tie them to.
-    public static final List<TradeOffers.Factory> TRADES_REGISTRY = new ArrayList<>();
+    public static final List<VillagerTrades.ItemListing> TRADES_REGISTRY = new ArrayList<>();
 
     private NamelessHangedTrades() {
     }
@@ -60,7 +59,7 @@ public final class NamelessHangedTrades {
                 }
 
                 // Null means unusable; the parser has already logged which trade and why.
-                TradeOffers.Factory factory = TradeOfferManager.deserializeTrade(element.getAsJsonObject());
+                VillagerTrades.ItemListing factory = TradeOfferManager.deserializeTrade(element.getAsJsonObject());
 
                 if (factory != null) {
                     TRADES_REGISTRY.add(factory);

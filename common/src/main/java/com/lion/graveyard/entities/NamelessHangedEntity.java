@@ -4,28 +4,36 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOfferList;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.InteractGoal;
+import net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -37,25 +45,25 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
+public class NamelessHangedEntity extends AbstractVillager implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final String OFFERS_DAY_KEY = "OffersDay";
     private long offersDay = -1L;
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
 
-    public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, World world) {
+    public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    protected void initGoals() {
-        this.goalSelector.add(1, new LookAtCustomerGoal(this));
-        this.goalSelector.add(9, new StopAndLookAtEntityGoal(this, PlayerEntity.class, 3.0F, 1.0F));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new LookAtTradingPlayerGoal(this));
+        this.goalSelector.addGoal(9, new InteractGoal(this, Player.class, 3.0F, 1.0F));
     }
 
-    public static DefaultAttributeContainer.Builder createNamelessHangedAttributes() {
-        return PassiveEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0.0D)
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 45.0D);
+    public static AttributeSupplier.Builder createNamelessHangedAttributes() {
+        return AgeableMob.createLivingAttributes()
+                .add(Attributes.FOLLOW_RANGE, 0.0D)
+                .add(Attributes.MAX_HEALTH, 45.0D);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     @Override
-    public boolean canTakeDamage() {
+    public boolean canBeSeenAsEnemy() {
         return false;
     }
 
@@ -79,13 +87,13 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         return false;
     }
 
-    protected void pushAway(Entity entity) {
+    protected void doPush(Entity entity) {
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (!this.getEntityWorld().isClient && !this.isRemoved()) {
-            if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!this.getCommandSenderWorld().isClientSide && !this.isRemoved()) {
+            if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
             }
@@ -94,37 +102,37 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         return false;
     }
 
-    public boolean isImmuneToExplosion() {
+    public boolean ignoreExplosion() {
         return true;
     }
 
-    public void onStruckByLightning(ServerWorld world, LightningEntity lightning) {
+    public void thunderHit(ServerLevel world, LightningBolt lightning) {
     }
 
-    public boolean isAffectedBySplashPotions() {
+    public boolean isAffectedByPotions() {
         return false;
     }
 
     @Nullable
-    public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
+    public AgeableMob getBreedOffspring(ServerLevel world, AgeableMob entity) {
         return null;
     }
 
-    public boolean isLeveledMerchant() {
+    public boolean showProgressBar() {
         return false;
     }
 
-    public void tickMovement() {
-        if (this.getEntityWorld().isClient) {
-            this.getEntityWorld().addParticle(ParticleTypes.ASH, this.getParticleX(0.5D), this.getY() + 1.75D, this.getParticleZ(0.5D), 0, 0, 0);
+    public void aiStep() {
+        if (this.getCommandSenderWorld().isClientSide) {
+            this.getCommandSenderWorld().addParticle(ParticleTypes.ASH, this.getRandomX(0.5D), this.getY() + 1.75D, this.getRandomZ(0.5D), 0, 0, 0);
         }
 
-        super.tickMovement();
+        super.aiStep();
     }
 
     @Override
     public void tick() {
-        if (getEntityWorld().isDay() && this.offers != null) {
+        if (getCommandSenderWorld().isDay() && this.offers != null) {
             this.offers = null;
         }
 
@@ -132,66 +140,66 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
         nbt.putLong(OFFERS_DAY_KEY, this.offersDay);
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         this.offersDay = nbt.contains(OFFERS_DAY_KEY) ? nbt.getLong(OFFERS_DAY_KEY) : -1L;
     }
 
     private long currentDay() {
-        return this.getEntityWorld().getTimeOfDay() / 24000L;
+        return this.getCommandSenderWorld().getDayTime() / 24000L;
     }
 
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        if (this.offers != null && this.offersDay != currentDay() && !this.hasCustomer()) {
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (this.offers != null && this.offersDay != currentDay() && !this.isTrading()) {
             this.offers = null;
         }
 
-        if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
-            player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 1.0F);
+        if (getCommandSenderWorld().isDay() && !this.getCommandSenderWorld().isClientSide) {
+            player.displayClientMessage(Component.translatable("entity.graveyard.nameless_hanged.wait"), true);
+            getCommandSenderWorld().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
         }
 
-        if (this.isAlive() && !this.hasCustomer() && getEntityWorld().isNight()) {
+        if (this.isAlive() && !this.isTrading() && getCommandSenderWorld().isNight()) {
             if (!this.getOffers().isEmpty()) {
-                if (!this.getEntityWorld().isClient) {
-                    this.setCustomer(player);
-                    this.sendOffers(player, this.getDisplayName(), 1);
-                    getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 0.8F);
+                if (!this.getCommandSenderWorld().isClientSide) {
+                    this.setTradingPlayer(player);
+                    this.openTradingScreen(player, this.getDisplayName(), 1);
+                    getCommandSenderWorld().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
                 }
             }
 
-            return ActionResult.success(this.getEntityWorld().isClient);
+            return InteractionResult.sidedSuccess(this.getCommandSenderWorld().isClientSide);
         } else {
-            return super.interactMob(player, hand);
+            return super.mobInteract(player, hand);
         }
     }
 
-    protected void fillRecipes() {
-        List<TradeOffers.Factory> factorys = NamelessHangedTrades.TRADES_REGISTRY;
-        TradeOfferList tradeOfferList = this.getOffers();
+    protected void updateTrades() {
+        List<VillagerTrades.ItemListing> factorys = NamelessHangedTrades.TRADES_REGISTRY;
+        MerchantOffers tradeOfferList = this.getOffers();
         GraveyardConfig config = Graveyard.getConfig();
         int minOffers = Math.max(1, (int) config.number("namelessHangedMinOffers", 7.0D));
         int maxOffers = Math.max(minOffers, (int) config.number("namelessHangedMaxOffers", 9.0D));
         int offers = minOffers + random.nextInt(maxOffers - minOffers + 1);
         this.offersDay = currentDay();
-        this.fillRecipesFromPool(tradeOfferList, factorys.toArray(new TradeOffers.Factory[0]), offers);
+        this.addOffersFromItemListings(tradeOfferList, factorys.toArray(new VillagerTrades.ItemListing[0]), offers);
     }
 
-    protected void afterUsing(TradeOffer offer) {
-        if (offer.shouldRewardPlayerExperience()) {
+    protected void rewardTradeXp(MerchantOffer offer) {
+        if (offer.shouldRewardExp()) {
             int i = 3 + this.random.nextInt(4);
-            this.getEntityWorld().spawnEntity(new ExperienceOrbEntity(this.getEntityWorld(), this.getX(), this.getY() + 0.5D, this.getZ(), i));
+            this.getCommandSenderWorld().addFreshEntity(new ExperienceOrb(this.getCommandSenderWorld(), this.getX(), this.getY() + 0.5D, this.getZ(), i));
         }
 
     }
 
-    public boolean canImmediatelyDespawn(double distanceSquared) {
+    public boolean removeWhenFarAway(double distanceSquared) {
         return false;
     }
 
@@ -205,18 +213,18 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     }
 
     @Override
-    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
         return 2.0F;
     }
 
     @Override
-    public SoundEvent getYesSound() {
-        return SoundEvents.PARTICLE_SOUL_ESCAPE;
+    public SoundEvent getNotifyTradeSound() {
+        return SoundEvents.SOUL_ESCAPE;
     }
 
     @Override
-    protected SoundEvent getTradingSound(boolean sold) {
-        return SoundEvents.PARTICLE_SOUL_ESCAPE;
+    protected SoundEvent getTradeUpdatedSound(boolean sold) {
+        return SoundEvents.SOUL_ESCAPE;
     }
 
 

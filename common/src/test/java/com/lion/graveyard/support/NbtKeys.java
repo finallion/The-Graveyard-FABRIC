@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class NbtKeys {
-    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:readNbt|readCustomDataFromNbt|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
+    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:load(?=\\s*\\(\\s*CompoundTag)|readAdditionalSaveData|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
     private static final Pattern CONSTANT = Pattern.compile("static\\s+final\\s+String\\s+(\\w+)\\s*=\\s*\"([^\"]+)\"");
-    private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|remove)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
+    private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|has\\w*|remove)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
     private static final Pattern WRITE_CALL = Pattern.compile("\\.put\\w*\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
 
     private NbtKeys() {
@@ -24,11 +24,11 @@ public final class NbtKeys {
     public static Set<String> readKeys(String code) {
         Set<String> keys = collect(READ_CALL, code);
 
-        if (code.contains("Inventories.readNbt")) {
+        if (code.contains("ContainerHelper.loadAllItems")) {
             keys.add("Items");
         }
 
-        if (code.contains("deserializeLootTable")) {
+        if (code.contains("tryLoadLootTable")) {
             keys.add("LootTable");
         }
 
@@ -38,11 +38,11 @@ public final class NbtKeys {
     public static Set<String> writeKeys(String code) {
         Set<String> keys = collect(WRITE_CALL, code);
 
-        if (code.contains("Inventories.writeNbt")) {
+        if (code.contains("ContainerHelper.saveAllItems")) {
             keys.add("Items");
         }
 
-        if (code.matches("(?s).*(?<!de)serializeLootTable.*")) {
+        if (code.matches("(?s).*trySaveLootTable.*")) {
             keys.add("LootTable");
         }
 

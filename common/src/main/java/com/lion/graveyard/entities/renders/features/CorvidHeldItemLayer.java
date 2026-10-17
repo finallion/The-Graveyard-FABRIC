@@ -1,15 +1,15 @@
 package com.lion.graveyard.entities.renders.features;
 
 import com.lion.graveyard.entities.CorvidEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RotationAxis;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -23,23 +23,23 @@ public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
     }
 
     @Override
-    public void renderForBone(MatrixStack poseStack, CorvidEntity animatable, GeoBone bone, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        ItemStack stack = animatable.getEquippedStack(EquipmentSlot.MAINHAND);
+    public void renderForBone(PoseStack poseStack, CorvidEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        ItemStack stack = animatable.getItemBySlot(EquipmentSlot.MAINHAND);
 
         if (!bone.getName().equals("head") || stack.isEmpty()) {
             return;
         }
 
-        poseStack.push();
+        poseStack.pushPose();
         RenderUtils.translateToPivotPoint(poseStack, bone);
         // Beak tip: head pivot at z=-6, beak end at z=-9, two units above the pivot.
         poseStack.translate(0.0F, 0.09F, -0.24F);
-        poseStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90.0F));
-        poseStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         poseStack.scale(0.6F, 0.6F, 0.6F);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(animatable, stack, ModelTransformationMode.GROUND, false,
-                poseStack, bufferSource, animatable.getWorld(), packedLight, packedOverlay, animatable.getId());
-        poseStack.pop();
+        Minecraft.getInstance().getItemRenderer().renderStatic(animatable, stack, ItemDisplayContext.GROUND, false,
+                poseStack, bufferSource, animatable.level(), packedLight, packedOverlay, animatable.getId());
+        poseStack.popPose();
 
         // GeckoLib needs the bone's buffer again after an item render.
         bufferSource.getBuffer(renderType);

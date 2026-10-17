@@ -1,9 +1,9 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.MagpieEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class HopAwayGoal extends HopGoal {
@@ -15,7 +15,7 @@ public class HopAwayGoal extends HopGoal {
     private static final double ANGLE_SPREAD_DEGREES = 60.0D;
 
     @Nullable
-    private Vec3d awayFrom;
+    private Vec3 awayFrom;
     private int cooldown;
 
     public HopAwayGoal(MagpieEntity magpie) {
@@ -23,42 +23,42 @@ public class HopAwayGoal extends HopGoal {
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         if (this.cooldown > 0) {
             this.cooldown--;
             return false;
         }
 
-        if (!this.magpie.isOnGround()) {
+        if (!this.magpie.onGround()) {
             return false;
         }
 
-        PlayerEntity player = this.magpie.getWorld().getClosestPlayer(this.magpie, PLAYER_RANGE);
+        Player player = this.magpie.level().getNearestPlayer(this.magpie, PLAYER_RANGE);
 
-        if (player == null || player.isSneaking() || player.isSpectator()) {
+        if (player == null || player.isShiftKeyDown() || player.isSpectator()) {
             return false;
         }
 
-        this.awayFrom = player.getPos();
+        this.awayFrom = player.position();
         this.target = this.findTarget();
         return this.target != null;
     }
 
     @Override
     @Nullable
-    protected Vec3d findTarget() {
+    protected Vec3 findTarget() {
         if (this.awayFrom == null) {
             return null;
         }
 
-        double baseAngle = MathHelper.atan2(this.magpie.getZ() - this.awayFrom.z, this.magpie.getX() - this.awayFrom.x);
+        double baseAngle = Mth.atan2(this.magpie.getZ() - this.awayFrom.z, this.magpie.getX() - this.awayFrom.x);
         for (int i = 0; i < FIND_ATTEMPTS; i++) {
             double angle = baseAngle + Math.toRadians(this.magpie.getRandom().nextDouble() * ANGLE_SPREAD_DEGREES - ANGLE_SPREAD_DEGREES / 2.0D);
-            Vec3d direction = new Vec3d(Math.cos(angle), 0.0D, Math.sin(angle));
+            Vec3 direction = new Vec3(Math.cos(angle), 0.0D, Math.sin(angle));
 
             if (this.isHopPathClear(direction)) {
                 double distance = MIN_DISTANCE + this.magpie.getRandom().nextDouble() * DISTANCE_SPREAD;
-                return new Vec3d(this.magpie.getX() + direction.x * distance, this.magpie.getY(), this.magpie.getZ() + direction.z * distance);
+                return new Vec3(this.magpie.getX() + direction.x * distance, this.magpie.getY(), this.magpie.getZ() + direction.z * distance);
             }
         }
         return null;

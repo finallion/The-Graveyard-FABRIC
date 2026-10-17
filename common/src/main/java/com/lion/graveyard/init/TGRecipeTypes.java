@@ -3,11 +3,9 @@ package com.lion.graveyard.init;
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.recipe.CarvingRecipe;
 import com.lion.graveyard.recipe.OssuaryRecipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.Registry;
-
 import java.util.function.Supplier;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class TGRecipeTypes {
 

@@ -1,12 +1,12 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.StairsBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class TGStairsBlock extends StairsBlock {
+public class TGStairsBlock extends StairBlock {
 
     // access to private stairs constructor
-    public TGStairsBlock(BlockState baseBlockState, Settings settings) {
+    public TGStairsBlock(BlockState baseBlockState, Properties settings) {
         super(baseBlockState, settings);
     }
 }

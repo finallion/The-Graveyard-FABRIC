@@ -2,44 +2,44 @@ package com.lion.graveyard.item;
 
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.chronicle.ChronicleOpener;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /// A loose leaf of the chronicle. Placed on a block it becomes a lore book; read in the air it
 /// records the page and is used up. The text lives in the chronicle screen, never on the item.
 public class DiaryPageItem extends BlockItem {
     public static final String PAGE_KEY = "page";
 
-    public DiaryPageItem(Block block, Settings settings) {
+    public DiaryPageItem(Block block, Properties settings) {
         super(block, settings);
     }
 
     public static ItemStack of(Item item, String page) {
         ItemStack stack = new ItemStack(item);
-        stack.getOrCreateNbt().putString(PAGE_KEY, page);
+        stack.getOrCreateTag().putString(PAGE_KEY, page);
         return stack;
     }
 
     @Nullable
     public static String pageOf(ItemStack stack) {
-        NbtCompound nbt = stack.getNbt();
+        CompoundTag nbt = stack.getTag();
 
-        if (nbt == null || !nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE)) {
+        if (nbt == null || !nbt.contains(PAGE_KEY, Tag.TAG_STRING)) {
             return null;
         }
 
@@ -48,39 +48,39 @@ public class DiaryPageItem extends BlockItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        ItemStack stack = user.getItemInHand(hand);
         String page = pageOf(stack);
 
         if (page == null) {
-            return TypedActionResult.pass(stack);
+            return InteractionResultHolder.pass(stack);
         }
 
-        if (world.isClient()) {
+        if (world.isClientSide()) {
             ChronicleOpener.open(page);
         }
 
-        if (user instanceof ServerPlayerEntity player) {
+        if (user instanceof ServerPlayer player) {
             boolean fresh = Chronicle.find(player, page);
 
             if (!fresh) {
-                player.sendMessage(Text.translatable("chronicle.graveyard.already_found").formatted(Formatting.GRAY), true);
+                player.displayClientMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY), true);
             }
 
-            if (!player.getAbilities().creativeMode) {
-                stack.decrement(1);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
             }
         }
 
-        return TypedActionResult.success(stack, world.isClient());
+        return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
         String page = pageOf(stack);
 
         if (page != null) {
-            tooltip.add(Text.translatable("chronicle.graveyard.page." + page + ".title").formatted(Formatting.ITALIC, Formatting.GRAY));
+            tooltip.add(Component.translatable("chronicle.graveyard.page." + page + ".title").withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
         }
     }
 }

@@ -11,7 +11,6 @@ import com.lion.graveyard.util.SpawnHordeCommand;
 import com.lion.graveyard.util.ChronicleCommand;
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.event.CommonEvents;
-import net.minecraft.block.BlockState;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -19,14 +18,15 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -87,7 +87,7 @@ public class GraveyardForge {
         forgeBus.register(this);
         forgeBus.addListener(GraveyardForge::registerCommands);
         forgeBus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
-            if (event.getEntity() instanceof ServerPlayerEntity player) {
+            if (event.getEntity() instanceof ServerPlayer player) {
                 Chronicle.syncAll(player);
             }
         });
@@ -100,11 +100,11 @@ public class GraveyardForge {
     }
 
     private static void init(final FMLCommonSetupEvent event) {
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("remove_waterlogged_processor"), TGProcessors.REMOVE_WATERLOGGED);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("switch_spawner_processor"), TGProcessors.SWITCH_SPAWNER);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("waterlogged_crypt_processor"), TGProcessors.REMOVE_WATERLOGGED_CRYPT);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("ruin"), TGOverrunVillage.RUIN);
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id("pool_aliases"), TGOverrunVillage.POOL_ALIASES);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("remove_waterlogged_processor"), TGProcessors.REMOVE_WATERLOGGED);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("switch_spawner_processor"), TGProcessors.SWITCH_SPAWNER);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("waterlogged_crypt_processor"), TGProcessors.REMOVE_WATERLOGGED_CRYPT);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("ruin"), TGOverrunVillage.RUIN);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("pool_aliases"), TGOverrunVillage.POOL_ALIASES);
 
         event.enqueueWork(Graveyard::postInit);
     }
@@ -138,7 +138,7 @@ public class GraveyardForge {
 
     @SubscribeEvent
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
-        for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<DefaultAttributeContainer.Builder>> entry : RegistryHelperImpl.ENTITY_ATTRIBUTES.entrySet()) {
+        for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> entry : RegistryHelperImpl.ENTITY_ATTRIBUTES.entrySet()) {
             event.put(entry.getKey().get(),
                     entry.getValue().get().build());
         }
@@ -149,14 +149,14 @@ public class GraveyardForge {
         RegistryHelperImpl.ITEMS_TO_ADD.forEach((itemGroup, itemPairs) -> {
             if (event.getTabKey() == itemGroup) {
                 itemPairs.forEach(item -> {
-                    event.getEntries().put(item.getDefaultStack(), ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+                    event.getEntries().put(item.getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                 });
             }
         });
         RegistryHelperImpl.STACKS_TO_ADD.forEach((itemGroup, suppliers) -> {
             if (event.getTabKey() == itemGroup) {
                 suppliers.forEach(supplier -> supplier.get().forEach(stack ->
-                        event.getEntries().put(stack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS)));
+                        event.getEntries().put(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS)));
             }
         });
     }

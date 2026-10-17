@@ -1,10 +1,10 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.PaneBlock;
+import net.minecraft.world.level.block.IronBarsBlock;
 
-public class DarkIronBars extends PaneBlock {
+public class DarkIronBars extends IronBarsBlock {
     // extra class to access protected PaneBlock class
-    public DarkIronBars(Settings settings) {
+    public DarkIronBars(Properties settings) {
         super(settings);
     }
 }

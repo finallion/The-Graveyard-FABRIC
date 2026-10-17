@@ -2,34 +2,34 @@ package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGParticles;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.MossBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.MossBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TGMossBlock extends MossBlock {
     private static final int FOG_SHEET_RARITY = 2;
 
 
-    public TGMossBlock(Settings settings) {
+    public TGMossBlock(Properties settings) {
         super(settings);
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         return new ItemStack(Blocks.MOSS_BLOCK);
     }
 
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        super.randomDisplayTick(state, world, pos, random);
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        super.animateTick(state, world, pos, random);
 
         if (Graveyard.getConfig().fogSpawn(Graveyard.id("graveyard_fog_particle"))) {
             if (random.nextInt(Graveyard.getConfig().getParticle(Graveyard.id("graveyard_fog_particle")).spawnChance * FOG_SHEET_RARITY) == 0) {
-                if (!world.getBlockState(pos.up()).isSolidBlock(world, pos.up())) {
+                if (!world.getBlockState(pos.above()).isRedstoneConductor(world, pos.above())) {
                     world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, pos.getX() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 1.5D, pos.getY() + 1.0D + 0.05D + random.nextDouble() * 0.3D, pos.getZ() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 1.5D, 0.0D, 0.0D, 0.0D);
                 }
             }

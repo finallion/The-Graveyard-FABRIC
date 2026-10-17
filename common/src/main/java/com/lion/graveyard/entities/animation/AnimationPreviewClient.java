@@ -7,22 +7,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.AnimatedCorruptedIllager;
 import com.lion.graveyard.platform.ConfigDirectory;
 import com.lion.graveyard.platform.DevEnvironment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.EntityTrackingSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.Registries;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -35,6 +20,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.EntityBoundSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class AnimationPreviewClient {
     private static final String FILE = "graveyard_anim_preview.json";
@@ -63,7 +63,7 @@ public final class AnimationPreviewClient {
         @Override
         public void playDetached(Entity entity, @Nullable SoundEvent sound) {
             if (sound != null) {
-                entity.getWorld().playSound(entity.getX(), entity.getY(), entity.getZ(), sound, entity.getSoundCategory(), 1.0F, 1.0F, false);
+                entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), sound, entity.getSoundSource(), 1.0F, 1.0F, false);
             }
         }
 
@@ -78,35 +78,35 @@ public final class AnimationPreviewClient {
     };
     private static Map<String, Map<String, List<Cue>>> cues;
     @Nullable
-    private static net.minecraft.client.world.ClientWorld lastWorld;
+    private static net.minecraft.client.multiplayer.ClientLevel lastWorld;
 
     private AnimationPreviewClient() {
     }
 
-    public static void clientTick(MinecraftClient client) {
+    public static void clientTick(Minecraft client) {
         AnimationClock.setListener(LISTENER);
         // The sound instances keep their entity alive, so a world change must clear every map.
-        if (client.world != lastWorld) {
+        if (client.level != lastWorld) {
             TRACKED.values().forEach(AnimationPreviewClient::stop);
             TRACKED.clear();
             PLAYBACKS.values().forEach(Playback::stopSounds);
             PLAYBACKS.clear();
             DIGS.clear();
-            lastWorld = client.world;
+            lastWorld = client.level;
         }
 
         TRACKED.keySet().removeIf(Entity::isRemoved);
 
-        if (client.world != null) {
-            long time = client.world.getTime();
+        if (client.level != null) {
+            long time = client.level.getGameTime();
             DIGS.entrySet().removeIf(entry -> entry.getKey().isRemoved() || !entry.getValue().tick(entry.getKey(), time));
         }
 
-        if (!DevEnvironment.isDevelopment() || client.world == null) {
+        if (!DevEnvironment.isDevelopment() || client.level == null) {
             return;
         }
 
-        long now = client.world.getTime();
+        long now = client.level.getGameTime();
         Iterator<Map.Entry<Entity, Playback>> iterator = PLAYBACKS.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<Entity, Playback> entry = iterator.next();
@@ -121,7 +121,7 @@ public final class AnimationPreviewClient {
     }
 
     private static void startDig(Entity entity, String animation, double startOffsetTicks) {
-        DigSpec spec = DIG_SPECS.get(Registries.ENTITY_TYPE.getId(entity.getType()) + "|" + animation);
+        DigSpec spec = DIG_SPECS.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()) + "|" + animation);
 
         if (spec == null) {
             DIGS.remove(entity);
@@ -130,11 +130,11 @@ public final class AnimationPreviewClient {
 
         // Ghoul and ghouling spawn their own earth particles while the spawn timer runs.
         boolean particles = spec.particles() || AnimationPreview.forcedAnimation(entity) != null;
-        DIGS.put(entity, new Dig(spec, entity.getWorld().getTime() - (long) startOffsetTicks, particles));
+        DIGS.put(entity, new Dig(spec, entity.level().getGameTime() - (long) startOffsetTicks, particles));
     }
 
     private static void startPreview(Entity entity, String animation) {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         Playback old = PLAYBACKS.remove(entity);
 
         if (old != null) {
@@ -145,27 +145,27 @@ public final class AnimationPreviewClient {
             cues = load();
         }
 
-        Map<String, List<Cue>> byAnimation = cues.get(Registries.ENTITY_TYPE.getId(entity.getType()).toString());
+        Map<String, List<Cue>> byAnimation = cues.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
         List<Cue> list = byAnimation == null ? null : byAnimation.get(animation);
 
-        if (list == null || client.world == null) {
+        if (list == null || client.level == null) {
             return;
         }
 
-        Playback playback = new Playback(list, client.world.getTime());
+        Playback playback = new Playback(list, client.level.getGameTime());
         PLAYBACKS.put(entity, playback);
-        playback.tick(entity, client.world.getTime());
+        playback.tick(entity, client.level.getGameTime());
     }
 
     private static SoundInstance play(Entity entity, SoundEvent event, float volume, float pitch) {
-        SoundInstance instance = new EntityTrackingSoundInstance(event, entity.getSoundCategory(), volume, pitch, entity, entity.getWorld().getRandom().nextLong());
-        MinecraftClient.getInstance().getSoundManager().play(instance);
+        SoundInstance instance = new EntityBoundSoundInstance(event, entity.getSoundSource(), volume, pitch, entity, entity.level().getRandom().nextLong());
+        Minecraft.getInstance().getSoundManager().play(instance);
         return instance;
     }
 
     private static void stop(@Nullable SoundInstance instance) {
         if (instance != null) {
-            MinecraftClient.getInstance().getSoundManager().stop(instance);
+            Minecraft.getInstance().getSoundManager().stop(instance);
         }
     }
 
@@ -203,8 +203,8 @@ public final class AnimationPreviewClient {
 
     private record Cue(SoundEvent event, int offsetTicks, int repeatTicks, float volume, float pitch) {
         static Cue parse(JsonObject json) {
-            Identifier id = Identifier.tryParse(json.get("event").getAsString());
-            SoundEvent event = id == null ? null : Registries.SOUND_EVENT.get(id);
+            ResourceLocation id = ResourceLocation.tryParse(json.get("event").getAsString());
+            SoundEvent event = id == null ? null : BuiltInRegistries.SOUND_EVENT.get(id);
 
             if (event == null) {
                 return null;
@@ -252,7 +252,7 @@ public final class AnimationPreviewClient {
                 return false;
             }
 
-            Random random = entity.getWorld().getRandom();
+            RandomSource random = entity.level().getRandom();
             BlockState ground = groundBelow(entity);
 
             if (!this.started) {
@@ -275,9 +275,9 @@ public final class AnimationPreviewClient {
             }
 
             if (this.particles) {
-                if (ground.getRenderType() != BlockRenderType.INVISIBLE) {
+                if (ground.getRenderShape() != RenderShape.INVISIBLE) {
                     for (int i = 0; i < 10; i++) {
-                        entity.getWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, ground),
+                        entity.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, ground),
                                 entity.getX() + random.nextFloat() * 1.4F - 0.7F, entity.getY(), entity.getZ() + random.nextFloat() * 1.4F - 0.7F, 0.0D, 0.0D, 0.0D);
                     }
                 }
@@ -287,16 +287,16 @@ public final class AnimationPreviewClient {
         }
 
         private static BlockState groundBelow(Entity entity) {
-            return entity.getWorld().getBlockState(BlockPos.ofFloored(entity.getX(), entity.getY() - 0.2D, entity.getZ()));
+            return entity.level().getBlockState(BlockPos.containing(entity.getX(), entity.getY() - 0.2D, entity.getZ()));
         }
 
         private static void playEarth(Entity entity, BlockState ground, float volume) {
-            BlockState sound = ground.isAir() || ground.getRenderType() == BlockRenderType.INVISIBLE ? Blocks.DIRT.getDefaultState() : ground;
-            entity.getWorld().playSound(entity.getX(), entity.getY(), entity.getZ(), sound.getSoundGroup().getBreakSound(), SoundCategory.HOSTILE, volume, 0.8F, false);
+            BlockState sound = ground.isAir() || ground.getRenderShape() == RenderShape.INVISIBLE ? Blocks.DIRT.defaultBlockState() : ground;
+            entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), sound.getSoundType().getBreakSound(), SoundSource.HOSTILE, volume, 0.8F, false);
         }
 
         private static void playDig(Entity entity, float volume, float pitch) {
-            entity.getWorld().playSound(entity.getX(), entity.getY(), entity.getZ(), TGSounds.DIG.get(), SoundCategory.HOSTILE, volume, pitch, false);
+            entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), TGSounds.DIG.get(), SoundSource.HOSTILE, volume, pitch, false);
         }
     }
 

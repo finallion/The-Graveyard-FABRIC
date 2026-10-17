@@ -1,14 +1,14 @@
 package com.lion.graveyard.entities.ai.control;
 
 import com.lion.graveyard.entities.CorvidEntity;
-import net.minecraft.entity.ai.control.FlightMoveControl;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.phys.Vec3;
 
 /// Vanilla `FlightMoveControl` sets full up or down speed at any height error, so the flight waves.
 /// This control sets the vertical speed along a straight line to the target.
-public class CorvidMoveControl extends FlightMoveControl {
+public class CorvidMoveControl extends FlyingMoveControl {
     private static final float MAX_PITCH_CHANGE = 10.0F;
     private static final double VERTICAL_DEADZONE = 0.15D;
     private static final double VERTICAL_GAIN = 0.2D;
@@ -26,74 +26,74 @@ public class CorvidMoveControl extends FlightMoveControl {
 
     @Override
     public void tick() {
-        if (this.state != State.MOVE_TO) {
+        if (this.operation != Operation.MOVE_TO) {
             this.coast();
             return;
         }
 
-        this.state = State.WAIT;
+        this.operation = Operation.WAIT;
         // Keep gravity on at ground contact. With zero vertical speed, isOnGround becomes false.
-        this.entity.setNoGravity(!this.entity.isOnGround());
+        this.mob.setNoGravity(!this.mob.onGround());
 
-        double dx = this.targetX - this.entity.getX();
-        double dy = this.targetY - this.entity.getY();
-        double dz = this.targetZ - this.entity.getZ();
+        double dx = this.wantedX - this.mob.getX();
+        double dy = this.wantedY - this.mob.getY();
+        double dz = this.wantedZ - this.mob.getZ();
         double distanceSq = dx * dx + dy * dy + dz * dz;
 
         if (distanceSq < 2.5E-7D) {
-            this.entity.setUpwardSpeed(0.0F);
-            this.entity.setForwardSpeed(0.0F);
+            this.mob.setYya(0.0F);
+            this.mob.setZza(0.0F);
             return;
         }
 
-        float yaw = (float) (MathHelper.atan2(dz, dx) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
-        this.entity.setYaw(this.wrapDegrees(this.entity.getYaw(), yaw, 90.0F));
+        float yaw = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90.0F;
+        this.mob.setYRot(this.rotlerp(this.mob.getYRot(), yaw, 90.0F));
 
         if (this.corvid.isPreparingTakeoff()) {
-            this.entity.setMovementSpeed(0.0F);
-            this.entity.setForwardSpeed(0.0F);
+            this.mob.setSpeed(0.0F);
+            this.mob.setZza(0.0F);
             return;
         }
 
-        double attribute = this.entity.getAttributeValue(this.entity.isOnGround()
-                ? EntityAttributes.GENERIC_MOVEMENT_SPEED : EntityAttributes.GENERIC_FLYING_SPEED);
-        this.entity.setMovementSpeed((float) (this.speed * attribute));
+        double attribute = this.mob.getAttributeValue(this.mob.onGround()
+                ? Attributes.MOVEMENT_SPEED : Attributes.FLYING_SPEED);
+        this.mob.setSpeed((float) (this.speedModifier * attribute));
 
         double horizontal = Math.sqrt(dx * dx + dz * dz);
-        Vec3d velocity = this.entity.getVelocity();
+        Vec3 velocity = this.mob.getDeltaMovement();
         double desired;
 
         if (Math.abs(dy) < VERTICAL_DEADZONE) {
             desired = 0.0D;
         } else if (horizontal < 1.0D) {
-            desired = MathHelper.clamp(dy * VERTICAL_GAIN, -MAX_SINK, MAX_CLIMB);
+            desired = Mth.clamp(dy * VERTICAL_GAIN, -MAX_SINK, MAX_CLIMB);
         } else {
             double cruise = Math.max(Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z), CRUISE_SPEED);
-            desired = MathHelper.clamp(cruise * dy / horizontal, -MAX_SINK, MAX_CLIMB);
+            desired = Mth.clamp(cruise * dy / horizontal, -MAX_SINK, MAX_CLIMB);
         }
 
-        this.entity.setVelocity(velocity.x, MathHelper.lerp(0.3D, velocity.y, desired), velocity.z);
-        this.entity.setUpwardSpeed(0.0F);
+        this.mob.setDeltaMovement(velocity.x, Mth.lerp(0.3D, velocity.y, desired), velocity.z);
+        this.mob.setYya(0.0F);
 
-        float pitch = (float) -(MathHelper.atan2(dy, horizontal) * MathHelper.DEGREES_PER_RADIAN);
-        this.entity.setPitch(this.wrapDegrees(this.entity.getPitch(), pitch, MAX_PITCH_CHANGE));
+        float pitch = (float) -(Mth.atan2(dy, horizontal) * Mth.RAD_TO_DEG);
+        this.mob.setXRot(this.rotlerp(this.mob.getXRot(), pitch, MAX_PITCH_CHANGE));
     }
 
     private void coast() {
-        if (this.corvid.isFlying() && !this.corvid.isHopping() && !this.entity.isOnGround() && this.corvid.isAlive()) {
-            this.entity.setNoGravity(true);
-            double attribute = this.entity.getAttributeValue(EntityAttributes.GENERIC_FLYING_SPEED);
-            this.entity.setMovementSpeed((float) (COAST_THRUST * attribute));
-            Vec3d velocity = this.entity.getVelocity();
-            double targetVy = this.entity.isTouchingWater() ? 0.25D
-                    : this.entity.horizontalCollision ? 0.12D : -0.04D;
-            this.entity.setVelocity(velocity.x, MathHelper.lerp(0.2D, velocity.y, targetVy), velocity.z);
-            this.entity.setUpwardSpeed(0.0F);
-            this.entity.setPitch(this.wrapDegrees(this.entity.getPitch(), 0.0F, MAX_PITCH_CHANGE));
+        if (this.corvid.isFlying() && !this.corvid.isHopping() && !this.mob.onGround() && this.corvid.isAlive()) {
+            this.mob.setNoGravity(true);
+            double attribute = this.mob.getAttributeValue(Attributes.FLYING_SPEED);
+            this.mob.setSpeed((float) (COAST_THRUST * attribute));
+            Vec3 velocity = this.mob.getDeltaMovement();
+            double targetVy = this.mob.isInWater() ? 0.25D
+                    : this.mob.horizontalCollision ? 0.12D : -0.04D;
+            this.mob.setDeltaMovement(velocity.x, Mth.lerp(0.2D, velocity.y, targetVy), velocity.z);
+            this.mob.setYya(0.0F);
+            this.mob.setXRot(this.rotlerp(this.mob.getXRot(), 0.0F, MAX_PITCH_CHANGE));
         } else {
-            this.entity.setNoGravity(false);
-            this.entity.setUpwardSpeed(0.0F);
-            this.entity.setForwardSpeed(0.0F);
+            this.mob.setNoGravity(false);
+            this.mob.setYya(0.0F);
+            this.mob.setZza(0.0F);
         }
     }
 }

@@ -1,47 +1,47 @@
 package com.lion.graveyard.advancements;
 
 import com.google.gson.JsonObject;
-import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
-import net.minecraft.predicate.entity.LootContextPredicate;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 
-public class TGAdvancementTrigger extends AbstractCriterion<TGAdvancementTrigger.Condition> {
-    public final Identifier identifier;
+public class TGAdvancementTrigger extends SimpleCriterionTrigger<TGAdvancementTrigger.Condition> {
+    public final ResourceLocation identifier;
 
-    public TGAdvancementTrigger(Identifier identifier) {
+    public TGAdvancementTrigger(ResourceLocation identifier) {
         this.identifier = identifier;
     }
 
-    public void trigger(ServerPlayerEntity player) {
+    public void trigger(ServerPlayer player) {
         this.trigger(player, (conditions) -> {
             return true;
         });
     }
 
     @Override
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return identifier;
     }
 
     @Override
-    protected Condition conditionsFromJson(JsonObject obj, LootContextPredicate playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
+    protected Condition createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
         return new TGAdvancementTrigger.Condition(playerPredicate, identifier);
     }
 
 
-    public static class Condition extends AbstractCriterionConditions {
+    public static class Condition extends AbstractCriterionTriggerInstance {
 
-        public Condition(LootContextPredicate player, Identifier identifier) {
+        public Condition(ContextAwarePredicate player, ResourceLocation identifier) {
             super(identifier, player);
         }
 
-        public JsonObject toJson(AdvancementEntityPredicateSerializer predicateSerializer) {
-            JsonObject jsonObject = super.toJson(predicateSerializer);
+        public JsonObject serializeToJson(SerializationContext predicateSerializer) {
+            JsonObject jsonObject = super.serializeToJson(predicateSerializer);
             return jsonObject;
         }
     }

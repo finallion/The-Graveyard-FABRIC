@@ -4,25 +4,29 @@ import com.lion.graveyard.init.TGBlockEntities;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.SignText;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.command.CommandOutput;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.filter.FilteredMessage;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.FilteredText;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -63,9 +67,9 @@ public class GravestoneBlockEntity extends BlockEntity {
         return 90;
     }
 
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        DataResult<NbtElement> var10000 = SignText.CODEC.encodeStart(NbtOps.INSTANCE, this.text);
+    protected void saveAdditional(CompoundTag nbt) {
+        super.saveAdditional(nbt);
+        DataResult<Tag> var10000 = SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, this.text);
         Logger var10001 = LOGGER;
         Objects.requireNonNull(var10001);
         var10000.resultOrPartial(var10001::error).ifPresent((frontText) -> {
@@ -74,13 +78,13 @@ public class GravestoneBlockEntity extends BlockEntity {
         nbt.putBoolean("is_waxed", this.waxed);
     }
 
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
         DataResult<SignText> var10000;
         Logger var10001;
 
         if (nbt.contains("front_text")) {
-            var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
+            var10000 = SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
             var10001 = LOGGER;
             Objects.requireNonNull(var10001);
             var10000.resultOrPartial(var10001::error).ifPresent((signText) -> {
@@ -93,22 +97,22 @@ public class GravestoneBlockEntity extends BlockEntity {
 
     private SignText parseLines(SignText signText) {
         for(int i = 0; i < 4; ++i) {
-            Text text = this.parseLine(signText.getMessage(i, false));
-            Text text2 = this.parseLine(signText.getMessage(i, true));
-            signText = signText.withMessage(i, text, text2);
+            Component text = this.parseLine(signText.getMessage(i, false));
+            Component text2 = this.parseLine(signText.getMessage(i, true));
+            signText = signText.setMessage(i, text, text2);
         }
 
         return signText;
     }
 
-    private Text parseLine(Text text) {
-        World var3 = this.world;
+    private Component parseLine(Component text) {
+        Level var3 = this.level;
 
-        if (var3 instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld)var3;
+        if (var3 instanceof ServerLevel) {
+            ServerLevel serverWorld = (ServerLevel)var3;
 
             try {
-                return Texts.parse(createCommandSource((PlayerEntity)null, serverWorld, this.pos), text, (Entity)null, 0);
+                return ComponentUtils.updateForEntity(createCommandSource((Player)null, serverWorld, this.worldPosition), text, (Entity)null, 0);
             } catch (CommandSyntaxException ignored) {
             }
         }
@@ -116,13 +120,13 @@ public class GravestoneBlockEntity extends BlockEntity {
         return text;
     }
 
-    public void tryChangeText(PlayerEntity player, List<FilteredMessage> messages) {
-        if (!this.isWaxed() && player.getUuid().equals(this.getEditor()) && this.world != null && !this.isPlayerTooFarToEdit(player.getUuid())) {
+    public void tryChangeText(Player player, List<FilteredText> messages) {
+        if (!this.isWaxed() && player.getUUID().equals(this.getEditor()) && this.level != null && !this.isPlayerTooFarToEdit(player.getUUID())) {
             this.changeText((text) -> {
                 return this.getTextWithMessages(player, messages, text);
             });
             this.setEditor((UUID)null);
-            this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
+            this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
         } else {
             LOGGER.warn("Player {} just tried to change non-editable sign", player.getName().getString());
         }
@@ -133,16 +137,16 @@ public class GravestoneBlockEntity extends BlockEntity {
         return this.setText((SignText)textChanger.apply(signText));
     }
 
-    private SignText getTextWithMessages(PlayerEntity player, List<FilteredMessage> messages, SignText text) {
+    private SignText getTextWithMessages(Player player, List<FilteredText> messages, SignText text) {
         for(int i = 0; i < messages.size(); ++i) {
-            FilteredMessage filteredMessage = (FilteredMessage)messages.get(i);
-            Style style = text.getMessage(i, player.shouldFilterText()).getStyle();
+            FilteredText filteredMessage = (FilteredText)messages.get(i);
+            Style style = text.getMessage(i, player.isTextFilteringEnabled()).getStyle();
 
-            if (player.shouldFilterText()) {
-                text = text.withMessage(i, Text.literal(filteredMessage.getString()).setStyle(style));
+            if (player.isTextFilteringEnabled()) {
+                text = text.setMessage(i, Component.literal(filteredMessage.filteredOrEmpty()).setStyle(style));
             } else {
-                text = text.withMessage(i, Text.literal(filteredMessage.raw()).setStyle(style),
-                        Text.literal(filteredMessage.getString()).setStyle(style));
+                text = text.setMessage(i, Component.literal(filteredMessage.raw()).setStyle(style),
+                        Component.literal(filteredMessage.filteredOrEmpty()).setStyle(style));
             }
         }
 
@@ -163,16 +167,16 @@ public class GravestoneBlockEntity extends BlockEntity {
         }
     }
 
-    public boolean runCommandClickEvent(PlayerEntity player, World world, BlockPos pos) {
+    public boolean runCommandClickEvent(Player player, Level world, BlockPos pos) {
         boolean bl = false;
-        Text[] var6 = this.getText().getMessages(player.shouldFilterText());
+        Component[] var6 = this.getText().getMessages(player.isTextFilteringEnabled());
 
-        for (Text text : var6) {
+        for (Component text : var6) {
             Style style = text.getStyle();
             ClickEvent clickEvent = style.getClickEvent();
 
             if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                player.getServer().getCommandManager().executeWithPrefix(createCommandSource(player, world, pos), clickEvent.getValue());
+                player.getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), clickEvent.getValue());
                 bl = true;
             }
         }
@@ -180,21 +184,21 @@ public class GravestoneBlockEntity extends BlockEntity {
         return bl;
     }
 
-    private static ServerCommandSource createCommandSource(@Nullable PlayerEntity player, World world, BlockPos pos) {
+    private static CommandSourceStack createCommandSource(@Nullable Player player, Level world, BlockPos pos) {
         String string = player == null ? "Sign" : player.getName().getString();
-        Text text = player == null ? Text.literal("Sign") : player.getDisplayName();
-        return new ServerCommandSource(CommandOutput.DUMMY, Vec3d.ofCenter(pos), Vec2f.ZERO, (ServerWorld)world, 2, string, (Text)text, world.getServer(), player);
+        Component text = player == null ? Component.literal("Sign") : player.getDisplayName();
+        return new CommandSourceStack(CommandSource.NULL, Vec3.atCenterOf(pos), Vec2.ZERO, (ServerLevel)world, 2, string, (Component)text, world.getServer(), player);
     }
 
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public NbtCompound toInitialChunkDataNbt() {
-        return this.createNbt();
+    public CompoundTag getUpdateTag() {
+        return this.saveWithoutMetadata();
     }
 
-    public boolean copyItemDataRequiresOperator() {
+    public boolean onlyOpCanSetNbt() {
         return true;
     }
 
@@ -208,8 +212,8 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     private void updateListeners() {
-        this.markDirty();
-        this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), 3);
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
     public boolean isWaxed() {
@@ -227,11 +231,11 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     public boolean isPlayerTooFarToEdit(UUID uuid) {
-        PlayerEntity playerEntity = this.world.getPlayerByUuid(uuid);
-        return playerEntity == null || playerEntity.squaredDistanceTo((double)this.getPos().getX(), (double)this.getPos().getY(), (double)this.getPos().getZ()) > 64.0D;
+        Player playerEntity = this.level.getPlayerByUUID(uuid);
+        return playerEntity == null || playerEntity.distanceToSqr((double)this.getBlockPos().getX(), (double)this.getBlockPos().getY(), (double)this.getBlockPos().getZ()) > 64.0D;
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, GravestoneBlockEntity blockEntity) {
+    public static void tick(Level world, BlockPos pos, BlockState state, GravestoneBlockEntity blockEntity) {
         UUID uUID = blockEntity.getEditor();
 
         if (uUID != null) {
@@ -239,7 +243,7 @@ public class GravestoneBlockEntity extends BlockEntity {
         }
     }
 
-    private void tryClearInvalidEditor(GravestoneBlockEntity blockEntity, World world, UUID uuid) {
+    private void tryClearInvalidEditor(GravestoneBlockEntity blockEntity, Level world, UUID uuid) {
         if (blockEntity.isPlayerTooFarToEdit(uuid)) {
             blockEntity.setEditor((UUID)null);
         }

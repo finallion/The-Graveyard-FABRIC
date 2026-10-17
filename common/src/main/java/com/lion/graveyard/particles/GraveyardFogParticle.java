@@ -1,19 +1,23 @@
 package com.lion.graveyard.particles;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.*;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 @Environment(EnvType.CLIENT)
-public class GraveyardFogParticle extends SpriteBillboardParticle {
+public class GraveyardFogParticle extends TextureSheetParticle {
     private static final float PEAK_ALPHA_MIN = 0.35F;
     private static final float PEAK_ALPHA_RANGE = 0.15F;
     private static final float FADE_IN_END = 0.25F;
@@ -29,10 +33,10 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
     private float spin;
     private float prevSpin;
 
-    GraveyardFogParticle(ClientWorld clientWorld, double x, double y, double z) {
+    GraveyardFogParticle(ClientLevel clientWorld, double x, double y, double z) {
         super(clientWorld, x, y, z, 0.0D, 0.0D, 0.0D);
-        this.collidesWithWorld = false;
-        this.maxAge = 80 + random.nextInt(61);
+        this.hasPhysics = false;
+        this.lifetime = 80 + random.nextInt(61);
         this.baseSize = 1.8F + random.nextFloat() * 1.4F;
         this.peakAlpha = PEAK_ALPHA_MIN + random.nextFloat() * PEAK_ALPHA_RANGE;
         this.spin = random.nextFloat() * (float) (Math.PI * 2.0D);
@@ -42,38 +46,38 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
         this.tiltZ = (random.nextFloat() * 2.0F - 1.0F) * MAX_TILT;
         double heading = random.nextDouble() * Math.PI * 2.0D;
         double speed = 0.003D + random.nextDouble() * 0.005D;
-        this.velocityX = Math.cos(heading) * speed;
-        this.velocityY = 0.001D;
-        this.velocityZ = Math.sin(heading) * speed;
+        this.xd = Math.cos(heading) * speed;
+        this.yd = 0.001D;
+        this.zd = Math.sin(heading) * speed;
         this.setColor(0.93F, 0.95F, 0.96F);
         this.alpha = 0.0F;
     }
 
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public void tick() {
-        this.prevPosX = this.x;
-        this.prevPosY = this.y;
-        this.prevPosZ = this.z;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
         this.prevSpin = this.spin;
 
-        if (this.age++ >= this.maxAge) {
-            this.markDead();
+        if (this.age++ >= this.lifetime) {
+            this.remove();
             return;
         }
 
-        double time = this.world.getTime();
+        double time = this.level.getGameTime();
         double windX = Math.sin(time * 0.004D) * 0.002D;
         double windZ = Math.cos(time * 0.003D) * 0.002D;
-        this.setPos(this.x + this.velocityX + windX, this.y + this.velocityY, this.z + this.velocityZ + windZ);
+        this.setPos(this.x + this.xd + windX, this.y + this.yd, this.z + this.zd + windZ);
         this.spin += this.spinSpeed;
     }
 
     @Override
-    public void buildGeometry(VertexConsumer consumer, Camera camera, float tickDelta) {
-        float progress = Math.min(1.0F, (this.age + tickDelta) / this.maxAge);
+    public void render(VertexConsumer consumer, Camera camera, float tickDelta) {
+        float progress = Math.min(1.0F, (this.age + tickDelta) / this.lifetime);
         float fade;
 
         if (progress < FADE_IN_END) {
@@ -87,12 +91,12 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
         float opacity = this.peakAlpha * fade;
         float half = this.baseSize * (1.0F + GROWTH * progress) * 0.5F;
 
-        Vec3d cam = camera.getPos();
-        float px = (float) (MathHelper.lerp(tickDelta, this.prevPosX, this.x) - cam.getX());
-        float py = (float) (MathHelper.lerp(tickDelta, this.prevPosY, this.y) - cam.getY());
-        float pz = (float) (MathHelper.lerp(tickDelta, this.prevPosZ, this.z) - cam.getZ());
+        Vec3 cam = camera.getPosition();
+        float px = (float) (Mth.lerp(tickDelta, this.xo, this.x) - cam.x());
+        float py = (float) (Mth.lerp(tickDelta, this.yo, this.y) - cam.y());
+        float pz = (float) (Mth.lerp(tickDelta, this.zo, this.z) - cam.z());
 
-        Quaternionf rotation = new Quaternionf().rotationYXZ(MathHelper.lerp(tickDelta, this.prevSpin, this.spin), this.tiltX, this.tiltZ);
+        Quaternionf rotation = new Quaternionf().rotationYXZ(Mth.lerp(tickDelta, this.prevSpin, this.spin), this.tiltX, this.tiltZ);
         Vector3f[] corners = {
                 new Vector3f(-half, 0.0F, -half),
                 new Vector3f(-half, 0.0F, half),
@@ -103,13 +107,13 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
             corner.rotate(rotation).add(px, py, pz);
         }
 
-        float minU = this.getMinU();
-        float maxU = this.getMaxU();
-        float minV = this.getMinV();
-        float maxV = this.getMaxV();
+        float minU = this.getU0();
+        float maxU = this.getU1();
+        float minV = this.getV0();
+        float maxV = this.getV1();
         float[] us = {minU, minU, maxU, maxU};
         float[] vs = {minV, maxV, maxV, minV};
-        int light = this.getBrightness(tickDelta);
+        int light = this.getLightColor(tickDelta);
 
         for (int i = 0; i < 4; i++) {
             emit(consumer, corners[i], us[i], vs[i], opacity, light);
@@ -120,20 +124,20 @@ public class GraveyardFogParticle extends SpriteBillboardParticle {
     }
 
     private void emit(VertexConsumer consumer, Vector3f p, float u, float v, float opacity, int light) {
-        consumer.vertex(p.x(), p.y(), p.z()).texture(u, v).color(this.red, this.green, this.blue, opacity).light(light).next();
+        consumer.vertex(p.x(), p.y(), p.z()).uv(u, v).color(this.rCol, this.gCol, this.bCol, opacity).uv2(light).endVertex();
     }
 
     @Environment(EnvType.CLIENT)
-    public static class FogFactory implements ParticleFactory<DefaultParticleType> {
-        private final SpriteProvider spriteProvider;
+    public static class FogFactory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteProvider;
 
-        public FogFactory(SpriteProvider spriteProvider) {
+        public FogFactory(SpriteSet spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
             GraveyardFogParticle fog = new GraveyardFogParticle(clientWorld, d, e, f);
-            fog.setSprite(this.spriteProvider);
+            fog.pickSprite(this.spriteProvider);
             return fog;
         }
     }

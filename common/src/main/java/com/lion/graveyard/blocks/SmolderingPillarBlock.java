@@ -1,31 +1,30 @@
 package com.lion.graveyard.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-
 import java.util.function.Supplier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
 
-public class SmolderingPillarBlock extends PillarBlock {
+public class SmolderingPillarBlock extends RotatedPillarBlock {
 
     private final Supplier<Block> stripped;
 
-    public SmolderingPillarBlock(Settings settings) {
+    public SmolderingPillarBlock(Properties settings) {
         this(settings, null);
     }
 
-    public SmolderingPillarBlock(Settings settings, Supplier<Block> stripped) {
+    public SmolderingPillarBlock(Properties settings, Supplier<Block> stripped) {
         super(settings);
         this.stripped = stripped;
-        setDefaultState(getDefaultState().with(SmolderingWood.SMOLDERING, false));
+        registerDefaultState(defaultBlockState().setValue(SmolderingWood.SMOLDERING, false));
     }
 
     /// The axe result keeps the axis and the smoldering state. It is null when the block has no stripped form.
@@ -34,22 +33,22 @@ public class SmolderingPillarBlock extends PillarBlock {
             return null;
         }
 
-        return this.stripped.get().getStateWithProperties(state);
+        return this.stripped.get().withPropertiesOf(state);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(SmolderingWood.SMOLDERING);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         return SmolderingWood.use(state, world, pos, player, hand);
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
         SmolderingWood.displayTick(state, world, pos, random);
     }
 }

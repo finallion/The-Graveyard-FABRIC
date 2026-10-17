@@ -5,8 +5,7 @@ import com.lion.graveyard.chronicle.client.ChronicleScreen;
 import com.lion.graveyard.init.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
 
 public class GraveyardClient {
 
@@ -14,8 +13,8 @@ public class GraveyardClient {
     public static void init() {
         TGEntityModelLayers.init();
         ChronicleOpener.install(page -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.setScreen(new ChronicleScreen(client.currentScreen, page));
+            Minecraft client = Minecraft.getInstance();
+            client.setScreen(new ChronicleScreen(client.screen, page));
         });
     }
 

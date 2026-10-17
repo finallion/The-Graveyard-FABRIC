@@ -2,8 +2,8 @@ package com.lion.graveyard.entities.models;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.CorvidEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
@@ -13,22 +13,22 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 public class CorvidModel extends GeoModel<CorvidEntity> {
-    private static final Identifier ANIMATION = Graveyard.id("animations/corvid/corvid.animation.json");
+    private static final ResourceLocation ANIMATION = Graveyard.id("animations/corvid/corvid.animation.json");
     private static final float MAX_HEAD_PITCH = 40.0F;
     private static final float MAX_HEAD_YAW = 75.0F;
 
     @Override
-    public Identifier getModelResource(CorvidEntity entity) {
+    public ResourceLocation getModelResource(CorvidEntity entity) {
         return entity.getSpecies().getModel();
     }
 
     @Override
-    public Identifier getTextureResource(CorvidEntity entity) {
+    public ResourceLocation getTextureResource(CorvidEntity entity) {
         return entity.getSpecies().getTexture();
     }
 
     @Override
-    public Identifier getAnimationResource(CorvidEntity entity) {
+    public ResourceLocation getAnimationResource(CorvidEntity entity) {
         return ANIMATION;
     }
 
@@ -48,8 +48,8 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
                 return;
             }
 
-            head.setRotX(head.getRotX() + MathHelper.clamp(data.headPitch(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * MathHelper.RADIANS_PER_DEGREE * weight);
-            head.setRotY(head.getRotY() + MathHelper.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * MathHelper.RADIANS_PER_DEGREE * weight);
+            head.setRotX(head.getRotX() + Mth.clamp(data.headPitch(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * Mth.DEG_TO_RAD * weight);
+            head.setRotY(head.getRotY() + Mth.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * Mth.DEG_TO_RAD * weight);
         });
     }
 

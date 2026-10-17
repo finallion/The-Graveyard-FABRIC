@@ -1,9 +1,9 @@
 package com.lion.graveyard;
 
-import net.minecraft.util.Identifier;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.OmegaConfig;
 import com.lion.graveyard.init.*;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.bernie.geckolib.GeckoLib;
@@ -14,8 +14,8 @@ public class Graveyard {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
 
-    public static Identifier id(String path) {
-        return new Identifier(MOD_ID, path);
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 
     public static GraveyardConfig getConfig() {

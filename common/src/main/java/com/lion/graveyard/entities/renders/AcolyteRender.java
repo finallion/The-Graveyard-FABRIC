@@ -5,21 +5,21 @@ import com.lion.graveyard.entities.AcolyteEntity;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
 import com.lion.graveyard.entities.renders.features.AcolyteEyes;
 import com.lion.graveyard.init.TGEntityModelLayers;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.resources.ResourceLocation;
 
 public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
-    private static final Identifier TEXTURE = Graveyard.id("textures/entity/acolyte.png");
+    private static final ResourceLocation TEXTURE = Graveyard.id("textures/entity/acolyte.png");
 
-    public AcolyteRender(EntityRendererFactory.Context ctx) {
-        super(ctx, new CorruptedIllagerModel<>(ctx.getPart(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
-        this.addFeature(new AcolyteEyes(this));
+    public AcolyteRender(EntityRendererProvider.Context ctx) {
+        super(ctx, new CorruptedIllagerModel<>(ctx.bakeLayer(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
+        this.addLayer(new AcolyteEyes(this));
         this.model.getHat().visible = true;
-        this.addFeature(new HeldItemFeatureRenderer<>(this, ctx.getHeldItemRenderer()) {
-            public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AcolyteEntity acolyte, float f, float g, float h, float j, float k, float l) {
+        this.addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()) {
+            public void render(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, AcolyteEntity acolyte, float f, float g, float h, float j, float k, float l) {
                 if (acolyte.isChasing()) {
                     super.render(matrixStack, vertexConsumerProvider, i, acolyte, f, g, h, j, k, l);
                 }
@@ -29,7 +29,7 @@ public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
     }
 
     @Override
-    public Identifier getTexture(AcolyteEntity entity) {
+    public ResourceLocation getTextureLocation(AcolyteEntity entity) {
         return TEXTURE;
     }
 

@@ -2,9 +2,8 @@ package com.lion.graveyard.init;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.sound.SoundEvent;
-
 import java.util.function.Supplier;
+import net.minecraft.sounds.SoundEvent;
 
 public class TGSounds {
 
@@ -123,7 +122,7 @@ public class TGSounds {
     }
 
     private static Supplier<SoundEvent> register(String name) {
-        SoundEvent soundEvent = SoundEvent.of(Graveyard.id(name));
+        SoundEvent soundEvent = SoundEvent.createVariableRangeEvent(Graveyard.id(name));
 
         return RegistryHelper.registerSoundEvent(name, () -> soundEvent);
     }

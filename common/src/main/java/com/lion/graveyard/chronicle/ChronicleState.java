@@ -1,12 +1,11 @@
 package com.lion.graveyard.chronicle;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.PersistentState;
-
+import net.minecraft.world.level.saveddata.SavedData;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -15,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /// Saves the found chronicle pages of each player on the overworld.
-public final class ChronicleState extends PersistentState {
+public final class ChronicleState extends SavedData {
 
     private static final String KEY = "graveyard_chronicle";
 
@@ -24,8 +23,8 @@ public final class ChronicleState extends PersistentState {
     private final Map<UUID, Set<String>> found = new HashMap<>();
 
     public static ChronicleState get(MinecraftServer server) {
-        return server.getOverworld().getPersistentStateManager()
-                .getOrCreate(ChronicleState::fromNbt, ChronicleState::new, KEY);
+        return server.overworld().getDataStorage()
+                .computeIfAbsent(ChronicleState::fromNbt, ChronicleState::new, KEY);
     }
 
     public Set<String> found(UUID player) {
@@ -46,7 +45,7 @@ public final class ChronicleState extends PersistentState {
         boolean added = this.found.computeIfAbsent(player, id -> new LinkedHashSet<>()).add(page);
 
         if (added) {
-            this.markDirty();
+            this.setDirty();
         }
 
         return added;
@@ -57,7 +56,7 @@ public final class ChronicleState extends PersistentState {
         boolean removed = pages != null && pages.remove(page);
 
         if (removed) {
-            this.markDirty();
+            this.setDirty();
         }
 
         return removed;
@@ -65,26 +64,26 @@ public final class ChronicleState extends PersistentState {
 
     public void clear(UUID player) {
         if (this.found.remove(player) != null) {
-            this.markDirty();
+            this.setDirty();
         }
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        NbtCompound players = new NbtCompound();
+    public CompoundTag save(CompoundTag nbt) {
+        CompoundTag players = new CompoundTag();
         this.found.forEach((id, pages) -> {
-            NbtList list = new NbtList();
-            pages.forEach(page -> list.add(NbtString.of(page)));
+            ListTag list = new ListTag();
+            pages.forEach(page -> list.add(StringTag.valueOf(page)));
             players.put(id.toString(), list);
         });
         nbt.put("players", players);
         return nbt;
     }
 
-    public static ChronicleState fromNbt(NbtCompound nbt) {
+    public static ChronicleState fromNbt(CompoundTag nbt) {
         ChronicleState state = new ChronicleState();
-        NbtCompound players = nbt.getCompound("players");
-        for (String key : players.getKeys()) {
+        CompoundTag players = nbt.getCompound("players");
+        for (String key : players.getAllKeys()) {
             UUID player;
             try {
                 player = UUID.fromString(key);
@@ -92,9 +91,9 @@ public final class ChronicleState extends PersistentState {
                 continue;
             }
             Set<String> pages = new LinkedHashSet<>();
-            for (NbtElement element : players.getList(key, NbtElement.STRING_TYPE)) {
-                if (Chronicle.isValidId(element.asString())) {
-                    pages.add(element.asString());
+            for (Tag element : players.getList(key, Tag.TAG_STRING)) {
+                if (Chronicle.isValidId(element.getAsString())) {
+                    pages.add(element.getAsString());
                 }
             }
             state.found.put(player, pages);

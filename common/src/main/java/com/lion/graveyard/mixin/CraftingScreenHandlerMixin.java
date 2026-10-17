@@ -1,17 +1,6 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.util.StaffRecipeLock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingResultInventory;
-import net.minecraft.inventory.RecipeInputInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.CraftingScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,32 +8,43 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-@Mixin(CraftingScreenHandler.class)
+@Mixin(CraftingMenu.class)
 public abstract class CraftingScreenHandlerMixin {
-    @Inject(method = "updateResult", at = @At("HEAD"), cancellable = true)
-    private static void graveyard$requireKnownStaffRecipe(ScreenHandler handler, World world, PlayerEntity player, RecipeInputInventory craftingInventory, CraftingResultInventory resultInventory, CallbackInfo info) {
-        if (world.isClient || !(player instanceof ServerPlayerEntity serverPlayer)) {
+    @Inject(method = "slotChangedCraftingGrid", at = @At("HEAD"), cancellable = true)
+    private static void graveyard$requireKnownStaffRecipe(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, CallbackInfo info) {
+        if (world.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
-        Optional<CraftingRecipe> match = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        Optional<CraftingRecipe> match = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
 
         if (match.isEmpty() || !StaffRecipeLock.isLocked(serverPlayer, match.get())) {
             return;
         }
 
-        resultInventory.setStack(0, ItemStack.EMPTY);
-        handler.setPreviousTrackedSlot(0, ItemStack.EMPTY);
-        serverPlayer.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.nextRevision(), 0, ItemStack.EMPTY));
+        resultInventory.setItem(0, ItemStack.EMPTY);
+        handler.setRemoteSlot(0, ItemStack.EMPTY);
+        serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(handler.containerId, handler.incrementStateId(), 0, ItemStack.EMPTY));
         info.cancel();
     }
 
-    @Inject(method = "quickMove", at = @At("HEAD"), cancellable = true)
-    private void graveyard$blockLockedStaffShiftClick(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> info) {
-        CraftingScreenHandler self = (CraftingScreenHandler) (Object) this;
+    @Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)
+    private void graveyard$blockLockedStaffShiftClick(Player player, int slot, CallbackInfoReturnable<ItemStack> info) {
+        CraftingMenu self = (CraftingMenu) (Object) this;
 
-        if (slot == 0 && !self.slots.get(0).canTakeItems(player)) {
+        if (slot == 0 && !self.slots.get(0).mayPickup(player)) {
             info.setReturnValue(ItemStack.EMPTY);
         }
     }

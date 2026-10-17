@@ -2,11 +2,11 @@ package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.LichEntity;
 import com.lion.graveyard.init.TGParticles;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
 
 public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
     private final int DAMAGE_START_IN_ANIM = 18;
@@ -19,14 +19,14 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         LivingEntity target = this.mob.getTarget();
 
         if (target != null && target.isAlive() && (this.mob.isPouncing() || this.mob.isCharging() || isDirectChase(target))) {
             return true;
         }
 
-        return super.shouldContinue();
+        return super.canContinueToUse();
     }
 
     @Override
@@ -39,23 +39,23 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
 
         if (target != null && this.mob.getPhase() == 1) {
             // The body stands still in phase 1. A path makes the move control turn the body away from the head.
-            this.mob.getLookControl().lookAt(target, 30.0F, 30.0F);
+            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
             this.mob.getNavigation().stop();
             this.cooldown = Math.max(this.cooldown - 1, 0);
             this.animationTicker--;
             onTargetTick();
-            attack(target, this.mob.squaredDistanceTo(target.getX(), target.getY(), target.getZ()));
+            attack(target, this.mob.distanceToSqr(target.getX(), target.getY(), target.getZ()));
             return;
         }
 
         if (target != null && isDirectChase(target)) {
-            this.mob.getLookControl().lookAt(target, 30.0F, 30.0F);
+            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
             this.mob.getNavigation().stop();
-            this.mob.getMoveControl().moveTo(target.getX(), target.getY(), target.getZ(), this.chaseSpeed);
+            this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.chaseSpeed);
             this.cooldown = Math.max(this.cooldown - 1, 0);
             this.animationTicker--;
             onTargetTick();
-            attack(target, this.mob.squaredDistanceTo(target.getX(), target.getY(), target.getZ()));
+            attack(target, this.mob.distanceToSqr(target.getX(), target.getY(), target.getZ()));
             return;
         }
 
@@ -64,8 +64,8 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
 
     private boolean isDirectChase(LivingEntity target) {
         return this.mob.getPhase() == 5
-                && this.mob.squaredDistanceTo(target) <= 36.0D
-                && this.mob.getVisibilityCache().canSee(target);
+                && this.mob.distanceToSqr(target) <= 36.0D
+                && this.mob.getSensing().hasLineOfSight(target);
     }
 
     @Override
@@ -96,19 +96,19 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
                     canFinishAttack = true;
                 }
 
-                if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.tryAttack(target)) {
-                    Vec3d vec3d = mob.getPos().add(0.0D, 1.600000023841858D, 0.0D);
-                    Vec3d vec3d2 = target.getEyePos().subtract(vec3d);
-                    Vec3d vec3d3 = vec3d2.normalize();
+                if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM && this.mob.doHurtTarget(target)) {
+                    Vec3 vec3d = mob.position().add(0.0D, 1.600000023841858D, 0.0D);
+                    Vec3 vec3d2 = target.getEyePosition().subtract(vec3d);
+                    Vec3 vec3d3 = vec3d2.normalize();
 
-                    for (int i = 1; i < MathHelper.floor(vec3d2.length()) + 7; ++i) {
-                        Vec3d vec3d4 = vec3d.add(vec3d3.multiply((double) i));
-                        ((ServerWorld) mob.getWorld()).spawnParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+                    for (int i = 1; i < Mth.floor(vec3d2.length()) + 7; ++i) {
+                        Vec3 vec3d4 = vec3d.add(vec3d3.scale((double) i));
+                        ((ServerLevel) mob.level()).sendParticles(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, vec3d4.x, vec3d4.y + 1.0D, vec3d4.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
                     }
 
-                    double e = 2.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    double f = 1.5D * (1.0D - target.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
-                    target.addVelocity(vec3d3.getX() * e, vec3d3.getY() * f, vec3d3.getZ() * e);
+                    double e = 2.5D * (1.0D - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+                    double f = 1.5D * (1.0D - target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+                    target.push(vec3d3.x() * e, vec3d3.y() * f, vec3d3.z() * e);
                     canFinishAttack = false;
                 }
             }
@@ -135,9 +135,9 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
         if (this.mob.getPhase() == 1) {
             return 16.0D;
         } else if (this.mob.getPhase() == 3) {
-            return (double) (this.mob.getWidth() * 3.0F * this.mob.getWidth() * 3.0F + entity.getWidth());
+            return (double) (this.mob.getBbWidth() * 3.0F * this.mob.getBbWidth() * 3.0F + entity.getBbWidth());
         }
 
-        return (double) (this.mob.getWidth() * 2.0F * this.mob.getWidth() * 2.0F + entity.getWidth());
+        return (double) (this.mob.getBbWidth() * 2.0F * this.mob.getBbWidth() * 2.0F + entity.getBbWidth());
     }
 }

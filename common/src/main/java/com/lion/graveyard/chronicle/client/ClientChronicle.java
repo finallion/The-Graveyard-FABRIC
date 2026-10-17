@@ -3,7 +3,7 @@ package com.lion.graveyard.chronicle.client;
 import com.lion.graveyard.Graveyard;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -21,8 +21,8 @@ public final class ClientChronicle {
         found = new LinkedHashSet<>(pages);
 
         if (newlyFound != null && Graveyard.getConfig().flag("chronicleToasts", true)) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            client.getToastManager().add(new ChronicleToast(newlyFound));
+            Minecraft client = Minecraft.getInstance();
+            client.getToasts().addToast(new ChronicleToast(newlyFound));
         }
     }
 

@@ -2,37 +2,36 @@ package com.lion.graveyard.chronicle.client;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.mixin.client.HandledScreenAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.text.Text;
-
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
 
-public class ChronicleButton extends TexturedButtonWidget {
+public class ChronicleButton extends ImageButton {
 
     private final HandledScreenAccessor inventory;
 
     private ChronicleButton(InventoryScreen inventory) {
         super(0, 0, 20, 20, 0, 0, 20, ChronicleScreen.BUTTON_TEXTURE, 20, 40,
-                button -> MinecraftClient.getInstance().setScreen(new ChronicleScreen(inventory)));
+                button -> Minecraft.getInstance().setScreen(new ChronicleScreen(inventory)));
         this.inventory = (HandledScreenAccessor) inventory;
-        this.setTooltip(Tooltip.of(Text.translatable("chronicle.graveyard.open")));
+        this.setTooltip(Tooltip.create(Component.translatable("chronicle.graveyard.open")));
         this.followInventory();
     }
 
-    public static void addTo(Screen screen, Consumer<ClickableWidget> addWidget) {
+    public static void addTo(Screen screen, Consumer<AbstractWidget> addWidget) {
         if (screen instanceof InventoryScreen inventory && Graveyard.getConfig().flag("chronicleInventoryButton", true)) {
             addWidget.accept(new ChronicleButton(inventory));
         }
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.followInventory();
         super.render(context, mouseX, mouseY, delta);
     }
@@ -49,7 +48,7 @@ public class ChronicleButton extends TexturedButtonWidget {
     }
 
     private static boolean hasStatusEffects() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        return client.player != null && !client.player.getStatusEffects().isEmpty();
+        Minecraft client = Minecraft.getInstance();
+        return client.player != null && !client.player.getActiveEffects().isEmpty();
     }
 }

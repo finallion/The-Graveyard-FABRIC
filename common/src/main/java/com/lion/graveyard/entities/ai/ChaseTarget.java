@@ -1,27 +1,27 @@
 package com.lion.graveyard.entities.ai;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 /// Other mobs can set a target that nothing clears later.
 public final class ChaseTarget {
     private ChaseTarget() {
     }
 
-    public static boolean isLive(MobEntity mob) {
+    public static boolean isLive(Mob mob) {
         LivingEntity target = mob.getTarget();
 
         if (target == null || !target.isAlive() || target.isRemoved()) {
             return false;
         }
 
-        if (target instanceof PlayerEntity player && (player.isCreative() || player.isSpectator())) {
+        if (target instanceof Player player && (player.isCreative() || player.isSpectator())) {
             return false;
         }
 
-        double range = mob.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE);
-        return mob.squaredDistanceTo(target) <= range * range;
+        double range = mob.getAttributeValue(Attributes.FOLLOW_RANGE);
+        return mob.distanceToSqr(target) <= range * range;
     }
 }

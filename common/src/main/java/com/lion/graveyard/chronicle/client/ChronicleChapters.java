@@ -7,11 +7,10 @@ import com.google.gson.JsonParser;
 import com.lion.graveyard.Graveyard;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.GsonHelper;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -37,22 +36,22 @@ public final class ChronicleChapters {
 
     public static List<Chapter> load() {
         List<Chapter> chapters = new ArrayList<>();
-        Map<Identifier, Resource> resources = MinecraftClient.getInstance().getResourceManager()
-                .findResources(DIRECTORY, id -> id.getPath().endsWith(".json"));
+        Map<ResourceLocation, Resource> resources = Minecraft.getInstance().getResourceManager()
+                .listResources(DIRECTORY, id -> id.getPath().endsWith(".json"));
         resources.forEach((id, resource) -> {
-            try (Reader reader = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+            try (Reader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 String path = id.getPath();
                 String chapterId = path.substring(DIRECTORY.length() + 1, path.length() - ".json".length());
                 List<String> pages = new ArrayList<>();
-                JsonArray array = JsonHelper.getArray(json, "pages");
+                JsonArray array = GsonHelper.getAsJsonArray(json, "pages");
                 for (JsonElement element : array) {
                     pages.add(element.getAsString());
                 }
                 chapters.add(new Chapter(chapterId,
-                        JsonHelper.getInt(json, "act", 1),
-                        JsonHelper.getInt(json, "order", 0),
-                        JsonHelper.getString(json, "source", ""),
+                        GsonHelper.getAsInt(json, "act", 1),
+                        GsonHelper.getAsInt(json, "order", 0),
+                        GsonHelper.getAsString(json, "source", ""),
                         pages));
             } catch (Exception e) {
                 Graveyard.LOGGER.error("Skipping chronicle chapter {}: {}", id, e.getMessage());

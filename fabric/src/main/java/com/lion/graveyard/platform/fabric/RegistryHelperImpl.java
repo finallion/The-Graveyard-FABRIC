@@ -8,133 +8,137 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.item.*;
-import net.minecraft.loot.condition.LootConditionType;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.text.Text;
-import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.StructureType;
-
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.EggItem;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.RecordItem;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class RegistryHelperImpl {
 
     public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
-        var registry = Registry.register(Registries.BLOCK, Graveyard.id(name), block.get());
+        var registry = Registry.register(BuiltInRegistries.BLOCK, Graveyard.id(name), block.get());
         return () -> registry;
     }
 
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
-        var registry = Registry.register(Registries.ITEM, Graveyard.id(name), item.get());
+        var registry = Registry.register(BuiltInRegistries.ITEM, Graveyard.id(name), item.get());
         return () -> registry;
     }
 
-    public static void registerItemGroup(RegistryKey<ItemGroup> registryKey, String name, String literalName, Item item) {
-        Registry.register(Registries.ITEM_GROUP, registryKey,
+    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, registryKey,
                 FabricItemGroup.builder()
-                        .displayName(Text.literal(literalName))
+                        .title(Component.literal(literalName))
                         .icon(() -> new ItemStack(item)).build());
     }
 
-    public static void registerItemGroupWithIcon(RegistryKey<ItemGroup> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
-        Registry.register(Registries.ITEM_GROUP, registryKey,
+    public static void registerItemGroupWithIcon(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, registryKey,
                 FabricItemGroup.builder()
-                        .displayName(Text.literal(literalName))
+                        .title(Component.literal(literalName))
                         .icon(icon).build());
     }
 
-    public static void addToItemGroup(RegistryKey<ItemGroup> itemGroup, Item item) {
-        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> content.add(item.getDefaultStack()));
+    public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
+        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> content.accept(item.getDefaultInstance()));
     }
 
-    public static void addStacksToItemGroup(RegistryKey<ItemGroup> itemGroup, Supplier<List<ItemStack>> stacks) {
-        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> stacks.get().forEach(content::add));
+    public static void addStacksToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Supplier<List<ItemStack>> stacks) {
+        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> stacks.get().forEach(content::accept));
     }
 
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends MobEntity>> type, int backgroundColor, int highlightColor, Item.Settings props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
         return (Supplier<T>) registerItem(name, () -> new SpawnEggItem(type.get(), backgroundColor, highlightColor, props));
     }
 
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Settings props, int length) {
-        return (Supplier<T>) registerItem(name, () -> new MusicDiscItem(compOutput, event.get(), props, length));
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
+        return (Supplier<T>) registerItem(name, () -> new RecordItem(compOutput, event.get(), props, length));
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
-        var registry = Registry.register(Registries.BLOCK_ENTITY_TYPE, Graveyard.id(name), blockEntity.get());
+        var registry = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Graveyard.id(name), blockEntity.get());
         return () -> registry;
     }
 
     public static <T extends Structure> void registerStructureType(String name, StructureType<T> structureType) {
-        Registry.register(Registries.STRUCTURE_TYPE, Graveyard.id(name), structureType);
+        Registry.register(BuiltInRegistries.STRUCTURE_TYPE, Graveyard.id(name), structureType);
     }
 
-    public static void registerParticleType(String name, DefaultParticleType particleType) {
-        Registry.register(Registries.PARTICLE_TYPE, Graveyard.createStringID(name), particleType);
+    public static void registerParticleType(String name, SimpleParticleType particleType) {
+        Registry.register(BuiltInRegistries.PARTICLE_TYPE, Graveyard.createStringID(name), particleType);
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
-        Registry.register(Registries.STRUCTURE_PROCESSOR, Graveyard.id(name), processorType);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id(name), processorType);
     }
 
-    public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
-        Registry.register(Registries.SCREEN_HANDLER, Graveyard.id(name), screenHandlerType);
+    public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {
+        Registry.register(BuiltInRegistries.MENU, Graveyard.id(name), screenHandlerType);
     }
 
-    public static void registerRenderType(RenderLayer type, Block... blocks) {
+    public static void registerRenderType(RenderType type, Block... blocks) {
         BlockRenderLayerMap.INSTANCE.putBlocks(type, blocks);
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {
-        var registry = Registry.register(Registries.SOUND_EVENT, Graveyard.id(name), soundEvent.get());
+        var registry = Registry.register(BuiltInRegistries.SOUND_EVENT, Graveyard.id(name), soundEvent.get());
         return () -> registry;
     }
 
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererFactory<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
         EntityRendererRegistry.register(type.get(), renderProvider);
     }
 
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererFactory<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
         BlockEntityRendererRegistry.register(type.get(), renderProvider);
     }
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String name, Supplier<EntityType<T>> entityType) {
-        var registry = Registry.register(Registries.ENTITY_TYPE, Graveyard.id(name), entityType.get());
+        var registry = Registry.register(BuiltInRegistries.ENTITY_TYPE, Graveyard.id(name), entityType.get());
         return () -> registry;
     }
 
-    public static void registerEntityModelLayer(EntityModelLayer location, Supplier<TexturedModelData> definition) {
+    public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
         EntityModelLayerRegistry.registerModelLayer(location, definition::get);
     }
 
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<DefaultAttributeContainer.Builder> attribute) {
+    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
         FabricDefaultAttributeRegistry.register(type.get(), attribute.get());
     }
 
     public static <T extends Recipe<?>> Supplier<RecipeType<T>> registerRecipeType(String name, RecipeType<T> type) {
-        var registry = Registry.register(Registries.RECIPE_TYPE, Graveyard.id(name), type);
+        var registry = Registry.register(BuiltInRegistries.RECIPE_TYPE, Graveyard.id(name), type);
         return () -> registry;
     }
 
@@ -143,7 +147,7 @@ public class RegistryHelperImpl {
         return () -> registry;
     }
 
-    public static LootConditionType registerLootCondition(String name, LootConditionType type) {
-        return Registry.register(Registries.LOOT_CONDITION_TYPE, Graveyard.id(name), type);
+    public static LootItemConditionType registerLootCondition(String name, LootItemConditionType type) {
+        return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Graveyard.id(name), type);
     }
 }

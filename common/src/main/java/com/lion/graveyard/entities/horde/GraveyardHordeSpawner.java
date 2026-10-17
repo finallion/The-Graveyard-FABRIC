@@ -6,36 +6,36 @@ import com.lion.graveyard.entities.HordeGraveyardEntity;
 import com.lion.graveyard.entities.HostileGraveyardEntity;
 import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.init.TGEntities;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BiomeTags;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.SpawnHelper;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.spawner.Spawner;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.NaturalSpawner;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 
-public class GraveyardHordeSpawner implements Spawner {
+public class GraveyardHordeSpawner implements CustomSpawner {
     private int ticksUntilNextSpawn;
 
     public GraveyardHordeSpawner() {}
 
-    public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
+    public int tick(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals) {
         if (!spawnMonsters) {
             return 0;
         } else if (!Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).enabled || Graveyard.getConfig().structuresOnly()) {
            return 0;
         } else {
-            Random random = world.random;
+            RandomSource random = world.random;
             --this.ticksUntilNextSpawn;
 
             if (this.ticksUntilNextSpawn > 0) {
@@ -49,29 +49,29 @@ public class GraveyardHordeSpawner implements Spawner {
                     if (random.nextDouble() >= horde.chance()) {
                         return 0;
                     } else {
-                        int i = world.getPlayers().size();
+                        int i = world.players().size();
 
                         if (i < 1) {
                             return 0;
                         } else {
-                            PlayerEntity playerEntity = (PlayerEntity)world.getPlayers().get(random.nextInt(i));
+                            Player playerEntity = (Player)world.players().get(random.nextInt(i));
 
                             if (playerEntity.isSpectator()) {
                                 return 0;
-                            } else if (world.isNearOccupiedPointOfInterest(playerEntity.getBlockPos(), 2)) {
+                            } else if (world.isCloseToVillage(playerEntity.blockPosition(), 2)) {
                                 return 0;
                             } else {
                                 int distanceSpan = Math.max(1, horde.farDistance() - horde.nearDistance());
                                 int j = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
                                 int k = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
-                                BlockPos.Mutable mutable = playerEntity.getBlockPos().mutableCopy().move(j, 0, k);
+                                BlockPos.MutableBlockPos mutable = playerEntity.blockPosition().mutable().move(j, 0, k);
 
-                                if (!world.isRegionLoaded(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
+                                if (!world.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
                                     return 0;
                                 } else {
-                                    RegistryEntry<Biome> registryEntry = world.getBiome(mutable);
+                                    Holder<Biome> registryEntry = world.getBiome(mutable);
 
-                                    if (registryEntry.isIn(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
+                                    if (registryEntry.is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
                                         return 0;
                                     } else {
                                         int n = 0;
@@ -81,15 +81,15 @@ public class GraveyardHordeSpawner implements Spawner {
 
                                         for (int p = 0; p < o; ++p) {
                                             ++n;
-                                            mutable.setY(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
+                                            mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
 
                                             if (p == 0) {
                                                 if (!this.spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
                                                     break;
                                                 }
 
-                                                if (playerEntity instanceof ServerPlayerEntity targeted) {
-                                                    targeted.sendMessage(Text.translatable("entity.graveyard.horde.appeared"), false);
+                                                if (playerEntity instanceof ServerPlayer targeted) {
+                                                    targeted.displayClientMessage(Component.translatable("entity.graveyard.horde.appeared"), false);
                                                 }
                                             } else {
                                                 this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
@@ -112,17 +112,18 @@ public class GraveyardHordeSpawner implements Spawner {
         }
     }
 
-    private boolean spawnHordeEntity(ServerWorld world, BlockPos pos, Random random, boolean captain, boolean illagerSpawn) {
+    private boolean spawnHordeEntity(ServerLevel world, BlockPos pos, RandomSource random, boolean captain, boolean illagerSpawn) {
         BlockState blockState = world.getBlockState(pos);
-        BlockState downState = world.getBlockState(pos.down());
+        BlockState downState = world.getBlockState(pos.below());
 
-        if (!SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL.get()) || !SpawnHelper.isClearForSpawn(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT.get())) {
+        if (!NaturalSpawner.isValidEmptySpawnBlock(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL.get()) || !NaturalSpawner.isValidEmptySpawnBlock(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT.get())) {
             return false;
-        } else if (world.getLightLevel(pos) > 1) {
+        } else if (world.getMaxLocalRawBrightness(pos) > 1) {
             return false;
-        } else if (blockState.getFluidState().isIn(FluidTags.WATER) || downState.getFluidState().isIn(FluidTags.WATER)) {
+        } else if (blockState.getFluidState().is(FluidTags.WATER)
+                || downState.getFluidState().is(FluidTags.WATER)) {
             return false;
-        } else if (!HostileGraveyardEntity.canSpawnInDarkness(TGEntities.GHOUL.get(), world, SpawnReason.PATROL, pos, random)) {
+        } else if (!HostileGraveyardEntity.canSpawnInDarkness(TGEntities.GHOUL.get(), world, MobSpawnType.PATROL, pos, random)) {
             return false;
         } else {
             HordeGraveyardEntity hordeEntity;
@@ -142,7 +143,7 @@ public class GraveyardHordeSpawner implements Spawner {
                 }
             }
 
-            if (hordeEntity != null && MobSpawnGate.blocks(hordeEntity.getType(), SpawnReason.PATROL)) {
+            if (hordeEntity != null && MobSpawnGate.blocks(hordeEntity.getType(), MobSpawnType.PATROL)) {
                 return false;
             }
 
@@ -153,10 +154,10 @@ public class GraveyardHordeSpawner implements Spawner {
                     hordeEntity.setRandomPatrolTarget();
                 }
 
-                hordeEntity.setPosition((double)pos.getX(), (double)pos.getY(), (double)pos.getZ());
-                hordeEntity.initialize(world, world.getLocalDifficulty(pos), SpawnReason.PATROL, (EntityData)null, (NbtCompound)null);
+                hordeEntity.setPos((double)pos.getX(), (double)pos.getY(), (double)pos.getZ());
+                hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, (SpawnGroupData)null, (CompoundTag)null);
                 hordeEntity.getNavigation().stop();
-                world.spawnEntityAndPassengers(hordeEntity);
+                world.addFreshEntityWithPassengers(hordeEntity);
                 return true;
             } else {
                 return false;

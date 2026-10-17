@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.util.TypedActionResult;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -20,7 +19,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.InteractionResultHolder;
 
 
 public class GraveyardFabric implements ModInitializer {
@@ -33,7 +33,7 @@ public class GraveyardFabric implements ModInitializer {
         registerServerEvents();
         registerCommands();
 
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new NamelessHangedTradeOfferResourceListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new NamelessHangedTradeOfferResourceListener());
     }
 
     private void registerCommands() {
@@ -56,7 +56,7 @@ public class GraveyardFabric implements ModInitializer {
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> CommonEvents.onDeath(entity));
         UseItemCallback.EVENT.register((player, world, hand) -> {
             CommonEvents.onUseItem(player, hand);
-            return TypedActionResult.pass(player.getStackInHand(hand));
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         });
         UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
             CommonEvents.onUseBlock(player, world, hit.getBlockPos());

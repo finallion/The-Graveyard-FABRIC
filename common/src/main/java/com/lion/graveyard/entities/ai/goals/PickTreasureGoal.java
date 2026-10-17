@@ -2,15 +2,15 @@ package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.MagpieEntity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 
 /// Only flies to the item. The vanilla `loot()` path does the pickup, as for the fox.
 public class PickTreasureGoal extends Goal {
@@ -26,18 +26,18 @@ public class PickTreasureGoal extends Goal {
 
     public PickTreasureGoal(MagpieEntity magpie) {
         this.magpie = magpie;
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean canStart() {
-        if (this.magpie.isPecking() || !this.magpie.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty()) {
+    public boolean canUse() {
+        if (this.magpie.isPecking() || !this.magpie.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
             return false;
         }
 
-        World world = this.magpie.getWorld();
+        Level world = this.magpie.level();
         // The vanilla pickup needs the mobGriefing game rule.
-        if (!world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
+        if (!world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
             return false;
         }
 
@@ -47,13 +47,13 @@ public class PickTreasureGoal extends Goal {
 
     @Nullable
     private ItemEntity findTreasure() {
-        List<ItemEntity> items = this.magpie.getWorld().getEntitiesByClass(ItemEntity.class,
-                this.magpie.getBoundingBox().expand(8.0D, 4.0D, 8.0D),
-                item -> !item.cannotPickup() && this.magpie.canGather(item.getStack()));
+        List<ItemEntity> items = this.magpie.level().getEntitiesOfClass(ItemEntity.class,
+                this.magpie.getBoundingBox().inflate(8.0D, 4.0D, 8.0D),
+                item -> !item.hasPickUpDelay() && this.magpie.wantsToPickUp(item.getItem()));
         ItemEntity closest = null;
         double closestDistance = Double.MAX_VALUE;
         for (ItemEntity item : items) {
-            double distance = this.magpie.squaredDistanceTo(item);
+            double distance = this.magpie.distanceToSqr(item);
 
             if (distance < closestDistance) {
                 closest = item;
@@ -64,7 +64,7 @@ public class PickTreasureGoal extends Goal {
     }
 
     @Override
-    public boolean shouldRunEveryTick() {
+    public boolean requiresUpdateEveryTick() {
         return true;
     }
 
@@ -72,7 +72,7 @@ public class PickTreasureGoal extends Goal {
     public void start() {
         this.age = 0;
         this.magpie.takeOff();
-        this.magpie.getNavigation().startMovingTo(this.target, SPEED);
+        this.magpie.getNavigation().moveTo(this.target, SPEED);
     }
 
     @Override
@@ -80,15 +80,15 @@ public class PickTreasureGoal extends Goal {
         this.age++;
 
         if (this.target != null && this.age % RESCAN_INTERVAL == 0) {
-            this.magpie.getNavigation().startMovingTo(this.target, SPEED);
+            this.magpie.getNavigation().moveTo(this.target, SPEED);
         }
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return this.target != null && this.target.isAlive()
-                && this.magpie.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty()
-                && this.magpie.squaredDistanceTo(this.target) <= GIVE_UP_DISTANCE * GIVE_UP_DISTANCE
+                && this.magpie.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()
+                && this.magpie.distanceToSqr(this.target) <= GIVE_UP_DISTANCE * GIVE_UP_DISTANCE
                 && this.age <= MAX_DURATION;
     }
 

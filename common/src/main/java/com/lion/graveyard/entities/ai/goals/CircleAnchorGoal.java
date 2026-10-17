@@ -2,13 +2,12 @@ package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.CrowEntity;
 import com.lion.graveyard.util.CrowAnchors;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-
 import java.util.EnumSet;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 /// Flies the ring through the move control. A path to a moving point never settles.
 public class CircleAnchorGoal extends Goal {
@@ -35,11 +34,11 @@ public class CircleAnchorGoal extends Goal {
 
     public CircleAnchorGoal(CrowEntity crow) {
         this.crow = crow;
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
-    public boolean canStart() {
+    public boolean canUse() {
         if (this.crow.isAlarmed() || this.crow.isPecking() || this.crow.getAnchor() == null) {
             return false;
         }
@@ -59,7 +58,7 @@ public class CircleAnchorGoal extends Goal {
     }
 
     @Override
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         if (this.aborted || this.crow.isAlarmed() || this.crow.getAnchor() == null) {
             return false;
         }
@@ -92,20 +91,20 @@ public class CircleAnchorGoal extends Goal {
     }
 
     private int findMaxTop(BlockPos pos) {
-        World world = this.crow.getWorld();
-        int maxTop = world.getTopY(Heightmap.Type.MOTION_BLOCKING, pos.getX(), pos.getZ());
+        Level world = this.crow.level();
+        int maxTop = world.getHeight(Heightmap.Types.MOTION_BLOCKING, pos.getX(), pos.getZ());
         for (int k = 0; k < 8; k++) {
             float angle = k * (float) (Math.PI / 4.0D);
-            int x = pos.getX() + MathHelper.floor(MathHelper.cos(angle) * this.radius);
-            int z = pos.getZ() + MathHelper.floor(MathHelper.sin(angle) * this.radius);
-            maxTop = Math.max(maxTop, world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z));
+            int x = pos.getX() + Mth.floor(Mth.cos(angle) * this.radius);
+            int z = pos.getZ() + Mth.floor(Mth.sin(angle) * this.radius);
+            maxTop = Math.max(maxTop, world.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z));
         }
         return maxTop;
     }
 
     /// moveTo must run every tick. Otherwise the control goes to WAIT and the ring sags.
     @Override
-    public boolean shouldRunEveryTick() {
+    public boolean requiresUpdateEveryTick() {
         return true;
     }
 
@@ -132,9 +131,9 @@ public class CircleAnchorGoal extends Goal {
             return;
         }
 
-        double x = pos.getX() + 0.5D + MathHelper.cos(this.phase) * this.radius;
-        double z = pos.getZ() + 0.5D + MathHelper.sin(this.phase) * this.radius;
-        this.crow.getMoveControl().moveTo(x, this.ringY, z, SPEED);
+        double x = pos.getX() + 0.5D + Mth.cos(this.phase) * this.radius;
+        double z = pos.getZ() + 0.5D + Mth.sin(this.phase) * this.radius;
+        this.crow.getMoveControl().setWantedPosition(x, this.ringY, z, SPEED);
     }
 
     @Override

@@ -9,24 +9,24 @@ import com.lion.graveyard.entities.ai.goals.StartleGoal;
 import com.lion.graveyard.entities.ai.goals.WalkGoal;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGTags;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class MagpieEntity extends CorvidEntity {
 
     private boolean hopping;
     private boolean walking;
 
-    public MagpieEntity(EntityType<? extends CorvidEntity> type, World world) {
+    public MagpieEntity(EntityType<? extends CorvidEntity> type, Level world) {
         super(type, world);
         this.setCanPickUpLoot(true);
     }
@@ -37,16 +37,16 @@ public class MagpieEntity extends CorvidEntity {
     }
 
     @Override
-    protected void initGoals() {
-        this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new StartleGoal(this, 3.5D));
-        this.goalSelector.add(2, new HopAwayGoal(this));
-        this.goalSelector.add(3, new PickTreasureGoal(this));
-        this.goalSelector.add(4, new FlyOntoPerchGoal(this, 1.0D));
-        this.goalSelector.add(5, new HopGoal(this));
-        this.goalSelector.add(5, new WalkGoal(this));
-        this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(7, new LookAroundGoal(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new StartleGoal(this, 3.5D));
+        this.goalSelector.addGoal(2, new HopAwayGoal(this));
+        this.goalSelector.addGoal(3, new PickTreasureGoal(this));
+        this.goalSelector.addGoal(4, new FlyOntoPerchGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new HopGoal(this));
+        this.goalSelector.addGoal(5, new WalkGoal(this));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }
 
     @Override
@@ -73,43 +73,43 @@ public class MagpieEntity extends CorvidEntity {
     }
 
     @Override
-    public boolean canGather(ItemStack stack) {
+    public boolean wantsToPickUp(ItemStack stack) {
         return Graveyard.getConfig().flag("corvidsStealItems", true)
-                && stack.isIn(TGTags.MAGPIE_TREASURES) && this.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty();
+                && stack.is(TGTags.MAGPIE_TREASURES) && this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty();
     }
 
     @Override
-    protected void loot(ItemEntity item) {
-        ItemStack stack = item.getStack();
+    protected void pickUpItem(ItemEntity item) {
+        ItemStack stack = item.getItem();
 
-        if (this.canGather(stack)) {
+        if (this.wantsToPickUp(stack)) {
             ItemStack taken = stack.split(1);
-            this.equipStack(EquipmentSlot.MAINHAND, taken);
-            this.updateDropChances(EquipmentSlot.MAINHAND);
-            this.setPersistent();
-            this.sendPickup(item, 1);
-            this.triggerItemPickedUpByEntityCriteria(item);
+            this.setItemSlot(EquipmentSlot.MAINHAND, taken);
+            this.setGuaranteedDrop(EquipmentSlot.MAINHAND);
+            this.setPersistenceRequired();
+            this.take(item, 1);
+            this.onItemPickup(item);
         }
 
         if (stack.isEmpty()) {
             item.discard();
         } else {
             // The DataTracker syncs only a new instance, not a changed one.
-            item.setStack(stack.copy());
+            item.setItem(stack.copy());
         }
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
-        boolean hurt = super.damage(source, amount);
+    public boolean hurt(DamageSource source, float amount) {
+        boolean hurt = super.hurt(source, amount);
 
-        if (hurt && !this.getWorld().isClient() && !this.getEquippedStack(EquipmentSlot.MAINHAND).isEmpty()) {
-            if (source.getAttacker() instanceof ServerPlayerEntity player) {
+        if (hurt && !this.level().isClientSide() && !this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
+            if (source.getEntity() instanceof ServerPlayer player) {
                 TGAdvancements.MAGPIE_LOOT.trigger(player);
             }
 
-            this.dropStack(this.getEquippedStack(EquipmentSlot.MAINHAND));
-            this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            this.spawnAtLocation(this.getItemBySlot(EquipmentSlot.MAINHAND));
+            this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
 
         return hurt;

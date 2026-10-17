@@ -1,27 +1,26 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.GraveyardMinionEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-
 import java.util.EnumSet;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class SitGoal extends Goal {
     private final GraveyardMinionEntity tameable;
 
     public SitGoal(GraveyardMinionEntity tameable) {
         this.tameable = tameable;
-        this.setControls(EnumSet.of(Control.JUMP, Control.MOVE));
+        this.setFlags(EnumSet.of(Flag.JUMP, Flag.MOVE));
     }
 
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return this.tameable.isSitting();
     }
 
-    public boolean canStart() {
-        if (this.tameable.isInsideWaterOrBubbleColumn()) {
+    public boolean canUse() {
+        if (this.tameable.isInWaterOrBubble()) {
             return false;
-        } else if (!this.tameable.isOnGround()) {
+        } else if (!this.tameable.onGround()) {
             return false;
         } else {
             LivingEntity livingEntity = this.tameable.getOwner();
@@ -29,7 +28,7 @@ public class SitGoal extends Goal {
             if (livingEntity == null) {
                 return true;
             } else {
-                return (!(this.tameable.squaredDistanceTo(livingEntity) < 144.0D) || livingEntity.getAttacker() == null) && this.tameable.isSitting();
+                return (!(this.tameable.distanceToSqr(livingEntity) < 144.0D) || livingEntity.getLastHurtByMob() == null) && this.tameable.isSitting();
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.NightmareEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class NightmareMeleeAttackGoal extends AbstractGraveyardMeleeGoal<NightmareEntity> {
     private final int DAMAGE_START_IN_ANIM = 5;
@@ -25,7 +25,7 @@ public class NightmareMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Nightma
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.tryAttack(target);
+            this.mob.doHurtTarget(target);
             canFinishAttack = false;
         }
     }

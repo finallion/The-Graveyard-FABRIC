@@ -1,8 +1,6 @@
 package com.lion.graveyard.entities.animation;
 
 import com.lion.graveyard.platform.DevEnvironment;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationProcessor;
@@ -15,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 
 public final class AnimationPreview {
     public static final String ALL = "*";
@@ -33,7 +33,7 @@ public final class AnimationPreview {
             return null;
         }
 
-        Text name = entity.getCustomName();
+        Component name = entity.getCustomName();
 
         if (name == null) {
             return null;
@@ -68,7 +68,7 @@ public final class AnimationPreview {
             return null;
         }
 
-        String name = names.get(nextIndex(controller, names, entity.age + state.getPartialTick()));
+        String name = names.get(nextIndex(controller, names, entity.tickCount + state.getPartialTick()));
         return PLAYS.computeIfAbsent(name, key -> RawAnimation.begin().then(key, Animation.LoopType.PLAY_ONCE));
     }
 

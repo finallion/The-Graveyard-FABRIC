@@ -3,50 +3,50 @@ package com.lion.graveyard.platform;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.chronicle.Chronicle;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 /// Server → client: the full set of found pages, plus the one that was just found (for the toast).
 public final class ChronicleSync {
-    public static final Identifier CHANNEL = Graveyard.id("chronicle");
+    public static final ResourceLocation CHANNEL = Graveyard.id("chronicle");
 
     private ChronicleSync() {}
 
     @ExpectPlatform
-    public static void send(ServerPlayerEntity player, Collection<String> found, @Nullable String newlyFound) {
+    public static void send(ServerPlayer player, Collection<String> found, @Nullable String newlyFound) {
         throw new AssertionError();
     }
 
-    public static void write(PacketByteBuf buf, Collection<String> found, @Nullable String newlyFound) {
+    public static void write(FriendlyByteBuf buf, Collection<String> found, @Nullable String newlyFound) {
         List<String> valid = found.stream()
                 .filter(Chronicle::isValidId)
                 .toList();
         buf.writeVarInt(valid.size());
-        valid.forEach(buf::writeString);
+        valid.forEach(buf::writeUtf);
         boolean sendNew = Chronicle.isValidId(newlyFound);
         buf.writeBoolean(sendNew);
 
         if (sendNew) {
-            buf.writeString(newlyFound);
+            buf.writeUtf(newlyFound);
         }
     }
 
     public record Payload(Set<String> found, @Nullable String newlyFound) {}
 
-    public static Payload read(PacketByteBuf buf) {
+    public static Payload read(FriendlyByteBuf buf) {
         int count = buf.readVarInt();
         Set<String> found = new LinkedHashSet<>();
         for (int i = 0; i < count; i++) {
-            found.add(buf.readString());
+            found.add(buf.readUtf());
         }
-        String newlyFound = buf.readBoolean() ? buf.readString() : null;
+        String newlyFound = buf.readBoolean() ? buf.readUtf() : null;
         return new Payload(found, newlyFound);
     }
 }

@@ -1,24 +1,24 @@
 package com.lion.graveyard.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeUnlocker;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 
 public final class StaffRecipeLock {
     private StaffRecipeLock() {}
 
-    public static boolean isLocked(ServerPlayerEntity player, Recipe<?> recipe) {
-        Identifier id = recipe.getId();
+    public static boolean isLocked(ServerPlayer player, Recipe<?> recipe) {
+        ResourceLocation id = recipe.getId();
         return id.getNamespace().equals("graveyard") && id.getPath().endsWith("_bone_staff") && !player.getRecipeBook().contains(recipe);
     }
 
-    public static boolean blocksTake(PlayerEntity player, Inventory resultInventory) {
-        return player instanceof ServerPlayerEntity serverPlayer
-                && resultInventory instanceof RecipeUnlocker unlocker
-                && unlocker.getLastRecipe() != null
-                && isLocked(serverPlayer, unlocker.getLastRecipe());
+    public static boolean blocksTake(Player player, Container resultInventory) {
+        return player instanceof ServerPlayer serverPlayer
+                && resultInventory instanceof RecipeHolder unlocker
+                && unlocker.getRecipeUsed() != null
+                && isLocked(serverPlayer, unlocker.getRecipeUsed());
     }
 }

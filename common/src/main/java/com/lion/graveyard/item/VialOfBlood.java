@@ -1,11 +1,13 @@
 package com.lion.graveyard.item;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,11 +16,11 @@ public class VialOfBlood extends Item {
     private static final String BlOOD_KEY = "Blood";
 
     public VialOfBlood() {
-        super(new Item.Settings().maxCount(1));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public static float getBlood(ItemStack stack) {
-        NbtCompound nbtCompound = stack.getNbt();
+        CompoundTag nbtCompound = stack.getTag();
 
         if (nbtCompound == null) {
             return 0.1F;
@@ -28,7 +30,7 @@ public class VialOfBlood extends Item {
     }
 
     public static void setBlood(ItemStack stack, float blood) {
-        NbtCompound nbtCompound = stack.getOrCreateNbt();
+        CompoundTag nbtCompound = stack.getOrCreateTag();
 
         if (blood < 0.9F) {
             nbtCompound.putFloat(BlOOD_KEY, blood);
@@ -37,22 +39,22 @@ public class VialOfBlood extends Item {
 
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
         float blood = 0;
 
-        if (stack.hasNbt()) {
-            blood = stack.getNbt().getFloat(BlOOD_KEY);
+        if (stack.hasTag()) {
+            blood = stack.getTag().getFloat(BlOOD_KEY);
         }
 
         if (blood > 0.8F && blood < 0.9F) {
-            tooltip.add(Text.translatable("item.graveyard.vial_of_blood.level_full").formatted(Formatting.GRAY));
+            tooltip.add(Component.translatable("item.graveyard.vial_of_blood.level_full").withStyle(ChatFormatting.GRAY));
         } else {
             int level = Math.max(1, (int) (blood * 10));
-            tooltip.add(Text.translatable("item.graveyard.vial_of_blood.level", level).formatted(Formatting.GRAY));
+            tooltip.add(Component.translatable("item.graveyard.vial_of_blood.level", level).withStyle(ChatFormatting.GRAY));
         }
 
-        tooltip.add(Text.translatable("item.graveyard.vial_of_blood.lore").formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
-        tooltip.add(Text.translatable("item.graveyard.vial_of_blood.hint").formatted(Formatting.DARK_GRAY));
+        tooltip.add(Component.translatable("item.graveyard.vial_of_blood.lore").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable("item.graveyard.vial_of_blood.hint").withStyle(ChatFormatting.DARK_GRAY));
 
     }
 }

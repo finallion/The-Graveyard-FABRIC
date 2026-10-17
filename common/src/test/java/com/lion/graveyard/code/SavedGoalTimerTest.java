@@ -35,12 +35,12 @@ class SavedGoalTimerTest {
         Set<String> saved = new TreeSet<>(Sources.matches(SAVED_GETTER, entityCode, 1));
         List<String> problems = new ArrayList<>();
         for (GoalBody goal : goals(entityCode)) {
-            String shouldContinue = JavaText.joinedBodies(JavaText.methods(goal.code()), "shouldContinue");
-            String canStart = JavaText.joinedBodies(JavaText.methods(goal.code()), "canStart");
+            String canContinueToUse = JavaText.joinedBodies(JavaText.methods(goal.code()), "canContinueToUse");
+            String canUse = JavaText.joinedBodies(JavaText.methods(goal.code()), "canUse");
             for (String getter : saved) {
-                if (activeCheck(getter).matcher(shouldContinue).find()
-                        && !activeCheck(getter).matcher(canStart).find()) {
-                    problems.add(goal.name() + " runs on saved " + getter + " but canStart never resumes it");
+                if (activeCheck(getter).matcher(canContinueToUse).find()
+                        && !activeCheck(getter).matcher(canUse).find()) {
+                    problems.add(goal.name() + " runs on saved " + getter + " but canUse never resumes it");
                 }
             }
         }
@@ -51,10 +51,10 @@ class SavedGoalTimerTest {
         Set<String> saved = new TreeSet<>(Sources.matches(SAVED_GETTER, entityCode, 1));
         int count = 0;
         for (GoalBody goal : goals(entityCode)) {
-            String shouldContinue = JavaText.joinedBodies(JavaText.methods(goal.code()), "shouldContinue");
+            String canContinueToUse = JavaText.joinedBodies(JavaText.methods(goal.code()), "canContinueToUse");
 
             if (saved.stream()
-                    .anyMatch(getter -> activeCheck(getter).matcher(shouldContinue).find())) {
+                    .anyMatch(getter -> activeCheck(getter).matcher(canContinueToUse).find())) {
                 count++;
             }
         }
@@ -96,11 +96,11 @@ class SavedGoalTimerTest {
 
     @Test
     void checkCatchesAGoalWithoutResume() {
-        String saved = "void writeCustomDataToNbt(NbtCompound nbt) { nbt.putInt(\"HealTimer\", getHealTimer()); }\n";
-        String broken = saved + "class HealGoal extends Goal { public boolean canStart() { return getHealTimer() <= -600; }\n"
-                + " public boolean shouldContinue() { return getHealTimer() > 0; } }";
-        String fixed = saved + "class HealGoal extends Goal { public boolean canStart() { if (getHealTimer() > 1) { return true; } return false; }\n"
-                + " public boolean shouldContinue() { return getHealTimer() > 0; } }";
+        String saved = "void addAdditionalSaveData(CompoundTag nbt) { nbt.putInt(\"HealTimer\", getHealTimer()); }\n";
+        String broken = saved + "class HealGoal extends Goal { public boolean canUse() { return getHealTimer() <= -600; }\n"
+                + " public boolean canContinueToUse() { return getHealTimer() > 0; } }";
+        String fixed = saved + "class HealGoal extends Goal { public boolean canUse() { if (getHealTimer() > 1) { return true; } return false; }\n"
+                + " public boolean canContinueToUse() { return getHealTimer() > 0; } }";
         assertEquals(1, problems(broken).size());
         assertEquals(List.of(), problems(fixed));
     }

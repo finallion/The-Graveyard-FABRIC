@@ -1,10 +1,10 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.entities.TormentedVillagerEntity;
-import net.minecraft.block.entity.BellBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BellBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,17 +18,17 @@ public abstract class BellBlockEntityMixin {
     @Unique
     private long graveyard$lastScanTime = Long.MIN_VALUE / 2;
 
-    @Inject(method = "activate", at = @At("TAIL"))
+    @Inject(method = "onHit", at = @At("TAIL"))
     private void graveyard$redeemTormentedVillagers(Direction direction, CallbackInfo callback) {
         BlockEntity bell = (BlockEntity) (Object) this;
 
-        if (bell.getWorld() instanceof ServerWorld world) {
-            if (world.getTime() - this.graveyard$lastScanTime < SCAN_COOLDOWN_TICKS) {
+        if (bell.getLevel() instanceof ServerLevel world) {
+            if (world.getGameTime() - this.graveyard$lastScanTime < SCAN_COOLDOWN_TICKS) {
                 return;
             }
 
-            this.graveyard$lastScanTime = world.getTime();
-            TormentedVillagerEntity.onBellRung(world, bell.getPos());
+            this.graveyard$lastScanTime = world.getGameTime();
+            TormentedVillagerEntity.onBellRung(world, bell.getBlockPos());
         }
     }
 }

@@ -1,15 +1,15 @@
 package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 
 public class TGParticles {
 
-    public static DefaultParticleType GRAVEYARD_FOG_PARTICLE = new DefaultParticleType(false);
-    public static DefaultParticleType GRAVEYARD_SOUL_PARTICLE = new DefaultParticleType(false);
-    public static DefaultParticleType GRAVEYARD_HAND_PARTICLE = new DefaultParticleType(false);
-    public static DefaultParticleType GRAVEYARD_LEFT_HAND_PARTICLE = new DefaultParticleType(false);
-    public static DefaultParticleType GRAVEYARD_SOUL_BEAM_PARTICLE = new DefaultParticleType(false);
+    public static SimpleParticleType GRAVEYARD_FOG_PARTICLE = new SimpleParticleType(false);
+    public static SimpleParticleType GRAVEYARD_SOUL_PARTICLE = new SimpleParticleType(false);
+    public static SimpleParticleType GRAVEYARD_HAND_PARTICLE = new SimpleParticleType(false);
+    public static SimpleParticleType GRAVEYARD_LEFT_HAND_PARTICLE = new SimpleParticleType(false);
+    public static SimpleParticleType GRAVEYARD_SOUL_BEAM_PARTICLE = new SimpleParticleType(false);
 
     static {
         RegistryHelper.registerParticleType("graveyard_fog_particle", GRAVEYARD_FOG_PARTICLE);

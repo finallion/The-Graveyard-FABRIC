@@ -1,5 +1,6 @@
 package com.lion.graveyard.compat;
 
+import com.lion.graveyard.support.Floors;
 import com.lion.graveyard.support.ModProject;
 import com.lion.graveyard.support.NbtKeys;
 import com.lion.graveyard.support.Sources;
@@ -54,22 +55,22 @@ class NbtCompatibilityTest {
                 assertTrue(unread.isEmpty(), "Written but never read: " + unread);
             }));
         }
-        return tests.stream();
+        return Floors.atLeast(15, "files that read NBT", tests.stream());
     }
 
     @Test
     void extractorResolvesLiteralsConstantsAndInventoryHelpers() {
         String code = "static final String PAGE_KEY = \"page\";\n"
-                + "void r(NbtCompound nbt) { nbt.getString(PAGE_KEY); nbt.contains(\"front_text\"); Inventories.readNbt(nbt, l); deserializeLootTable(nbt); }\n"
-                + "void w(NbtCompound nbt) { nbt.putString(PAGE_KEY, p); nbt.putBoolean(\"is_waxed\", true); }";
+                + "void r(CompoundTag nbt) { nbt.getString(PAGE_KEY); nbt.contains(\"front_text\"); ContainerHelper.loadAllItems(nbt, l); tryLoadLootTable(nbt); }\n"
+                + "void w(CompoundTag nbt) { nbt.putString(PAGE_KEY, p); nbt.putBoolean(\"is_waxed\", true); }";
         assertEquals(Set.of("page", "front_text", "Items", "LootTable"), NbtKeys.readKeys(code));
         assertEquals(Set.of("page", "is_waxed"), NbtKeys.writeKeys(code));
     }
 
     @Test
     void removingAReadKeyIsDetected() {
-        Set<String> before = NbtKeys.readKeys("void r(NbtCompound nbt) { nbt.getBoolean(\"is_waxed\"); nbt.getString(\"material\"); }");
-        Set<String> after = NbtKeys.readKeys("void r(NbtCompound nbt) { nbt.getBoolean(\"is_waxed\"); }");
+        Set<String> before = NbtKeys.readKeys("void r(CompoundTag nbt) { nbt.getBoolean(\"is_waxed\"); nbt.getString(\"material\"); }");
+        Set<String> after = NbtKeys.readKeys("void r(CompoundTag nbt) { nbt.getBoolean(\"is_waxed\"); }");
         assertFalse(after.containsAll(before));
     }
 }

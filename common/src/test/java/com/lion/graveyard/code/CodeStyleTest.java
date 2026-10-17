@@ -30,7 +30,7 @@ class CodeStyleTest {
     private static final Pattern CASE_LABEL = Pattern.compile("^(case\\b.*|default)\\s*(:|->)");
     private static final Pattern CALL = Pattern.compile("\\)\\s*\\.\\s*(\\w+)\\s*\\(");
     private static final Pattern STREAM_SOURCE = Pattern.compile("\\.stream\\(\\)|Stream\\.of\\(|Arrays\\.stream\\(|\\.entrySet\\(\\)\\s*\\.\\s*stream");
-    private static final Pattern GETTER = Pattern.compile("^(get|is)[A-Z].*");
+    private static final Pattern GETTER = Pattern.compile("^(get|is)([A-Z].*)?$");
 
     record Finding(String rule, int line, String text) {
     }

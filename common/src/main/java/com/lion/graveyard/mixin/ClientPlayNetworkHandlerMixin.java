@@ -2,15 +2,15 @@ package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import com.lion.graveyard.gui.GravestoneScreen;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.NetworkThreadUtils;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.SignEditorOpenS2CPacket;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.PacketUtils;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,28 +18,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 public class ClientPlayNetworkHandlerMixin {
 
     @Shadow
-    private ClientWorld world;
+    private ClientLevel level;
 
     @Final
     @Shadow
-    private MinecraftClient client;
+    private Minecraft minecraft;
 
-    @Inject(method = "onSignEditorOpen", at = @At(value = "HEAD"), cancellable = true)
-    public void openSignEditor(SignEditorOpenS2CPacket packet, CallbackInfo info) {
-        NetworkThreadUtils.forceMainThread(packet, (ClientPlayPacketListener) this, this.client);
+    @Inject(method = "handleOpenSignEditor", at = @At(value = "HEAD"), cancellable = true)
+    public void openSignEditor(ClientboundOpenSignEditorPacket packet, CallbackInfo info) {
+        PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, this.minecraft);
         BlockPos blockPos = packet.getPos();
 
-        BlockEntity var4 = this.world.getBlockEntity(blockPos);
+        BlockEntity var4 = this.level.getBlockEntity(blockPos);
 
         if (var4 instanceof GravestoneBlockEntity) {
-            BlockState blockState = this.world.getBlockState(blockPos);
+            BlockState blockState = this.level.getBlockState(blockPos);
             GravestoneBlockEntity signBlockEntity2 = new GravestoneBlockEntity(blockPos, blockState);
-            signBlockEntity2.setWorld(this.world);
-            MinecraftClient.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
+            signBlockEntity2.setLevel(this.level);
+            Minecraft.getInstance().setScreen(new GravestoneScreen((GravestoneBlockEntity) var4,  false));
             info.cancel();
         }
     }

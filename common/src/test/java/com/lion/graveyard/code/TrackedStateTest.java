@@ -1,5 +1,6 @@
 package com.lion.graveyard.code;
 
+import com.lion.graveyard.support.Floors;
 import com.lion.graveyard.support.JavaText;
 import com.lion.graveyard.support.MobAnimations;
 import com.lion.graveyard.support.ModProject;
@@ -24,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /// Source-level guards for state that the server and the client must see the same way.
 class TrackedStateTest {
-    private static final Pattern SPAWN_CALL = Pattern.compile("\\.spawnEntity(?:AndPassengers)?\\(\\s*(\\w+)\\s*\\)");
-    private static final Pattern SPAWN_ANY = Pattern.compile("\\.spawnEntity(?:AndPassengers)?\\(");
+    private static final Pattern SPAWN_CALL = Pattern.compile("\\.addFreshEntity(?:WithPassengers)?\\(\\s*(\\w+)\\s*\\)");
+    private static final Pattern SPAWN_ANY = Pattern.compile("\\.addFreshEntity(?:WithPassengers)?\\(");
     private static final Pattern SPAWNED_VARIABLE = Pattern.compile("^\\s*(?:\\(\\s*[\\w.<>]+\\s*\\)\\s*)?(\\w+)\\s*$");
-    private static final String SPAWN_STATE_SETTERS = "onSummoned|startSpawnAnimation|prepareSpawn|initialize|set\\w*|addStatusEffect";
-    private static final Pattern STALE_TARGET_FLAG = Pattern.compile("dataTracker\\s*\\.\\s*set\\(\\s*\\w*(?:CHAS|RUN|HUNT|WANDER|NAVIG|PURSU)\\w*|\\bset(?:Chas|Runn|Hunt|Wander|Pursu)\\w*\\(");
+    private static final String SPAWN_STATE_SETTERS = "onSummoned|startSpawnAnimation|prepareSpawn|finalizeSpawn|set\\w*|addEffect";
+    private static final Pattern STALE_TARGET_FLAG = Pattern.compile("entityData\\s*\\.\\s*set\\(\\s*\\w*(?:CHAS|RUN|HUNT|WANDER|NAVIG|PURSU)\\w*|\\bset(?:Chas|Runn|Hunt|Wander|Pursu)\\w*\\(");
     private static final Pattern RANDOM = Pattern.compile("\\brandom\\b|\\bgetRandom\\(|Math\\.random|randomUUID|\\bnext(?:Int|Float|Double|Boolean|Long|Gaussian)\\(");
     private static final Pattern TARGET_CALL = Pattern.compile("\\bgetTarget\\(\\)");
     private static final Pattern FIELD_INITIALIZER = Pattern.compile("(?m)^ {4}(?=\\S)([^\\n;=(){}]+?)\\s+(\\w+)\\s*=\\s*([^;]*);");
@@ -78,9 +79,9 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> mobStateIsSetBeforeTheEntityIsSpawned() {
-        return ModProject.files(ModProject.JAVA, ".java").stream()
+        return Floors.atLeast(5, "files that spawn entities", ModProject.files(ModProject.JAVA, ".java").stream()
                 .filter(file -> SPAWN_CALL.matcher(Sources.code(file)).find())
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), spawnOrderProblems(Sources.code(file)))));
+                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), spawnOrderProblems(Sources.code(file))))));
     }
 
     @Test
@@ -98,13 +99,13 @@ class TrackedStateTest {
 
     @Test
     void spawnOrderCheckCatchesLateState() {
-        String late = "void a() { Foo f = make(); world.spawnEntity(f); f.onSummoned(); }";
-        String lateEffect = "void a() { world.spawnEntity(lich); lich.addStatusEffect(x); lich.setInvisible(true); }";
-        String fine = "void a() { f.onSummoned(); f.setSpawnTimer(3); world.spawnEntityAndPassengers(f); f.playSpawnSounds(); }";
-        String otherMethod = "void a() { world.spawnEntity(f); } void b() { f.onSummoned(); }";
-        String lateSetter = "void a() { Foo f = make(); world.spawnEntity(f); f.setTarget(player); }";
-        String lateCast = "void a() { world.spawnEntity((Foo) f); f.setVariant(2); }";
-        String factory = "void a() { world.spawnEntity(make()); other.setThing(1); }";
+        String late = "void a() { Foo f = make(); world.addFreshEntity(f); f.onSummoned(); }";
+        String lateEffect = "void a() { world.addFreshEntity(lich); lich.addEffect(x); lich.setInvisible(true); }";
+        String fine = "void a() { f.onSummoned(); f.setSpawnTimer(3); world.addFreshEntityWithPassengers(f); f.playSpawnSounds(); }";
+        String otherMethod = "void a() { world.addFreshEntity(f); } void b() { f.onSummoned(); }";
+        String lateSetter = "void a() { Foo f = make(); world.addFreshEntity(f); f.setTarget(player); }";
+        String lateCast = "void a() { world.addFreshEntity((Foo) f); f.setVariant(2); }";
+        String factory = "void a() { world.addFreshEntity(make()); other.setThing(1); }";
         assertEquals(1, spawnOrderProblems(lateSetter).size());
         assertEquals(1, spawnOrderProblems(lateCast).size());
         assertEquals(List.of(), spawnOrderProblems(factory));
@@ -118,11 +119,11 @@ class TrackedStateTest {
 
     static List<String> trackedDefaultProblems(String code) {
         List<String> problems = new ArrayList<>();
-        for (String args : JavaText.callArguments(code, "startTracking(")) {
+        for (String args : JavaText.callArguments(code, "entityData.define(")) {
             List<String> parts = JavaText.splitTopLevel(args, ',');
 
             if (parts.size() >= 2 && RANDOM.matcher(parts.get(1)).find()) {
-                problems.add("startTracking(" + args.trim() + ") has a random default");
+                problems.add("entityData.define(" + args.trim() + ") has a random default");
             }
         }
         return problems;
@@ -130,23 +131,23 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> trackedDefaultsAreConstants() {
-        return ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> Sources.code(file).contains("startTracking("))
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), trackedDefaultProblems(Sources.code(file)))));
+        return Floors.atLeast(12, "files that define tracked data", ModProject.files(ModProject.JAVA, ".java").stream()
+                .filter(file -> Sources.code(file).contains("entityData.define("))
+                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), trackedDefaultProblems(Sources.code(file))))));
     }
 
     @Test
     void trackedDefaultCheckCatchesRandomValues() {
-        assertEquals(1, trackedDefaultProblems("dataTracker.startTracking(VARIANT, (byte) (this.random.nextInt(8) + 1));").size());
-        assertEquals(1, trackedDefaultProblems("dataTracker.startTracking(ID, UUID.randomUUID());").size());
-        assertEquals(List.of(), trackedDefaultProblems("dataTracker.startTracking(VARIANT, (byte) 0); dataTracker.startTracking(T, SPAWN_TICKS);"));
+        assertEquals(1, trackedDefaultProblems("entityData.define(VARIANT, (byte) (this.random.nextInt(8) + 1));").size());
+        assertEquals(1, trackedDefaultProblems("entityData.define(ID, UUID.randomUUID());").size());
+        assertEquals(List.of(), trackedDefaultProblems("entityData.define(VARIANT, (byte) 0); entityData.define(T, SPAWN_TICKS);"));
     }
 
     static List<String> initDataTrackerProblems(String code) {
         List<String> problems = new ArrayList<>();
-        for (String body : JavaText.methods(code).getOrDefault("initDataTracker", List.of())) {
+        for (String body : JavaText.methods(code).getOrDefault("defineSynchedData", List.of())) {
             if (RANDOM.matcher(body).find()) {
-                problems.add("initDataTracker draws a random value");
+                problems.add("defineSynchedData draws a random value");
             }
         }
         return problems;
@@ -154,16 +155,16 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> initDataTrackerDrawsNoRandomValues() {
-        return ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> Sources.code(file).contains("initDataTracker"))
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), initDataTrackerProblems(Sources.code(file)))));
+        return Floors.atLeast(12, "files that define synched data", ModProject.files(ModProject.JAVA, ".java").stream()
+                .filter(file -> Sources.code(file).contains("defineSynchedData"))
+                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), initDataTrackerProblems(Sources.code(file))))));
     }
 
     @Test
     void initDataTrackerCheckCatchesRandomValues() {
-        String bad = "protected void initDataTracker() { super.initDataTracker(); int v = this.random.nextInt(4); this.dataTracker.startTracking(V, (byte) v); }";
-        String viaHelper = "protected void initDataTracker() { this.dataTracker.startTracking(ID, UUID.randomUUID()); }";
-        String fine = "protected void initDataTracker() { super.initDataTracker(); this.dataTracker.startTracking(V, (byte) 0); } void tick() { random.nextInt(3); }";
+        String bad = "protected void defineSynchedData() { super.defineSynchedData(); int v = this.random.nextInt(4); this.entityData.define(V, (byte) v); }";
+        String viaHelper = "protected void defineSynchedData() { this.entityData.define(ID, UUID.randomUUID()); }";
+        String fine = "protected void defineSynchedData() { super.defineSynchedData(); this.entityData.define(V, (byte) 0); } void tick() { random.nextInt(3); }";
         assertEquals(1, initDataTrackerProblems(bad).size());
         assertEquals(1, initDataTrackerProblems(viaHelper).size());
         assertEquals(List.of(), initDataTrackerProblems(fine));
@@ -231,7 +232,7 @@ class TrackedStateTest {
     void untrackedReadCheckCatchesDirectAndIndirectReads() {
         String direct = "class E {\n    private int spawnTimer = 20;\n    void c() { x.when(() -> spawnTimer > 0, A); }\n}";
         String indirect = "class E {\n    private int spawnTimer = 20;\n    boolean isSpawning() { return this.spawnTimer > 0; }\n    void c() { x.when(this::isSpawning, A).when(() -> isSpawning(), B); }\n}";
-        String tracked = "class E {\n    private final Cache cache = make();\n    boolean isSpawning() { return dataTracker.get(T) > 0; }\n    void c() { x.when(this::isSpawning, A); }\n}";
+        String tracked = "class E {\n    private final Cache cache = make();\n    boolean isSpawning() { return entityData.get(T) > 0; }\n    void c() { x.when(this::isSpawning, A); }\n}";
         assertEquals(List.of("spawnTimer"), untrackedReads(direct));
         assertEquals(List.of("spawnTimer"), untrackedReads(indirect));
         assertEquals(List.of(), untrackedReads(tracked));
@@ -270,7 +271,7 @@ class TrackedStateTest {
         String direct = "void c() { x.when(() -> getTarget() != null, A); }";
         String indirect = "boolean hunting() { return this.getTarget() != null; } void c() { x.when(this::hunting, A); }";
         String deeper = "boolean aware() { return getTarget() == null; } boolean hunting() { return !aware(); } void c() { x.transitionTicks(() -> hunting() ? 0 : 5); }";
-        String tracked = "boolean hunting() { return dataTracker.get(CHASING); } void c() { x.when(this::hunting, A); } void goal() { getTarget(); }";
+        String tracked = "boolean hunting() { return entityData.get(CHASING); } void c() { x.when(this::hunting, A); } void goal() { getTarget(); }";
         assertEquals(1, targetReadProblems(direct).size());
         assertEquals(1, targetReadProblems(indirect).size());
         assertEquals(1, targetReadProblems(deeper).size());
@@ -298,21 +299,21 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> trackedChaseFlagsGoThroughTheLiveTargetCheck() {
-        return ModProject.files(MobAnimations.ENTITIES, ".java").stream()
+        return Floors.atLeast(4, "files with chase flags", ModProject.files(MobAnimations.ENTITIES, ".java").stream()
                 .filter(file -> !file.toString().replace('\\', '/').contains("/entities/renders/")
                         && !file.toString().replace('\\', '/').contains("/entities/models/"))
                 .filter(file -> STALE_TARGET_FLAG.matcher(Sources.code(file)).find())
                 .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () ->
-                        assertEquals(List.of(), staleTargetProblems(file.getFileName().toString().replace(".java", ""), Sources.code(file)))));
+                        assertEquals(List.of(), staleTargetProblems(file.getFileName().toString().replace(".java", ""), Sources.code(file))))));
     }
 
     @Test
     void staleTargetCheckCatchesAFlagFromARawTarget() {
-        String raw = "void trackChase() { if (this.getTarget() != null) { this.dataTracker.set(CHASING, true); } }";
-        String live = "void trackChase() { if (ChaseTarget.isLive(this)) { this.dataTracker.set(CHASING, true); } }";
+        String raw = "void trackChase() { if (this.getTarget() != null) { this.entityData.set(CHASING, true); } }";
+        String live = "void trackChase() { if (ChaseTarget.isLive(this)) { this.entityData.set(CHASING, true); } }";
         String setter = "void tick() { setChasing(getTarget() != null); }";
-        String wander = "void mobTick() { boolean n = getTarget() == null; dataTracker.set(WANDERING, n); }";
-        String unrelated = "void tick() { dataTracker.set(VARIANT, getTarget() == null ? 1 : 2); }";
+        String wander = "void customServerAiStep() { boolean n = getTarget() == null; entityData.set(WANDERING, n); }";
+        String unrelated = "void tick() { entityData.set(VARIANT, getTarget() == null ? 1 : 2); }";
         assertEquals(1, staleTargetProblems("E", raw).size());
         assertEquals(List.of(), staleTargetProblems("E", live));
         assertEquals(1, staleTargetProblems("E", setter).size());
@@ -347,8 +348,8 @@ class TrackedStateTest {
 
     @Test
     void constructorCheckCatchesRandomValues() {
-        String bad = "class Corpse { Corpse(World w) { super(w); this.yaw = this.random.nextFloat() * 360; } void tick() { random.nextInt(3); } }";
-        String fine = "class Corpse { Corpse(World w) { super(w); this.yaw = 0; } void tick() { random.nextInt(3); } }";
+        String bad = "class Corpse { Corpse(Level w) { super(w); this.yaw = this.random.nextFloat() * 360; } void tick() { random.nextInt(3); } }";
+        String fine = "class Corpse { Corpse(Level w) { super(w); this.yaw = 0; } void tick() { random.nextInt(3); } }";
         assertEquals(1, constructorRandomProblems("Corpse", bad).size());
         assertEquals(List.of(), constructorRandomProblems("Corpse", fine));
     }
@@ -377,7 +378,7 @@ class TrackedStateTest {
     void fieldInitializerCheckCatchesRandomValues() {
         String bad = "class Corpse {\n    private float spin = this.random.nextFloat() * 360;\n    private int age = 0;\n}";
         String multiline = "class Corpse {\n    private final int wait = 20\n            + random.nextInt(40);\n}";
-        String fine = "class Corpse {\n    private int age = 0;\n    private static final Random SHARED = Random.create();\n    void tick() { random.nextInt(3); }\n}";
+        String fine = "class Corpse {\n    private int age = 0;\n    private static final RandomSource SHARED = RandomSource.create();\n    void tick() { random.nextInt(3); }\n}";
         assertEquals(1, fieldInitializerRandomProblems("Corpse", bad).size());
         assertEquals(1, fieldInitializerRandomProblems("Corpse", multiline).size());
         assertEquals(List.of(), fieldInitializerRandomProblems("Corpse", fine));

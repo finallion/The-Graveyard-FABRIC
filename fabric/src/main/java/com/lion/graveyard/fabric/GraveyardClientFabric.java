@@ -19,12 +19,12 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.client.color.world.GrassColors;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.SonicBoomParticle;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.GrassColor;
 
 public class GraveyardClientFabric implements ClientModInitializer {
 
@@ -33,7 +33,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
         GraveyardClient.init();
         GraveyardClient.postInit();
 
-        HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
+        MenuScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
         ClientTickEvents.END_CLIENT_TICK.register(AnimationPreviewClient::clientTick);
         ClientTickEvents.END_CLIENT_TICK.register(FragmentSpotHints::clientTick);
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ChronicleButton.addTo(screen, Screens.getButtons(screen)::add));
@@ -43,13 +43,13 @@ public class GraveyardClientFabric implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_LEFT_HAND_PARTICLE, GraveyardHandParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Provider::new);
 
 
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.getColor(0.5D, 1.0D),
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getAverageGrassColor(world, pos) : GrassColor.get(0.5D, 1.0D),
                 TGBlocks.TG_GRASS_BLOCK.get());
 
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> GrassColors.getColor(0.5D, 1.0D),
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> GrassColor.get(0.5D, 1.0D),
                 TGBlocks.TG_GRASS_BLOCK.get());
 
 
@@ -59,8 +59,8 @@ public class GraveyardClientFabric implements ClientModInitializer {
         });
 
 
-        ModelPredicateProviderRegistry.register(TGItems.VIAL_OF_BLOOD.get(), new Identifier("charged"), (stack, world, entity, seed) -> {
-            if (entity != null && stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
+        ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), new ResourceLocation("charged"), (stack, world, entity, seed) -> {
+            if (entity != null && stack.is(TGItems.VIAL_OF_BLOOD.get())) {
                 return VialOfBlood.getBlood(stack);
             }
 

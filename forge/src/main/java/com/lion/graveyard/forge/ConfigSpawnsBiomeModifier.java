@@ -3,10 +3,10 @@ package com.lion.graveyard.forge;
 import com.lion.graveyard.init.TGEntities;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BiomeTags;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
 
@@ -16,20 +16,20 @@ public record ConfigSpawnsBiomeModifier(String mob) implements BiomeModifier {
     ).apply(instance, ConfigSpawnsBiomeModifier::new));
 
     @Override
-    public void modify(RegistryEntry<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-        if (phase != Phase.ADD || !biome.isIn(BiomeTags.IS_OVERWORLD)) {
+    public void modify(Holder<Biome> biome, Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
+        if (phase != Phase.ADD || !biome.is(BiomeTags.IS_OVERWORLD)) {
             return;
         }
 
         for (TGEntities.NaturalSpawn spawn : TGEntities.naturalSpawns()) {
-            if (!spawn.mob().equals(mob) || !biome.isIn(spawn.tag())) {
+            if (!spawn.mob().equals(mob) || !biome.is(spawn.tag())) {
                 continue;
             }
 
-            SpawnSettings.SpawnEntry entry = spawn.entry();
+            MobSpawnSettings.SpawnerData entry = spawn.entry();
 
             if (entry != null) {
-                builder.getMobSpawnSettings().spawn(spawn.group(), entry);
+                builder.getMobSpawnSettings().addSpawn(spawn.group(), entry);
             }
         }
     }

@@ -2,19 +2,18 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.config.GraveyardConfig;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.biome.Biome;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 /// Decides if a graveyard mob may appear on its own.
 /// Eggs, commands, buckets and player summons never pass through this check.
@@ -24,27 +23,27 @@ public final class MobSpawnGate {
             "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker", "wraith", "raven", "magpie", "crow",
             "tormented_villager", "nameless_hanged");
 
-    private static final Set<SpawnReason> AUTOMATIC = EnumSet.of(
-            SpawnReason.NATURAL, SpawnReason.CHUNK_GENERATION, SpawnReason.STRUCTURE, SpawnReason.SPAWNER,
-            SpawnReason.PATROL, SpawnReason.EVENT, SpawnReason.REINFORCEMENT);
+    private static final Set<MobSpawnType> AUTOMATIC = EnumSet.of(
+            MobSpawnType.NATURAL, MobSpawnType.CHUNK_GENERATION, MobSpawnType.STRUCTURE, MobSpawnType.SPAWNER,
+            MobSpawnType.PATROL, MobSpawnType.EVENT, MobSpawnType.REINFORCEMENT);
 
-    private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.of(RegistryKeys.BIOME, Graveyard.id("no_mob_spawns"));
+    private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.create(Registries.BIOME, Graveyard.id("no_mob_spawns"));
 
     private MobSpawnGate() {
     }
 
-    public static boolean inForbiddenBiome(WorldAccess world, BlockPos pos, EntityType<?> type, SpawnReason reason) {
-        return (reason == SpawnReason.NATURAL || reason == SpawnReason.CHUNK_GENERATION)
-                && Graveyard.MOD_ID.equals(Registries.ENTITY_TYPE.getId(type).getNamespace())
-                && world.getBiome(pos).isIn(NO_MOB_SPAWNS);
+    public static boolean inForbiddenBiome(LevelAccessor world, BlockPos pos, EntityType<?> type, MobSpawnType reason) {
+        return (reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION)
+                && Graveyard.MOD_ID.equals(BuiltInRegistries.ENTITY_TYPE.getKey(type).getNamespace())
+                && world.getBiome(pos).is(NO_MOB_SPAWNS);
     }
 
-    public static boolean blocks(EntityType<?> type, SpawnReason reason) {
+    public static boolean blocks(EntityType<?> type, MobSpawnType reason) {
         return AUTOMATIC.contains(reason) && isSwitchedOff(type);
     }
 
     public static boolean isSwitchedOff(EntityType<?> type) {
-        Identifier id = Registries.ENTITY_TYPE.getId(type);
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
 
         if (!Graveyard.MOD_ID.equals(id.getNamespace()) || !MANAGED_MOBS.contains(id.getPath())) {
             return false;
