@@ -20,7 +20,7 @@ public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
         this.model.getHat().visible = true;
         this.addFeature(new HeldItemFeatureRenderer<>(this, ctx.getHeldItemRenderer()) {
             public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, AcolyteEntity acolyte, float f, float g, float h, float j, float k, float l) {
-                if (acolyte.isAttacking()) {
+                if (acolyte.isChasing()) {
                     super.render(matrixStack, vertexConsumerProvider, i, acolyte, f, g, h, j, k, l);
                 }
 

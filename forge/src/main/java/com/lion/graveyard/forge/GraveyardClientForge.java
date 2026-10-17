@@ -2,6 +2,7 @@ package com.lion.graveyard.forge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
+import com.lion.graveyard.client.FragmentSpotHints;
 import com.lion.graveyard.chronicle.client.ChronicleButton;
 import com.lion.graveyard.entities.animation.AnimationPreviewClient;
 import net.minecraft.client.MinecraftClient;
@@ -80,6 +81,7 @@ public class GraveyardClientForge {
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (event.phase == TickEvent.Phase.END) {
                 AnimationPreviewClient.clientTick(MinecraftClient.getInstance());
+                FragmentSpotHints.clientTick(MinecraftClient.getInstance());
             }
         }
     }

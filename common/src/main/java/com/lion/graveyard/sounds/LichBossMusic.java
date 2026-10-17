@@ -1,5 +1,6 @@
 package com.lion.graveyard.sounds;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.AbstractSoundInstance;
@@ -22,7 +23,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         this.attenuationType = AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 4.5F;
+        this.volume = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").bossMusicVolume();
         this.x = boss.getX();
         this.y = boss.getY();
         this.z = boss.getZ();

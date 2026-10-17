@@ -1,10 +1,4 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#graveyard:crow_spawns",
-  "spawners": {
-    "type": "graveyard:crow",
-    "maxCount": 9,
-    "minCount": 4,
-    "weight": 10
-  }
+  "type": "graveyard:config_spawns",
+  "mob": "crow"
 }

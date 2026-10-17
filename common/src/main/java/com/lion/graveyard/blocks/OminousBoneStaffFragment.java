@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -9,6 +10,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -16,6 +18,8 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -23,6 +27,8 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class OminousBoneStaffFragment extends Block {
     public static final DirectionProperty FACING;
@@ -37,6 +43,14 @@ public class OminousBoneStaffFragment extends Block {
         if (world.getTime() % 25 == 0) { // synchronized whisper
             world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, TGSounds.BONE_AMBIENT.get(), SoundCategory.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F, false);
         }
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
+        String key = this == TGBlocks.MIDDLE_BONE_STAFF.get()
+                ? "block.graveyard.bone_staff_fragment.middle.lore"
+                : "block.graveyard.bone_staff_fragment.end.lore";
+        tooltip.add(Text.translatable(key).formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
     }
 
     @Override

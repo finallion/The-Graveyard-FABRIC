@@ -45,22 +45,16 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     private static final int LANDING_TRANSITION_TICKS = 2;
     private int landingCounter = LANDING_TICKS;
     private int levitationCounter = 15;
-    private float rotation;
     private int impactTicks = -1;
     private boolean impacted;
 
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
         experiencePoints = 0;
-        setRotation(getRandom().nextInt(361));
     }
 
     public float getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
+        return Math.floorMod(getUuid().hashCode(), 361);
     }
 
     // mobTick discards the mob, because a kill shows the red overlay.

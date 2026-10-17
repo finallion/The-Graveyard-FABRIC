@@ -1,7 +1,6 @@
 package com.lion.graveyard.init;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.entities.*;
 import com.lion.graveyard.entities.projectiles.SkullEntity;
 import com.lion.graveyard.platform.BiomeModifications;
@@ -11,8 +10,18 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.SpawnSettings;
+import com.lion.graveyard.config.entries.MobConfigEntry;
 import net.minecraft.world.Heightmap;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class TGEntities {
@@ -50,56 +59,42 @@ public class TGEntities {
         addSpawns();
     }
 
+    public record NaturalSpawn(String mob, TagKey<Biome> tag, SpawnGroup group, Supplier<? extends EntityType<?>> type) {
+        public SpawnSettings.SpawnEntry entry() {
+            MobConfigEntry entry = Graveyard.getConfig().mobEntry(mob);
+            return entry.weight <= 0 ? null : new SpawnSettings.SpawnEntry(type.get(), entry.weight, entry.minGroup, entry.maxGroup);
+        }
+    }
+
+    public static List<NaturalSpawn> naturalSpawns() {
+        return List.of(
+                new NaturalSpawn("ghoul", TGTags.GHOUL_SPAWNS, SpawnGroup.MONSTER, GHOUL),
+                new NaturalSpawn("revenant", TGTags.REVENANT_SPAWNS, SpawnGroup.MONSTER, REVENANT),
+                new NaturalSpawn("reaper", TGTags.REAPER_SPAWNS, SpawnGroup.MONSTER, REAPER),
+                new NaturalSpawn("nightmare", TGTags.NIGHTMARE_SPAWNS, SpawnGroup.MONSTER, NIGHTMARE),
+                new NaturalSpawn("skeleton_creeper", TGTags.SKELETON_CREEPER_SPAWNS, SpawnGroup.MONSTER, SKELETON_CREEPER),
+                new NaturalSpawn("raven", TGTags.RAVEN_SPAWNS, SpawnGroup.AMBIENT, RAVEN),
+                new NaturalSpawn("magpie", TGTags.MAGPIE_SPAWNS, SpawnGroup.AMBIENT, MAGPIE),
+                new NaturalSpawn("crow", TGTags.CROW_SPAWNS, SpawnGroup.AMBIENT, CROW),
+                new NaturalSpawn("acolyte", biomeTag("acolyte_spawns"), SpawnGroup.MONSTER, ACOLYTE),
+                new NaturalSpawn("corrupted_vindicator", biomeTag("corrupted_vindicator_spawns"), SpawnGroup.MONSTER, CORRUPTED_VINDICATOR),
+                new NaturalSpawn("corrupted_pillager", biomeTag("corrupted_pillager_spawns"), SpawnGroup.MONSTER, CORRUPTED_PILLAGER),
+                new NaturalSpawn("corrupted_evoker", biomeTag("corrupted_evoker_spawns"), SpawnGroup.MONSTER, CORRUPTED_EVOKER),
+                new NaturalSpawn("wraith", biomeTag("wraith_spawns"), SpawnGroup.MONSTER, WRAITH),
+                new NaturalSpawn("tormented_villager", biomeTag("tormented_villager_spawns"), SpawnGroup.MONSTER, TORMENTED_VILLAGER));
+    }
+
+    private static TagKey<Biome> biomeTag(String name) {
+        return TagKey.of(RegistryKeys.BIOME, new Identifier(Graveyard.MOD_ID, name));
+    }
+
     private static void addSpawns() {
-        GraveyardConfig config = Graveyard.getConfig();
-
-        BiomeModifications.addMobSpawn(TGTags.GHOUL_SPAWNS,
-                SpawnGroup.MONSTER, TGEntities.GHOUL.get(),
-                config.mobConfigEntries.get("ghoul").weight,
-                config.mobConfigEntries.get("ghoul").minGroup,
-                config.mobConfigEntries.get("ghoul").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.REVENANT_SPAWNS,
-                SpawnGroup.MONSTER, TGEntities.REVENANT.get(),
-                config.mobConfigEntries.get("revenant").weight,
-                config.mobConfigEntries.get("revenant").minGroup,
-                config.mobConfigEntries.get("revenant").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.REAPER_SPAWNS,
-                SpawnGroup.MONSTER, TGEntities.REAPER.get(),
-                config.mobConfigEntries.get("reaper").weight,
-                config.mobConfigEntries.get("reaper").minGroup,
-                config.mobConfigEntries.get("reaper").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.NIGHTMARE_SPAWNS,
-                SpawnGroup.MONSTER, TGEntities.NIGHTMARE.get(),
-                config.mobConfigEntries.get("nightmare").weight,
-                config.mobConfigEntries.get("nightmare").minGroup,
-                config.mobConfigEntries.get("nightmare").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.SKELETON_CREEPER_SPAWNS,
-                SpawnGroup.MONSTER, TGEntities.SKELETON_CREEPER.get(),
-                config.mobConfigEntries.get("skeleton_creeper").weight,
-                config.mobConfigEntries.get("skeleton_creeper").minGroup,
-                config.mobConfigEntries.get("skeleton_creeper").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.RAVEN_SPAWNS,
-                SpawnGroup.AMBIENT, TGEntities.RAVEN.get(),
-                config.mobConfigEntries.get("raven").weight,
-                config.mobConfigEntries.get("raven").minGroup,
-                config.mobConfigEntries.get("raven").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.MAGPIE_SPAWNS,
-                SpawnGroup.AMBIENT, TGEntities.MAGPIE.get(),
-                config.mobConfigEntries.get("magpie").weight,
-                config.mobConfigEntries.get("magpie").minGroup,
-                config.mobConfigEntries.get("magpie").maxGroup);
-
-        BiomeModifications.addMobSpawn(TGTags.CROW_SPAWNS,
-                SpawnGroup.AMBIENT, TGEntities.CROW.get(),
-                config.mobConfigEntries.get("crow").weight,
-                config.mobConfigEntries.get("crow").minGroup,
-                config.mobConfigEntries.get("crow").maxGroup);
+        for (NaturalSpawn spawn : naturalSpawns()) {
+            SpawnSettings.SpawnEntry entry = spawn.entry();
+            if (entry != null) {
+                BiomeModifications.addMobSpawn(spawn.tag(), spawn.group(), entry.type, entry.getWeight().getValue(), entry.minGroupSize, entry.maxGroupSize);
+            }
+        }
     }
 
     private static <T extends MobEntity> SpawnRestriction.SpawnPredicate<T> gated(SpawnRestriction.SpawnPredicate<T> predicate) {
@@ -127,24 +122,55 @@ public class TGEntities {
         SpawnRestriction.register(CROW.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
     }
 
+    private static final List<EntityAttribute> SCALED_ATTRIBUTES = List.of(EntityAttributes.GENERIC_MAX_HEALTH, EntityAttributes.GENERIC_ATTACK_DAMAGE,
+            EntityAttributes.GENERIC_MOVEMENT_SPEED, EntityAttributes.GENERIC_FLYING_SPEED);
+
+    private static Supplier<DefaultAttributeContainer.Builder> scaled(String mob, Supplier<DefaultAttributeContainer.Builder> base) {
+        return () -> {
+            MobConfigEntry entry = Graveyard.getConfig().mobEntry(mob);
+            DefaultAttributeContainer defaults = base.get().build();
+            DefaultAttributeContainer.Builder result = base.get();
+            for (EntityAttribute attribute : SCALED_ATTRIBUTES) {
+                double factor = factor(entry, attribute);
+                if (factor != 1.0D && defaults.has(attribute)) {
+                    result.add(attribute, defaults.getBaseValue(attribute) * factor);
+                }
+            }
+            return result;
+        };
+    }
+
+    private static double factor(MobConfigEntry entry, EntityAttribute attribute) {
+        if (attribute == EntityAttributes.GENERIC_MAX_HEALTH) {
+            return entry.health();
+        }
+        if (attribute == EntityAttributes.GENERIC_ATTACK_DAMAGE) {
+            return entry.damage();
+        }
+        if (attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED || attribute == EntityAttributes.GENERIC_FLYING_SPEED) {
+            return entry.speed();
+        }
+        return 1.0D;
+    }
+
     private static void createMobAttributes() {
-        RegistryHelper.registerEntityAttribute(TGEntities.REAPER, ReaperEntity::createReaperAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.ACOLYTE, CorruptedIllager::createCorruptedIllagerAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_VINDICATOR, CorruptedIllager::createCorruptedIllagerAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_EVOKER, CorruptedIllager::createCorruptedIllagerAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_PILLAGER, CorruptedPillager::createCorruptedPillagerAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.SKELETON_CREEPER, SkeletonCreeper::createSkeletonCreeperAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.REAPER, scaled("reaper", ReaperEntity::createReaperAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.ACOLYTE, scaled("acolyte", CorruptedIllager::createCorruptedIllagerAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_VINDICATOR, scaled("corrupted_vindicator", CorruptedIllager::createCorruptedIllagerAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_EVOKER, scaled("corrupted_evoker", CorruptedIllager::createCorruptedIllagerAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_PILLAGER, scaled("corrupted_pillager", CorruptedPillager::createCorruptedPillagerAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.SKELETON_CREEPER, scaled("skeleton_creeper", SkeletonCreeper::createSkeletonCreeperAttributes));
         RegistryHelper.registerEntityAttribute(TGEntities.FALLING_CORPSE, FallingCorpse::createFallingCorpseAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.GHOUL, GhoulEntity::createGhoulAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.TORMENTED_VILLAGER, TormentedVillagerEntity::createTormentedVillagerAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.REVENANT, RevenantEntity::createRevenantAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.WRAITH, WraithEntity::createWraithAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.NIGHTMARE, NightmareEntity::createNightmareAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.GHOUL, scaled("ghoul", GhoulEntity::createGhoulAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.TORMENTED_VILLAGER, scaled("tormented_villager", TormentedVillagerEntity::createTormentedVillagerAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.REVENANT, scaled("revenant", RevenantEntity::createRevenantAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.WRAITH, scaled("wraith", WraithEntity::createWraithAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.NIGHTMARE, scaled("nightmare", NightmareEntity::createNightmareAttributes));
         RegistryHelper.registerEntityAttribute(TGEntities.GHOULING, GhoulingEntity::createGhoulingAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.NAMELESS_HANGED, NamelessHangedEntity::createNamelessHangedAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.RAVEN, CorvidEntity::createCorvidAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.MAGPIE, CorvidEntity::createCorvidAttributes);
-        RegistryHelper.registerEntityAttribute(TGEntities.CROW, CorvidEntity::createCorvidAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.RAVEN, scaled("raven", CorvidEntity::createCorvidAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.MAGPIE, scaled("magpie", CorvidEntity::createCorvidAttributes));
+        RegistryHelper.registerEntityAttribute(TGEntities.CROW, scaled("crow", CorvidEntity::createCorvidAttributes));
         RegistryHelper.registerEntityAttribute(TGEntities.LICH, LichEntity::createLichAttributes);
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.ToDoubleFunction;
 import java.util.function.Predicate;
 
 /// Declares which animation plays when, as an ordered table instead of a hand-written if-chain.
@@ -41,6 +42,10 @@ public final class AnimationTable<T extends GeoAnimatable> {
     private RawAnimation fallback;
     @Nullable
     private IntSupplier transitionTicks;
+    @Nullable
+    private String offsetAnimation;
+    @Nullable
+    private ToDoubleFunction<T> startOffset;
 
     private AnimationTable() {
     }
@@ -68,6 +73,12 @@ public final class AnimationTable<T extends GeoAnimatable> {
         return this;
     }
 
+    public AnimationTable<T> startAt(RawAnimation animation, ToDoubleFunction<T> offset) {
+        this.offsetAnimation = animation.getAnimationStages().get(0).animationName();
+        this.startOffset = offset;
+        return this;
+    }
+
     public AnimationTable<T> transitionTicks(IntSupplier ticks) {
         this.transitionTicks = ticks;
         return this;
@@ -84,9 +95,8 @@ public final class AnimationTable<T extends GeoAnimatable> {
                 state.getController().setAnimation(preview);
                 return PlayState.CONTINUE;
             }
-            if (this.transitionTicks != null) {
-                state.getController().transitionLength(this.transitionTicks.getAsInt());
-            }
+            int blend = this.transitionTicks != null ? this.transitionTicks.getAsInt() : transitionTicks;
+            state.getController().transitionLength(state.getController().getCurrentAnimation() == null ? 0 : blend);
             for (Entry<T> entry : this.entries) {
                 if (entry.condition.test(state)) {
                     if (entry.animation == null) {
@@ -104,7 +114,7 @@ public final class AnimationTable<T extends GeoAnimatable> {
 
             state.getController().setAnimation(this.fallback);
             return PlayState.CONTINUE;
-        });
+        }, this.offsetAnimation, this.startOffset);
     }
 
     private List<String> animationNames() {

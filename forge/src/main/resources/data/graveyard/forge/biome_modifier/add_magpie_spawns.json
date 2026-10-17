@@ -1,10 +1,4 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#graveyard:magpie_spawns",
-  "spawners": {
-    "type": "graveyard:magpie",
-    "maxCount": 3,
-    "minCount": 2,
-    "weight": 8
-  }
+  "type": "graveyard:config_spawns",
+  "mob": "magpie"
 }

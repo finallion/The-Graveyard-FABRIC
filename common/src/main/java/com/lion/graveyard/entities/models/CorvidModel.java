@@ -35,7 +35,8 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
     @Override
     public void setCustomAnimations(CorvidEntity animatable, long instanceId, AnimationState<CorvidEntity> animationState) {
         // The additive look rotation fights the head motion of the peck animation.
-        if (this.isPlayingPeck(animatable, instanceId)) {
+        float weight = animatable.stepLookWeight(this.isPlayingPeck(animatable, instanceId), animationState.getPartialTick());
+        if (weight <= 0.0F) {
             return;
         }
         this.getBone("head").ifPresent(head -> {
@@ -43,8 +44,8 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
             if (data == null) {
                 return;
             }
-            head.setRotX(head.getRotX() + MathHelper.clamp(data.headPitch(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * MathHelper.RADIANS_PER_DEGREE);
-            head.setRotY(head.getRotY() + MathHelper.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * MathHelper.RADIANS_PER_DEGREE);
+            head.setRotX(head.getRotX() + MathHelper.clamp(data.headPitch(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * MathHelper.RADIANS_PER_DEGREE * weight);
+            head.setRotY(head.getRotY() + MathHelper.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * MathHelper.RADIANS_PER_DEGREE * weight);
         });
     }
 
@@ -55,6 +56,6 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
             return false;
         }
         AnimationProcessor.QueuedAnimation current = controller.getCurrentAnimation();
-        return current != null && current.animation().name().equals("animation.crow.peck");
+        return current != null && current.animation().name().endsWith(".peck");
     }
 }

@@ -24,6 +24,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -36,10 +37,10 @@ import java.util.EnumSet;
 
 public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
     private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("spawn");
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
     protected final byte ANIMATION_IDLE = 0;
     protected final byte ANIMATION_WALK = 1;
@@ -50,6 +51,11 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final int CHARGING_FLAG = 1;
+    private static final int SPAWN_TICKS = 14;
+    private static final int ATTACK_TICKS = 31;
+    private static final int DEATH_TICKS = 25;
+    private static final TrackedData<Integer> SPAWN_TIMER = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Integer> ATTACK_TIMER = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.INTEGER);
     MobEntity owner;
     @Nullable
     private BlockPos bounds;
@@ -65,6 +71,8 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         super.initDataTracker();
         this.dataTracker.startTracking(VEX_FLAGS, (byte)0);
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+        this.dataTracker.startTracking(SPAWN_TIMER, 0);
+        this.dataTracker.startTracking(ATTACK_TIMER, 0);
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
@@ -105,6 +113,10 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     public void tick() {
+        if (!this.getEntityWorld().isClient()) {
+            tickDown(SPAWN_TIMER);
+            tickDown(ATTACK_TIMER);
+        }
         this.noClip = true;
         super.tick();
         this.noClip = false;
@@ -115,10 +127,43 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     @Nullable
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
-        setAnimation(ANIMATION_SPAWN);
+        this.dataTracker.set(SPAWN_TIMER, SPAWN_TICKS);
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
+
+    private void tickDown(TrackedData<Integer> timer) {
+        int ticks = this.dataTracker.get(timer);
+        if (ticks > 0) {
+            this.dataTracker.set(timer, ticks - 1);
+        }
+    }
+
+    private boolean isSpawning() {
+        return this.dataTracker.get(SPAWN_TIMER) > 0;
+    }
+
+    @Override
+    public boolean tryAttack(Entity target) {
+        if (!this.getEntityWorld().isClient()) {
+            this.dataTracker.set(ATTACK_TIMER, ATTACK_TICKS);
+        }
+        return super.tryAttack(target);
+    }
+
+    @Override
+    protected void updatePostDeath() {
+        ++this.deathTime;
+        if (this.deathTime == DEATH_TICKS && !this.getEntityWorld().isClient()) {
+            this.getEntityWorld().sendEntityStatus(this, (byte) 60);
+            this.remove(RemovalReason.KILLED);
+        }
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
+    }
 
     @Nullable
     public BlockPos getBounds() {
@@ -168,10 +213,13 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<ReaperEntity>create()
+                .transitionTicks(() -> isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS)
                 .when(this::isDead, DEATH_ANIMATION)
-                .when(() -> isAttacking() || isCharging() || getAnimation() == ANIMATION_ATTACK, ATTACK_ANIMATION)
+                .when(this::isSpawning, SPAWN_ANIMATION)
+                .when(() -> isCharging() || this.dataTracker.get(ATTACK_TIMER) > 0, ATTACK_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
+                .startAt(SPAWN_ANIMATION, reaper -> reaper.isSpawning() && AnimationPreview.forcedAnimation(reaper) == null ? Math.max(0, SPAWN_TICKS - reaper.dataTracker.get(SPAWN_TIMER)) : 0)
                 .build(this, "controller"));
     }
 

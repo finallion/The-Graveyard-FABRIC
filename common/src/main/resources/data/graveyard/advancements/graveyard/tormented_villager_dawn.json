@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/redeem_tormented_villager",
   "display": {
     "icon": {
-      "item": "graveyard:tormented_villager_spawn_egg"
+      "item": "minecraft:sunflower"
     },
     "title": {
       "translate": "advancements.graveyard.tormented_villager_dawn.title"

@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/kill_graveyard_mob",
   "display": {
     "icon": {
-      "item": "graveyard:ghoul_spawn_egg"
+      "item": "graveyard:skeleton_hand"
     },
     "title": {
       "translate": "advancements.graveyard.ghoul_emerges.title"

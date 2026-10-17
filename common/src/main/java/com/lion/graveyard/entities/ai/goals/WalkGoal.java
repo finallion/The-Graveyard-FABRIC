@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 
 /// Ground navigation makes the bird take off, so this goal sets the velocity directly.
 public class WalkGoal extends HopGoal {
-    private static final double WALK_SPEED = 0.14D;
+    private static final double WALK_SPEED = 0.07D;
     private static final double ARRIVE_DISTANCE_SQ = 0.36D;
     private static final int TIMEOUT = 100;
 

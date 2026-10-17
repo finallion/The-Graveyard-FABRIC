@@ -23,6 +23,7 @@ GravestoneBlockEntity:front_text
 GravestoneBlockEntity:is_waxed
 GraveyardMinionEntity:Owner
 GraveyardMinionEntity:Sitting
+HordeGraveyardEntity:HordeCaptain
 HordeGraveyardEntity:PatrolLeader
 HordeGraveyardEntity:PatrolTarget
 HordeGraveyardEntity:Patrolling
@@ -47,6 +48,7 @@ ReaperEntity:BoundX
 ReaperEntity:BoundY
 ReaperEntity:BoundZ
 RevenantEntity:canReanimate
+RevenantEntity:ReanimateTimer
 SarcophagusBlockEntity:Items
 SarcophagusBlockEntity:LootTable
 TormentedVillagerEntity:LightPos

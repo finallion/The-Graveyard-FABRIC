@@ -51,11 +51,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -67,6 +69,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     public static final int BINDING_INTERVAL = 40;
     public static final int SPAWN_ANIMATION_DURATION = 68;
     private static final int PICKUP_INTERVAL = 5;
+    private static final int DEATH_ANIMATION_DURATION = 44 + AnimationTable.TRANSITION_TICKS;
 
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
 
@@ -78,12 +81,12 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     private static final TrackedData<Boolean> COFFIN;
     private static final TrackedData<Byte> VARIANT;
 
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
     private final RawAnimation RUN_ANIMATION = RawAnimation.begin().then("run", Animation.LoopType.LOOP);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -91,6 +94,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected static final int ANIMATION_DEATH = 4;
 
     public final int ATTACK_ANIMATION_DURATION = 16;
+    public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
+    private int lastAttackAnimTimer;
     protected Inventory inventory;
     private GhoulingCollectItemsGoal collectGoal;
     public boolean playAttackSound = false;
@@ -142,7 +147,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     protected void mobTick() {
         // ATTACK TIMER
-        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+        if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
         }
 
@@ -205,6 +210,10 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
         super.tick();
 
+        if (getEntityWorld().isClient()) {
+            restartAttackClipOnRearm();
+        }
+
         if (!getEntityWorld().isClient()) {
             if (getSpawnTimer() > 0) {
                 setSpawnTimer(getSpawnTimer() - 1);
@@ -215,6 +224,18 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 }
             }
         }
+    }
+
+    // The controller does not restart a running clip.
+    private void restartAttackClipOnRearm() {
+        int timer = this.getAttackAnimTimer();
+        if (timer > this.lastAttackAnimTimer + 1) {
+            AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+            if (controller != null) {
+                controller.forceAnimationReset();
+            }
+        }
+        this.lastAttackAnimTimer = timer;
     }
 
     private boolean mayTake(ItemEntity item) {
@@ -298,9 +319,17 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         this.dataTracker.set(TELEPORT_TIMER, time);
     }
 
-    public void onSummoned() {
+    public void prepareSpawn() {
         this.setAnimationState(ANIMATION_SPAWN);
         setSpawnTimer(SPAWN_ANIMATION_DURATION);
+    }
+
+    public void onSummoned() {
+        prepareSpawn();
+        playSpawnSounds();
+    }
+
+    public void playSpawnSounds() {
         getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOULING_SPAWN.get(), SoundCategory.HOSTILE, 4.0F, 1.5F);
         getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.GHOUL_ROAR.get(), SoundCategory.HOSTILE, 1.0F, -2.0F);
     }
@@ -316,11 +345,17 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 .transitionTicks(() -> getSpawnTimer() > 0 ? 0 : AnimationTable.TRANSITION_TICKS)
                 .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
                 .when(() -> getSpawnTimer() > 0, SPAWN_ANIMATION)
+                .startAt(SPAWN_ANIMATION, ghouling -> ghouling.getSpawnTimer() > 0 && AnimationPreview.forcedAnimation(ghouling) == null ? Math.max(0, SPAWN_ANIMATION_DURATION - ghouling.getSpawnTimer()) : 0)
                 .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
                 .when(state -> isAttacking() && AnimationTable.isMoving(state), RUN_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
                 .build(this, "controller"));
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
     }
 
     @Override
@@ -426,7 +461,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected void updatePostDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == 44 && !this.getEntityWorld().isClient()) {
+        if (this.deathTime == DEATH_ANIMATION_DURATION && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }

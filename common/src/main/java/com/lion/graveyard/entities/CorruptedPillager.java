@@ -27,7 +27,7 @@ public class CorruptedPillager extends AnimatedCorruptedIllager {
 
     @Override
     public CorruptedIllager.State getState() {
-        if (this.isAttacking()) {
+        if (this.isChasing()) {
             return CorruptedIllager.State.ATTACKING;
         } else {
             return State.UNDEAD;

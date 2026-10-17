@@ -27,6 +27,61 @@ public class CorruptedChampionEntry {
     public final int cooldownTeleportPlayerAndHeal;
     public final int cooldownLevitationSpell;
     public final int playerTeleportYOffset;
+    public Boolean bossBarDarkenSky;
+    public Boolean bossBarThickenFog;
+    public Float bossMusicVolume;
+    public Integer spawnInvulnerableTicks;
+    public Integer phaseInvulnerableTicks;
+    public Integer cooldownHunt;
+    public Integer cooldownCharge;
+    public Integer cooldownPounce;
+    public Float healThresholdHealth;
+    public Float skullExplosionRadius;
+    public Boolean skullsDestroyBlocks;
+
+    public boolean bossBarDarkenSky() {
+        return bossBarDarkenSky == null || bossBarDarkenSky;
+    }
+
+    public boolean bossBarThickenFog() {
+        return bossBarThickenFog == null || bossBarThickenFog;
+    }
+
+    public float bossMusicVolume() {
+        return bossMusicVolume == null || !Float.isFinite(bossMusicVolume) ? 1.0F : Math.max(0.0F, Math.min(bossMusicVolume, 4.0F));
+    }
+
+    public int spawnInvulnerableTicks() {
+        return spawnInvulnerableTicks == null ? 410 : Math.max(200, spawnInvulnerableTicks);
+    }
+
+    public int phaseInvulnerableTicks() {
+        return phaseInvulnerableTicks == null ? 200 : Math.max(0, phaseInvulnerableTicks);
+    }
+
+    public int cooldownHunt() {
+        return cooldownHunt == null ? 600 : Math.max(200, cooldownHunt);
+    }
+
+    public int cooldownCharge() {
+        return cooldownCharge == null ? 160 : Math.max(40, cooldownCharge);
+    }
+
+    public int cooldownPounce() {
+        return cooldownPounce == null ? 120 : Math.max(40, cooldownPounce);
+    }
+
+    public float healThresholdHealth() {
+        return healThresholdHealth == null || !Float.isFinite(healThresholdHealth) ? 300.0F : healThresholdHealth;
+    }
+
+    public float skullExplosionRadius() {
+        return skullExplosionRadius == null || !Float.isFinite(skullExplosionRadius) ? 2.0F : Math.max(0.0F, Math.min(skullExplosionRadius, 16.0F));
+    }
+
+    public boolean skullsDestroyBlocks() {
+        return skullsDestroyBlocks != null && skullsDestroyBlocks;
+    }
 
 
     private CorruptedChampionEntry(float healthInCastingPhase, float healthInHuntingPhase, double damageCastingPhase, double damageHuntingPhaseAddition, double armor, double armorToughness, double speedInHuntPhase, int durationHuntingPhase, int durationFallingCorpseSpell,
@@ -59,17 +114,29 @@ public class CorruptedChampionEntry {
     }
 
     public CorruptedChampionEntry sanitized(CorruptedChampionEntry fallback) {
-        return new CorruptedChampionEntry(
+        CorruptedChampionEntry result = new CorruptedChampionEntry(
                 positive(healthInCastingPhase, fallback.healthInCastingPhase), positive(healthInHuntingPhase, fallback.healthInHuntingPhase),
                 nonNegative(damageCastingPhase, fallback.damageCastingPhase), finite(damageHuntingPhaseAddition, fallback.damageHuntingPhaseAddition),
                 nonNegative(armor, fallback.armor), nonNegative(armorToughness, fallback.armorToughness), finite(speedInHuntPhase, fallback.speedInHuntPhase),
                 Math.max(1, durationHuntingPhase), Math.max(1, durationFallingCorpseSpell), Math.max(1, durationHealingSpell), Math.max(1, durationLevitationSpell),
                 clamp(maxAmountSkullsInShootSkullSpell, 1, 64), clamp(maxSummonedMobs, 0, 256), clamp(maxGroupSizeSummonedMobs, 1, 64),
-                Math.max(1, ghoulSpawnTimerInFight),
+                Math.max(0, ghoulSpawnTimerInFight),
                 isBloodCollectableEntity == null ? fallback.isBloodCollectableEntity : isBloodCollectableEntity,
                 isBossSummonableItem == null ? fallback.isBossSummonableItem : isBossSummonableItem,
                 isMultiphaseFight, isInvulnerableDuringSpells, summoningNeedsStaffFragments,
                 Math.max(0, cooldownCorpseSpell), Math.max(0, cooldownTeleportPlayerAndHeal), Math.max(0, cooldownLevitationSpell), playerTeleportYOffset);
+        result.bossBarDarkenSky = bossBarDarkenSky();
+        result.bossBarThickenFog = bossBarThickenFog();
+        result.bossMusicVolume = bossMusicVolume();
+        result.spawnInvulnerableTicks = spawnInvulnerableTicks();
+        result.phaseInvulnerableTicks = phaseInvulnerableTicks();
+        result.cooldownHunt = cooldownHunt();
+        result.cooldownCharge = cooldownCharge();
+        result.cooldownPounce = cooldownPounce();
+        result.healThresholdHealth = healThresholdHealth();
+        result.skullExplosionRadius = skullExplosionRadius();
+        result.skullsDestroyBlocks = skullsDestroyBlocks();
+        return result;
     }
 
     private static int clamp(int value, int min, int max) {

@@ -42,15 +42,13 @@ public class VialOfBlood extends Item {
         }
 
         if (blood > 0.8F && blood < 0.9F) {
-            tooltip.add(Text.translatable("Blood level: full").formatted(Formatting.GRAY));
+            tooltip.add(Text.translatable("item.graveyard.vial_of_blood.level_full").formatted(Formatting.GRAY));
         } else {
-            int level = (int)(blood * 10);
-            if (level == 0) {
-                tooltip.add(Text.translatable("Blood level: 1/8").formatted(Formatting.GRAY));
-            } else {
-                tooltip.add(Text.translatable("Blood level: " + level + "/8").formatted(Formatting.GRAY));
-            }
+            int level = Math.max(1, (int) (blood * 10));
+            tooltip.add(Text.translatable("item.graveyard.vial_of_blood.level", level).formatted(Formatting.GRAY));
         }
+        tooltip.add(Text.translatable("item.graveyard.vial_of_blood.lore").formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
+        tooltip.add(Text.translatable("item.graveyard.vial_of_blood.hint").formatted(Formatting.DARK_GRAY));
 
     }
 }

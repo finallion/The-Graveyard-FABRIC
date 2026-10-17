@@ -56,6 +56,7 @@ import java.util.List;
 public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntity {
 
     private static final TrackedData<Integer> MOOD = DataTracker.registerData(TormentedVillagerEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Integer> SPAWN_TICKS_LEFT = DataTracker.registerData(TormentedVillagerEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
     private static final int BELL_RANGE = 48;
     private static final int REST_CHANCE = 350;
@@ -102,6 +103,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(MOOD, Mood.WANDERING.ordinal());
+        this.dataTracker.startTracking(SPAWN_TICKS_LEFT, 0);
     }
 
     @Override
@@ -121,6 +123,7 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
         this.setMood(Mood.SPAWNING, Mood.SPAWNING.ticks);
+        this.dataTracker.set(SPAWN_TICKS_LEFT, Mood.SPAWNING.ticks);
         this.playSound(TGSounds.TORMENTED_VILLAGER_SPAWN.get(), 1.0F, 1.0F);
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
@@ -137,6 +140,10 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
     @Override
     protected void mobTick() {
         super.mobTick();
+        int spawnTicksLeft = this.dataTracker.get(SPAWN_TICKS_LEFT);
+        if (spawnTicksLeft > 0) {
+            this.dataTracker.set(SPAWN_TICKS_LEFT, spawnTicksLeft - 1);
+        }
         if (this.age % LIGHT_INTERVAL == 0 && Graveyard.getConfig().flag("tormentedVillagerLight", true)) {
             this.carryLight();
         }
@@ -330,13 +337,19 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
                 return state.setAndContinue(preview);
             }
             Mood mood = this.getMood();
-            // A blend into the spawn animation shows the bind pose first.
-            state.getController().transitionLength(mood == Mood.SPAWNING ? 0 : MOOD_TRANSITION_TICKS);
+            // A blend from the bind pose shows a pose the mob never has.
+            boolean cut = mood == Mood.SPAWNING || state.getController().getCurrentAnimation() == null;
+            state.getController().transitionLength(cut ? 0 : MOOD_TRANSITION_TICKS);
             if (mood == Mood.WANDERING) {
                 return state.setAndContinue(this.isWalking() ? Mood.WALK : mood.animation);
             }
             return state.setAndContinue(mood.animation);
-        }));
+        }, Mood.SPAWNING.animation.getAnimationStages().get(0).animationName(), villager -> villager.spawnClipOffset()));
+    }
+
+    private double spawnClipOffset() {
+        int left = this.dataTracker.get(SPAWN_TICKS_LEFT);
+        return left > 0 && AnimationPreview.forcedAnimation(this) == null ? Math.max(0, Mood.SPAWNING.ticks - left) : 0;
     }
 
     @Override
@@ -346,12 +359,12 @@ public class TormentedVillagerEntity extends PathAwareEntity implements GeoEntit
 
     public enum Mood {
         WANDERING("idle", Animation.LoopType.LOOP, 0),
-        SPAWNING("spawn", Animation.LoopType.PLAY_ONCE, 160),
+        SPAWNING("spawn", Animation.LoopType.HOLD_ON_LAST_FRAME, 160),
         CRYING("crying", Animation.LoopType.LOOP, 80),
-        GLITCHING("glitch", Animation.LoopType.PLAY_ONCE, 48),
-        RAGING("rage", Animation.LoopType.PLAY_ONCE, 104),
-        BREAKING_DOWN("breakdown", Animation.LoopType.PLAY_ONCE, 160),
-        REDEEMING("redemption", Animation.LoopType.HOLD_ON_LAST_FRAME, 150);
+        GLITCHING("glitch", Animation.LoopType.HOLD_ON_LAST_FRAME, 48 + MOOD_TRANSITION_TICKS),
+        RAGING("rage", Animation.LoopType.HOLD_ON_LAST_FRAME, 104 + MOOD_TRANSITION_TICKS),
+        BREAKING_DOWN("breakdown", Animation.LoopType.HOLD_ON_LAST_FRAME, 160 + MOOD_TRANSITION_TICKS),
+        REDEEMING("redemption", Animation.LoopType.HOLD_ON_LAST_FRAME, 150 + MOOD_TRANSITION_TICKS);
 
         private static final RawAnimation WALK = RawAnimation.begin().then("animation.tormented_villager.lost", Animation.LoopType.LOOP);
 

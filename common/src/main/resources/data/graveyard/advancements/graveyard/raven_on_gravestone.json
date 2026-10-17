@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/root",
   "display": {
     "icon": {
-      "item": "graveyard:raven_spawn_egg"
+      "item": "graveyard:mossy_cobblestone_gravestone"
     },
     "title": {
       "translate": "advancements.graveyard.raven_on_gravestone.title"

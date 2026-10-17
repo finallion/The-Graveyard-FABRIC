@@ -1,10 +1,4 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#graveyard:skeleton_creeper_spawns",
-  "spawners": {
-    "type": "graveyard:skeleton_creeper",
-    "maxCount": 4,
-    "minCount": 1,
-    "weight": 20
-  }
+  "type": "graveyard:config_spawns",
+  "mob": "skeleton_creeper"
 }

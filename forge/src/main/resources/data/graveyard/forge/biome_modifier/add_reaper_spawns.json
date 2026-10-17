@@ -1,10 +1,4 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#graveyard:reaper_spawns",
-  "spawners": {
-    "type": "graveyard:reaper",
-    "maxCount": 3,
-    "minCount": 2,
-    "weight": 10
-  }
+  "type": "graveyard:config_spawns",
+  "mob": "reaper"
 }

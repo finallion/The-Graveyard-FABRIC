@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockRenderType;
@@ -28,10 +29,14 @@ import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
+import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,16 +55,22 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private static final TrackedData<Integer> SPAWN_TIMER;
     private static final TrackedData<Boolean> IS_RAGING;
     private static final TrackedData<Boolean> RUN_CRAWLING;
+    private static final TrackedData<Boolean> NAVIGATING;
+    private static final TrackedData<Boolean> RUNNING;
 
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("animation.ghoul.death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().thenLoop("animation.ghoul.idle");
     private final RawAnimation WALK_ANIMATION = RawAnimation.begin().thenLoop("animation.ghoul.walk");
-    private final RawAnimation RAGE_ANIMATION = RawAnimation.begin().thenPlay("animation.ghoul.rage");
+    private final RawAnimation RAGE_ANIMATION = RawAnimation.begin().thenPlayAndHold("animation.ghoul.rage");
     private final RawAnimation RUN_BIPED_ANIMATION = RawAnimation.begin().thenLoop("animation.ghoul.run_biped");
     private final RawAnimation RUN_CRAWL_ANIMATION = RawAnimation.begin().thenLoop("animation.ghoul.run_crawl");
-    private boolean wasAttacking;
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlay("animation.ghoul.attack");
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlay("animation.ghoul.spawn");
+    @Nullable
+    private UUID chaseTargetId;
+    private int ticksWithoutTarget;
+    private int nextChaseSoundAge;
+    private int lastAttackAnimTimer;
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("animation.ghoul.attack");
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("animation.ghoul.spawn");
     protected static final int ANIMATION_IDLE = 0;
     protected static final int ANIMATION_WALK = 1;
     protected static final int ANIMATION_RAGE = 2;
@@ -68,14 +79,20 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     protected static final int ANIMATION_MELEE = 5;
     protected static final int ANIMATION_SPAWN = 6;
 
-    private static final float RUNNING_LIMB_SWING = 0.55F;
+    private static final float RUN_START_LIMB_SWING = 0.55F;
+    private static final float RUN_STOP_LIMB_SWING = 0.3F;
 
     public final int ATTACK_ANIMATION_DURATION = 22;
-    public final int RAGE_ANIMATION_DURATION = 64;
+    public static final int ATTACK_ANIM_SYNC_TICKS = 22 + AnimationTable.TRANSITION_TICKS;
+    public final int RAGE_ANIMATION_DURATION = 64 + AnimationTable.TRANSITION_TICKS;
     private static final int SPAWN_ANIMATION_DURATION = 92;
+    private static final int CHASE_SOUND_COOLDOWN_TICKS = 200;
+    private static final int CHASE_END_TICKS = 20;
+    private static final UUID BIPED_SPEED_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A2");
+    private static final EntityAttributeModifier BIPED_SPEED_BOOST = new EntityAttributeModifier(BIPED_SPEED_ID, "Biped run boost", 0.05D, EntityAttributeModifier.Operation.ADDITION);
     private static final float WALK_STEP_DISTANCE = 1.0F;
     private static final float CHASE_STEP_DISTANCE = 0.55F;
-    private static final int DEATH_ANIMATION_DURATION = 44;
+    private static final int DEATH_ANIMATION_DURATION = 44 + AnimationTable.TRANSITION_TICKS;
     public final int RAGE_ANIMATION_COOLDOWN = 300;
 
 
@@ -87,15 +104,15 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     protected void initDataTracker() {
         super.initDataTracker();
 
-        byte variant = (byte) ((byte) random.nextInt(8) + (byte)1);
-
-        this.dataTracker.startTracking(VARIANT, variant);
+        this.dataTracker.startTracking(VARIANT, (byte) 0);
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
         this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
         this.dataTracker.startTracking(RAGE_ANIM_TIMER, 0);
         this.dataTracker.startTracking(SPAWN_TIMER, SPAWN_ANIMATION_DURATION);
         this.dataTracker.startTracking(IS_RAGING, false);
         this.dataTracker.startTracking(RUN_CRAWLING, false);
+        this.dataTracker.startTracking(NAVIGATING, false);
+        this.dataTracker.startTracking(RUNNING, false);
     }
 
     protected void initGoals() {
@@ -167,19 +184,40 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
     public byte getVariant() {
-        return dataTracker.get(VARIANT);
+        byte tracked = dataTracker.get(VARIANT);
+        return tracked >= 1 && tracked <= 9 ? tracked : (byte) (Math.floorMod(getUuid().hashCode(), 8) + 1);
     }
 
     public void setVariant(byte variant) {
         dataTracker.set(VARIANT, variant);
     }
 
-    protected void mobTick() {
-        if (this.isAttacking() && !this.wasAttacking) {
-            this.dataTracker.set(RUN_CRAWLING, this.random.nextBoolean());
+    /// The melee goal restarts at each path end.
+    private void trackChase() {
+        LivingEntity target = ChaseTarget.isLive(this) ? this.getTarget() : null;
+        if (target == null) {
+            if (this.chaseTargetId != null && ++this.ticksWithoutTarget > CHASE_END_TICKS) {
+                this.chaseTargetId = null;
+            }
+            return;
         }
-        this.wasAttacking = this.isAttacking();
-        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+        this.ticksWithoutTarget = 0;
+        if (target.getUuid().equals(this.chaseTargetId)) {
+            return;
+        }
+        this.chaseTargetId = target.getUuid();
+        this.dataTracker.set(RUN_CRAWLING, this.random.nextBoolean());
+        if (this.age >= this.nextChaseSoundAge) {
+            this.playSound(TGSounds.GHOUL_AMBIENT.get(), 1.5F, 0.7F);
+            this.nextChaseSoundAge = this.age + CHASE_SOUND_COOLDOWN_TICKS;
+        }
+    }
+
+    protected void mobTick() {
+        trackChase();
+        this.dataTracker.set(NAVIGATING, !this.getNavigation().isIdle());
+        this.dataTracker.set(RUNNING, isRunningAtSpeed(this.dataTracker.get(RUNNING)));
+        if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
             if (getRageAnimTimer() <= 0) {
                 setRageAnimTimer(RAGE_ANIMATION_COOLDOWN);
@@ -223,7 +261,23 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
         }
 
+        if (!this.getEntityWorld().isClient()) {
+            boolean biped = ChaseTarget.isLive(this) && this.chaseTargetId != null && !this.dataTracker.get(RUN_CRAWLING);
+            if (biped != entityAttributeInstance.hasModifier(BIPED_SPEED_BOOST)) {
+                if (biped) {
+                    entityAttributeInstance.addTemporaryModifier(BIPED_SPEED_BOOST);
+                } else {
+                    entityAttributeInstance.removeModifier(BIPED_SPEED_BOOST);
+                }
+            }
+        }
+
         super.tickMovement();
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
     }
 
     @Override
@@ -248,6 +302,21 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             this.setSpawnTimer(getSpawnTimer() - 1);
         }
         super.tick();
+        if (this.getEntityWorld().isClient()) {
+            restartAttackClipOnRearm();
+        }
+    }
+
+    // The controller does not restart a running clip.
+    private void restartAttackClipOnRearm() {
+        int timer = this.getAttackAnimTimer();
+        if (timer > this.lastAttackAnimTimer + 1) {
+            AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+            if (controller != null) {
+                controller.forceAnimationReset();
+            }
+        }
+        this.lastAttackAnimTimer = timer;
     }
 
     @Override
@@ -295,11 +364,12 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
                 .transitionTicks(() -> getSpawnTimer() > 0 ? 0 : AnimationTable.TRANSITION_TICKS)
                 .when(this::isDying, DEATH_ANIMATION)
                 .when(() -> getSpawnTimer() > 0, SPAWN_ANIMATION)
+                .startAt(SPAWN_ANIMATION, ghoul -> ghoul.getSpawnTimer() > 0 && AnimationPreview.forcedAnimation(ghoul) == null ? Math.max(0, SPAWN_ANIMATION_DURATION - ghoul.getSpawnTimer()) : 0)
                 .when(this::isRaging, RAGE_ANIMATION)
                 .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
                 .when(state -> isRunning(state) && this.dataTracker.get(RUN_CRAWLING), RUN_CRAWL_ANIMATION)
                 .when(this::isRunning, RUN_BIPED_ANIMATION)
-                .when(AnimationTable::isMoving, WALK_ANIMATION)
+                .when(state -> AnimationTable.isMoving(state) || this.dataTracker.get(NAVIGATING), WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
                 .build(this, "controller", getSpawnTimer() > 0 ? 0 : AnimationTable.TRANSITION_TICKS));
     }
@@ -308,8 +378,13 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         return this.isDead() || this.getHealth() < 0.01F;
     }
 
+    private boolean isRunningAtSpeed(boolean wasRunning) {
+        float swing = this.limbAnimator.getSpeed();
+        return !isWet() && swing > (wasRunning ? RUN_STOP_LIMB_SWING : RUN_START_LIMB_SWING);
+    }
+
     private boolean isRunning(AnimationState<GhoulEntity> state) {
-        return AnimationTable.isMoving(state) && !isWet() && state.getLimbSwingAmount() > RUNNING_LIMB_SWING;
+        return AnimationTable.isMoving(state) && !isWet() && this.dataTracker.get(RUNNING);
     }
 
     @Override
@@ -324,7 +399,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     protected float calculateNextStepSoundDistance() {
-        return this.distanceTraveled + (this.isAttacking() ? CHASE_STEP_DISTANCE : WALK_STEP_DISTANCE);
+        return this.distanceTraveled + (this.chaseTargetId != null ? CHASE_STEP_DISTANCE : WALK_STEP_DISTANCE);
     }
 
     @Override
@@ -351,6 +426,8 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         SPAWN_TIMER = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.INTEGER);
         IS_RAGING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         RUN_CRAWLING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        NAVIGATING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        RUNNING = DataTracker.registerData(GhoulEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         SLOWNESS_EFFECT = new EntityAttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, EntityAttributeModifier.Operation.ADDITION);
     }
 

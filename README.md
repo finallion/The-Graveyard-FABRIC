@@ -24,7 +24,7 @@ Boss:
 
 Mobs:
 
-- Reaper, Acolyte, Ghoul, Ghouling, Revenant, Wraith, Nightmare
+- Acolyte, Ghoul, Ghouling, Revenant, Wraith, Nightmare, Reaper (off by default, can be turned on in the config)
 - Skeleton Creeper, Falling Corpse, Tormented Villager
 - Corrupted Vindicator, Corrupted Pillager, Corrupted Evoker
 - Raven, Crow, Magpie

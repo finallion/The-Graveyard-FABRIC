@@ -36,6 +36,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -45,17 +46,19 @@ import java.util.function.Predicate;
 
 public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity, Angerable {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
     private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("attack");
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
     protected static final byte ANIMATION_DEATH = 3;
     protected static final byte ANIMATION_ATTACK = 5;
     protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER = DataTracker.registerData(NightmareEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public final int ATTACK_ANIMATION_DURATION = 20;
+    public final int ATTACK_ANIMATION_DURATION = 15;
+    public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
+    private int lastAttackAnimTimer;
 
 
     private static final TrackedData<Boolean> ANGRY;
@@ -100,9 +103,29 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         this.targetSelector.add(4, new UniversalAngerGoal(this, false));
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.getEntityWorld().isClient()) {
+            restartAttackClipOnRearm();
+        }
+    }
+
+    // The controller does not restart a running clip.
+    private void restartAttackClipOnRearm() {
+        int timer = this.getAttackAnimTimer();
+        if (timer > this.lastAttackAnimTimer + 1) {
+            AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+            if (controller != null) {
+                controller.forceAnimationReset();
+            }
+        }
+        this.lastAttackAnimTimer = timer;
+    }
+
     protected void mobTick() {
         // ATTACK TIMER
-        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+        if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimation(ANIMATION_ATTACK);
         }
 
@@ -161,7 +184,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 28 && !this.getEntityWorld().isClient()) {
+        if (this.deathTime == 31 && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
@@ -204,6 +227,11 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                 .build(this, "controller"));
     }
 
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
+    }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

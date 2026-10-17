@@ -1,11 +1,15 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.entities.ai.ChaseTarget;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.NavigationConditions;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.RavagerEntity;
@@ -22,9 +26,19 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CorruptedIllager extends HordeGraveyardEntity {
+    private static final int CHASE_END_TICKS = 20;
+    private static final TrackedData<Boolean> CHASING = DataTracker.registerData(CorruptedIllager.class, TrackedDataHandlerRegistry.BOOLEAN);
+
+    private int ticksWithoutTarget;
 
     public CorruptedIllager(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
         super(entityType, world, name);
+    }
+
+    @Override
+    protected void initDataTracker() {
+        super.initDataTracker();
+        this.dataTracker.startTracking(CHASING, false);
     }
 
     protected void initGoals() {
@@ -60,9 +74,29 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
             ((MobNavigation)this.getNavigation()).setCanPathThroughDoors(bl);
         }
 
+        trackChase();
         super.mobTick();
     }
 
+    /// The vanilla melee goal stops at each path end.
+    private void trackChase() {
+        if (ChaseTarget.isLive(this)) {
+            this.ticksWithoutTarget = 0;
+            setChasing(true);
+        } else if (isChasing() && ++this.ticksWithoutTarget > CHASE_END_TICKS) {
+            setChasing(false);
+        }
+    }
+
+    public boolean isChasing() {
+        return this.dataTracker.get(CHASING);
+    }
+
+    protected void setChasing(boolean chasing) {
+        if (this.dataTracker.get(CHASING) != chasing) {
+            this.dataTracker.set(CHASING, chasing);
+        }
+    }
 
     @Override
     public boolean canLead() {
@@ -80,7 +114,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     public State getState() {
-        if (this.isAttacking()) {
+        if (this.isChasing()) {
             return State.ATTACKING;
         } else {
             return State.CROSSED;

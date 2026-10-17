@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    {"id":"#c:caves", "required": false},
-    {"id":"#forge:is_underground", "required": false}
+    {"id": "#c:caves", "required": false},
+    {"id": "#forge:is_underground", "required": false},
+    {"id": "#forge:is_cave", "required": false}
   ]
 }

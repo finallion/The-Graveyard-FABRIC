@@ -68,6 +68,7 @@ public class SpawnHordeCommand {
         if (hordeEntity != null) {
             if (captain) {
                 hordeEntity.setPatrolLeader(true);
+                hordeEntity.setHordeCaptain(true);
                 hordeEntity.setRandomPatrolTarget();
             }
 

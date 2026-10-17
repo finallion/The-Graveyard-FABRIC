@@ -2,6 +2,7 @@ package com.lion.graveyard.fabric;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
+import com.lion.graveyard.client.FragmentSpotHints;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.*;
 import com.lion.graveyard.item.VialOfBlood;
@@ -42,6 +43,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
         ClientTickEvents.END_CLIENT_TICK.register(AnimationPreviewClient::clientTick);
+        ClientTickEvents.END_CLIENT_TICK.register(FragmentSpotHints::clientTick);
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ChronicleButton.addTo(screen, Screens.getButtons(screen)::add));
 
 

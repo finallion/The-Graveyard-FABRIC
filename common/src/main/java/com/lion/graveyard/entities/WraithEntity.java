@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.blocks.BrazierBlock;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
@@ -36,6 +37,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -52,9 +54,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST = new EntityAttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, EntityAttributeModifier.Operation.ADDITION);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("spawn");
     private final RawAnimation MOVE_ANIMATION = RawAnimation.begin().then("moving", Animation.LoopType.LOOP);
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attacking", Animation.LoopType.LOOP);
     protected final byte ANIMATION_SPAWN = 0;
@@ -62,8 +64,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     protected final byte ANIMATION_DEATH = 2;
     protected final byte ANIMATION_ATTACK = 3;
     protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(WraithEntity.class, TrackedDataHandlerRegistry.BYTE);
-    private boolean spawned = false;
-    private int spawnTimer;
+    private static final TrackedData<Integer> SPAWN_TIMER = DataTracker.registerData(WraithEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private static final TrackedData<Boolean> CHASING = DataTracker.registerData(WraithEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final int SPAWN_TICKS = 20;
+    private static final int CHASE_END_TICKS = 20;
+    private static final int DEATH_TICKS = 46;
+    private int ticksWithoutTarget;
 
     @Nullable
     private BlockPos homePosition;
@@ -141,11 +147,21 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-        spawnTimer = 20;
-        setAnimation(ANIMATION_SPAWN);
+        this.dataTracker.startTracking(SPAWN_TIMER, 0);
+        this.dataTracker.startTracking(CHASING, false);
+    }
+
+    public void startSpawnAnimation() {
+        this.dataTracker.set(SPAWN_TIMER, SPAWN_TICKS);
     }
 
     public void tick() {
+        if (!this.getEntityWorld().isClient()) {
+            int spawnTicks = this.dataTracker.get(SPAWN_TIMER);
+            if (spawnTicks > 0) {
+                this.dataTracker.set(SPAWN_TIMER, spawnTicks - 1);
+            }
+        }
         super.tick();
         this.setNoGravity(true);
 
@@ -190,21 +206,16 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public void tickMovement() {
-        spawnTimer--;
-        // Ticked, not set from the animation callback: that one runs per frame on the render thread.
-        if (getAnimation() == 0) {
-            spawned = true;
-        }
-
-        if (getEntityWorld().isClient() && spawnTimer >= 0 && spawned) {
+        if (getEntityWorld().isClient() && isSpawning()) {
             addParticles();
         }
 
-        EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
-        if (!isAttacking()) {
-            entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
-        } else {
-            if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
+        if (!getEntityWorld().isClient()) {
+            trackChase();
+            EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_FLYING_SPEED);
+            if (this.getTarget() == null) {
+                entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
+            } else if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
                 entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
             }
         }
@@ -221,6 +232,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
         world.playSound(null, this.getBlockPos(), SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.HOSTILE,2.0F, -5.0F);
+        startSpawnAnimation();
         return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
     }
 
@@ -231,7 +243,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 42 && !this.getEntityWorld().isClient()) {
+        if (this.deathTime == DEATH_TICKS && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
@@ -284,6 +296,21 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
 
+    /// The vanilla melee goal stops at each path end.
+    private void trackChase() {
+        if (ChaseTarget.isLive(this)) {
+            this.ticksWithoutTarget = 0;
+            this.dataTracker.set(CHASING, true);
+        } else if (this.dataTracker.get(CHASING) && ++this.ticksWithoutTarget > CHASE_END_TICKS) {
+            this.dataTracker.set(CHASING, false);
+        }
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
+    }
+
     public byte getAnimation() {
         return dataTracker.get(ANIMATION);
     }
@@ -295,12 +322,18 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<WraithEntity>create()
+                .transitionTicks(() -> isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS)
                 .when(this::isDead, DEATH_ANIMATION)
-                .when(() -> getAnimation() == 0 && spawnTimer >= 0, SPAWN_ANIMATION)
-                .when(this::isAttacking, ATTACK_ANIMATION)
+                .when(this::isSpawning, SPAWN_ANIMATION)
+                .when(() -> this.dataTracker.get(CHASING), ATTACK_ANIMATION)
                 .when(AnimationTable::isMoving, MOVE_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller"));
+                .startAt(SPAWN_ANIMATION, wraith -> wraith.isSpawning() && AnimationPreview.forcedAnimation(wraith) == null ? Math.max(0, SPAWN_TICKS - wraith.dataTracker.get(SPAWN_TIMER)) : 0)
+                .build(this, "controller", isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS));
+    }
+
+    private boolean isSpawning() {
+        return this.dataTracker.get(SPAWN_TIMER) > 0;
     }
 
 
@@ -385,7 +418,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
 
         public boolean canStart() {
-            if (!WraithEntity.this.getEntityWorld().getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)) {
+            if (!WraithEntity.this.getEntityWorld().getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING) || !com.lion.graveyard.Graveyard.getConfig().flag("wraithGriefing", true)) {
                 return false;
             }
             if (WraithEntity.this.getTimeSinceExtinguish() >= 10) {

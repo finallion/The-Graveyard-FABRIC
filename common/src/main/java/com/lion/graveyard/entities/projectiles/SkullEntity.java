@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities.projectiles;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
@@ -108,8 +109,10 @@ public class SkullEntity extends ExplosiveProjectileEntity {
         super.onCollision(hitResult);
         if (!this.getEntityWorld().isClient) {
             Explosion.DestructionType destructionType = Explosion.DestructionType.KEEP;
-            World.ExplosionSourceType sourceType = World.ExplosionSourceType.NONE;
-            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, false, sourceType);
+            var champion = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion");
+            World.ExplosionSourceType sourceType = champion != null && champion.skullsDestroyBlocks() ? World.ExplosionSourceType.MOB : World.ExplosionSourceType.NONE;
+            float radius = champion != null ? champion.skullExplosionRadius() : 2.0F;
+            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), radius, false, sourceType);
             this.discard();
         }
 

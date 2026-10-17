@@ -59,7 +59,6 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     private static final double WALK_MIN_SPEED_SQ = 2.5E-3D;
     private static final double GROUND_TURN_MIN_SPEED_SQ = 1.0E-4D;
     private static final int WALK_HOLD_TICKS = 3;
-    protected static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("animation.crow.death");
     protected static final RawAnimation TAKEOFF = RawAnimation.begin().thenPlay("animation.crow.takeoff");
     protected static final RawAnimation GLIDE = RawAnimation.begin().thenLoop("animation.crow.glide");
     protected static final RawAnimation FLY = RawAnimation.begin().thenLoop("animation.crow.fly");
@@ -67,7 +66,6 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     protected static final RawAnimation HOP = RawAnimation.begin().thenLoop("animation.magpie.hop");
     protected static final RawAnimation WATCH = RawAnimation.begin().thenLoop("animation.crow.watch");
     protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.crow.idle");
-    protected static final RawAnimation PECK = RawAnimation.begin().thenPlay("animation.crow.peck");
 
     private static final TrackedData<Byte> FLIGHT_STATE;
 
@@ -77,7 +75,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     private static final int GLIDE_MAX = 70;
     private static final int FLAP_BURST = 40;
     private static final int HOME_RADIUS = 24;
-    private static final int DEATH_ANIMATION_DURATION = 32;
+    private static final int DEATH_ANIMATION_DURATION = 32 + AnimationTable.TRANSITION_TICKS;
     private static final int DEAD_FALL_LIMIT = 200;
     private static final int IMPACT_REST_TICKS = 20;
     private static final int FLAP_SOUND_INTERVAL = 36;
@@ -94,6 +92,9 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     private int takeoffCooldown;
     private int flightTicks;
     private int restTicks;
+    private float lookWeight = 1.0F;
+    private float previousLookWeight = 1.0F;
+    private int lookWeightAge = -1;
     private int walkTicks;
     private boolean flying;
     private boolean nearGround;
@@ -128,18 +129,23 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     }
 
     public enum Species {
-        RAVEN("raven"),
-        MAGPIE("magpie"),
-        CROW("crow");
+        RAVEN("raven", "raven"),
+        MAGPIE("magpie", "crow"),
+        CROW("crow", "crow");
 
         private final Identifier texture;
         private final Identifier model;
         private final RawAnimation walkAnimation;
+        private final RawAnimation peckAnimation;
+        private final RawAnimation deathAnimation;
 
-        Species(String name) {
+        // The raven model is larger. Its peck and death clips move the parts farther.
+        Species(String name, String bodyClips) {
             this.texture = new Identifier(Graveyard.MOD_ID, "textures/entity/" + name + ".png");
             this.model = new Identifier(Graveyard.MOD_ID, "geo/" + name + ".geo.json");
             this.walkAnimation = RawAnimation.begin().thenLoop("animation." + name + ".walk");
+            this.peckAnimation = RawAnimation.begin().thenPlay("animation." + bodyClips + ".peck");
+            this.deathAnimation = RawAnimation.begin().thenPlayAndHold("animation." + bodyClips + ".death");
         }
 
         public Identifier getTexture() {
@@ -148,6 +154,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
         public RawAnimation getWalkAnimation() {
             return this.walkAnimation;
+        }
+
+        public RawAnimation getPeckAnimation() {
+            return this.peckAnimation;
+        }
+
+        public RawAnimation getDeathAnimation() {
+            return this.deathAnimation;
         }
 
         public Identifier getModel() {
@@ -396,6 +410,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         }
         boolean walkingOnGround = this.walkTicks > 0 && !this.flying;
         boolean airborneNow = !this.isOnGround() || this.getVelocity().y > 0.1D || (moving && steering);
+        boolean flightHeld = airborneNow || this.restTicks < 3;
         FlightState state;
         if (this.isHopping() && (this.nearGround || onGround)) {
             state = FlightState.HOP;
@@ -403,9 +418,9 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             state = FlightState.LAND;
         } else if (walkingOnGround) {
             state = FlightState.WALK;
-        } else if (this.flying && gliding && airborneNow) {
+        } else if (this.flying && gliding && flightHeld) {
             state = FlightState.GLIDE;
-        } else if (this.flying && airborneNow) {
+        } else if (this.flying && flightHeld) {
             state = FlightState.FLY;
         } else if (this.watching) {
             state = FlightState.WATCH;
@@ -552,8 +567,9 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     }
 
     private void tryPeck(boolean onGround, boolean moving) {
+        FlightState flight = this.getFlightState();
         if (!onGround || moving || this.deathTime != 0 || this.isHopping() || !this.canPeck()
-                || !this.getNavigation().isIdle()) {
+                || !this.getNavigation().isIdle() || (flight != FlightState.IDLE && flight != FlightState.WATCH)) {
             return;
         }
         int chance = this.isOnFeedingGround() ? 60 : 240;
@@ -700,6 +716,21 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         return 4;
     }
 
+    public float stepLookWeight(boolean suppressed, float partialTick) {
+        if (this.age != this.lookWeightAge) {
+            this.lookWeightAge = this.age;
+            this.previousLookWeight = this.lookWeight;
+            float step = 1.0F / AnimationTable.TRANSITION_TICKS;
+            this.lookWeight = MathHelper.clamp(this.lookWeight + (suppressed ? -step : step), 0.0F, 1.0F);
+        }
+        return MathHelper.lerp(partialTick, this.previousLookWeight, this.lookWeight);
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
+    }
+
     @Override
     protected void updatePostDeath() {
         this.deathTime++;
@@ -716,7 +747,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         if (landed && this.impactTicks == 0) {
             this.playSound(SoundEvents.ENTITY_GENERIC_SMALL_FALL, 0.6F, 1.2F);
         }
-        if (landed && ++this.impactTicks >= IMPACT_REST_TICKS) {
+        if (landed && ++this.impactTicks >= IMPACT_REST_TICKS && this.deathTime >= DEATH_ANIMATION_DURATION) {
             this.removeDeadBody();
         }
     }
@@ -739,7 +770,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(AnimationTable.<CorvidEntity>create()
-                .when(() -> this.deathTime > 0, DEATH)
+                .when(() -> this.deathTime > 0, this.getSpecies().getDeathAnimation())
                 .when(() -> this.getFlightState() == FlightState.HOP, HOP)
                 .when(() -> this.getFlightState() == FlightState.WALK, this.getSpecies().getWalkAnimation())
                 .when(() -> this.getFlightState() == FlightState.LAND, LAND)
@@ -748,7 +779,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
                 .when(() -> this.getFlightState() == FlightState.WATCH, WATCH)
                 .otherwise(IDLE)
                 .build(this, "controller")
-                .triggerableAnim("peck", PECK)
+                .triggerableAnim("peck", this.getSpecies().getPeckAnimation())
                 .triggerableAnim("takeoff", TAKEOFF));
     }
 

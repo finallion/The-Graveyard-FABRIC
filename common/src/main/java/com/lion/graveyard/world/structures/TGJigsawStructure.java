@@ -1,6 +1,7 @@
 package com.lion.graveyard.world.structures;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.config.entries.StructureConfigEntry;
 import com.lion.graveyard.init.TGStructures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -73,11 +74,17 @@ public class TGJigsawStructure extends Structure {
             return Optional.empty();
         }
 
+        StructureConfigEntry entry = Graveyard.getConfig().getStructure(new Identifier(Graveyard.MOD_ID, structureName));
+        double chance = Graveyard.getConfig().structureChance(new Identifier(Graveyard.MOD_ID, structureName));
+        if (chance < 1.0D && context.random().nextDouble() >= chance) {
+            return Optional.empty();
+        }
+
         BlockPos blockpos = context.chunkPos().getCenterAtY(0);
 
         if (structureName.equals("crypt")) {
-            int minHeight = -40; // default: -40
-            int maxHeight = -10; // default: -10
+            int minHeight = entry.lowestY(-40);
+            int maxHeight = Math.max(minHeight + 1, entry.highestY(-10));
 
             ChunkPos chunkPos = context.chunkPos();
             Random random = context.random();
@@ -93,7 +100,8 @@ public class TGJigsawStructure extends Structure {
 
             int x = random.nextInt(chunkPos.getEndX() - chunkPos.getStartX()) + chunkPos.getStartX();
             int z = random.nextInt(chunkPos.getEndZ() - chunkPos.getStartZ()) + chunkPos.getStartZ();
-            int y = 210;
+            int highest = Math.max(entry.lowestY(210), entry.highestY(210));
+            int y = entry.lowestY(210) + (highest > entry.lowestY(210) ? random.nextInt(highest - entry.lowestY(210) + 1) : 0);
             blockpos = new BlockPos(x, y, z);
         } else {
             if (!TGJigsawStructure.canGenerate(context, terrainCheckSize, structureName, blockpos, maxHeightDifference)) {

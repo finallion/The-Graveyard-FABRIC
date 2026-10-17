@@ -27,20 +27,48 @@ public class DaggerItem extends SwordItem {
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (target.isDead() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof PlayerEntity playerEntity) {
             ItemStack stackOffhand = attacker.getOffHandStack();
-            if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD.get())) {
-                float blood = VialOfBlood.getBlood(stackOffhand);
-                VialOfBlood.setBlood(stackOffhand, blood + 0.1F);
+            if (stackOffhand.isOf(TGItems.VIAL_OF_BLOOD.get()) && VialOfBlood.getBlood(stackOffhand) < 0.8F) {
+                VialOfBlood.setBlood(stackOffhand, VialOfBlood.getBlood(stackOffhand) + 0.1F);
             } else if (stackOffhand.isOf(Items.GLASS_BOTTLE)) {
                 stackOffhand.decrement(1);
-                ItemStack vial = new ItemStack(TGItems.VIAL_OF_BLOOD.get());
-                if (stackOffhand.isEmpty()) {
-                    playerEntity.getInventory().insertStack(40, vial);
-                } else {
-                    playerEntity.getInventory().insertStack(vial);
-                }
+                giveVial(playerEntity, stackOffhand.isEmpty() ? 40 : -1);
+            } else if (!fillHotbarVial(playerEntity)) {
+                convertHotbarBottle(playerEntity);
             }
+
         }
 
         return super.postHit(stack, target, attacker);
+    }
+
+    private static boolean fillHotbarVial(PlayerEntity player) {
+        for (int slot = 0; slot < 9; slot++) {
+            ItemStack candidate = player.getInventory().getStack(slot);
+            if (candidate.isOf(TGItems.VIAL_OF_BLOOD.get()) && VialOfBlood.getBlood(candidate) < 0.8F) {
+                VialOfBlood.setBlood(candidate, VialOfBlood.getBlood(candidate) + 0.1F);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void convertHotbarBottle(PlayerEntity player) {
+        for (int slot = 0; slot < 9; slot++) {
+            ItemStack candidate = player.getInventory().getStack(slot);
+            if (candidate.isOf(Items.GLASS_BOTTLE)) {
+                candidate.decrement(1);
+                giveVial(player, candidate.isEmpty() ? slot : -1);
+                return;
+            }
+        }
+    }
+
+    private static void giveVial(PlayerEntity player, int preferredSlot) {
+        ItemStack vial = new ItemStack(TGItems.VIAL_OF_BLOOD.get());
+        if (preferredSlot >= 0) {
+            player.getInventory().setStack(preferredSlot, vial);
+        } else if (!player.getInventory().insertStack(vial)) {
+            player.dropItem(vial, false);
+        }
     }
 }

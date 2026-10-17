@@ -30,7 +30,7 @@ public class CorruptedVindicator extends AnimatedCorruptedIllager {
 
     @Override
     public CorruptedIllager.State getState() {
-        if (this.isAttacking()) {
+        if (this.isChasing()) {
             return State.UNDEAD_ATTACKING;
         } else {
             return State.UNDEAD;

@@ -16,11 +16,10 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
 import net.minecraft.predicate.block.BlockStatePredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.Text;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.*;
 import net.minecraft.util.ActionResult;
@@ -33,10 +32,12 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 public class AltarBlock extends Block {
     public static final BooleanProperty BLOODY = BooleanProperty.of("bloody");
     private static BlockPattern COMPLETED_ALTAR;
+    private static BlockPattern ANY_ORDER_ALTAR;
 
 
     public AltarBlock(Settings settings) {
@@ -74,6 +75,40 @@ public class AltarBlock extends Block {
         return COMPLETED_ALTAR;
     }
 
+    private static BlockPattern getAnyOrderFramePattern() {
+        if (ANY_ORDER_ALTAR == null) {
+            Predicate<BlockState> anyFragment = BlockStatePredicate.forBlock(TGBlocks.LOWER_BONE_STAFF.get())
+                    .or(BlockStatePredicate.forBlock(TGBlocks.MIDDLE_BONE_STAFF.get()))
+                    .or(BlockStatePredicate.forBlock(TGBlocks.UPPER_BONE_STAFF.get()));
+            ANY_ORDER_ALTAR = BlockPatternBuilder.start().aisle("???x???", "???????", "???????", "???????", "???????", "???????", "???????", "f??f??f")
+                    .where('?', CachedBlockPosition.matchesBlockState(BlockStatePredicate.ANY))
+                    .where('f', CachedBlockPosition.matchesBlockState(anyFragment))
+                    .where('x', CachedBlockPosition.matchesBlockState(BlockStatePredicate.forBlock(TGBlocks.ALTAR.get())))
+                    .build();
+        }
+
+        return ANY_ORDER_ALTAR;
+    }
+
+    private static String findSummonFailure(World world, BlockPos pos, float blood) {
+        if (world.getDifficulty() == Difficulty.PEACEFUL) {
+            return "block.graveyard.altar.peaceful";
+        }
+        if (!world.isNight() && !world.getDimension().hasFixedTime()) {
+            return "block.graveyard.altar.night_only";
+        }
+        if (blood < 0.8F) {
+            return "block.graveyard.altar.vial_not_full";
+        }
+        if (Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments
+                && getCompletedFramePattern().searchAround(world, pos) == null) {
+            return getAnyOrderFramePattern().searchAround(world, pos) != null
+                    ? "block.graveyard.altar.wrong_order"
+                    : "block.graveyard.altar.missing_fragments";
+        }
+        return null;
+    }
+
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!player.canModifyBlocks()) {
@@ -85,11 +120,20 @@ public class AltarBlock extends Block {
             blood = VialOfBlood.getBlood(stack);
         }
 
+        if (!world.isClient && stack.isOf(TGItems.VIAL_OF_BLOOD.get()) && state.isOf(TGBlocks.ALTAR.get()) && !state.get(BLOODY)) {
+            String failure = findSummonFailure(world, pos, blood);
+            if (failure != null) {
+                player.sendMessage(Text.translatable(failure), true);
+            }
+        }
+
         if (state.isOf(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getTranslationKey())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.getDimension().hasFixedTime())) {
             BlockPattern.Result result = AltarBlock.getCompletedFramePattern().searchAround(world, pos);
 
             if (!state.get(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
-                player.getWorld().playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH.get(), SoundCategory.BLOCKS, 5.0F, 1.0F);
+                if (!world.isClient) {
+                    world.playSound(null, player.getBlockPos(), TGSounds.VIAL_SPLASH.get(), SoundCategory.BLOCKS, 5.0F, 1.0F);
+                }
                 world.setBlockState(pos, state.with(AltarBlock.BLOODY, true));
                 Direction direction;
 
@@ -100,11 +144,11 @@ public class AltarBlock extends Block {
                 }
 
                 if (!world.isClient()) {
+                    if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
+                        VialOfBlood.setBlood(stack, 0.1F);
+                    }
                     if (!player.isCreative()) {
-                        ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-                        ItemUsage.exchangeStack(stack, player, bottle);
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 430));
-
                     }
 
 
@@ -139,8 +183,8 @@ public class AltarBlock extends Block {
                     }
 
 
+                    lich.setInvisible(true);
                     world.spawnEntity(lich);
-                    lich.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 5));
 
                     return ActionResult.CONSUME;
                 }

@@ -26,6 +26,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     private BlockPos patrolTarget;
     private boolean patrolling;
     private boolean patrolLeader;
+    private boolean hordeCaptain;
 
     protected HordeGraveyardEntity(EntityType<? extends HostileEntity> entityType, World world, String name) {
         super(entityType, world, name);
@@ -44,6 +45,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         }
 
         nbt.putBoolean("PatrolLeader", this.patrolLeader);
+        nbt.putBoolean("HordeCaptain", this.hordeCaptain);
         nbt.putBoolean("Patrolling", this.patrolling);
     }
 
@@ -53,6 +55,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
             this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
         }
         this.patrolLeader = nbt.getBoolean("PatrolLeader");
+        this.hordeCaptain = nbt.contains("HordeCaptain") ? nbt.getBoolean("HordeCaptain") : this.patrolLeader;
         this.patrolling = nbt.getBoolean("Patrolling");
     }
 
@@ -91,6 +94,10 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         this.patrolling = true;
     }
 
+    public void setHordeCaptain(boolean hordeCaptain) {
+        this.hordeCaptain = hordeCaptain;
+    }
+
     public boolean isPatrolLeader() {
         return this.patrolLeader;
     }
@@ -123,7 +130,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     @Override
     protected void onKilledBy(@Nullable LivingEntity adversary) {
         if (adversary instanceof ServerPlayerEntity player) {
-            if (this.patrolLeader) {
+            if (this.hordeCaptain) {
                 TGAdvancements.KILL_HORDE.trigger(player);
             }
         }

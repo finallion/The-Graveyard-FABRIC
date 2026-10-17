@@ -7,6 +7,9 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Formatting;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -30,7 +33,14 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class OssuaryBlock extends BlockWithEntity implements BlockEntityProvider {
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
+        tooltip.add(Text.translatable("block.graveyard.ossuary.tooltip").formatted(Formatting.GRAY));
+    }
     private static final Text TITLE = Text.translatable("container.ossuary");
     public static final DirectionProperty FACING;
     public static final BooleanProperty OPEN;

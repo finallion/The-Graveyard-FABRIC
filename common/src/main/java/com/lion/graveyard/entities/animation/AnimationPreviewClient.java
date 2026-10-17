@@ -12,6 +12,7 @@ import net.minecraft.client.sound.EntityTrackingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
@@ -49,12 +50,12 @@ public final class AnimationPreviewClient {
             "graveyard:ghouling|spawn", new DigSpec(54, new int[]{14, 17, 22, 27, 32, 47}, false));
     private static final AnimationClock.Listener LISTENER = new AnimationClock.Listener() {
         @Override
-        public void keyframeZero(Entity entity, String animation) {
-            startDig(entity, animation);
+        public void keyframeZero(Entity entity, String animation, double startOffsetTicks) {
+            startDig(entity, animation, startOffsetTicks);
             if (AnimationPreview.forcedAnimation(entity) != null) {
                 startPreview(entity, animation);
             } else if (entity instanceof AnimatedCorruptedIllager illager) {
-                illager.onAnimationKeyframeZero(animation);
+                illager.onAnimationKeyframeZero(animation, startOffsetTicks);
             }
         }
 
@@ -112,7 +113,7 @@ public final class AnimationPreviewClient {
         }
     }
 
-    private static void startDig(Entity entity, String animation) {
+    private static void startDig(Entity entity, String animation, double startOffsetTicks) {
         DigSpec spec = DIG_SPECS.get(Registries.ENTITY_TYPE.getId(entity.getType()) + "|" + animation);
         if (spec == null) {
             DIGS.remove(entity);
@@ -120,7 +121,7 @@ public final class AnimationPreviewClient {
         }
         // Ghoul and ghouling spawn their own earth particles while the spawn timer runs.
         boolean particles = spec.particles() || AnimationPreview.forcedAnimation(entity) != null;
-        DIGS.put(entity, new Dig(spec, entity.getWorld().getTime(), particles));
+        DIGS.put(entity, new Dig(spec, entity.getWorld().getTime() - (long) startOffsetTicks, particles));
     }
 
     private static void startPreview(Entity entity, String animation) {
@@ -210,6 +211,7 @@ public final class AnimationPreviewClient {
         int stroke;
         long nextScrape;
         long lastTick = Long.MIN_VALUE;
+        boolean started;
 
         Dig(DigSpec spec, long start, boolean particles) {
             this.spec = spec;
@@ -229,16 +231,24 @@ public final class AnimationPreviewClient {
                 return false;
             }
             Random random = entity.getWorld().getRandom();
+            BlockState ground = groundBelow(entity);
+            if (!this.started) {
+                this.started = true;
+                while (this.stroke < this.spec.strokeTicks().length && this.spec.strokeTicks()[this.stroke] < elapsed) {
+                    this.stroke++;
+                }
+            }
             while (this.stroke < this.spec.strokeTicks().length && elapsed >= this.spec.strokeTicks()[this.stroke]) {
-                playDig(entity, 1.0F, 0.9F + random.nextFloat() * 0.2F);
+                playDig(entity, 1.0F, 0.5F + random.nextFloat() * 0.08F);
+                playEarth(entity, ground, 0.8F);
                 this.stroke++;
             }
             if (now >= this.nextScrape) {
-                playDig(entity, 0.6F, 0.8F + random.nextFloat() * 0.4F);
+                playDig(entity, 0.6F, 0.5F + random.nextFloat() * 0.1F);
+                playEarth(entity, ground, 0.35F);
                 this.nextScrape = now + MIN_GAP + random.nextInt(GAP_SPREAD);
             }
             if (this.particles) {
-                BlockState ground = entity.getWorld().getBlockState(BlockPos.ofFloored(entity.getX(), entity.getY() - 0.2D, entity.getZ()));
                 if (ground.getRenderType() != BlockRenderType.INVISIBLE) {
                     for (int i = 0; i < 10; i++) {
                         entity.getWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, ground),
@@ -247,6 +257,15 @@ public final class AnimationPreviewClient {
                 }
             }
             return true;
+        }
+
+        private static BlockState groundBelow(Entity entity) {
+            return entity.getWorld().getBlockState(BlockPos.ofFloored(entity.getX(), entity.getY() - 0.2D, entity.getZ()));
+        }
+
+        private static void playEarth(Entity entity, BlockState ground, float volume) {
+            BlockState sound = ground.isAir() || ground.getRenderType() == BlockRenderType.INVISIBLE ? Blocks.DIRT.getDefaultState() : ground;
+            entity.getWorld().playSound(entity.getX(), entity.getY(), entity.getZ(), sound.getSoundGroup().getBreakSound(), SoundCategory.HOSTILE, volume, 0.8F, false);
         }
 
         private static void playDig(Entity entity, float volume, float pitch) {

@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/redeem_tormented_villager",
   "display": {
     "icon": {
-      "item": "graveyard:tormented_villager_spawn_egg"
+      "item": "minecraft:candle"
     },
     "title": {
       "translate": "advancements.graveyard.redeem_ten_tormented_villagers.title"

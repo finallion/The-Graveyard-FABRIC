@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities.ai.goals;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.MagpieEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
@@ -35,7 +36,7 @@ public class PickTreasureGoal extends Goal {
         }
         World world = this.magpie.getWorld();
         // The vanilla pickup needs the mobGriefing game rule.
-        if (!world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || this.magpie.getRandom().nextInt(10) != 0) {
+        if (!world.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
             return false;
         }
         this.target = this.findTreasure();

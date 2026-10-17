@@ -1,6 +1,7 @@
 package com.lion.graveyard.entities.horde;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.config.entries.HordeConfigEntry;
 import com.lion.graveyard.entities.HordeGraveyardEntity;
 import com.lion.graveyard.entities.HostileGraveyardEntity;
 import com.lion.graveyard.entities.MobSpawnGate;
@@ -44,8 +45,9 @@ public class GraveyardHordeSpawner implements Spawner {
             } else {
                 int randomizer = Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).additionalRandomizedTicks;
                 this.ticksUntilNextSpawn += Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).ticksUntilNextSpawn + random.nextInt(randomizer <= 0 ? 1200 : randomizer);
-                if (world.isNight()) {
-                    if (random.nextInt(5) != 0) {
+                HordeConfigEntry horde = Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn"));
+                if (world.isNight() || !horde.onlyAtNight()) {
+                    if (random.nextDouble() >= horde.chance()) {
                         return 0;
                     } else {
                         int i = world.getPlayers().size();
@@ -58,8 +60,9 @@ public class GraveyardHordeSpawner implements Spawner {
                             } else if (world.isNearOccupiedPointOfInterest(playerEntity.getBlockPos(), 2)) {
                                 return 0;
                             } else {
-                                int j = (24 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
-                                int k = (24 + random.nextInt(24)) * (random.nextBoolean() ? -1 : 1);
+                                int distanceSpan = Math.max(1, horde.farDistance() - horde.nearDistance());
+                                int j = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
+                                int k = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
                                 BlockPos.Mutable mutable = playerEntity.getBlockPos().mutableCopy().move(j, 0, k);
                                 if (!world.isRegionLoaded(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
                                     return 0;
@@ -140,6 +143,7 @@ public class GraveyardHordeSpawner implements Spawner {
             if (hordeEntity != null) {
                 if (captain) {
                     hordeEntity.setPatrolLeader(true);
+                    hordeEntity.setHordeCaptain(true);
                     hordeEntity.setRandomPatrolTarget();
                 }
 

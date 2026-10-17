@@ -1,10 +1,4 @@
 {
-  "type": "forge:add_spawns",
-  "biomes": "#graveyard:revenant_spawns",
-  "spawners": {
-    "type": "graveyard:revenant",
-    "maxCount": 5,
-    "minCount": 3,
-    "weight": 25
-  }
+  "type": "graveyard:config_spawns",
+  "mob": "revenant"
 }

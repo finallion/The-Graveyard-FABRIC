@@ -66,10 +66,13 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
             world.playSound(null, pos, SoundEvents.PARTICLE_SOUL_ESCAPE, SoundCategory.BLOCKS, 4.0F, -3.0F);
         }
 
-        PlayerEntity playerEntity = world.getClosestPlayer((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 4.0D, false);
+        double x = (double) pos.getX() + 0.5D;
+        double y = (double) pos.getY() + 0.5D;
+        double z = (double) pos.getZ() + 0.5D;
+        PlayerEntity playerEntity = world.getClosestPlayer(x, y, z, 4.0D, false);
         if (playerEntity != null && !state.get(OssuaryBlock.OPEN)) {
             world.setBlockState(pos, state.with(OssuaryBlock.OPEN, true), 3);
-        } else if (playerEntity == null && state.get(OssuaryBlock.OPEN)) {
+        } else if (state.get(OssuaryBlock.OPEN) && world.getClosestPlayer(x, y, z, 5.0D, false) == null) {
             world.setBlockState(pos, state.with(OssuaryBlock.OPEN, false), 3);
         }
 

@@ -1,5 +1,7 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
 import net.minecraft.entity.*;
@@ -10,6 +12,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
@@ -36,6 +39,8 @@ import java.util.List;
 
 public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
+    private static final String OFFERS_DAY_KEY = "OffersDay";
+    private long offersDay = -1L;
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
 
     public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, World world) {
@@ -125,7 +130,27 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
         super.tick();
     }
 
+    @Override
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putLong(OFFERS_DAY_KEY, this.offersDay);
+    }
+
+    @Override
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        this.offersDay = nbt.contains(OFFERS_DAY_KEY) ? nbt.getLong(OFFERS_DAY_KEY) : -1L;
+    }
+
+    private long currentDay() {
+        return this.getEntityWorld().getTimeOfDay() / 24000L;
+    }
+
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (this.offers != null && this.offersDay != currentDay() && !this.hasCustomer()) {
+            this.offers = null;
+        }
+
         if (getEntityWorld().isDay() && !this.getEntityWorld().isClient) {
             player.sendMessage(Text.translatable("entity.graveyard.nameless_hanged.wait"), true);
             getEntityWorld().playSound(null, player.getBlockPos(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundCategory.HOSTILE, 0.5F, 1.0F);
@@ -148,7 +173,11 @@ public class NamelessHangedEntity extends MerchantEntity implements GeoEntity {
     protected void fillRecipes() {
         List<TradeOffers.Factory> factorys = NamelessHangedTrades.TRADES_REGISTRY;
         TradeOfferList tradeOfferList = this.getOffers();
-        int offers = random.nextInt(3) + 7;
+        GraveyardConfig config = Graveyard.getConfig();
+        int minOffers = Math.max(1, (int) config.number("namelessHangedMinOffers", 7.0D));
+        int maxOffers = Math.max(minOffers, (int) config.number("namelessHangedMaxOffers", 9.0D));
+        int offers = minOffers + random.nextInt(maxOffers - minOffers + 1);
+        this.offersDay = currentDay();
         this.fillRecipesFromPool(tradeOfferList, factorys.toArray(new TradeOffers.Factory[0]), offers);
     }
 

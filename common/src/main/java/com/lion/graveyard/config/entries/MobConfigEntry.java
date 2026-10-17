@@ -7,31 +7,51 @@ public class MobConfigEntry {
     public final int maxGroup;
     public final boolean canBurnInSunlight;
     public final boolean canBeWithered;
+    public final Double healthMultiplier;
+    public final Double damageMultiplier;
+    public final Double speedMultiplier;
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
+    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered,
+                           Double healthMultiplier, Double damageMultiplier, Double speedMultiplier) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
         this.maxGroup = maxGroup;
         this.canBurnInSunlight = canBurnInSunlight;
         this.canBeWithered = canBeWithered;
+        this.healthMultiplier = healthMultiplier;
+        this.damageMultiplier = damageMultiplier;
+        this.speedMultiplier = speedMultiplier;
     }
 
-    private MobConfigEntry(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
-        this(enabled, 0, 0, 0, canBurnInSunlight, canBeWithered);
+    public double health() {
+        return multiplier(healthMultiplier);
     }
 
+    public double damage() {
+        return multiplier(damageMultiplier);
+    }
+
+    public double speed() {
+        return multiplier(speedMultiplier);
+    }
+
+    private static double multiplier(Double value) {
+        return value == null || !Double.isFinite(value) || value < 0.0D ? 1.0D : Math.max(0.05D, value);
+    }
 
     public MobConfigEntry sanitized() {
         int safeWeight = Math.max(0, weight);
         int safeMin = Math.max(safeWeight > 0 ? 1 : 0, minGroup);
-        return new MobConfigEntry(enabled, safeWeight, safeMin, Math.max(safeMin, maxGroup), canBurnInSunlight, canBeWithered);
+        return new MobConfigEntry(enabled, safeWeight, safeMin, Math.max(safeMin, maxGroup), canBurnInSunlight, canBeWithered,
+                health(), damage(), speed());
     }
 
     public static MobConfigEntry of(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
-        return new MobConfigEntry(enabled, canBurnInSunlight, canBeWithered);
+        return of(enabled, 0, 0, 0, canBurnInSunlight, canBeWithered);
     }
+
     public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
-        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered);
+        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, 1.0D, 1.0D, 1.0D);
     }
 }

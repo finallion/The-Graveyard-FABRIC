@@ -17,9 +17,9 @@ public class GhoulMeleeAttackGoal extends AbstractGraveyardMeleeGoal<GhoulEntity
             return;
         }
         double d = this.getSquaredMaxAttackDistance(target);
-        if (squaredDistance <= d && this.cooldown <= 0 && this.mob.getAttackAnimTimer() == 0) {
+        if (squaredDistance <= d && this.cooldown <= 0 && this.mob.getAttackAnimTimer() <= GhoulEntity.ATTACK_ANIM_SYNC_TICKS - this.mob.ATTACK_ANIMATION_DURATION) {
             this.resetCooldown(20);
-            this.mob.setAttackAnimTimer(this.mob.ATTACK_ANIMATION_DURATION);
+            this.mob.setAttackAnimTimer(GhoulEntity.ATTACK_ANIM_SYNC_TICKS);
             animationTicker = this.mob.ATTACK_ANIMATION_DURATION;
             canFinishAttack = true;
         }

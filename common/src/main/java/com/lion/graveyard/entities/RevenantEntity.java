@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -38,14 +40,16 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     private static final TrackedData<Integer> REANIMATE_ANIM_TIMER;
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Boolean> CAN_REANIMATE;
+    private static final TrackedData<Boolean> CHASING;
+    private static final int CHASE_END_TICKS = 20;
 
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.PLAY_ONCE);
-    private final RawAnimation FAKE_DEATH_ANIMATION = RawAnimation.begin().then("fake_death", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
+    private final RawAnimation FAKE_DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("fake_death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
     private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("attack");
     private final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().then("running", Animation.LoopType.LOOP);
-    private final RawAnimation REANIMATE_ANIMATION = RawAnimation.begin().then("reanimate", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation REANIMATE_ANIMATION = RawAnimation.begin().thenPlayAndHold("reanimate");
 
 
     protected static final int ANIMATION_IDLE = 0;
@@ -57,6 +61,10 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     protected static final int ANIMATION_FAKE_DEATH = 6; // necessary because anim can't be hold on last frame
 
     public final int ATTACK_ANIMATION_DURATION = 15;
+    public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
+    private int lastAttackAnimTimer;
+    private int ticksWithoutTarget;
+
     public final int REANIMATE_DURATION = 120; // duration reanimation anim: 40 + duration death animation: 30 + waiting time: 30
 
     public RevenantEntity(EntityType<? extends HostileEntity> entityType, World world) {
@@ -71,6 +79,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.dataTracker.startTracking(ATTACK_ANIM_TIMER, 0);
         this.dataTracker.startTracking(REANIMATE_ANIM_TIMER, 0);
         this.dataTracker.startTracking(CAN_REANIMATE, true);
+        this.dataTracker.startTracking(CHASING, false);
     }
 
     protected void initGoals() {
@@ -101,9 +110,31 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
 
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.getEntityWorld().isClient()) {
+            restartAttackClipOnRearm();
+        }
+    }
+
+    // The controller does not restart a running clip.
+    private void restartAttackClipOnRearm() {
+        int timer = this.getAttackAnimTimer();
+        if (timer > this.lastAttackAnimTimer + 1) {
+            AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
+            if (controller != null) {
+                controller.forceAnimationReset();
+            }
+        }
+        this.lastAttackAnimTimer = timer;
+    }
+
     protected void mobTick() {
+        trackChase();
+
         // ATTACK TIMER
-        if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
+        if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
         }
 
@@ -129,6 +160,21 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         super.mobTick();
     }
 
+    /// The vanilla melee goal stops at each path end.
+    private void trackChase() {
+        if (ChaseTarget.isLive(this)) {
+            this.ticksWithoutTarget = 0;
+            this.dataTracker.set(CHASING, true);
+        } else if (this.dataTracker.get(CHASING) && ++this.ticksWithoutTarget > CHASE_END_TICKS) {
+            this.dataTracker.set(CHASING, false);
+        }
+    }
+
+    @Override
+    public double getBoneResetTime() {
+        return AnimationTable.TRANSITION_TICKS;
+    }
+
     @Override
     public void tickMovement() {
         EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
@@ -150,7 +196,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     protected void updatePostDeath() {
         ++this.deathTime;
-        if (this.deathTime == 30 && !this.getEntityWorld().isClient()) {
+        if (this.deathTime == 35 && !this.getEntityWorld().isClient()) {
             this.getEntityWorld().sendEntityStatus(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
@@ -159,8 +205,17 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     public boolean damage(DamageSource source, float amount) {
         if (source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || source.isIn(DamageTypeTags.IS_FIRE)) {
+            int lyingTicks = getReanimateAnimTimer();
+            boolean lyingDead = getAnimationState() == ANIMATION_FAKE_DEATH && lyingTicks > 40;
             setCanReanimate(false);
             setReanimateAnimTimer(0);
+            if (lyingDead) {
+                boolean hurt = super.damage(source, Float.MAX_VALUE);
+                if (isAlive()) {
+                    setReanimateAnimTimer(lyingTicks);
+                }
+                return hurt;
+            }
         }
 
         if (amount >= getHealth() && canReanimate() && random.nextInt(4) == 0) {
@@ -185,6 +240,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<RevenantEntity>create()
+                .when(() -> (isDead() || getHealth() < 0.01F) && getAnimationState() == ANIMATION_FAKE_DEATH, FAKE_DEATH_ANIMATION)
                 .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
                 .when(() -> getAnimationState() == ANIMATION_FAKE_DEATH && getReanimateAnimTimer() > 39, FAKE_DEATH_ANIMATION)
                 .when(() -> getReanimateAnimTimer() > 0, REANIMATE_ANIMATION)
@@ -196,7 +252,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     }
 
     private boolean isRunning(AnimationState<RevenantEntity> state) {
-        return AnimationTable.isMoving(state) && isAttacking() && !isWet();
+        return AnimationTable.isMoving(state) && this.dataTracker.get(CHASING) && !isWet();
     }
 
 
@@ -256,11 +312,18 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("canReanimate", canReanimate());
+        nbt.putInt("ReanimateTimer", getReanimateAnimTimer());
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         setCanReanimate(nbt.getBoolean("canReanimate"));
+        if (nbt.contains("ReanimateTimer")) {
+            setReanimateAnimTimer(nbt.getInt("ReanimateTimer"));
+            if (getReanimateAnimTimer() > 40) {
+                setAnimationState(ANIMATION_FAKE_DEATH);
+            }
+        }
     }
 
     static {
@@ -268,6 +331,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         REANIMATE_ANIM_TIMER = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.INTEGER);
         ANIMATION = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.INTEGER);
         CAN_REANIMATE = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+        CHASING = DataTracker.registerData(RevenantEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
         SLOWNESS_EFFECT = new EntityAttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, EntityAttributeModifier.Operation.ADDITION);
     }
 

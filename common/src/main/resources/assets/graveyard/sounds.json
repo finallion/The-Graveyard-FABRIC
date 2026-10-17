@@ -211,7 +211,8 @@
   "entity.corrupted_illager.wander": {
     "sounds": [
       "graveyard:entity/corrupted_illager/wander1",
-      "graveyard:entity/corrupted_illager/wander2"
+      "graveyard:entity/corrupted_illager/wander2",
+      "graveyard:entity/corrupted_illager/wander3"
     ],
     "subtitle": "subtitles.entity.graveyard.corrupted_illager.wander"
   },
@@ -394,14 +395,14 @@
   },
   "block.urn.open": {
     "sounds": [
-      "minecraft:block/barrel/open1",
-      "minecraft:block/barrel/open2"
+      "graveyard:block/urn/open1",
+      "graveyard:block/urn/open2"
     ],
     "subtitle": "subtitles.block.graveyard.urn.open"
   },
   "block.urn.close": {
     "sounds": [
-      "minecraft:block/barrel/close"
+      "graveyard:block/urn/close"
     ],
     "subtitle": "subtitles.block.graveyard.urn.close"
   },

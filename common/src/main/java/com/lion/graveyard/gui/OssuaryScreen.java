@@ -6,6 +6,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.sound.SoundEvents;
@@ -18,6 +22,8 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/stonecutter.png");
+    private static final ItemStack INPUT_HINT = new ItemStack(Items.BONE_BLOCK);
+    private static final Text INPUT_HINT_TEXT = Text.translatable("container.graveyard.ossuary.input_hint");
     private float scrollAmount;
     private boolean mouseClicked;
     private int scrollOffset;
@@ -46,10 +52,21 @@ public class OssuaryScreen extends HandledScreen<OssuaryScreenHandler> {
         int n = this.scrollOffset + 12;
         this.renderRecipeBackground(context, mouseX, mouseY, l, m, n);
         this.renderRecipeIcons(context, l, m, n);
+        Slot input = this.handler.getSlot(0);
+        if (!input.hasStack()) {
+            int sx = this.x + input.x;
+            int sy = this.y + input.y;
+            context.drawItemWithoutEntity(INPUT_HINT, sx, sy);
+            context.fill(RenderLayer.getGuiGhostRecipeOverlay(), sx, sy, sx + 16, sy + 16, 0x808B8B8B);
+        }
     }
 
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
         super.drawMouseoverTooltip(context, x, y);
+        Slot input = this.handler.getSlot(0);
+        if (!input.hasStack() && this.handler.getCursorStack().isEmpty() && this.isPointWithinBounds(input.x, input.y, 16, 16, x, y)) {
+            context.drawTooltip(this.textRenderer, INPUT_HINT_TEXT, x, y);
+        }
         if (this.canCraft) {
             int i = this.x + 52;
             int j = this.y + 14;

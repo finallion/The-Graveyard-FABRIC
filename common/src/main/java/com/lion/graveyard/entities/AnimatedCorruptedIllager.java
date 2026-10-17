@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
@@ -31,11 +32,10 @@ import java.util.function.Supplier;
 public abstract class AnimatedCorruptedIllager extends CorruptedIllager implements GeoEntity {
     private static final String ANIMATION_PREFIX = "animation.corrupted_illager.";
     private static final int SPAWN_TICKS = 92;
-    private static final int DEATH_TICKS = 44;
-    private static final int GLITCH_TICKS = 44;
-    private static final int STRIKE_TICKS = 22;
-    private static final int BITE_TICKS = 16;
-    // Hit ticks count from the end of the five tick blend.
+    private static final int DEATH_TICKS = 49;
+    private static final int GLITCH_TICKS = 49;
+    private static final int STRIKE_TICKS = 27;
+    private static final int BITE_TICKS = 21;
     private static final int STRIKE_HIT_TICKS = 16;
     private static final int BITE_HIT_TICKS = 13;
     private static final int GLITCH_CHANCE = 2400;
@@ -48,6 +48,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     private static final int RIGHT_CLAW = 2;
     private static final double WANDER_SPEED = 0.27D;
     private static final float MOVING_LIMB_SPEED = 0.05F;
+    private static final int WANDER_STUCK_TICKS = 20;
 
     private static final TrackedData<Byte> DECAY = DataTracker.registerData(AnimatedCorruptedIllager.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Integer> SPAWN_TIMER = DataTracker.registerData(AnimatedCorruptedIllager.class, TrackedDataHandlerRegistry.INTEGER);
@@ -59,9 +60,9 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     private static final RawAnimation SPAWN = RawAnimation.begin().thenPlayAndHold(ANIMATION_PREFIX + "spawn");
     private static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold(ANIMATION_PREFIX + "blow_apart");
-    private static final RawAnimation STRIKE = RawAnimation.begin().thenPlay(ANIMATION_PREFIX + "strike");
-    private static final RawAnimation BITE = RawAnimation.begin().thenPlay(ANIMATION_PREFIX + "bite");
-    private static final RawAnimation GLITCH = RawAnimation.begin().thenPlay(ANIMATION_PREFIX + "glitch");
+    private static final RawAnimation STRIKE = RawAnimation.begin().thenPlayAndHold(ANIMATION_PREFIX + "strike");
+    private static final RawAnimation BITE = RawAnimation.begin().thenPlayAndHold(ANIMATION_PREFIX + "bite");
+    private static final RawAnimation GLITCH = RawAnimation.begin().thenPlayAndHold(ANIMATION_PREFIX + "glitch");
     private static final RawAnimation ATTACK_RUN = RawAnimation.begin().thenLoop(ANIMATION_PREFIX + "attack_run");
     private static final RawAnimation WANDER = RawAnimation.begin().thenLoop(ANIMATION_PREFIX + "wander");
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop(ANIMATION_PREFIX + "idle");
@@ -70,6 +71,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     @Nullable
     private LivingEntity pendingTarget;
     private int glitchCooldown;
+    private int stuckTicks;
     private AnimationSound currentSound = AnimationSound.SILENT;
     private int soundCountdown;
     private AnimationSound playingSound = AnimationSound.SILENT;
@@ -172,6 +174,10 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
             resolvePendingHit();
         }
         super.tick();
+        if (!this.getWorld().isClient() && this.isAiDisabled()) {
+            setChasing(false);
+            this.dataTracker.set(WANDERING, false);
+        }
         if (this.getWorld().isClient() && AnimationPreview.forcedAnimation(this) == null) {
             tickAnimationSound();
         }
@@ -191,7 +197,10 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         if (this.dataTracker.get(GLITCH_TIMER) > 0) {
             return AnimationSound.SILENT;
         }
-        if (this.isAttacking() && moving) {
+        if (this.isSwimmingInWater()) {
+            return AnimationSound.IDLE;
+        }
+        if (this.isChasing() && moving) {
             return AnimationSound.ATTACK_RUN;
         }
         return moving || this.dataTracker.get(WANDERING) ? AnimationSound.WANDER : AnimationSound.IDLE;
@@ -213,11 +222,14 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         }
     }
 
-    public void onAnimationKeyframeZero(String animation) {
+    public void onAnimationKeyframeZero(String animation, double startOffsetTicks) {
         if (AnimationPreview.forcedAnimation(this) != null) {
             return;
         }
         AnimationSound sound = AnimationSound.of(animation);
+        if (sound == AnimationSound.SPAWN && startOffsetTicks > 0) {
+            return;
+        }
         // One sound can span several loops of its animation.
         if (sound == this.playingSound && this.age - this.soundStartAge < sound.lengthTicks - SOUND_RESTART_SLACK) {
             return;
@@ -266,6 +278,10 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         }
     }
 
+    private boolean isSwimmingInWater() {
+        return this.isTouchingWater() && !this.isOnGround();
+    }
+
     private void tickDown(TrackedData<Integer> timer) {
         int ticks = this.dataTracker.get(timer);
         if (ticks > 0) {
@@ -276,8 +292,10 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     @Override
     protected void mobTick() {
         super.mobTick();
-        this.dataTracker.set(WANDERING, this.getTarget() == null && !this.getNavigation().isIdle());
-        boolean resting = this.getTarget() == null && this.getNavigation().isIdle() && this.getSpawnTimer() == 0;
+        boolean navigating = !ChaseTarget.isLive(this) && !this.getNavigation().isIdle();
+        this.stuckTicks = navigating && this.limbAnimator.getSpeed() <= MOVING_LIMB_SPEED ? this.stuckTicks + 1 : 0;
+        this.dataTracker.set(WANDERING, navigating && this.stuckTicks < WANDER_STUCK_TICKS);
+        boolean resting = !ChaseTarget.isLive(this) && this.getNavigation().isIdle() && this.getSpawnTimer() == 0;
         int glitch = this.dataTracker.get(GLITCH_TIMER);
         if (glitch > 0 && !resting) {
             this.dataTracker.set(GLITCH_TIMER, 0);
@@ -324,10 +342,12 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
                 .when(() -> this.dataTracker.get(ATTACK_TIMER) > 0 && this.dataTracker.get(ATTACK_KIND) == ATTACK_STRIKE, STRIKE)
                 .when(() -> this.dataTracker.get(ATTACK_TIMER) > 0, BITE)
                 .when(() -> this.dataTracker.get(GLITCH_TIMER) > 0, GLITCH)
-                .when(state -> this.isAttacking() && AnimationTable.isMoving(state), ATTACK_RUN)
+                .when(this::isSwimmingInWater, IDLE)
+                .when(state -> this.isChasing() && AnimationTable.isMoving(state), ATTACK_RUN)
                 // WANDERING covers walking below the limb swing threshold.
                 .when(state -> AnimationTable.isMoving(state) || this.dataTracker.get(WANDERING), WANDER)
                 .otherwise(IDLE)
+                .startAt(SPAWN, illager -> illager.getSpawnTimer() > 0 && AnimationPreview.forcedAnimation(illager) == null ? Math.max(0, SPAWN_TICKS - illager.getSpawnTimer()) : 0)
                 .build(this, "controller", AnimationTable.TRANSITION_TICKS));
     }
 

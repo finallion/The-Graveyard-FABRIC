@@ -31,7 +31,7 @@
           "functions": [
             {
               "function": "minecraft:set_nbt",
-              "tag": "{page:\"what_the_sexton_knows\"}"
+              "tag": "{page:\"the_gravedigger\"}"
             }
           ]
         },

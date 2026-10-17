@@ -39,7 +39,7 @@ public final class Chronicle {
 
     /// The server cannot read the chapter assets, so it keeps the ids itself.
     private static final List<String> ACT_ONE = List.of(
-            "on_bells", "the_shroud", "what_the_sexton_knows", "the_red_moon", "fog", "the_quiet", "plague_rain",
+            "on_bells", "the_shroud", "the_gravedigger", "the_red_moon", "fog", "the_quiet", "plague_rain",
             "on_the_scarecrow", "letter_unsent_1", "letter_unsent_2", "letter_unsent_3", "roberts_diary_last",
             "notes_64", "the_mycelium_1", "the_mycelium_2", "the_tree", "the_column");
 

@@ -46,3 +46,6 @@ CLAUDE.md
 docs/
 *.md
 !README.md
+
+# Git Bash turns "> nul" into a real file on Windows.
+nul

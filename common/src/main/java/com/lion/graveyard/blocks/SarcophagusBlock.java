@@ -129,6 +129,7 @@ public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, 
             }
             WraithEntity ghost = TGEntities.WRAITH.get().create(world);
             ghost.refreshPositionAndAngles(entityPos, 0.0F, 0.0F);
+            ghost.startSpawnAnimation();
             world.spawnEntity(ghost);
             world.setBlockState(pos, state.with(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.offset(getDirectionTowardsOtherPart(state.get(PART), state.get(FACING)));

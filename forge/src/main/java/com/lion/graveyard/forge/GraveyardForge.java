@@ -40,12 +40,21 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.common.world.BiomeModifier;
+import com.mojang.serialization.Codec;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 @Mod(Graveyard.MOD_ID)
 public class GraveyardForge {
+    private static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Graveyard.MOD_ID);
+
+    static {
+        BIOME_MODIFIERS.register("config_spawns", () -> ConfigSpawnsBiomeModifier.CODEC);
+    }
 
     public GraveyardForge() {
         Graveyard.init();
@@ -70,6 +79,7 @@ public class GraveyardForge {
         RegistryHelperImpl.RECIPE_SERIALIZERS.register(bus);
         RegistryHelperImpl.CREATIVE_TABS.register(bus);
         RegistryHelperImpl.MENUS.register(bus);
+        BIOME_MODIFIERS.register(bus);
 
         bus.addListener(GraveyardForge::init);
         bus.addListener(GraveyardForge::registerEntityAttributes);

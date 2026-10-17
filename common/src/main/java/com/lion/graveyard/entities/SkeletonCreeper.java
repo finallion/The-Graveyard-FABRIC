@@ -1,5 +1,7 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -19,7 +21,6 @@ import java.util.Random;
 
 public class SkeletonCreeper extends CreeperEntity {
     private PlayerEntity closestPlayer;
-    private final double explosionRadius = 3.5D;
 
     public SkeletonCreeper(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
@@ -55,7 +56,8 @@ public class SkeletonCreeper extends CreeperEntity {
 
     public void explode() {
         if (!this.getEntityWorld().isClient) {
-            World.ExplosionSourceType destructionType = World.ExplosionSourceType.NONE;
+            GraveyardConfig config = Graveyard.getConfig();
+            World.ExplosionSourceType destructionType = config.flag("skeletonCreeperDestroysBlocks", false) ? World.ExplosionSourceType.MOB : World.ExplosionSourceType.NONE;
             float f = this.shouldRenderOverlay() ? 2.0F : 1.0F;
 
             if (canStart()) {
@@ -64,7 +66,7 @@ public class SkeletonCreeper extends CreeperEntity {
             }
 
             this.dead = true;
-            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionRadius * f, destructionType);
+            this.getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), explosionRadius(config) * f, destructionType);
             this.discard();
             this.spawnEffectsCloud();
         }
@@ -98,4 +100,9 @@ public class SkeletonCreeper extends CreeperEntity {
         super.tickMovement();
     }
 
+
+    private static float explosionRadius(GraveyardConfig config) {
+        double radius = config.number("skeletonCreeperExplosionRadius", 3.5D);
+        return Double.isFinite(radius) ? (float) Math.max(0.0D, Math.min(16.0D, radius)) : 3.5F;
+    }
 }

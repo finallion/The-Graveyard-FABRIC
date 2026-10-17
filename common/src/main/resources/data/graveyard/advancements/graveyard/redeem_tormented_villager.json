@@ -2,7 +2,7 @@
   "parent": "graveyard:graveyard/overrun_village",
   "display": {
     "icon": {
-      "item": "graveyard:tormented_villager_spawn_egg"
+      "item": "minecraft:bell"
     },
     "title": {
       "translate": "advancements.graveyard.redeem_tormented_villager.title"

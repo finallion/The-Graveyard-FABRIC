@@ -20,7 +20,9 @@ public class GraveyardConfig implements Config {
                 Fabric:
                     Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
                 Forge:
-                    To configure spawning weight and group size, change the .json files in data/graveyard/forge/biome_modifiers.
+                    Spawning weight and group size come from the same config. A weight of 0 turns the natural spawn off.
+                Every mob entry has healthMultiplier, damageMultiplier and speedMultiplier (1.0 = unchanged).
+                enabled switches a mob off, like mobSpawnEnabled. For acolyte, wraith and the corrupted illagers only mobSpawnEnabled counts.
              
 
              Additional:
@@ -43,6 +45,12 @@ public class GraveyardConfig implements Config {
              crowsEatCrops lets crows eat crops.
              tormentedVillagerLight lets the tormented villager carry a light.
              smolderingBlocksInVillages generates smoldering blocks in overrun villages.
+             skeletonCreeperDestroysBlocks lets the skeleton creeper explosion break blocks. skeletonCreeperExplosionRadius sets its size.
+             wraithGriefing lets wraiths put out torches and lights.
+             corvidTheftChance is the chance per check that a magpie goes for an item.
+             namelessHangedMinOffers and namelessHangedMaxOffers set how many trades the nameless hanged offers.
+             Structures: chance (0 to 1) is the chance that a placed structure generates. crypt and lich_prison also have minY and maxY.
+             Horde: chancePerCheck, minDistance, maxDistance and nightOnly tune the horde spawn.
              
             """)
 
@@ -53,6 +61,9 @@ public class GraveyardConfig implements Config {
     public Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
     public Map<String, Boolean> booleanEntries = new HashMap<>();
     public Map<String, Boolean> mobSpawnEnabled = new HashMap<>();
+    public Map<String, Double> numberEntries = new HashMap<>();
+
+    private static final Set<String> ENABLED_IGNORED = Set.of("acolyte", "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker", "wraith");
 
     @Override
     public String getName() {
@@ -75,13 +86,21 @@ public class GraveyardConfig implements Config {
         if (!structureSwitch(path)) {
             return false;
         }
-        boolean overrunVariant = path.startsWith("overrun_") && path.endsWith("_village") && !path.equals("overrun_village");
-        return !overrunVariant || structureSwitch("overrun_village");
+        return !isOverrunVariant(path) || structureSwitch("overrun_village");
+    }
+
+    private static boolean isOverrunVariant(String path) {
+        return path.startsWith("overrun_") && path.endsWith("_village") && !path.equals("overrun_village");
     }
 
     private boolean structureSwitch(String path) {
         StructureConfigEntry entry = structureConfigEntries.get(path);
         return entry == null || entry.enabled;
+    }
+
+    public double structureChance(Identifier id) {
+        double chance = getStructure(id).spawnChance();
+        return isOverrunVariant(id.getPath()) ? chance * getStructure(new Identifier(id.getNamespace(), "overrun_village")).spawnChance() : chance;
     }
 
     public boolean flag(String key, boolean fallback) {
@@ -95,7 +114,21 @@ public class GraveyardConfig implements Config {
 
     public boolean mobMayAppear(String mobName) {
         Boolean value = mobSpawnEnabled.get(mobName);
-        return value == null || value;
+        if (value != null && !value) {
+            return false;
+        }
+        MobConfigEntry entry = mobConfigEntries.get(mobName);
+        return entry == null || entry.enabled || ENABLED_IGNORED.contains(mobName);
+    }
+
+    public double number(String key, double fallback) {
+        Double value = numberEntries.get(key);
+        return value == null ? fallback : value;
+    }
+
+    public MobConfigEntry mobEntry(String mobName) {
+        MobConfigEntry entry = mobConfigEntries.get(mobName);
+        return entry == null ? MobConfigEntry.of(true, 0, 0, 0, false, false) : entry;
     }
     public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
@@ -108,7 +141,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
+        return StructureConfigEntry.of();
     }
 
     // moss particle config
@@ -118,7 +151,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
+        return ParticleConfigEntry.of(50);
     }
 
     // mob spawn config
@@ -128,7 +161,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
+        return MobConfigEntry.of(true, 0, 0, 0, false, false);
     }
 
     // horde spawn config
@@ -138,7 +171,7 @@ public class GraveyardConfig implements Config {
                 return entry.getValue();
             }
         }
-        throw new NoSuchElementException("The Graveyard Config is not up to date. Please delete the config and restart the game to create the current config.");
+        return HordeConfigEntry.of(40, 24000, 1200);
     }
 
     @Override
@@ -156,6 +189,7 @@ public class GraveyardConfig implements Config {
         if (corruptedChampionConfigEntries == null) corruptedChampionConfigEntries = new HashMap<>();
         if (booleanEntries == null) booleanEntries = new HashMap<>();
         if (mobSpawnEnabled == null) mobSpawnEnabled = new HashMap<>();
+        if (numberEntries == null) numberEntries = new HashMap<>();
         structureConfigEntries.values().removeIf(Objects::isNull);
         particleConfigEntries.values().removeIf(Objects::isNull);
         mobConfigEntries.values().removeIf(Objects::isNull);
@@ -163,6 +197,7 @@ public class GraveyardConfig implements Config {
         corruptedChampionConfigEntries.values().removeIf(Objects::isNull);
         booleanEntries.values().removeIf(Objects::isNull);
         mobSpawnEnabled.values().removeIf(Objects::isNull);
+        numberEntries.values().removeIf(Objects::isNull);
 
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
         booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
@@ -177,6 +212,13 @@ public class GraveyardConfig implements Config {
         booleanEntries.putIfAbsent("crowsEatCrops", true);
         booleanEntries.putIfAbsent("tormentedVillagerLight", true);
         booleanEntries.putIfAbsent("smolderingBlocksInVillages", true);
+        booleanEntries.putIfAbsent("skeletonCreeperDestroysBlocks", false);
+        booleanEntries.putIfAbsent("wraithGriefing", true);
+
+        numberEntries.putIfAbsent("skeletonCreeperExplosionRadius", 3.5D);
+        numberEntries.putIfAbsent("corvidTheftChance", 0.1D);
+        numberEntries.putIfAbsent("namelessHangedMinOffers", 7.0D);
+        numberEntries.putIfAbsent("namelessHangedMaxOffers", 9.0D);
 
         for (String mob : MobSpawnGate.MANAGED_MOBS) {
             mobSpawnEnabled.putIfAbsent(mob, true);
@@ -215,17 +257,23 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("nightmare", MobConfigEntry.of(true,10, 1, 1, false, false));
         mobConfigEntries.putIfAbsent("skeleton_creeper", MobConfigEntry.of(true,25, 1, 4, true, false));
         mobConfigEntries.putIfAbsent("acolyte", MobConfigEntry.of(false, false, false));
-        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,5, 2, 3, true, false));
+        mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(false, 5, 2, 3, true, false));
         mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("corrupted_evoker", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,true, false));
+        mobConfigEntries.putIfAbsent("tormented_villager", MobConfigEntry.of(true, 0, 1, 1, false, false));
         mobConfigEntries.putIfAbsent("raven", MobConfigEntry.of(true, 8, 2, 4, false, false));
         mobConfigEntries.putIfAbsent("magpie", MobConfigEntry.of(true, 8, 2, 3, false, false));
         mobConfigEntries.putIfAbsent("crow", MobConfigEntry.of(true, 10, 4, 9, false, false));
 
         corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", defaultChampion());
 
+        structureConfigEntries.replaceAll((key, entry) -> switch (key) {
+            case "crypt" -> entry.sanitized(-40, -10);
+            case "lich_prison" -> entry.sanitized(210, 210);
+            default -> entry.sanitized();
+        });
         particleConfigEntries.replaceAll((key, entry) -> entry.sanitized());
         hordeConfigEntries.replaceAll((key, entry) -> entry.sanitized());
         mobConfigEntries.replaceAll((key, entry) -> entry.sanitized());

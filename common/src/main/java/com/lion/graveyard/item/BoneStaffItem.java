@@ -153,8 +153,9 @@ public class BoneStaffItem extends Item {
             }
 
             ghouling.setStaff(stack);
-            ghouling.onSummoned();
+            ghouling.prepareSpawn();
             world.spawnEntity(ghouling);
+            ghouling.playSpawnSounds();
             GhoulingBindings.get(serverWorld).update(ghouling);
             player.getItemCooldownManager().set(this, USE_COOLDOWN_TICKS);
             return ActionResult.SUCCESS;
@@ -219,8 +220,9 @@ public class BoneStaffItem extends Item {
             ItemStack staff = stack.copy();
             staff.getNbt().remove(STORED_KEY);
             ghouling.setStaff(staff);
+            ghouling.prepareSpawn();
             if (world.spawnEntity(ghouling)) {
-                ghouling.onSummoned();
+                ghouling.playSpawnSounds();
                 nbt.remove(STORED_KEY);
                 GhoulingBindings.get(world).update(ghouling);
                 player.sendMessage(Text.translatable("entity.graveyard.ghouling.released"), true);
