@@ -1,10 +1,7 @@
-plugins {
-	id "com.github.johnrengelman.shadow" version "7.1.2"
-}
+apply plugin: "com.gradleup.shadow"
 
-allprojects {
-	archivesBaseName = "${rootProject.mod_id}-fabric-mc${rootProject.minecraft_version}"
-}
+base.archivesName = "graveyard-FABRIC"
+
 
 architectury {
 	platformSetupLoomIde()
@@ -13,7 +10,7 @@ architectury {
 
 configurations {
 	common
-	shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+	shadowCommon
 	compileClasspath.extendsFrom common
 	runtimeClasspath.extendsFrom common
 	developmentFabric.extendsFrom common
@@ -24,7 +21,7 @@ loom {
 }
 
 repositories {
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+	maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
@@ -68,12 +65,11 @@ remapJar {
 	injectAccessWidener = true
 	input.set shadowJar.archiveFile
 	dependsOn shadowJar
-	classifier null
+	archiveClassifier.set("")
 }
 
 jar {
-	classifier "dev"
-	setArchivesBaseName("graveyard-FABRIC");
+	archiveClassifier.set("dev")
 }
 
 sourcesJar {

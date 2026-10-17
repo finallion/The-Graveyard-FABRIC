@@ -1,6 +1,6 @@
-plugins {
-	id "com.github.johnrengelman.shadow" version "7.1.2"
-}
+apply plugin: "com.gradleup.shadow"
+
+base.archivesName = "graveyard-FORGE"
 
 loom {
 	accessWidenerPath = project(":common").loom.accessWidenerPath
@@ -21,7 +21,7 @@ architectury {
 
 configurations {
 	common
-	shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+	shadowCommon
 	compileClasspath.extendsFrom common
 	runtimeClasspath.extendsFrom common
 	developmentForge.extendsFrom common
@@ -47,7 +47,7 @@ configurations.all {
 }
 
 repositories {
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+	maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 
@@ -64,18 +64,17 @@ shadowJar {
 	exclude "architectury.common.json"
 
 	configurations = [project.configurations.shadowCommon]
-	classifier "dev-shadow"
+	archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
 	input.set shadowJar.archiveFile
 	dependsOn shadowJar
-	classifier null
+	archiveClassifier.set("")
 }
 
 jar {
-	classifier "dev"
-	setArchivesBaseName("graveyard-FORGE");
+	archiveClassifier.set("dev")
 }
 
 sourcesJar {

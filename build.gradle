@@ -1,25 +1,20 @@
 plugins {
-	id "architectury-plugin" version "3.4-SNAPSHOT"
-	id "dev.architectury.loom" version "1.1-SNAPSHOT" apply false
+	id "architectury-plugin" version "${architectury_plugin_version}"
+	id "dev.architectury.loom" version "${loom_version}" apply false
+	id "com.gradleup.shadow" version "${shadow_version}" apply false
 }
 
 architectury {
 	minecraft = rootProject.minecraft_version
 }
 
-// VillagerTradingPlus is consumed from mavenLocal under a fixed version, and Loom keys its remapped
-// copy of a dependency by that version - so a republished library never reaches the run without
-// dropping that copy first. Run this on its own, then build:
-//
-//     gradlew dropLibraryCache
-//     gradlew build
-//
-// Chaining both into one invocation fails: nothing orders the delete against the compile classpath,
-// so the jar can be removed while a task is still resolving against it.
+// Loom caches a remapped copy of VillagerTradingPlus per version.
+// Run this task alone before the build to pick up a republished library.
+// Do not chain it with the build, because the jar can vanish while a task resolves it.
 tasks.register("dropLibraryCache", Delete) {
 	description = "Removes the cached remap of VillagerTradingPlus so a fresh publishToMavenLocal is picked up. Run on its own, before the build."
 	group = "build"
-	delete "${rootDir}/.gradle/loom-cache/remapped_mods/remapped/lion/villagertradingplus"
+	delete fileTree(dir: "${rootDir}/.gradle/loom-cache/remapped_mods", include: "*/lion/villagertradingplus/**")
 }
 
 subprojects {
@@ -27,6 +22,9 @@ subprojects {
 
 	loom {
 		silentMojangMappingsLicense()
+		mixin {
+			useLegacyMixinAp = true
+		}
 	}
 
 	dependencies {
@@ -40,13 +38,13 @@ allprojects {
 	apply plugin: "architectury-plugin"
 	apply plugin: "maven-publish"
 
-	archivesBaseName = rootProject.archives_base_name
+	base.archivesName = rootProject.archives_base_name
 	version = "${rootProject.mod_version}+mc${rootProject.minecraft_version}"
 	group = rootProject.maven_group
 
 	repositories {
 		mavenLocal()
-		maven { url 'https://jitpack.io' }
+		maven { url = 'https://jitpack.io' }
 	}
 
 	tasks.withType(JavaCompile) {
