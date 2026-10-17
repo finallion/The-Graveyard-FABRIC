@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=south,part=foot": {
+      "model": "graveyard:block/backstabbed_full_skeleton"
+    },
+    "facing=south,part=head": {
+      "model": "graveyard:block/backstabbed_full_skeleton_head"
+    },
+    "facing=west,part=foot": {
+      "model": "graveyard:block/backstabbed_full_skeleton",
+      "y": 90
+    },
+    "facing=west,part=head": {
+      "model": "graveyard:block/backstabbed_full_skeleton_head",
+      "y": 90
+    },
+    "facing=north,part=foot": {
+      "model": "graveyard:block/backstabbed_full_skeleton",
+      "y": 180
+    },
+    "facing=north,part=head": {
+      "model": "graveyard:block/backstabbed_full_skeleton_head",
+      "y": 180
+    },
+    "facing=east,part=foot": {
+      "model": "graveyard:block/backstabbed_full_skeleton",
+      "y": 270
+    },
+    "facing=east,part=head": {
+      "model": "graveyard:block/backstabbed_full_skeleton_head",
+      "y": 270
+    }
+  }
+}

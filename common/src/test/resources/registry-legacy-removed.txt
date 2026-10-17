@@ -1,0 +1,15 @@
+# Ids registered in 8709aa4 that are not registered now. Known gap, not a pass.
+block:gloom_stone
+block:great_scarlet_heart
+block:scarlet_heart
+block:soil
+block:turf
+item:gloom_stone
+item:great_scarlet_heart
+item:rotten_spruce_log
+item:rotten_spruce_planks
+item:rotten_spruce_slab
+item:rotten_spruce_stairs
+item:scarlet_heart
+item:soil
+item:turf

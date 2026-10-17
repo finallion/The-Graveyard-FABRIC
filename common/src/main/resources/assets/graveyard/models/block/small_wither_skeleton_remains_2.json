@@ -1,0 +1,67 @@
+{
+	"render_type": "cutout",
+	"ambientocclusion": false,
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "graveyard:block/wither_skeleton",
+		"particle": "graveyard:block/wither_skeleton_particle"
+	},
+	"elements": [
+		{
+			"name": "chest",
+			"from": [7, 0, 3.5],
+			"to": [13, 4, 11.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [10, 2, 7.5]},
+			"faces": {
+				"north": {"uv": [5, 6.5, 4, 5], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [7, 4, 9, 5], "texture": "#0"},
+				"south": {"uv": [7, 5, 8, 6.5], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [7, 4, 5, 5], "texture": "#0"},
+				"up": {"uv": [8, 5, 10, 6.5], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [5, 5, 7, 6.5], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"name": "head",
+			"from": [5.75, 4, 2.25],
+			"to": [13.75, 12, 10.25],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [9.75, 8, 6.25]},
+			"faces": {
+				"north": {"uv": [2, 0, 4, 2], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [8, 2, 6, 4], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [4, 2, 6, 0], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [2, 4, 4, 2], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [4, 2, 6, 4], "texture": "#0"},
+				"down": {"uv": [2, 4, 0, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "left_leg",
+			"from": [2.5, 0, 0],
+			"to": [4.5, 2, 12],
+			"rotation": {"angle": -22.5, "axis": "y", "origin": [3.5, 1, 6]},
+			"faces": {
+				"north": {"uv": [1, 4, 1.5, 4.5], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [2, 7.5, 1.5, 4.5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [0.5, 4.5, 1, 4], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [0.5, 4.5, 1, 7.5], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [1, 7.5, 1.5, 4.5], "texture": "#0"},
+				"down": {"uv": [0.5, 4.5, 0, 7.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "left_shin",
+			"from": [2, 0, 11.5],
+			"to": [8, 2, 13.5],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [5, 1, 12.5]},
+			"faces": {
+				"north": {"uv": [0.5, 7.5, 1, 6], "rotation": 90, "texture": "#0"},
+				"east": {"uv": [1, 4.5, 1.5, 4], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [2, 6, 1.5, 7.5], "rotation": 90, "texture": "#0"},
+				"west": {"uv": [0.5, 4, 1, 4.5], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [1.5, 6, 1, 7.5], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [0.5, 6, 0, 7.5], "rotation": 90, "texture": "#0"}
+			}
+		}
+	]
+}

@@ -1,0 +1,38 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/trees/burnt_tree_1",
+        "processors": "graveyard:overrun_village/grounded_unit",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/trees/burnt_tree_2",
+        "processors": "graveyard:overrun_village/grounded_unit",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/trees/burnt_stump",
+        "processors": "graveyard:overrun_village/grounded_unit",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    }
+  ]
+}

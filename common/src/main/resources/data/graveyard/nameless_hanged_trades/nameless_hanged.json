@@ -1,55 +1,7 @@
 {
   "profession": "graveyard:nameless_hanged",
   "trades": {
-    "default": [
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "candle",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "black_candle",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "white_candle",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "red_candle",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
+    "staples": [
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
@@ -65,72 +17,12 @@
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
-          "item": "nether_wart",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "ghast_tear",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 4
-        },
-        "max_uses": 8
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
           "item": "spectral_arrow",
           "count": 4
         },
         "priceIn": {
           "item": "graveyard:corruption",
           "count": 6
-        },
-        "max_uses": 8
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "soul_lantern",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 4
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "totem_of_undying",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "wither_rose",
-          "count": 2
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
         },
         "max_uses": 8
       },
@@ -156,7 +48,8 @@
           "item": "graveyard:corruption",
           "count": 1
         },
-        "max_uses": 12
+        "max_uses": 12,
+        "demand": 8
       },
       {
         "type": "villagertradingplus:sell_item",
@@ -173,42 +66,6 @@
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
-          "item": "cobbled_deepslate",
-          "count": 32
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "blackstone",
-          "count": 32
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "gilded_blackstone",
-          "count": 2
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
           "item": "clock",
           "count": 1
         },
@@ -217,234 +74,6 @@
           "count": 6
         },
         "max_uses": 4
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "recovery_compass",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
-        },
-        "max_uses": 2
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "black_shulker_box",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_boots",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_chestplate",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_helmet",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_leggings",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_sword",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "diamond_axe",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 32
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_boots",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_chestplate",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_helmet",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_leggings",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_sword",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_enchanted_tool",
-        "sell": {
-          "item": "iron_axe",
-          "count": 1
-        },
-        "basePriceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 1,
-        "villager_experience": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "graveyard:upper_bone_staff",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 64
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "graveyard:middle_bone_staff",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 64
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "graveyard:lower_bone_staff",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 64
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "wither_skeleton_skull",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 48
-        },
-        "max_uses": 1
       },
       {
         "type": "villagertradingplus:sell_item",
@@ -569,102 +198,6 @@
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
-          "item": "warped_fungus",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "crimson_fungus",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 2
-        },
-        "max_uses": 12
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "dark_oak_log",
-          "count": 32
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 12
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "ancient_debris",
-          "count": 1
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 16
-        },
-        "max_uses": 1
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "mud",
-          "count": 32
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "soul_sand",
-          "count": 16
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "soul_soil",
-          "count": 16
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 8
-        },
-        "max_uses": 6
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
-          "item": "nether_brick",
-          "count": 4
-        },
-        "priceIn": {
-          "item": "graveyard:corruption",
-          "count": 1
-        },
-        "max_uses": 16
-      },
-      {
-        "type": "villagertradingplus:sell_item",
-        "sell": {
           "item": "poisonous_potato",
           "count": 1
         },
@@ -673,7 +206,590 @@
           "count": 5
         },
         "max_uses": 1
+      }
+    ],
+    "pools": [
+      {
+        "type": "villagertradingplus:weighted_pool",
+        "pool": [
+          {
+            "weight": 10,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "candle",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 8,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "black_candle",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 8,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "white_candle",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 8,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "red_candle",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 5,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "soul_lantern",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 4
+              },
+              "max_uses": 12
+            }
+          }
+        ]
       },
+      {
+        "type": "villagertradingplus:weighted_pool",
+        "pool": [
+          {
+            "weight": 10,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "nether_brick",
+                "count": 4
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 1
+              },
+              "max_uses": 16
+            }
+          },
+          {
+            "weight": 7,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "cobbled_deepslate",
+                "count": 32
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 7,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "blackstone",
+                "count": 32
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 7,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "dark_oak_log",
+                "count": 32
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 6,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "mud",
+                "count": 32
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 8
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 6,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "soul_sand",
+                "count": 16
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 8
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 6,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "soul_soil",
+                "count": 16
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 8
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 6,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "moss_block",
+                "count": 32
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 10
+              },
+              "max_uses": 6
+            }
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:weighted_pool",
+        "pool": [
+          {
+            "weight": 10,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "nether_wart",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 8,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "warped_fungus",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 8,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "crimson_fungus",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 2
+              },
+              "max_uses": 12
+            }
+          },
+          {
+            "weight": 4,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "ghast_tear",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 4
+              },
+              "max_uses": 8
+            }
+          },
+          {
+            "weight": 3,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "gilded_blackstone",
+                "count": 2
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 8
+              },
+              "max_uses": 6
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_item",
+              "sell": {
+                "item": "ancient_debris",
+                "count": 1
+              },
+              "priceIn": {
+                "item": "graveyard:corruption",
+                "count": 16
+              },
+              "max_uses": 1
+            }
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:weighted_pool",
+        "pool": [
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_boots",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_chestplate",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_helmet",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_leggings",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_sword",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "iron_axe",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 12
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:weighted_pool",
+        "pool": [
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_boots",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_chestplate",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_helmet",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_leggings",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_sword",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          },
+          {
+            "weight": 1,
+            "trade": {
+              "type": "villagertradingplus:sell_enchanted_tool",
+              "sell": {
+                "item": "diamond_axe",
+                "count": 1
+              },
+              "basePriceIn": {
+                "item": "graveyard:corruption",
+                "count": 32
+              },
+              "max_uses": 1,
+              "villager_experience": 1
+            }
+          }
+        ]
+      }
+    ],
+    "nightfall": [
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "totem_of_undying",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 12
+        },
+        "max_uses": 1,
+        "conditions": [
+          {
+            "type": "moon_phase",
+            "phases": [
+              0
+            ],
+            "require_night": true
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "wither_skeleton_skull",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 48
+        },
+        "max_uses": 1,
+        "conditions": [
+          {
+            "type": "day_night",
+            "time": "night"
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "wither_rose",
+          "count": 2
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 8,
+        "conditions": [
+          {
+            "type": "day_night",
+            "time": "night"
+          }
+        ]
+      },
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "recovery_compass",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 8
+        },
+        "max_uses": 2,
+        "conditions": [
+          {
+            "type": "day_night",
+            "time": "night"
+          }
+        ]
+      }
+    ],
+    "wares": [
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
@@ -710,7 +826,6 @@
         },
         "max_uses": 4
       },
-
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
@@ -746,18 +861,59 @@
           "count": 8
         },
         "max_uses": 2
+      }
+    ],
+    "treasures": [
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "graveyard:upper_bone_staff",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 64
+        },
+        "max_uses": 1
       },
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
-          "item": "moss_block",
-          "count": 32
+          "item": "graveyard:middle_bone_staff",
+          "count": 1
         },
         "priceIn": {
           "item": "graveyard:corruption",
-          "count": 10
+          "count": 64
         },
-        "max_uses": 6
+        "max_uses": 1
+      },
+      {
+        "type": "villagertradingplus:sell_item",
+        "sell": {
+          "item": "graveyard:lower_bone_staff",
+          "count": 1
+        },
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 64
+        },
+        "max_uses": 1
+      },
+      {
+        "type": "villagertradingplus:sell_map",
+        "structure_id": "graveyard:on_ruins_explorer_maps",
+        "name": "filled_map.graveyard.ruins",
+        "priceIn": {
+          "item": "graveyard:corruption",
+          "count": 16
+        },
+        "buy": {
+          "item": "compass",
+          "count": 1
+        },
+        "max_uses": 1,
+        "villager_experience": 5
       }
     ]
   }

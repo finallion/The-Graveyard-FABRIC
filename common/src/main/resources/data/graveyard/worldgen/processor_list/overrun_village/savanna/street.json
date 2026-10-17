@@ -1,0 +1,156 @@
+{
+  "processors": [
+    {
+      "processor_type": "graveyard:pool_aliases",
+      "aliases": {
+        "minecraft:village/savanna/streets": "graveyard:overrun_village/savanna/streets",
+        "minecraft:village/savanna/houses": "graveyard:overrun_village/savanna/houses",
+        "minecraft:village/savanna/decor": "graveyard:overrun_village/savanna/decor",
+        "minecraft:village/savanna/villagers": "graveyard:overrun_village/savanna/victims",
+        "minecraft:village/savanna/trees": "graveyard:overrun_village/savanna/trees",
+        "minecraft:village/common/animals": "graveyard:overrun_village/savanna/carcasses",
+        "minecraft:village/common/butcher_animals": "graveyard:overrun_village/savanna/carcasses",
+        "minecraft:village/common/sheep": "graveyard:overrun_village/savanna/carcasses",
+        "minecraft:village/common/cats": "graveyard:overrun_village/savanna/small_remains",
+        "minecraft:village/common/iron_golem": "minecraft:empty"
+      }
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "block": "minecraft:dirt_path",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:acacia_planks"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:grass_block",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:water",
+            "Properties": {
+              "level": "0"
+            }
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:dirt",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:water",
+            "Properties": {
+              "level": "0"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:tag_match",
+            "tag": "minecraft:crops"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:farmland"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:coarse_dirt"
+          }
+        }
+      ]
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:grass"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:tall_grass"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:tag_match",
+            "tag": "minecraft:small_flowers"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        }
+      ]
+    },
+    {
+      "processor_type": "graveyard:ruin",
+      "follows_terrain": true,
+      "litter_chance": 0.02,
+      "remains_chance": 0.012,
+      "litter": "graveyard:overrun_village/litter_savanna",
+      "variant": {
+        "char_stone": [
+          "minecraft:black_terracotta"
+        ],
+        "stone_fallback": "minecraft:terracotta",
+        "stone_cap": "minecraft:acacia_slab",
+        "loose_rubble": "minecraft:coarse_dirt",
+        "scorch_terracotta": true
+      },
+      "dry": "on"
+    }
+  ]
+}

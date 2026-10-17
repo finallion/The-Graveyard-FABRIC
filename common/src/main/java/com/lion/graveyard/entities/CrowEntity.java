@@ -151,6 +151,10 @@ public class CrowEntity extends CorvidEntity {
         }
     }
 
+    public int getFlockSize() {
+        return this.getFlockHead().groupSize;
+    }
+
     public boolean isAlarmed() {
         return this.alarm > 0;
     }
@@ -161,7 +165,7 @@ public class CrowEntity extends CorvidEntity {
         }
         this.alarm = ALARM_TICKS;
         this.circling = false;
-        this.playSound(TGSounds.CROW_ALARM.get(), 1.0F, 0.9F + this.getRandom().nextFloat() * 0.2F);
+        this.playSound(TGSounds.CROW_ALARM.get(), 0.7F, 0.9F + this.getRandom().nextFloat() * 0.2F);
 
         CrowEntity head = this.getFlockHead();
         List<CrowEntity> flock = this.getWorld().getEntitiesByClass(CrowEntity.class,

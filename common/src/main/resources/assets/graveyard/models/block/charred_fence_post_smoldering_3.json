@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence_post",
+  "textures": {
+    "texture": "graveyard:block/charred_planks_smoldering_3"
+  }
+}

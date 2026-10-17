@@ -1,0 +1,160 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "graveyard:block/scorched_fence_post"
+      },
+      "when": {
+        "smoldering": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "graveyard:block/scorched_fence_post_smoldering"
+        },
+        {
+          "model": "graveyard:block/scorched_fence_post_smoldering_2"
+        },
+        {
+          "model": "graveyard:block/scorched_fence_post_smoldering_3"
+        }
+      ],
+      "when": {
+        "smoldering": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "graveyard:block/scorched_fence_side",
+        "uvlock": true
+      },
+      "when": {
+        "north": "true",
+        "smoldering": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering",
+          "uvlock": true
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_2",
+          "uvlock": true
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_3",
+          "uvlock": true
+        }
+      ],
+      "when": {
+        "north": "true",
+        "smoldering": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "graveyard:block/scorched_fence_side",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "smoldering": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_2",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_3",
+          "uvlock": true,
+          "y": 90
+        }
+      ],
+      "when": {
+        "east": "true",
+        "smoldering": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "graveyard:block/scorched_fence_side",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "true",
+        "smoldering": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_2",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_3",
+          "uvlock": true,
+          "y": 180
+        }
+      ],
+      "when": {
+        "south": "true",
+        "smoldering": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "graveyard:block/scorched_fence_side",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "true",
+        "smoldering": "false"
+      }
+    },
+    {
+      "apply": [
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_2",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "graveyard:block/scorched_fence_side_smoldering_3",
+          "uvlock": true,
+          "y": 270
+        }
+      ],
+      "when": {
+        "west": "true",
+        "smoldering": "true"
+      }
+    }
+  ]
+}

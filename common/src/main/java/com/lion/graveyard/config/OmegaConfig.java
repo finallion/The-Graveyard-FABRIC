@@ -37,6 +37,8 @@ public class OmegaConfig {
                     return object;
                 } catch (Exception e) {
                     Graveyard.getLogger().error(e.toString());
+                    config.fillDefaults();
+                    Graveyard.getLogger().warn(String.format("The file %s is left unchanged and not used.", config.getName() + "." + config.getExtension()));
                     Graveyard.getLogger().info(String.format("Encountered an error while reading %s config, falling back to default values.", config.getName()));
                     Graveyard.getLogger().info(String.format("If this problem persists, delete the config file %s and try again.", config.getName() + "." + config.getExtension()));
                 }

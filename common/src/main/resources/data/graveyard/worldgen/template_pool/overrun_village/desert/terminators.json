@@ -1,0 +1,23 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/desert/terminators/terminator_01",
+        "processors": "graveyard:overrun_village/desert/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/desert/terminators/terminator_02",
+        "processors": "graveyard:overrun_village/desert/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 1
+    }
+  ]
+}

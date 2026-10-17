@@ -1,13 +1,11 @@
 package com.lion.graveyard.platform.forge;
 
 import com.lion.graveyard.Graveyard;
-import com.mojang.serialization.Codec;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderers;
@@ -30,11 +28,8 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.text.Text;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -58,14 +53,13 @@ public class RegistryHelperImpl {
     public static final DeferredRegister<ItemGroup> CREATIVE_TABS = DeferredRegister.create(RegistryKeys.ITEM_GROUP, Graveyard.MOD_ID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Graveyard.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Graveyard.MOD_ID);
-    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACERS = DeferredRegister.create(RegistryKeys.TRUNK_PLACER_TYPE, Graveyard.MOD_ID);
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(ForgeRegistries.FEATURES, Graveyard.MOD_ID);
     public static final DeferredRegister<LootConditionType> LOOT_CONDITIONS = DeferredRegister.create(RegistryKeys.LOOT_CONDITION_TYPE, Graveyard.MOD_ID);
 
 
     public static final Map<EntityModelLayer, Supplier<TexturedModelData>> ENTITY_MODEL_LAYERS = new ConcurrentHashMap<>();
     public static final Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<DefaultAttributeContainer.Builder>> ENTITY_ATTRIBUTES = new ConcurrentHashMap<>();
     public static final HashMap<RegistryKey<ItemGroup>, List<Item>> ITEMS_TO_ADD = new HashMap<>();
+    public static final HashMap<RegistryKey<ItemGroup>, List<Supplier<List<ItemStack>>>> STACKS_TO_ADD = new HashMap<>();
 
     public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
         return BLOCKS.register(name, block);
@@ -81,6 +75,12 @@ public class RegistryHelperImpl {
                 .displayName(Text.literal(literalName)).build());
     }
 
+    public static void registerItemGroupWithIcon(RegistryKey<ItemGroup> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
+        CREATIVE_TABS.register(name, () -> new ItemGroup.Builder(ItemGroup.Row.TOP,0)
+                .icon(icon)
+                .displayName(Text.literal(literalName)).build());
+    }
+
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
         return ITEMS.register(name, item);
     }
@@ -92,6 +92,10 @@ public class RegistryHelperImpl {
             items.add(item);
             ITEMS_TO_ADD.put(itemGroup, items);
         }
+    }
+
+    public static void addStacksToItemGroup(RegistryKey<ItemGroup> itemGroup, Supplier<List<ItemStack>> stacks) {
+        STACKS_TO_ADD.computeIfAbsent(itemGroup, key -> new ArrayList<>()).add(stacks);
     }
 
     public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends MobEntity>> type, int backgroundColor, int highlightColor, Item.Settings props) {
@@ -113,7 +117,6 @@ public class RegistryHelperImpl {
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
-        //Registry.register(Registries.STRUCTURE_PROCESSOR, new Identifier(Graveyard.MOD_ID, name), processorType);
     }
 
     public static void registerScreenHandlerType(String name, ScreenHandlerType<?> screenHandlerType) {
@@ -154,14 +157,6 @@ public class RegistryHelperImpl {
 
     public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
         return RECIPE_SERIALIZERS.register(name, () -> serializer);
-    }
-
-    public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
-        return TRUNK_PLACERS.register(name, () -> new TrunkPlacerType<>(codec));
-    }
-
-    public static Supplier<Feature<?>> registerFeature(String name, Feature<?> feature) {
-        return FEATURES.register(name, () -> feature);
     }
 
     public static LootConditionType registerLootCondition(String name, LootConditionType type) {

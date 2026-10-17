@@ -12,6 +12,8 @@ public interface Config {
         OmegaConfig.writeConfig((Class<Config>) getClass(), this);
     }
 
+    default void fillDefaults() {}
+
     String getName();
 
     default String getModid() {

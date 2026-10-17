@@ -1,11 +1,14 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import com.lion.graveyard.entities.CrowEntity;
+import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.util.Scarecrows;
 import net.minecraft.entity.ai.AboveGroundTargeting;
 import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +20,8 @@ public class FlockStartleGoal extends Goal {
     private static final double SNEAK_FACTOR = 0.5D;
     private static final int SCAN_INTERVAL = 5;
     private static final int SCARECROW_SCAN_INTERVAL = 20;
+    private static final int SCARE_FLOCK_SIZE = 6;
+    private static final double SCARECROW_WITNESS_RANGE = 16.0D;
     private static final int ESCAPE_DISTANCE = 14;
     private static final int ESCAPE_HEIGHT = 12;
     private static final double ESCAPE_SPEED = 1.3D;
@@ -58,11 +63,17 @@ public class FlockStartleGoal extends Goal {
             }
         }
         this.crow.raiseAlarm();
+        if (player instanceof ServerPlayerEntity serverPlayer && this.crow.getFlockSize() >= SCARE_FLOCK_SIZE) {
+            TGAdvancements.SCARE_CROWS.trigger(serverPlayer);
+        }
     }
 
     private void watchForScarecrows() {
         if (Scarecrows.isNear(this.crow.getWorld(), this.crow.getBlockPos(), Scarecrows.RADIUS)) {
             this.crow.raiseAlarm();
+            if (this.crow.getWorld() instanceof ServerWorld world) {
+                TGAdvancements.triggerNearby(world, this.crow.getPos(), SCARECROW_WITNESS_RANGE, TGAdvancements.SCARECROW);
+            }
         }
     }
 

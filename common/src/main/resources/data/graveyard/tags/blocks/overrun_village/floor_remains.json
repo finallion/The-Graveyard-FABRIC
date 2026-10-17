@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:skull_with_rib_cage",
+    "graveyard:skull_pile",
+    "graveyard:lying_skeleton",
+    "graveyard:skeleton_hand",
+    "graveyard:bone_remains",
+    "graveyard:laterally_lying_skeleton",
+    "graveyard:torso_pile",
+    "graveyard:skeleton_skull_with_axe",
+    "graveyard:sword_in_skeleton",
+    "graveyard:small_skeleton_remains"
+  ]
+}

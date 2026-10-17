@@ -23,7 +23,7 @@ public class ServerPlayNetworkHandlerMixin {
     @Shadow
     public ServerPlayerEntity player;
 
-    @Inject(method = "onSignUpdate(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;Ljava/util/List;)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "onSignUpdate(Lnet/minecraft/network/packet/c2s/play/UpdateSignC2SPacket;Ljava/util/List;)V", at = @At(value = "HEAD"))
     private void signUpdate(UpdateSignC2SPacket packet, List<FilteredMessage> signText, CallbackInfo info) {
         this.player.updateLastActionTime();
         ServerWorld serverWorld = this.player.getServerWorld();

@@ -1,0 +1,119 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/lying_full_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/backstabbed_full_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/shot_full_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/sideways_full_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/seated_full_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/sword_in_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/skeleton_skull_with_axe",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/torso_pile",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/victims/laterally_lying_skeleton",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/guards/corrupted_pillager",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/guards/corrupted_vindicator",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/guards/acolyte",
+        "processors": "graveyard:overrun_village/savanna/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    }
+  ]
+}

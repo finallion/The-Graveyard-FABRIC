@@ -111,7 +111,24 @@ public class GraveyardMinionEntity extends PathAwareEntity {
     }
 
     public boolean canTarget(LivingEntity target) {
-        return this.isOwner(target) ? false : super.canTarget(target);
+        return this.isOwner(target) || this.sharesOwner(target) ? false : super.canTarget(target);
+    }
+
+    /// Every target path, revenge included, goes through this check.
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        super.setTarget(target != null && !this.canTarget(target) ? null : target);
+    }
+
+    private boolean sharesOwner(LivingEntity target) {
+        UUID owner = this.getOwnerUuid();
+        if (owner == null) {
+            return false;
+        }
+        if (target instanceof GraveyardMinionEntity minion) {
+            return owner.equals(minion.getOwnerUuid());
+        }
+        return target instanceof TameableEntity tameable && owner.equals(tameable.getOwnerUuid());
     }
 
     public boolean isOwner(LivingEntity entity) {
@@ -135,8 +152,13 @@ public class GraveyardMinionEntity extends PathAwareEntity {
         if (!(target instanceof CreeperEntity) && !(target instanceof GhastEntity)) {
             if (target instanceof GraveyardMinionEntity) {
                 GraveyardMinionEntity minion = (GraveyardMinionEntity)target;
-                return minion.getOwner() != owner;
-            } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target)) {
+                LivingEntity otherOwner = minion.getOwner();
+                if (otherOwner == owner) {
+                    return false;
+                }
+                return !(otherOwner instanceof PlayerEntity otherPlayer && owner instanceof PlayerEntity ownerPlayer
+                        && (!this.getWorld().getServer().isPvpEnabled() || !ownerPlayer.shouldDamagePlayer(otherPlayer)));
+            } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && (!this.getWorld().getServer().isPvpEnabled() || !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target))) {
                 return false;
             } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
                 return false;

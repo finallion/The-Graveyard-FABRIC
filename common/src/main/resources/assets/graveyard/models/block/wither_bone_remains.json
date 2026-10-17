@@ -4,7 +4,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "graveyard:block/wither_skeleton",
-		"particle": "block/coal_block"
+		"particle": "graveyard:block/wither_skeleton_particle"
 	},
 	"elements": [
 		{

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_trapdoor_open",
+  "textures": {
+    "texture": "graveyard:block/charred_trapdoor_smoldering_3"
+  },
+  "render_type": "minecraft:cutout"
+}

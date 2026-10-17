@@ -19,18 +19,21 @@ public class LakeFeatureMixin {
 
     @Inject(at = @At("HEAD"), method = "generate", cancellable = true)
     private void generateNoLakes(FeatureContext<LakeFeature.Config> context, CallbackInfoReturnable<Boolean> info) {
+        // A feature placed outside world generation, such as by /place, has no chunk region.
+        if (!(context.getWorld() instanceof ChunkRegionAccessor chunkRegion)) {
+            return;
+        }
         ChunkSectionPos chunkPos = ChunkSectionPos.from(context.getOrigin());
         StructureHolder structureHolder = context.getWorld().getChunk(context.getOrigin());
-
-        StructureAccessor structureAccessor = ((ChunkRegionAccessor)context.getWorld()).getStructureAccessor();
+        StructureAccessor structureAccessor = chunkRegion.getStructureAccessor();
 
         for (Structure structure : TGStructures.structures) {
             StructureStart structureStart = structureAccessor.getStructureStart(chunkPos, structure, structureHolder);
 
             if (structureStart != null && structureStart.hasChildren()) {
                 info.setReturnValue(false);
+                return;
             }
         }
     }
 }
-

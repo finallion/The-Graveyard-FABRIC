@@ -1,8 +1,0 @@
-{
-  "variants": {
-    "facing=north": { "model": "graveyard:block/toppled_gravestone" },
-    "facing=south": { "model": "graveyard:block/toppled_gravestone", "y": 180 },
-    "facing=east":  { "model": "graveyard:block/toppled_gravestone", "y": 90 },
-    "facing=west":  { "model": "graveyard:block/toppled_gravestone", "y": 270 }
-  }
-}

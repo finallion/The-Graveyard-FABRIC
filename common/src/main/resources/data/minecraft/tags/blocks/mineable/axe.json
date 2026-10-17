@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:charred_planks",
+    "graveyard:scorched_planks",
+    "graveyard:scorched_log",
+    "graveyard:charred_log",
+    "graveyard:smoldering_debris",
+    "graveyard:charred_stairs",
+    "graveyard:charred_slab",
+    "graveyard:charred_fence",
+    "graveyard:charred_fence_gate",
+    "graveyard:charred_door",
+    "graveyard:charred_trapdoor",
+    "graveyard:scorched_stairs",
+    "graveyard:scorched_slab",
+    "graveyard:scorched_fence",
+    "graveyard:scorched_fence_gate",
+    "graveyard:scorched_door",
+    "graveyard:scorched_trapdoor",
+    "graveyard:charred_wood",
+    "graveyard:stripped_charred_log",
+    "graveyard:stripped_charred_wood",
+    "graveyard:scorched_wood",
+    "graveyard:stripped_scorched_log",
+    "graveyard:stripped_scorched_wood"
+  ]
+}

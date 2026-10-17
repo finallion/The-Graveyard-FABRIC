@@ -22,6 +22,12 @@ public class MobConfigEntry {
     }
 
 
+    public MobConfigEntry sanitized() {
+        int safeWeight = Math.max(0, weight);
+        int safeMin = Math.max(safeWeight > 0 ? 1 : 0, minGroup);
+        return new MobConfigEntry(enabled, safeWeight, safeMin, Math.max(safeMin, maxGroup), canBurnInSunlight, canBeWithered);
+    }
+
     public static MobConfigEntry of(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
         return new MobConfigEntry(enabled, canBurnInSunlight, canBeWithered);
     }

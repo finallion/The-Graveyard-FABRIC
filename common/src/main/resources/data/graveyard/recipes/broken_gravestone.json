@@ -1,9 +1,0 @@
-{
-  "type": "graveyard:gravestone_carving",
-  "ingredient": {
-    "item": "minecraft:stone"
-  },
-  "result": "graveyard:broken_gravestone",
-  "count": 1,
-  "experience": 3
-}

@@ -1,5 +1,6 @@
 package com.lion.graveyard;
 
+import net.minecraft.util.Identifier;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.OmegaConfig;
 import com.lion.graveyard.init.*;
@@ -11,6 +12,7 @@ import software.bernie.geckolib.GeckoLib;
 public class Graveyard {
 
     public static final String MOD_ID = "graveyard";
+    public static final Identifier SKULL_PACKET_ID = new Identifier(MOD_ID, "spawn_entity");
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final GraveyardConfig CONFIG = OmegaConfig.register(GraveyardConfig.class);
 
@@ -38,24 +40,17 @@ public class Graveyard {
         TGStructures.init();
         TGRecipeTypes.init();
         TGLootConditions.init();
-        TGTrunkPlacer.init();
-        TGFeatures.init();
+        TGOverrunVillage.init();
     }
 
     public static void postInit() {
         TGBlocks.postInit();
         TGEntities.postInit();
         TGItems.addItemsToGroup();
+        TGOverrunVillage.addItemsToGroup();
     }
 
     public static String createStringID(String name) {
         return MOD_ID + ":" + name;
     }
-
-    /*
-    // TODO: templates
-    // TODO: trades
-    // TODO: sherds
-    // TODO: double deco
-     */
 }

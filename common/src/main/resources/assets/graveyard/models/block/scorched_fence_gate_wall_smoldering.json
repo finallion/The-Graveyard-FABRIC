@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_fence_gate_wall",
+  "textures": {
+    "texture": "graveyard:block/scorched_planks_smoldering"
+  }
+}

@@ -7,20 +7,21 @@
     "ChunkRegionAccessor",
     "CreeperEntityMixin",
     "LakeFeatureMixin",
-    "PlantBlockMixin",
+    "LevelStorageMixin",
     "ServerPlayNetworkHandlerMixin",
     "TreeFeatureMixin",
-    "TrunkPlacerTypeInvoker",
-    "VillagerEntityMixin",
-    "WanderingTraderEntityMixin",
-    "SpawnRestrictionAccessor",
-    "LivingEntityMixin",
-    "WrittenBookItemMixin",
-    "WritableBookItemMixin"
+    "MobEntityAccessor",
+    "BellBlockEntityMixin",
+    "SinglePoolElementMixin",
+    "MobEntitySpawnMixin",
+    "InventoryChangedCriterionMixin",
+    "PotionEntityMixin",
+    "CraftingScreenHandlerMixin",
+    "CraftingResultSlotMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
-    "client.InventoryScreenMixin"
+    "client.HandledScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

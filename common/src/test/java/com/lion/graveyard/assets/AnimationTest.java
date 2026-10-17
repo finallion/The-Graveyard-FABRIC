@@ -1,0 +1,126 @@
+package com.lion.graveyard.assets;
+
+import com.google.gson.JsonObject;
+import com.lion.graveyard.support.AssetLookup;
+import com.lion.graveyard.support.Json;
+import com.lion.graveyard.support.ModProject;
+import com.lion.graveyard.support.Sources;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/// GeckoLib 4 plays keyframes in file order.
+class AnimationTest {
+    private static final Path DIR = ModProject.ASSETS.resolve(ModProject.ANIMATIONS);
+    private static final Pattern ANIMATION_NAME = Pattern.compile("\"(animation\\.[a-z0-9_]+(?:\\.[a-z0-9_]+)+)\"");
+    private static final Pattern ASSET_PATH = Pattern.compile("MOD_ID\\s*,\\s*\"((?:geo|animations)/[A-Za-z0-9_/.\\-]+\\.json|textures/[A-Za-z0-9_/.\\-]+\\.png)\"");
+
+    static boolean isNumeric(String key) {
+        try {
+            Double.parseDouble(key);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    static List<String> keyframeOrderProblems(String rawText) {
+        List<String> problems = new ArrayList<>();
+        Json.walkObjects(rawText, (path, keys) -> {
+            if (keys.size() < 2 || !keys.stream().allMatch(AnimationTest::isNumeric)) {
+                return;
+            }
+            double previous = Double.NEGATIVE_INFINITY;
+            for (String key : keys) {
+                double time = Double.parseDouble(key);
+                if (time < previous) {
+                    problems.add(path + ": key " + key + " comes after " + previous);
+                    return;
+                }
+                previous = time;
+            }
+        });
+        return problems;
+    }
+
+    static Set<String> animationNames(String text) {
+        Set<String> names = new TreeSet<>();
+        JsonObject animations = Json.parseObject(text).getAsJsonObject("animations");
+        if (animations != null) {
+            names.addAll(animations.keySet());
+        }
+        return names;
+    }
+
+    static Set<String> allAnimationNames() {
+        Set<String> names = new TreeSet<>();
+        for (Path file : ModProject.files(DIR, ".json")) {
+            names.addAll(animationNames(ModProject.read(file)));
+        }
+        return names;
+    }
+
+    @TestFactory
+    Stream<DynamicTest> everyAnimationFileHasAnimationsObject() {
+        return ModProject.files(DIR, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(DIR, file, ".json"), () -> {
+            JsonObject root = Json.parseObject(ModProject.read(file));
+            assertTrue(root.has("format_version"), "format_version missing");
+            assertTrue(root.has("animations") && root.get("animations").isJsonObject(), "animations object missing");
+        }));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> keyframesStandInAscendingFileOrder() {
+        return ModProject.files(DIR, ".json").stream().map(file -> DynamicTest.dynamicTest(ModProject.idOf(DIR, file, ".json"), () -> {
+            List<String> problems = keyframeOrderProblems(ModProject.read(file));
+            assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+        }));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> everyAnimationRequestedByCodeExists() {
+        Set<String> known = allAnimationNames();
+        Set<String> requested = new TreeSet<>();
+        for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
+            requested.addAll(Sources.matches(ANIMATION_NAME, Sources.code(file), 1));
+        }
+        return requested.stream().map(name -> DynamicTest.dynamicTest(name, () ->
+                assertTrue(known.contains(name), "Animation requested by code but in no animation file: " + name)));
+    }
+
+    // The brazier model has no animation file.
+    private static final Set<String> INTENTIONALLY_MISSING = Set.of("animations/brazier.animation.json");
+
+
+    @TestFactory
+    Stream<DynamicTest> everyGeoTextureAndAnimationPathNamedInCodeExists() {
+        Set<String> paths = new TreeSet<>();
+        for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
+            paths.addAll(Sources.matches(ASSET_PATH, Sources.code(file), 1));
+        }
+        return paths.stream().filter(p -> !INTENTIONALLY_MISSING.contains(p)).map(path -> DynamicTest.dynamicTest(path, () ->
+                assertTrue(AssetLookup.MOD.exists(ModProject.ASSETS.resolve(path)), "Referenced in code but missing: " + path)));
+    }
+
+    @Test
+    void orderCheckCatchesIntegerKeyPulledToTheFront() {
+        String broken = "{\"rotation\": {\"1\": [0,0,0], \"0.5\": [1,1,1], \"2\": [2,2,2]}}";
+        assertEquals(1, keyframeOrderProblems(broken).size());
+    }
+
+    @Test
+    void orderCheckAcceptsAscendingKeysAndIgnoresNamedKeys() {
+        assertTrue(keyframeOrderProblems("{\"a\": {\"0\": 1, \"0.5\": 2, \"1\": 3}, \"b\": {\"x\": 1, \"0\": 2}}").isEmpty());
+    }
+}

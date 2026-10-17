@@ -23,15 +23,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "graveyard:crypt/corridor_pool/room_03",
-        "processors": "graveyard:waterlogged_crypt_processor_list",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
         "location": "graveyard:crypt/corridor_pool/room_04",
         "processors": "graveyard:waterlogged_crypt_processor_list",
         "projection": "rigid",
@@ -185,15 +176,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "graveyard:crypt/corridor_pool/labyrinth_01",
-        "processors": "graveyard:waterlogged_crypt_processor_list",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
         "location": "graveyard:crypt/corridor_pool/library_01",
         "processors": "graveyard:waterlogged_crypt_processor_list",
         "projection": "rigid",
@@ -248,15 +230,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "graveyard:crypt/corridor_pool/end_02",
-        "processors": "graveyard:waterlogged_crypt_processor_list",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
         "location": "graveyard:crypt/corridor_pool/end_03",
         "processors": "graveyard:waterlogged_crypt_processor_list",
         "projection": "rigid",
@@ -285,6 +258,33 @@
       "weight": 1,
       "element": {
         "location": "graveyard:crypt/corridor_pool/end_06",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/room_03",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/labyrinth_01",
+        "processors": "graveyard:waterlogged_crypt_processor_list",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "graveyard:crypt/corridor_pool/end_02",
         "processors": "graveyard:waterlogged_crypt_processor_list",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

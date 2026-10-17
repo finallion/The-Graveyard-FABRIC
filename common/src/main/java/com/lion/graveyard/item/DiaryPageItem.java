@@ -1,6 +1,7 @@
 package com.lion.graveyard.item;
 
 import com.lion.graveyard.chronicle.Chronicle;
+import com.lion.graveyard.chronicle.ChronicleOpener;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.Block;
@@ -8,6 +9,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -36,7 +38,9 @@ public class DiaryPageItem extends BlockItem {
     @Nullable
     public static String pageOf(ItemStack stack) {
         NbtCompound nbt = stack.getNbt();
-        return nbt != null && nbt.contains(PAGE_KEY) ? nbt.getString(PAGE_KEY) : null;
+        if (nbt == null || !nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE)) return null;
+        String page = nbt.getString(PAGE_KEY);
+        return Chronicle.isValidId(page) ? page : null;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class DiaryPageItem extends BlockItem {
         ItemStack stack = user.getStackInHand(hand);
         String page = pageOf(stack);
         if (page == null) return TypedActionResult.pass(stack);
+        if (world.isClient()) ChronicleOpener.open(page);
         if (user instanceof ServerPlayerEntity player) {
             boolean fresh = Chronicle.find(player, page);
             if (!fresh) {

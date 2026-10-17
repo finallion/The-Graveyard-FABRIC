@@ -1,0 +1,37 @@
+{
+  "processors": [
+    {
+      "processor_type": "graveyard:pool_aliases",
+      "aliases": {
+        "minecraft:village/desert/streets": "graveyard:overrun_village/desert/streets",
+        "minecraft:village/desert/houses": "graveyard:overrun_village/desert/houses",
+        "minecraft:village/desert/decor": "graveyard:overrun_village/desert/decor",
+        "minecraft:village/desert/villagers": "graveyard:overrun_village/desert/victims",
+        "minecraft:village/desert/camel": "graveyard:overrun_village/desert/carcasses",
+        "minecraft:village/common/animals": "graveyard:overrun_village/desert/carcasses",
+        "minecraft:village/common/butcher_animals": "graveyard:overrun_village/desert/carcasses",
+        "minecraft:village/common/sheep": "graveyard:overrun_village/desert/carcasses",
+        "minecraft:village/common/cats": "graveyard:overrun_village/desert/small_remains",
+        "minecraft:village/common/iron_golem": "minecraft:empty"
+      }
+    },
+    {
+      "processor_type": "graveyard:ruin",
+      "follows_terrain": true,
+      "litter_chance": 0.02,
+      "remains_chance": 0.012,
+      "litter": "graveyard:overrun_village/litter_desert",
+      "variant": {
+        "char_stone": [
+          "minecraft:soul_sand",
+          "minecraft:soul_soil"
+        ],
+        "stone_fallback": "minecraft:sandstone",
+        "stone_cap": "minecraft:sandstone_slab",
+        "loose_rubble": "minecraft:sandstone",
+        "scorch_terracotta": true,
+        "wood_rubble": false
+      }
+    }
+  ]
+}

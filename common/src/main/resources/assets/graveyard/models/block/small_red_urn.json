@@ -2,6 +2,7 @@
   "ambientocclusion": false,
   "textures": {
     "0": "minecraft:block/red_terracotta",
+    "opening": "graveyard:block/urn_opening",
     "particle": "minecraft:block/red_terracotta"
   },
   "elements": [
@@ -40,7 +41,7 @@
         "east": {"uv": [0, 0, 6, 1], "texture": "#0"},
         "south": {"uv": [0, 0, 6, 1], "texture": "#0"},
         "west": {"uv": [0, 0, 6, 1], "texture": "#0"},
-        "up": {"uv": [0, 0, 6, 6], "texture": "#0"},
+        "up": {"uv": [5, 5, 11, 11], "texture": "#opening"},
         "down": {"uv": [0, 0, 6, 6], "texture": "#0"}
       }
     },

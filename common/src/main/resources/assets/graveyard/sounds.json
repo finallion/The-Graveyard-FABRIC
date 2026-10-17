@@ -57,8 +57,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.ghoul.step"
   },
-
-
   "entity.ghouling.groan": {
     "sounds": [
       "minecraft:mob/zoglin/angry1",
@@ -118,7 +116,12 @@
     ],
     "subtitle": "subtitles.entity.graveyard.ghouling.spawn"
   },
-
+  "entity.ghouling.soul_draw": {
+    "sounds": [
+      "graveyard:entity/ghouling/soul_draw"
+    ],
+    "subtitle": "subtitles.entity.graveyard.ghouling.soul_draw"
+  },
   "entity.revenant.ambient": {
     "sounds": [
       "minecraft:mob/wither_skeleton/idle1",
@@ -152,7 +155,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.revenant.step"
   },
-
   "entity.corrupted_illager.ambient": {
     "sounds": [
       "minecraft:mob/zombie_villager/say1",
@@ -168,6 +170,58 @@
     ],
     "subtitle": "subtitles.entity.graveyard.corrupted_illager.hurt"
   },
+  "entity.corrupted_illager.strike": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/strike1",
+      "graveyard:entity/corrupted_illager/strike2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.strike"
+  },
+  "entity.corrupted_illager.bite": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/bite1",
+      "graveyard:entity/corrupted_illager/bite2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.bite"
+  },
+  "entity.dig": {
+    "sounds": [
+      "graveyard:entity/dig/dig1",
+      "graveyard:entity/dig/dig2",
+      "graveyard:entity/dig/dig4",
+      "graveyard:entity/dig/dig7"
+    ],
+    "subtitle": "subtitles.entity.graveyard.dig"
+  },
+  "entity.corrupted_illager.spawn": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/spawn1",
+      "graveyard:entity/corrupted_illager/spawn2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.spawn"
+  },
+  "entity.corrupted_illager.idle": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/idle1",
+      "graveyard:entity/corrupted_illager/idle2",
+      "graveyard:entity/corrupted_illager/idle3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.idle"
+  },
+  "entity.corrupted_illager.wander": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/wander1",
+      "graveyard:entity/corrupted_illager/wander2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.wander"
+  },
+  "entity.corrupted_illager.attack_run": {
+    "sounds": [
+      "graveyard:entity/corrupted_illager/attack_run1",
+      "graveyard:entity/corrupted_illager/attack_run2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corrupted_illager.attack_run"
+  },
   "entity.corrupted_illager.step": {
     "sounds": [
       "minecraft:mob/zombie/step1",
@@ -180,11 +234,11 @@
   },
   "entity.corrupted_illager.death": {
     "sounds": [
-      "minecraft:mob/zombie_villager/death"
+      "graveyard:entity/corrupted_illager/blow_apart1",
+      "graveyard:entity/corrupted_illager/blow_apart2"
     ],
     "subtitle": "subtitles.entity.graveyard.corrupted_illager.death"
   },
-
   "entity.acolyte.ambient": {
     "sounds": [
       "minecraft:mob/vindication_illager/idle1",
@@ -210,7 +264,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.acolyte.death"
   },
-
   "entity.reaper.ambient": {
     "sounds": [
       "minecraft:mob/vex/idle1",
@@ -242,7 +295,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.reaper.charge"
   },
-
   "entity.nightmare.ambient": {
     "sounds": [
       "minecraft:mob/endermen/idle1",
@@ -268,7 +320,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.nightmare.death"
   },
-
   "entity.wraith.ambient": {
     "sounds": [
       "minecraft:enchant/soulspeed/soulspeed1",
@@ -297,7 +348,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.wraith.hurt"
   },
-
   "block.altar.ambient": {
     "sounds": [
       "graveyard:block/altar/ambient1",
@@ -336,14 +386,12 @@
     ],
     "subtitle": "subtitles.block.graveyard.coffin.close"
   },
-
   "block.ossuary.open": {
     "sounds": [
       "minecraft:block/enderchest/open"
     ],
     "subtitle": "subtitles.block.graveyard.ossuary.open"
   },
-
   "block.urn.open": {
     "sounds": [
       "minecraft:block/barrel/open1",
@@ -365,7 +413,6 @@
     ],
     "subtitle": "subtitles.block.graveyard.sarcophagus.use"
   },
-
   "item.vial.splash": {
     "sounds": [
       "graveyard:item/vial/splash"
@@ -381,7 +428,10 @@
   "entity.lich.melee": {
     "sounds": [
       "graveyard:entity/lich/melee",
-      "graveyard:entity/lich/melee2"
+      "graveyard:entity/lich/melee2",
+      "graveyard:entity/lich/melee3",
+      "graveyard:entity/lich/melee4",
+      "graveyard:entity/lich/melee5"
     ],
     "subtitle": "subtitles.entity.graveyard.lich.melee"
   },
@@ -396,6 +446,24 @@
       "graveyard:entity/lich/phase_three"
     ],
     "subtitle": "subtitles.entity.graveyard.lich.phase_three"
+  },
+  "entity.lich.bone_crack": {
+    "sounds": [
+      {
+        "name": "minecraft:block.bone_block.break",
+        "type": "event",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.entity.graveyard.lich.bone_crack"
+  },
+  "entity.lich.stunned": {
+    "sounds": [
+      "minecraft:mob/ravager/stun1",
+      "minecraft:mob/ravager/stun2",
+      "minecraft:mob/ravager/stun3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.lich.stunned"
   },
   "entity.lich.phase_two": {
     "sounds": [
@@ -430,7 +498,9 @@
   },
   "entity.lich.scare": {
     "sounds": [
-      "graveyard:entity/lich/scare"
+      "graveyard:entity/lich/scare",
+      "graveyard:entity/lich/scare2",
+      "graveyard:entity/lich/scare3"
     ],
     "subtitle": "subtitles.entity.graveyard.lich.scare"
   },
@@ -461,7 +531,6 @@
     ],
     "subtitle": "subtitles.entity.graveyard.lich.heal"
   },
-
   "entity.lich.theme_01": {
     "sounds": [
       "graveyard:entity/lich/theme_01"
@@ -469,7 +538,6 @@
     "stream": "true",
     "subtitle": "subtitles.entity.graveyard.lich.theme_01"
   },
-
   "entity.crow.ambient": {
     "sounds": [
       "graveyard:entity/crow/ambient1",
@@ -482,7 +550,13 @@
   "entity.crow.alarm": {
     "sounds": [
       "graveyard:entity/crow/alarm1",
-      "graveyard:entity/crow/alarm2"
+      "graveyard:entity/crow/alarm2",
+      "graveyard:entity/crow/alarm3",
+      "graveyard:entity/crow/alarm4",
+      "graveyard:entity/crow/alarm5",
+      "graveyard:entity/crow/alarm6",
+      "graveyard:entity/crow/alarm7",
+      "graveyard:entity/crow/alarm8"
     ],
     "subtitle": "subtitles.entity.graveyard.crow.alarm"
   },
@@ -491,7 +565,9 @@
       "graveyard:entity/raven/ambient1",
       "graveyard:entity/raven/ambient2",
       "graveyard:entity/raven/ambient3",
-      "graveyard:entity/raven/ambient4"
+      "graveyard:entity/raven/ambient4",
+      "graveyard:entity/raven/ambient6",
+      "graveyard:entity/raven/ambient13"
     ],
     "subtitle": "subtitles.entity.graveyard.raven.ambient"
   },
@@ -508,16 +584,97 @@
     "sounds": [
       "graveyard:entity/corvid/hurt1",
       "graveyard:entity/corvid/hurt2",
-      "graveyard:entity/corvid/hurt3"
+      "graveyard:entity/corvid/hurt3",
+      "graveyard:entity/corvid/hurt4",
+      "graveyard:entity/corvid/hurt5"
     ],
     "subtitle": "subtitles.entity.graveyard.corvid.hurt"
   },
   "entity.corvid.death": {
     "sounds": [
+      "graveyard:entity/corvid/death1",
       "graveyard:entity/corvid/death2",
       "graveyard:entity/corvid/death3"
     ],
     "subtitle": "subtitles.entity.graveyard.corvid.death"
+  },
+  "entity.corvid.takeoff": {
+    "sounds": [
+      "graveyard:entity/corvid/takeoff2",
+      "graveyard:entity/corvid/takeoff3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corvid.takeoff"
+  },
+  "entity.corvid.fly": {
+    "sounds": [
+      "graveyard:entity/corvid/flap1",
+      "graveyard:entity/corvid/flap2",
+      "graveyard:entity/corvid/flap3",
+      "graveyard:entity/corvid/flap4",
+      "graveyard:entity/corvid/flap5"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corvid.fly"
+  },
+  "entity.corvid.land": {
+    "sounds": [
+      "graveyard:entity/corvid/land2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.corvid.land"
+  },
+  "entity.tormented_villager.idle": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/idle1",
+      "graveyard:entity/tormented_villager/idle2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.idle"
+  },
+  "entity.tormented_villager.lost": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/lost1",
+      "graveyard:entity/tormented_villager/lost2",
+      "graveyard:entity/tormented_villager/lost3",
+      "graveyard:entity/tormented_villager/lost4"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.lost"
+  },
+  "entity.tormented_villager.crying": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/crying1",
+      "graveyard:entity/tormented_villager/crying2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.crying"
+  },
+  "entity.tormented_villager.glitch": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/glitch1",
+      "graveyard:entity/tormented_villager/glitch2"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.glitch"
+  },
+  "entity.tormented_villager.rage": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/rage3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.rage"
+  },
+  "entity.tormented_villager.breakdown": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/breakdown1"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.breakdown"
+  },
+  "entity.tormented_villager.spawn": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/spawn1"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.spawn"
+  },
+  "entity.tormented_villager.redemption": {
+    "sounds": [
+      "graveyard:entity/tormented_villager/redemption1",
+      "graveyard:entity/tormented_villager/redemption2",
+      "graveyard:entity/tormented_villager/redemption3"
+    ],
+    "subtitle": "subtitles.entity.graveyard.tormented_villager.redemption"
   }
-
 }

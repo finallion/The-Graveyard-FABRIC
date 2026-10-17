@@ -5,6 +5,8 @@ import com.lion.graveyard.entities.ai.control.CorvidMoveControl;
 import com.lion.graveyard.entities.ai.goals.FlyOntoPerchGoal;
 import com.lion.graveyard.entities.ai.goals.StartleGoal;
 import com.lion.graveyard.entities.animation.AnimationTable;
+import com.lion.graveyard.blocks.GravestoneBlock;
+import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.init.TGTags;
 import net.minecraft.block.Block;
@@ -32,8 +34,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
@@ -51,6 +56,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
+    private static final double WALK_MIN_SPEED_SQ = 2.5E-3D;
+    private static final double GROUND_TURN_MIN_SPEED_SQ = 1.0E-4D;
+    private static final int WALK_HOLD_TICKS = 3;
     protected static final RawAnimation DEATH = RawAnimation.begin().thenPlayAndHold("animation.crow.death");
     protected static final RawAnimation TAKEOFF = RawAnimation.begin().thenPlay("animation.crow.takeoff");
     protected static final RawAnimation GLIDE = RawAnimation.begin().thenLoop("animation.crow.glide");
@@ -63,10 +71,20 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
     private static final TrackedData<Byte> FLIGHT_STATE;
 
+    private static final int GRAVESTONE_CHECK_INTERVAL = 20;
+    private static final double GRAVESTONE_WITNESS_RANGE = 4.0D;
     private static final int GLIDE_MIN = 6;
     private static final int GLIDE_MAX = 70;
     private static final int FLAP_BURST = 40;
     private static final int HOME_RADIUS = 24;
+    private static final int DEATH_ANIMATION_DURATION = 32;
+    private static final int DEAD_FALL_LIMIT = 200;
+    private static final int IMPACT_REST_TICKS = 20;
+    private static final int FLAP_SOUND_INTERVAL = 36;
+    private static final int TAKEOFF_SOUND_COOLDOWN = 100;
+    private static final float FLAP_SOUND_VOLUME = 0.08F;
+    private static final float TAKEOFF_SOUND_VOLUME = 0.25F;
+    private static final float LAND_SOUND_VOLUME = 0.2F;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -76,11 +94,16 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     private int takeoffCooldown;
     private int flightTicks;
     private int restTicks;
+    private int walkTicks;
     private boolean flying;
     private boolean nearGround;
     private int descendTicks;
     private int landingTicks;
     private int landingCooldown;
+    private int flapSoundTicks;
+    private int takeoffSoundCooldown;
+    private boolean diedInAir;
+    private int impactTicks;
     private boolean watching;
     private int glideTicks;
     private int stuckTicks;
@@ -111,14 +134,20 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
         private final Identifier texture;
         private final Identifier model;
+        private final RawAnimation walkAnimation;
 
         Species(String name) {
             this.texture = new Identifier(Graveyard.MOD_ID, "textures/entity/" + name + ".png");
             this.model = new Identifier(Graveyard.MOD_ID, "geo/" + name + ".geo.json");
+            this.walkAnimation = RawAnimation.begin().thenLoop("animation." + name + ".walk");
         }
 
         public Identifier getTexture() {
             return this.texture;
+        }
+
+        public RawAnimation getWalkAnimation() {
+            return this.walkAnimation;
         }
 
         public Identifier getModel() {
@@ -131,7 +160,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     }
 
     public enum FlightState {
-        IDLE((byte) 0), WATCH((byte) 1), FLY((byte) 2), GLIDE((byte) 3), LAND((byte) 4), HOP((byte) 5);
+        IDLE((byte) 0), WATCH((byte) 1), FLY((byte) 2), GLIDE((byte) 3), LAND((byte) 4), HOP((byte) 5), WALK((byte) 6);
 
         private final byte id;
 
@@ -147,6 +176,21 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             }
             return IDLE;
         }
+    }
+
+    /// A move packet without rotation halts the client yaw lerp halfway. On the ground the body follows the client motion.
+    @Override
+    protected float turnHead(float bodyRotation, float headRotation) {
+        FlightState state = this.getFlightState();
+        if (this.getWorld().isClient() && this.isAlive() && (state == FlightState.HOP || state == FlightState.WALK)) {
+            double dx = this.getX() - this.prevX;
+            double dz = this.getZ() - this.prevZ;
+            if (dx * dx + dz * dz > GROUND_TURN_MIN_SPEED_SQ) {
+                this.bodyYaw = (float) (MathHelper.atan2(dz, dx) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
+                return headRotation;
+            }
+        }
+        return super.turnHead(bodyRotation, headRotation);
     }
 
     public FlightState getFlightState() {
@@ -179,7 +223,6 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        // HomePos is optional. A missing key means no home.
         if (nbt.contains("HomePos")) {
             this.home = BlockPos.fromLong(nbt.getLong("HomePos"));
         }
@@ -192,6 +235,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
     public void setHome(BlockPos pos) {
         this.home = pos;
+    }
+
+    @Override
+    public void copyFrom(net.minecraft.entity.Entity original) {
+        super.copyFrom(original);
+        if (original.getWorld() != this.getWorld()) {
+            this.home = null;
+        }
     }
 
     public boolean isFarFromHome() {
@@ -242,6 +293,11 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             return;
         }
 
+        if (this.age % GRAVESTONE_CHECK_INTERVAL == 0 && this.getSpecies() == Species.RAVEN && this.isPerched() && this.isOnGravestone()
+                && this.getWorld() instanceof ServerWorld world) {
+            TGAdvancements.triggerNearby(world, this.getPos(), GRAVESTONE_WITNESS_RANGE, TGAdvancements.RAVEN_ON_GRAVESTONE);
+        }
+
         double dx = this.getX() - this.prevX;
         double dz = this.getZ() - this.prevZ;
         boolean moving = dx * dx + dz * dz > 0.0004D;
@@ -279,6 +335,9 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         }
         if (this.isOnGround() && this.landingTicks > 4) {
             this.landingTicks = 4;
+            if (this.isAlive()) {
+                this.playWingSound(TGSounds.CORVID_LAND.get(), LAND_SOUND_VOLUME);
+            }
         }
         if (this.getVelocity().y > 0.05D) {
             this.landingTicks = 0;
@@ -291,6 +350,9 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         }
         if (this.takeoffCooldown > 0) {
             this.takeoffCooldown--;
+        }
+        if (this.takeoffSoundCooldown > 0) {
+            this.takeoffSoundCooldown--;
         }
         if (this.peckTicks > 0) {
             this.peckTicks--;
@@ -316,16 +378,31 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             PlayerEntity player = this.getWorld().getClosestPlayer(this, 8.0D);
             this.watching = onGround && player != null && !player.isSpectator();
         }
-        if (this.age % 20 == 0 && (this.isPerched() || (onGround && this.isTouching(TGTags.CROW_LANDMARKS)))) {
+        if (this.home == null && this.age % 20 == 0 && (this.isPerched() || (onGround && this.isTouching(TGTags.CROW_LANDMARKS)))) {
             this.home = this.getBlockPos();
         }
 
+        boolean walkedThisTick = this.canWalk() && onGround && !this.isHopping() && dx * dx + dz * dz > WALK_MIN_SPEED_SQ;
+        if (walkedThisTick && !this.isWalking()) {
+            float yaw = (float) (MathHelper.atan2(dz, dx) * MathHelper.DEGREES_PER_RADIAN) - 90.0F;
+            this.setYaw(yaw);
+            this.setBodyYaw(yaw);
+            this.setHeadYaw(yaw);
+        }
+        if ((this.isWalking() && onGround) || walkedThisTick) {
+            this.walkTicks = WALK_HOLD_TICKS;
+        } else if (this.walkTicks > 0) {
+            this.walkTicks--;
+        }
+        boolean walkingOnGround = this.walkTicks > 0 && !this.flying;
         boolean airborneNow = !this.isOnGround() || this.getVelocity().y > 0.1D || (moving && steering);
         FlightState state;
-        if (this.isHopping() && this.nearGround) {
+        if (this.isHopping() && (this.nearGround || onGround)) {
             state = FlightState.HOP;
         } else if (this.landingTicks > 0) {
             state = FlightState.LAND;
+        } else if (walkingOnGround) {
+            state = FlightState.WALK;
         } else if (this.flying && gliding && airborneNow) {
             state = FlightState.GLIDE;
         } else if (this.flying && airborneNow) {
@@ -337,6 +414,12 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         }
         if (state != this.getFlightState()) {
             this.dataTracker.set(FLIGHT_STATE, state.id);
+        }
+        if (state != FlightState.FLY || !this.isAlive()) {
+            this.flapSoundTicks = 0;
+        } else if (++this.flapSoundTicks >= FLAP_SOUND_INTERVAL) {
+            this.flapSoundTicks = 0;
+            this.playWingSound(TGSounds.CORVID_FLY.get(), FLAP_SOUND_VOLUME);
         }
 
         this.tryPeck(onGround, moving);
@@ -369,7 +452,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
                 && !this.horizontalCollision && !this.isPreparingTakeoff() && !lifted) {
             this.takeOff();
         }
-        if (!this.hasNoGravity() && !this.isOnGround() && !this.isHopping()) {
+        if (!this.hasNoGravity() && !this.isOnGround() && !this.isHopping() && !this.isDead()) {
             Vec3d v = this.getVelocity();
             this.setVelocity(v.x, Math.max(v.y, -0.3D), v.z);
         }
@@ -395,7 +478,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
             this.velocityDirty = true;
         }
         // In a cobweb, Entity.move sets the velocity to zero, so apply the climb here.
-        if (this.webbed) {
+        if (this.webbed && this.isAlive()) {
             Vec3d v = this.getVelocity();
             this.setVelocity(v.x, 0.3D, v.z);
             this.velocityDirty = true;
@@ -458,6 +541,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         this.setVelocity(v.x, 0.22D, v.z);
         this.velocityDirty = true;
         this.landingTicks = 0;
+        if (this.takeoffSoundCooldown == 0) {
+            this.takeoffSoundCooldown = TAKEOFF_SOUND_COOLDOWN;
+            this.playWingSound(TGSounds.CORVID_TAKEOFF.get(), TAKEOFF_SOUND_VOLUME);
+        }
+    }
+
+    private void playWingSound(SoundEvent sound, float volume) {
+        this.playSound(sound, volume, 0.85F + this.random.nextFloat() * 0.15F);
     }
 
     private void tryPeck(boolean onGround, boolean moving) {
@@ -485,6 +576,11 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         return this.flying;
     }
 
+    private boolean isOnGravestone() {
+        BlockPos pos = this.getBlockPos();
+        return this.state(pos).getBlock() instanceof GravestoneBlock || this.state(pos.down()).getBlock() instanceof GravestoneBlock;
+    }
+
     public boolean isPerched() {
         return this.isOnGround() && this.isTouching(this.getPerchTag());
     }
@@ -506,6 +602,14 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     }
 
     public boolean isHopping() {
+        return false;
+    }
+
+    public boolean isWalking() {
+        return false;
+    }
+
+    protected boolean canWalk() {
         return false;
     }
 
@@ -535,7 +639,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
     @Override
     public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
-        return true;
+        return !MobSpawnGate.blocks(this.getType(), spawnReason) && !MobSpawnGate.inForbiddenBiome(world, this.getBlockPos(), this.getType(), spawnReason);
     }
 
     @Override
@@ -583,7 +687,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
 
     @Override
     protected float getSoundVolume() {
-        return 0.6F;
+        return 0.4F;
     }
 
     @Override
@@ -599,18 +703,33 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
     @Override
     protected void updatePostDeath() {
         this.deathTime++;
-        if (this.deathTime == 20 && !this.getWorld().isClient() && !this.isRemoved()) {
-            this.getWorld().sendEntityStatus(this, (byte) 60);
+        if (this.getWorld().isClient() || this.isRemoved()) {
+            return;
         }
-        // Vanilla removes the body after 20 ticks. The death animation needs 40.
-        if (this.deathTime >= 40 && !this.getWorld().isClient() && !this.isRemoved()) {
-            this.remove(RemovalReason.KILLED);
+        if (!this.diedInAir) {
+            if (this.deathTime >= DEATH_ANIMATION_DURATION) {
+                this.removeDeadBody();
+            }
+            return;
         }
+        boolean landed = this.isOnGround() || this.isTouchingWater() || this.deathTime >= DEAD_FALL_LIMIT;
+        if (landed && this.impactTicks == 0) {
+            this.playSound(SoundEvents.ENTITY_GENERIC_SMALL_FALL, 0.6F, 1.2F);
+        }
+        if (landed && ++this.impactTicks >= IMPACT_REST_TICKS) {
+            this.removeDeadBody();
+        }
+    }
+
+    private void removeDeadBody() {
+        this.getWorld().sendEntityStatus(this, (byte) 60);
+        this.remove(RemovalReason.KILLED);
     }
 
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
+        this.diedInAir = !this.isOnGround();
         // The move control does not tick after death, so restore gravity here.
         this.setNoGravity(false);
         // Stop the path, or the safety net lifts the dead bird.
@@ -622,6 +741,7 @@ public class CorvidEntity extends PathAwareEntity implements GeoEntity {
         controllers.add(AnimationTable.<CorvidEntity>create()
                 .when(() -> this.deathTime > 0, DEATH)
                 .when(() -> this.getFlightState() == FlightState.HOP, HOP)
+                .when(() -> this.getFlightState() == FlightState.WALK, this.getSpecies().getWalkAnimation())
                 .when(() -> this.getFlightState() == FlightState.LAND, LAND)
                 .when(() -> this.getFlightState() == FlightState.GLIDE, GLIDE)
                 .when(() -> this.getFlightState() == FlightState.FLY, FLY)

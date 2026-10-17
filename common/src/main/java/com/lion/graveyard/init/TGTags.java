@@ -30,6 +30,7 @@ public class TGTags {
     public static TagKey<Block> SCARECROW_BODIES = TagKey.of(RegistryKeys.BLOCK, new Identifier(Graveyard.MOD_ID, "scarecrow_bodies"));
 
     public static TagKey<Item> MAGPIE_TREASURES = TagKey.of(RegistryKeys.ITEM, new Identifier(Graveyard.MOD_ID, "magpie_treasures"));
+    public static TagKey<Item> SKELETON_DECORATION = TagKey.of(RegistryKeys.ITEM, new Identifier(Graveyard.MOD_ID, "skeleton_decoration"));
 
     public static TagKey<Structure> ON_RUINS_EXPLORER_MAPS = TagKey.of(RegistryKeys.STRUCTURE, new Identifier(Graveyard.MOD_ID, "on_ruins_explorer_maps"));
 

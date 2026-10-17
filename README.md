@@ -1,9 +1,64 @@
-# The Graveyard (FABRIC)
+# The Graveyard
 
-## Setup
+Adds new bosses, structures, mobs and blocks themed around the graveyard.
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+## Downloads
+
+- Fabric: https://modrinth.com/mod/the-graveyard-fabric
+- Forge: https://modrinth.com/mod/the-graveyard-forge
+
+## Versions and loaders
+
+| Minecraft | Loader | Required dependencies |
+| --- | --- | --- |
+| 1.20.1 | Fabric (Loader 0.14.21 or newer) | Fabric API 0.85.0 or newer, GeckoLib 4 (4.2.2 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
+| 1.20.1 | Forge 47 (47.2 or newer) | GeckoLib 4 (4.2.2 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
+
+The current version is 4.0.0. It needs Java 17.
+
+## What's in it
+
+Boss:
+
+- Corrupted Champion
+
+Mobs:
+
+- Reaper, Acolyte, Ghoul, Ghouling, Revenant, Wraith, Nightmare
+- Skeleton Creeper, Falling Corpse, Tormented Villager
+- Corrupted Vindicator, Corrupted Pillager, Corrupted Evoker
+- Raven, Crow, Magpie
+- Nameless Hanged, a trader
+
+Structures:
+
+- Graveyards: small, medium and large, plus small grave, small desert grave, small desert graveyard, small mountain grave and small savanna grave
+- Crypt, Haunted House, the Corrupted Champion's prison, Altar, Ruins
+- Dead Tree, Memorial Tree, Giant Mushroom, Mushroom Grave
+- Overrun villages in five variants: plains, desert, savanna, snowy and taiga
+
+Blocks:
+
+- Skeleton and bone decoration blocks, carved in the Ossuary from bone blocks
+- Urns, including large terracotta urns in 17 variants
+- Lore Book blocks, and a Chronicle with 36 lore pages. The Chronicle opens from a button in the inventory.
+
+## Configuration
+
+The config file is `the-graveyard-3.0-config.json5` in the `graveyard` folder of the loader's config directory. It has switches for each structure, each mob and each overrun village variant. The option `structuresOnly` stops all natural mob spawns, spawners and hordes, while spawn eggs and commands still work. On Forge, spawn weights and group sizes are set in the `.json` files under `data/graveyard/forge/biome_modifier`.
+
+## Building from source
+
+```
+gradlew build
+```
+
+The jars are written to `fabric/build/libs` and `forge/build/libs`.
+
+## Issues
+
+Report bugs and suggestions at https://github.com/finallion/The-Graveyard-FABRIC/issues
 
 ## License
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+GNU GPL v3. See [LICENSE](LICENSE).

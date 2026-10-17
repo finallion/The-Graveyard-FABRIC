@@ -1,9 +1,11 @@
 package com.lion.graveyard.blockentities;
 
+import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.init.TGBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -27,7 +29,7 @@ public class LoreBookBlockEntity extends BlockEntity {
     }
 
     public void setPage(@Nullable String page) {
-        this.page = page;
+        this.page = Chronicle.isValidId(page) ? page : null;
         this.markDirty();
     }
 
@@ -40,7 +42,8 @@ public class LoreBookBlockEntity extends BlockEntity {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        this.page = nbt.contains(PAGE_KEY) ? nbt.getString(PAGE_KEY) : null;
+        String stored = nbt.contains(PAGE_KEY, NbtElement.STRING_TYPE) ? nbt.getString(PAGE_KEY) : null;
+        this.page = Chronicle.isValidId(stored) ? stored : null;
     }
 
     @Override

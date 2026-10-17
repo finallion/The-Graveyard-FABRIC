@@ -41,9 +41,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
@@ -74,7 +72,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     public WraithEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world, "wraith");
-        //this.moveControl = new WraithMoveControl(this);
         this.moveControl = new FlightMoveControl(this, 0, true);
         this.setPathfindingPenalty(PathNodeType.DAMAGE_FIRE, -1.0F);
         this.setPathfindingPenalty(PathNodeType.WATER, -1.0F);
@@ -102,8 +99,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         this.goalSelector.add(0, new SwimGoal(this));
         this.goalSelector.add(2, new WraithMeleeGoal(this, 1.0D, false));
         this.goalSelector.add(3, new FlyGoal(this, 1.0D));
-        //this.goalSelector.add(3, new WraithWanderAroundGoal());
-        //this.goalSelector.add(4, new ChargeTargetGoal());
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
         this.goalSelector.add(7, new ExtinguishGoal());
@@ -390,6 +385,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
 
         public boolean canStart() {
+            if (!WraithEntity.this.getEntityWorld().getGameRules().getBoolean(net.minecraft.world.GameRules.DO_MOB_GRIEFING)) {
+                return false;
+            }
             if (WraithEntity.this.getTimeSinceExtinguish() >= 10) {
                 return false;
             } else if (WraithEntity.this.random.nextFloat() < 0.3F) {
@@ -423,7 +421,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                             }
                         }
                         if (bl) {
-                            //WraithEntity.this.getEntityWorld().syncWorldEvent(1502, blockPos, 0);
                             WraithEntity.this.getEntityWorld().playSound((PlayerEntity) null, blockPos, SoundEvents.BLOCK_CANDLE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             WraithEntity.this.getEntityWorld().setBlockState(blockPos, (BlockState) blockState.with(Properties.LIT, false));
                             WraithEntity.this.addExtinguishCounter();

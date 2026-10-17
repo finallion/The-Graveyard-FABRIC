@@ -54,7 +54,6 @@ public class HordeSpawner {
                 for (var spawner : spawnerList) {
                     if (spawner != null) {
                         spawner.spawn(world, true, true);
-                        //spawner.tick(world);
                     }
                 }
             }

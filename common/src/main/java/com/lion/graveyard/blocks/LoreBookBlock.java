@@ -20,6 +20,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
+import com.lion.graveyard.init.TGAdvancements;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
@@ -45,18 +46,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/// A chronicle page lying in the world. Reading it records the page and leaves the block for the
-/// next reader; breaking it hands over the loose leaf with the same page id.
 public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
 
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final EnumProperty<Variant> VARIANT = EnumProperty.of("variant", Variant.class);
 
-    /// The look is a state, not a page: any page can lie there as a closed book, an open one, a
-    /// loose leaf or a scroll. Cycled with a sneak-click so builders can pick without a wand.
     public enum Variant implements StringIdentifiable {
-        CLOSED("closed"), OPEN("open"), LEAF("leaf"), SCROLL("scroll");
+        CLOSED("closed"), OPEN("open"), LEAF("leaf");
 
         private final String name;
 
@@ -107,12 +104,16 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
         String page = DiaryPageItem.pageOf(stack);
         if (page != null && world.getBlockEntity(pos) instanceof LoreBookBlockEntity book) {
             book.setPage(page);
+            if (placer instanceof ServerPlayerEntity serverPlayer) {
+                TGAdvancements.PLACE_LORE_BOOK.trigger(serverPlayer);
+            }
         }
     }
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (player.isSneaking()) {
+            if (!player.canModifyBlocks()) return ActionResult.PASS;
             if (!world.isClient()) world.setBlockState(pos, state.with(VARIANT, state.get(VARIANT).next()), Block.NOTIFY_ALL);
             return ActionResult.success(world.isClient());
         }
@@ -125,7 +126,6 @@ public class LoreBookBlock extends BlockWithEntity implements Waterloggable {
         return ActionResult.success(world.isClient());
     }
 
-    /// The loose leaf keeps the page, so the block can be picked up and laid down elsewhere.
     @Override
     public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder) {
         BlockEntity entity = builder.getOptional(LootContextParameters.BLOCK_ENTITY);

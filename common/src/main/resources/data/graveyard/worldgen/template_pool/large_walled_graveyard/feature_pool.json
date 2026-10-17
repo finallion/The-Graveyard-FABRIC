@@ -24,7 +24,7 @@
       "weight": 2,
       "element": {
         "location": "graveyard:large_graveyard/feature_pool/walled_graves_with_crypt",
-        "processors": "minecraft:empty",
+        "processors": "graveyard:waterlogged_processor_list",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

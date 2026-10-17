@@ -3,6 +3,7 @@ package com.lion.graveyard.entities.horde;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.HordeGraveyardEntity;
 import com.lion.graveyard.entities.HostileGraveyardEntity;
+import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.init.TGEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
@@ -33,7 +34,7 @@ public class GraveyardHordeSpawner implements Spawner {
     public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
         if (!spawnMonsters) {
             return 0;
-        } else if (!Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).enabled) {
+        } else if (!Graveyard.getConfig().getHorde(new Identifier(Graveyard.MOD_ID, "horde_spawn")).enabled || Graveyard.getConfig().structuresOnly()) {
            return 0;
         } else {
             Random random = world.random;
@@ -78,6 +79,9 @@ public class GraveyardHordeSpawner implements Spawner {
                                             if (p == 0) {
                                                 if (!this.spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
                                                     break;
+                                                }
+                                                if (playerEntity instanceof ServerPlayerEntity targeted) {
+                                                    targeted.sendMessage(Text.translatable("entity.graveyard.horde.appeared"), false);
                                                 }
                                             } else {
                                                 this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
@@ -129,11 +133,14 @@ public class GraveyardHordeSpawner implements Spawner {
                 }
             }
 
+            if (hordeEntity != null && MobSpawnGate.blocks(hordeEntity.getType(), SpawnReason.PATROL)) {
+                return false;
+            }
+
             if (hordeEntity != null) {
                 if (captain) {
                     hordeEntity.setPatrolLeader(true);
                     hordeEntity.setRandomPatrolTarget();
-                    world.getServer().getPlayerManager().broadcast(Text.literal("A large Graveyard horde of undead appeared at " + pos.getX() + " " + pos.getY() + " " + pos.getZ() + "."), false);
                 }
 
                 hordeEntity.setPosition((double)pos.getX(), (double)pos.getY(), (double)pos.getZ());

@@ -31,7 +31,7 @@ public class HopGoal extends Goal {
 
     public HopGoal(MagpieEntity magpie) {
         this.magpie = magpie;
-        this.setControls(EnumSet.of(Control.MOVE));
+        this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
     }
 
     @Override

@@ -1,0 +1,904 @@
+{
+  "variants": {
+    "facing=east,half=bottom,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=east,half=bottom,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner"
+    },
+    "facing=east,half=bottom,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3"
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=east,half=bottom,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer"
+    },
+    "facing=east,half=bottom,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3"
+      }
+    ],
+    "facing=east,half=bottom,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs"
+    },
+    "facing=east,half=bottom,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3"
+      }
+    ],
+    "facing=east,half=top,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180
+    },
+    "facing=east,half=top,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 90
+    },
+    "facing=east,half=top,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180
+    },
+    "facing=east,half=top,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 90
+    },
+    "facing=east,half=top,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "x": 180
+    },
+    "facing=east,half=top,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=north,half=bottom,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=north,half=bottom,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=north,half=bottom,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=north,half=bottom,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=north,half=bottom,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 270
+    },
+    "facing=north,half=top,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180
+    },
+    "facing=north,half=top,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 270
+    },
+    "facing=north,half=top,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180
+    },
+    "facing=north,half=top,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "x": 180,
+      "y": 270
+    },
+    "facing=north,half=top,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner"
+    },
+    "facing=south,half=bottom,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3"
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=south,half=bottom,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer"
+    },
+    "facing=south,half=bottom,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3"
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=south,half=bottom,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=south,half=bottom,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 90
+    },
+    "facing=south,half=top,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,half=top,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 90
+    },
+    "facing=south,half=top,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 180
+    },
+    "facing=south,half=top,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "x": 180,
+      "y": 90
+    },
+    "facing=south,half=top,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=west,half=bottom,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,half=bottom,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=west,half=bottom,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,half=bottom,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,half=bottom,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 180
+    },
+    "facing=west,half=top,shape=inner_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_inner",
+      "uvlock": true,
+      "x": 180,
+      "y": 270
+    },
+    "facing=west,half=top,shape=inner_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_inner_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=outer_left,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 180
+    },
+    "facing=west,half=top,shape=outer_left,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=outer_right,smoldering=false": {
+      "model": "graveyard:block/charred_stairs_outer",
+      "uvlock": true,
+      "x": 180,
+      "y": 270
+    },
+    "facing=west,half=top,shape=outer_right,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/charred_stairs_outer_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=straight,smoldering=false": {
+      "model": "graveyard:block/charred_stairs",
+      "uvlock": true,
+      "x": 180,
+      "y": 180
+    },
+    "facing=west,half=top,shape=straight,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_stairs_smoldering",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/charred_stairs_smoldering_3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ]
+  }
+}

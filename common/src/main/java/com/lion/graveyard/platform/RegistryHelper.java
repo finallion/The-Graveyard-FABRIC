@@ -1,7 +1,5 @@
 package com.lion.graveyard.platform;
 
-import com.lion.graveyard.world.trunk_placer.TGOakTreeTrunkPlacer;
-import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,22 +17,20 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceReloader;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class RegistryHelper {
@@ -60,7 +56,17 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
+    public static void registerItemGroupWithIcon(RegistryKey<ItemGroup> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static void addToItemGroup(RegistryKey<ItemGroup> itemGroup, Item item) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void addStacksToItemGroup(RegistryKey<ItemGroup> itemGroup, Supplier<List<ItemStack>> stacks) {
         throw new AssertionError();
     }
 
@@ -136,16 +142,6 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static Supplier<Feature<?>> registerFeature(String name, Feature<?> feature) {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
         throw new AssertionError();
     }
 

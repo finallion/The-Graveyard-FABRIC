@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:gravel",
+    "minecraft:cobblestone",
+    "minecraft:mossy_cobblestone",
+    "minecraft:cobblestone_slab",
+    "minecraft:cobblestone_stairs",
+    "minecraft:spruce_slab",
+    "minecraft:blackstone",
+    "graveyard:charred_planks",
+    "graveyard:charred_log"
+  ]
+}

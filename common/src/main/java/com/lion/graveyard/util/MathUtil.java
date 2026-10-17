@@ -1,5 +1,4 @@
 package com.lion.graveyard.util;
-;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;

@@ -4,12 +4,9 @@ import com.lion.graveyard.blockentities.*;
 import com.lion.graveyard.blocks.LoreBookBlock;
 import com.lion.graveyard.blocks.*;
 import com.lion.graveyard.blocks.PillarBlock;
-import com.lion.graveyard.blocks.TallCarvedGravestoneBlock;
 import com.lion.graveyard.platform.RegistryHelper;
 import com.lion.graveyard.util.GravestoneIdentifier;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.BlockSoundGroup;
@@ -67,6 +64,57 @@ public class TGBlocks {
     public static final Supplier<Block> HANGED_SKELETON = RegistryHelper.registerBlock("hanged_skeleton", BoneDisplayBlock::new);
     public static final Supplier<Block> HANGED_WITHER_SKELETON = RegistryHelper.registerBlock("hanged_wither_skeleton", BoneDisplayBlock::new);
 
+    public static final Supplier<Block> SEATED_FULL_SKELETON = RegistryHelper.registerBlock("seated_full_skeleton", BoneDisplayBlock::new);
+    public static final Supplier<Block> SEATED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("seated_full_wither_skeleton", BoneDisplayBlock::new);
+
+    public static final Supplier<Block> SKELETON_SKULL_WITH_AXE = RegistryHelper.registerBlock("skeleton_skull_with_axe", BoneDisplayBlock::new);
+    public static final Supplier<Block> WITHER_SKELETON_SKULL_WITH_AXE = RegistryHelper.registerBlock("wither_skeleton_skull_with_axe", BoneDisplayBlock::new);
+
+    public static final Supplier<Block> SWORD_IN_SKELETON = RegistryHelper.registerBlock("sword_in_skeleton", BoneDisplayBlock::new);
+    public static final Supplier<Block> SWORD_IN_WITHER_SKELETON = RegistryHelper.registerBlock("sword_in_wither_skeleton", BoneDisplayBlock::new);
+
+    public static final Supplier<Block> SMALL_SKELETON_REMAINS = RegistryHelper.registerBlock("small_skeleton_remains", VariantBoneDisplayBlock::new);
+    public static final Supplier<Block> SMALL_WITHER_SKELETON_REMAINS = RegistryHelper.registerBlock("small_wither_skeleton_remains", VariantBoneDisplayBlock::new);
+
+    public static final Supplier<Block> HANGED_FULL_SKELETON = RegistryHelper.registerBlock("hanged_full_skeleton", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            true));
+    public static final Supplier<Block> HANGED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("hanged_full_wither_skeleton", () -> new TallDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            true));
+
+    public static final Supplier<Block> LYING_FULL_SKELETON = RegistryHelper.registerBlock("lying_full_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+    public static final Supplier<Block> LYING_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("lying_full_wither_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+
+    public static final Supplier<Block> BACKSTABBED_FULL_SKELETON = RegistryHelper.registerBlock("backstabbed_full_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+    public static final Supplier<Block> BACKSTABBED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("backstabbed_full_wither_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+
+    public static final Supplier<Block> SHOT_FULL_SKELETON = RegistryHelper.registerBlock("shot_full_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+    public static final Supplier<Block> SHOT_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("shot_full_wither_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+
+    public static final Supplier<Block> SIDEWAYS_FULL_SKELETON = RegistryHelper.registerBlock("sideways_full_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+    public static final Supplier<Block> SIDEWAYS_FULL_WITHER_SKELETON = RegistryHelper.registerBlock("sideways_full_wither_skeleton", () -> new LongDecoBlock(
+            AbstractBlock.Settings.create().nonOpaque().noCollision().sounds(BlockSoundGroup.BONE),
+            Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)));
+
     public static final Supplier<Block> BLACK_URN = RegistryHelper.registerBlock("black_urn", UrnBlock::new);
     public static final Supplier<Block> BROWN_URN = RegistryHelper.registerBlock("brown_urn", UrnBlock::new);
     public static final Supplier<Block> WHITE_URN = RegistryHelper.registerBlock("white_urn", UrnBlock::new);
@@ -83,6 +131,23 @@ public class TGBlocks {
     public static final Supplier<Block> PURPLE_URN = RegistryHelper.registerBlock("purple_urn", UrnBlock::new);
     public static final Supplier<Block> GREEN_URN = RegistryHelper.registerBlock("green_urn", UrnBlock::new);
     public static final Supplier<Block> LIME_URN = RegistryHelper.registerBlock("lime_urn", UrnBlock::new);
+    public static final Supplier<Block> TERRACOTTA_URN = RegistryHelper.registerBlock("terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> BLACK_TERRACOTTA_URN = RegistryHelper.registerBlock("black_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> BLUE_TERRACOTTA_URN = RegistryHelper.registerBlock("blue_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> BROWN_TERRACOTTA_URN = RegistryHelper.registerBlock("brown_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> CYAN_TERRACOTTA_URN = RegistryHelper.registerBlock("cyan_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> GRAY_TERRACOTTA_URN = RegistryHelper.registerBlock("gray_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> GREEN_TERRACOTTA_URN = RegistryHelper.registerBlock("green_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> LIGHT_BLUE_TERRACOTTA_URN = RegistryHelper.registerBlock("light_blue_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> LIGHT_GRAY_TERRACOTTA_URN = RegistryHelper.registerBlock("light_gray_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> LIME_TERRACOTTA_URN = RegistryHelper.registerBlock("lime_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> MAGENTA_TERRACOTTA_URN = RegistryHelper.registerBlock("magenta_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> ORANGE_TERRACOTTA_URN = RegistryHelper.registerBlock("orange_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> PINK_TERRACOTTA_URN = RegistryHelper.registerBlock("pink_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> PURPLE_TERRACOTTA_URN = RegistryHelper.registerBlock("purple_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> RED_TERRACOTTA_URN = RegistryHelper.registerBlock("red_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> WHITE_TERRACOTTA_URN = RegistryHelper.registerBlock("white_terracotta_urn", UrnBlock::new);
+    public static final Supplier<Block> YELLOW_TERRACOTTA_URN = RegistryHelper.registerBlock("yellow_terracotta_urn", UrnBlock::new);
 
     public static final Supplier<Block> SMALL_BLACK_URN = RegistryHelper.registerBlock("small_black_urn", UrnBlock::new);
     public static final Supplier<Block> SMALL_BROWN_URN = RegistryHelper.registerBlock("small_brown_urn", UrnBlock::new);
@@ -116,48 +181,6 @@ public class TGBlocks {
 
     public static final Supplier<Block> VASE_BLOCK = RegistryHelper.registerBlock("vase_block", VaseBlock::new);
 
-    public static final Supplier<Block> CARVED_GRAVESTONE = RegistryHelper.registerBlock("carved_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-    public static final Supplier<Block> TALL_CARVED_GRAVESTONE = RegistryHelper.registerBlock("tall_carved_gravestone", () -> new TallCarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-    public static final Supplier<Block> EPITAPH = RegistryHelper.registerBlock("epitaph", () -> new EpitaphBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-    // Weathered stones carry the same carving and the same inscription, but as their own ids: a
-    // standing stone must not change shape under a world that already has one.
-    public static final Supplier<Block> BROKEN_GRAVESTONE = RegistryHelper.registerBlock("broken_gravestone", () -> new CarvedGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE, false, 0.14D, 0.23D, 0.0F));
-    public static final Supplier<Block> TOPPLED_GRAVESTONE = RegistryHelper.registerBlock("toppled_gravestone", () -> new ToppledGravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-    public static final Supplier<Block> GARGOYLE = RegistryHelper.registerBlock("gargoyle", () -> new TallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().strength(1.5F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
-            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D)));
-
-    public static final Supplier<Block> GALLOWS = RegistryHelper.registerBlock("gallows", () -> new TallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().strength(2.0F).burnable().sounds(BlockSoundGroup.WOOD),
-            Block.createCuboidShape(1.0D, 0.0D, 5.0D, 7.0D, 16.0D, 11.0D),
-            Block.createCuboidShape(1.0D, 0.0D, 5.0D, 15.0D, 16.0D, 11.0D)));
-    public static final Supplier<Block> OBELISK = RegistryHelper.registerBlock("obelisk", () -> new TallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
-            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D),
-            Block.createCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 16.0D, 11.0D)));
-    public static final Supplier<Block> STONE_CROSS = RegistryHelper.registerBlock("stone_cross", () -> new TallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F, 6.0F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS),
-            Block.createCuboidShape(3.0D, 0.0D, 3.0D, 13.0D, 16.0D, 13.0D),
-            Block.createCuboidShape(1.0D, 0.0D, 6.0D, 15.0D, 16.0D, 10.0D)));
-
-    // Hangs from a ceiling instead of standing on the ground - the mod's first decoration that does.
-    public static final Supplier<Block> GIBBET = RegistryHelper.registerBlock("gibbet", () -> new TallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(2.0F).sounds(BlockSoundGroup.CHAIN),
-            Block.createCuboidShape(4.0D, 10.0D, 4.0D, 12.0D, 16.0D, 12.0D),
-            Block.createCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D),
-            true));
-
-    // Two blocks tall: a whole skeleton in chains, not a torso. The lower half holds legs and pelvis
-    // and stays close to the wall, the upper half carries the skull and reaches half a block out.
-    public static final Supplier<Block> CHAINED_SKELETON = RegistryHelper.registerBlock("chained_skeleton", () -> new TallWallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().strength(1.0F).sounds(BlockSoundGroup.BONE),
-            WallDeco.shapes(3.0D, 0.0D, 16.0D, 6.0D),
-            WallDeco.shapes(2.0D, 0.0D, 14.0D, 8.0D)));
-    // Reaches half a block out because the skull is a full 8x8x8 head, like every other skull in the mod.
-    public static final Supplier<Block> MOUNTED_SKULL = RegistryHelper.registerBlock("mounted_skull", () -> new WallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().strength(1.0F).sounds(BlockSoundGroup.BONE), 4.0D, 2.0D, 12.0D, 8.0D));
-    public static final Supplier<Block> RIB_RELIEF = RegistryHelper.registerBlock("rib_relief", () -> new WallDecoBlock(
-            AbstractBlock.Settings.create().nonOpaque().requiresTool().strength(1.5F).sounds(BlockSoundGroup.DEEPSLATE_BRICKS), 2.0D, 2.0D, 14.0D, 4.0D));
     public static final Supplier<Block> GRAVESTONE = RegistryHelper.registerBlock("gravestone", () -> new GravestoneBlock(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
     public static final Supplier<Block> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerBlock("mossy_cobblestone_gravestone", () -> new GravestoneBlock(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));
@@ -183,25 +206,6 @@ public class TGBlocks {
 
     public static final Supplier<Block> OSSUARY = RegistryHelper.registerBlock("ossuary", () -> new OssuaryBlock(AbstractBlock.Settings.create().requiresTool().nonOpaque().strength(3.5F)));
 
-
-    public static final Supplier<Block> SOIL = RegistryHelper.registerBlock("soil", () -> new Block(AbstractBlock.Settings.create().strength(0.5F).sounds(BlockSoundGroup.GRAVEL)));
-    public static final Supplier<Block> TURF = RegistryHelper.registerBlock("turf", () -> new TGTurfBlock(AbstractBlock.Settings.create().mapColor(MapColor.PALE_GREEN).ticksRandomly().strength(0.6F).sounds(BlockSoundGroup.GRASS)));
-    public static final Supplier<Block> GLOOM_STONE = RegistryHelper.registerBlock("gloom_stone", () -> new Block(AbstractBlock.Settings.create().mapColor(MapColor.DEEPSLATE_GRAY).requiresTool().strength(1.5F, 6.0F)));
-    public static final Supplier<Block> SCARLET_HEART = RegistryHelper.registerBlock("scarlet_heart", () -> new FlowerbedBlock(AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().sounds(BlockSoundGroup.PINK_PETALS).pistonBehavior(PistonBehavior.DESTROY).luminance((state) -> {
-        if (state.get(FlowerbedBlock.FLOWER_AMOUNT) <= 2) {
-            return 5;
-        } else if (state.get(FlowerbedBlock.FLOWER_AMOUNT) == 3) {
-            return 7;
-        } else {
-            return 10;
-        }
-    })));
-    public static final Supplier<Block> GREAT_SCARLET_HEART = RegistryHelper.registerBlock("great_scarlet_heart", () -> new TallFlowerBlock(AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).noCollision().breakInstantly().sounds(BlockSoundGroup.GRASS).offset(AbstractBlock.OffsetType.XZ).burnable().pistonBehavior(PistonBehavior.DESTROY).luminance((state) -> 10)));
-
-    // Remains whose shape is a pose file rather than a model. The twenty ready-made skeleton blocks
-    // stay exactly as they are; these are new ids beside them.
-    public static final Supplier<Block> SKELETAL_REMAINS = RegistryHelper.registerBlock("skeletal_remains", () -> new SkeletalRemainsBlock(false));
-    public static final Supplier<Block> WITHER_SKELETAL_REMAINS = RegistryHelper.registerBlock("wither_skeletal_remains", () -> new SkeletalRemainsBlock(true));
 
     // One block for every chronicle page: the page id sits in the block entity, the look is a state.
     public static final Supplier<Block> LORE_BOOK = RegistryHelper.registerBlock("lore_book", LoreBookBlock::new);

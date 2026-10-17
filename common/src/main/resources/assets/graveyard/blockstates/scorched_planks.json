@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "smoldering=false": {
+      "model": "graveyard:block/scorched_planks"
+    },
+    "smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_planks_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_planks_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_planks_smoldering_3"
+      }
+    ]
+  }
+}

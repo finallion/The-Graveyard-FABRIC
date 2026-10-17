@@ -21,7 +21,6 @@ public class ServerEvents {
 
         @Override
         public void onServerStarted(MinecraftServer server) {
-            /* OLD CONFIG DELETE */
             List<File> oldConfigs = new ArrayList<>();
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-config.json5"));
             oldConfigs.add(new File(FabricLoader.getInstance().getConfigDir().toString() + "/the-graveyard-1.19-config.json5"));

@@ -23,6 +23,8 @@ public class TGSounds {
     public static final Supplier<SoundEvent> LICH_PHASE_03_ATTACK = register("entity.lich.phase_three_attack");
     public static final Supplier<SoundEvent> LICH_IDLE = register("entity.lich.idle");
     public static final Supplier<SoundEvent> LICH_HURT = register("entity.lich.hurt");
+    public static final Supplier<SoundEvent> LICH_BONE_CRACK = register("entity.lich.bone_crack");
+    public static final Supplier<SoundEvent> LICH_STUNNED = register("entity.lich.stunned");
 
     public static final Supplier<SoundEvent> NAMELESS_HANGED_BREATH = register("entity.nameless_hanged.breath");
     public static final Supplier<SoundEvent> NAMELESS_HANGED_AMBIENT = register("entity.nameless_hanged.ambient");
@@ -30,8 +32,15 @@ public class TGSounds {
 
     public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_AMBIENT = register("entity.corrupted_illager.ambient");
     public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_HURT = register("entity.corrupted_illager.hurt");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_STRIKE = register("entity.corrupted_illager.strike");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_BITE = register("entity.corrupted_illager.bite");
     public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_DEATH = register("entity.corrupted_illager.death");
     public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_STEP = register("entity.corrupted_illager.step");
+    public static final Supplier<SoundEvent> DIG = register("entity.dig");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_SPAWN = register("entity.corrupted_illager.spawn");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_IDLE = register("entity.corrupted_illager.idle");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_WANDER = register("entity.corrupted_illager.wander");
+    public static final Supplier<SoundEvent> CORRUPTED_ILLAGER_ATTACK_RUN = register("entity.corrupted_illager.attack_run");
 
     public static final Supplier<SoundEvent> ACOLYTE_AMBIENT = register("entity.acolyte.ambient");
     public static final Supplier<SoundEvent> ACOLYTE_HURT = register("entity.acolyte.hurt");
@@ -55,6 +64,7 @@ public class TGSounds {
     public static final Supplier<SoundEvent> GHOULING_ATTACK = register("entity.ghouling.attack");
     public static final Supplier<SoundEvent> GHOULING_STEP = register("entity.ghouling.step");
     public static final Supplier<SoundEvent> GHOULING_SPAWN = register("entity.ghouling.spawn");
+    public static final Supplier<SoundEvent> GHOULING_SOUL_DRAW = register("entity.ghouling.soul_draw");
 
     public static final Supplier<SoundEvent> REVENANT_AMBIENT = register("entity.revenant.ambient");
     public static final Supplier<SoundEvent> REVENANT_HURT = register("entity.revenant.hurt");
@@ -90,6 +100,18 @@ public class TGSounds {
     public static final Supplier<SoundEvent> MAGPIE_AMBIENT = register("entity.magpie.ambient");
     public static final Supplier<SoundEvent> CORVID_HURT = register("entity.corvid.hurt");
     public static final Supplier<SoundEvent> CORVID_DEATH = register("entity.corvid.death");
+    public static final Supplier<SoundEvent> CORVID_TAKEOFF = register("entity.corvid.takeoff");
+    public static final Supplier<SoundEvent> CORVID_FLY = register("entity.corvid.fly");
+    public static final Supplier<SoundEvent> CORVID_LAND = register("entity.corvid.land");
+
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_IDLE = register("entity.tormented_villager.idle");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_LOST = register("entity.tormented_villager.lost");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_CRYING = register("entity.tormented_villager.crying");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_GLITCH = register("entity.tormented_villager.glitch");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_RAGE = register("entity.tormented_villager.rage");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_BREAKDOWN = register("entity.tormented_villager.breakdown");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_SPAWN = register("entity.tormented_villager.spawn");
+    public static final Supplier<SoundEvent> TORMENTED_VILLAGER_REDEMPTION = register("entity.tormented_villager.redemption");
 
     public static final Supplier<SoundEvent> VIAL_SPLASH = register("item.vial.splash");
 

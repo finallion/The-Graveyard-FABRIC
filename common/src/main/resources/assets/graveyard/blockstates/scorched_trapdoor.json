@@ -1,0 +1,252 @@
+{
+  "variants": {
+    "facing=east,half=bottom,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_bottom"
+    },
+    "facing=east,half=bottom,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_3"
+      }
+    ],
+    "facing=east,half=bottom,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 90
+    },
+    "facing=east,half=bottom,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_top"
+    },
+    "facing=east,half=top,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_3"
+      }
+    ],
+    "facing=east,half=top,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 90
+    },
+    "facing=east,half=top,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 90
+      }
+    ],
+    "facing=north,half=bottom,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_bottom"
+    },
+    "facing=north,half=bottom,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_3"
+      }
+    ],
+    "facing=north,half=bottom,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open"
+    },
+    "facing=north,half=bottom,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3"
+      }
+    ],
+    "facing=north,half=top,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_top"
+    },
+    "facing=north,half=top,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_3"
+      }
+    ],
+    "facing=north,half=top,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open"
+    },
+    "facing=north,half=top,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3"
+      }
+    ],
+    "facing=south,half=bottom,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_bottom"
+    },
+    "facing=south,half=bottom,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_3"
+      }
+    ],
+    "facing=south,half=bottom,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 180
+    },
+    "facing=south,half=bottom,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_top"
+    },
+    "facing=south,half=top,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_3"
+      }
+    ],
+    "facing=south,half=top,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 180
+    },
+    "facing=south,half=top,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 180
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_bottom"
+    },
+    "facing=west,half=bottom,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_bottom_smoldering_3"
+      }
+    ],
+    "facing=west,half=bottom,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 270
+    },
+    "facing=west,half=bottom,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,open=false,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_top"
+    },
+    "facing=west,half=top,open=false,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_top_smoldering_3"
+      }
+    ],
+    "facing=west,half=top,open=true,smoldering=false": {
+      "model": "graveyard:block/scorched_trapdoor_open",
+      "y": 270
+    },
+    "facing=west,half=top,open=true,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering",
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_2",
+        "y": 270
+      },
+      {
+        "model": "graveyard:block/scorched_trapdoor_open_smoldering_3",
+        "y": 270
+      }
+    ]
+  }
+}

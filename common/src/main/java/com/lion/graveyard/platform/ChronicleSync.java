@@ -1,6 +1,7 @@
 package com.lion.graveyard.platform;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.chronicle.Chronicle;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /// Server → client: the full set of found pages, plus the one that was just found (for the toast).
@@ -23,10 +25,12 @@ public final class ChronicleSync {
     }
 
     public static void write(PacketByteBuf buf, Collection<String> found, @Nullable String newlyFound) {
-        buf.writeVarInt(found.size());
-        found.forEach(buf::writeString);
-        buf.writeBoolean(newlyFound != null);
-        if (newlyFound != null) buf.writeString(newlyFound);
+        List<String> valid = found.stream().filter(Chronicle::isValidId).toList();
+        buf.writeVarInt(valid.size());
+        valid.forEach(buf::writeString);
+        boolean sendNew = Chronicle.isValidId(newlyFound);
+        buf.writeBoolean(sendNew);
+        if (sendNew) buf.writeString(newlyFound);
     }
 
     public record Payload(Set<String> found, @Nullable String newlyFound) {}

@@ -1,5 +1,6 @@
 package com.lion.graveyard.entities.ai.goals;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.CorvidEntity;
 import com.lion.graveyard.init.TGTags;
 import net.minecraft.block.Blocks;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FlyOntoPerchGoal extends FlyGoal {
     private static final int SEARCH_RADIUS = 8;
+    private static final double MAX_HOME_SEARCH_DISTANCE = 48.0D;
     private static final int SEARCH_HEIGHT = 6;
     private static final int SEARCH_DEPTH = 12;
     private static final int STAY_PERCHED_CHANCE = 6;
@@ -56,7 +58,21 @@ public class FlyOntoPerchGoal extends FlyGoal {
     }
 
     protected Vec3d getSearchCenter() {
-        return this.corvid.isFarFromHome() ? Vec3d.ofCenter(this.corvid.getHome()) : this.corvid.getPos();
+        BlockPos home = this.corvid.getHome();
+        if (this.corvid.isFarFromHome() && isUsableHome(home)) {
+            return Vec3d.ofCenter(home);
+        }
+        return this.corvid.getPos();
+    }
+
+    private boolean isUsableHome(BlockPos home) {
+        World world = this.corvid.getWorld();
+        if (home.getSquaredDistance(this.corvid.getPos()) > MAX_HOME_SEARCH_DISTANCE * MAX_HOME_SEARCH_DISTANCE) {
+            return false;
+        }
+        int reach = SEARCH_RADIUS;
+        return world.isChunkLoaded(home.add(-reach, 0, -reach)) && world.isChunkLoaded(home.add(reach, 0, reach))
+                && world.isChunkLoaded(home.add(-reach, 0, reach)) && world.isChunkLoaded(home.add(reach, 0, -reach));
     }
 
     @Nullable
@@ -154,6 +170,10 @@ public class FlyOntoPerchGoal extends FlyGoal {
         return Vec3d.ofBottomCenter(best);
     }
 
+    private static boolean isField(BlockState state) {
+        return state.isOf(Blocks.FARMLAND) || state.isIn(BlockTags.CROPS);
+    }
+
     protected int scorePerch(BlockState ground, BlockPos pos) {
         if (ground.isIn(TGTags.CORVID_BONES)) {
             return 3;
@@ -170,6 +190,9 @@ public class FlyOntoPerchGoal extends FlyGoal {
     /// Needs a collision shape too, because the tag contains wheat.
     protected boolean canPerchOn(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
+        if (this.corvid.getSpecies() == CorvidEntity.Species.CROW && isField(state) && !Graveyard.getConfig().flag("crowsEatCrops", true)) {
+            return false;
+        }
         return state.isIn(this.corvid.getPerchTag()) && !state.getCollisionShape(world, pos).isEmpty();
     }
 

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:coarse_dirt",
+    "minecraft:terracotta",
+    "minecraft:smooth_stone_slab",
+    "minecraft:acacia_slab",
+    "minecraft:black_terracotta",
+    "minecraft:gray_terracotta",
+    "graveyard:charred_planks",
+    "graveyard:charred_log"
+  ]
+}

@@ -7,16 +7,6 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "graveyard:chronicle/pages_order",
-          "weight": 1,
-          "conditions": [
-            {
-              "condition": "graveyard:pages_in_loot"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:loot_table",
           "name": "graveyard:chronicle/pages_world",
           "weight": 1,
           "conditions": [

@@ -98,23 +98,21 @@ public final class TallDeco {
                 && (half == DoubleBlockHalf.LOWER) == (direction == Direction.UP);
 
         if (towardsOtherHalf && (!neighbor.isOf(state.getBlock()) || neighbor.get(HALF) == half)) {
-            return Blocks.AIR.getDefaultState();
+            return state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED)
+                    ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState();
         }
 
         return state;
     }
 
-    /// Without this a creative player gets a free copy from the half they did not hit - which half that
-    /// is depends on which one carries the loot, so both directions are handled.
     public static void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        if (world.isClient || !player.isCreative()) {
+        if (world.isClient || !player.isCreative() || state.get(HALF) != DoubleBlockHalf.UPPER) {
             return;
         }
 
-        DoubleBlockHalf half = state.get(HALF);
-        BlockPos otherPos = half == DoubleBlockHalf.UPPER ? pos.down() : pos.up();
+        BlockPos otherPos = pos.down();
         BlockState other = world.getBlockState(otherPos);
-        if (other.isOf(state.getBlock()) && other.get(HALF) != half) {
+        if (other.isOf(state.getBlock()) && other.get(HALF) == DoubleBlockHalf.LOWER) {
             world.setBlockState(otherPos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL | Block.SKIP_DROPS);
             world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, otherPos, Block.getRawIdFromState(other));
         }

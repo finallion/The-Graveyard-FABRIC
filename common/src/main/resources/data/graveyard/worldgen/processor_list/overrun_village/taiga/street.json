@@ -1,0 +1,129 @@
+{
+  "processors": [
+    {
+      "processor_type": "graveyard:pool_aliases",
+      "aliases": {
+        "minecraft:village/taiga/streets": "graveyard:overrun_village/taiga/streets",
+        "minecraft:village/taiga/houses": "graveyard:overrun_village/taiga/houses",
+        "minecraft:village/taiga/decor": "graveyard:overrun_village/taiga/decor",
+        "minecraft:village/taiga/villagers": "graveyard:overrun_village/taiga/victims",
+        "minecraft:village/common/animals": "graveyard:overrun_village/taiga/carcasses",
+        "minecraft:village/common/butcher_animals": "graveyard:overrun_village/taiga/carcasses",
+        "minecraft:village/common/sheep": "graveyard:overrun_village/taiga/carcasses",
+        "minecraft:village/common/cats": "graveyard:overrun_village/taiga/small_remains",
+        "minecraft:village/common/iron_golem": "minecraft:empty"
+      }
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "block": "minecraft:dirt_path",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:spruce_planks"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:dirt_path",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:ice",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:spruce_planks"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:grass_block",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:water",
+            "Properties": {
+              "level": "0"
+            }
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:dirt",
+            "predicate_type": "minecraft:block_match"
+          },
+          "location_predicate": {
+            "block": "minecraft:water",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:water",
+            "Properties": {
+              "level": "0"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "processor_type": "minecraft:rule",
+      "rules": [
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:fern"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:large_fern"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "predicate_type": "minecraft:tag_match",
+            "tag": "minecraft:small_flowers"
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        }
+      ]
+    },
+    {
+      "processor_type": "graveyard:ruin",
+      "follows_terrain": true,
+      "litter_chance": 0.02,
+      "remains_chance": 0.012,
+      "litter": "graveyard:overrun_village/litter_taiga"
+    }
+  ]
+}

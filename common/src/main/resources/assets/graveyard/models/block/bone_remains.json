@@ -4,7 +4,7 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"1": "graveyard:block/skeleton",
-		"particle": "block/bone_block_top"
+		"particle": "graveyard:block/skeleton_particle"
 	},
 	"elements": [
 		{

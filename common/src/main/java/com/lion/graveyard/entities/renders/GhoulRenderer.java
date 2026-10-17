@@ -2,6 +2,7 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.GhoulEntity;
 import com.lion.graveyard.entities.models.BaseGhoulModel;
+import com.lion.graveyard.entities.renders.features.GhoulEyes;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
@@ -10,6 +11,7 @@ public class GhoulRenderer extends GeoEntityRenderer<GhoulEntity> {
     public GhoulRenderer(EntityRendererFactory.Context context) {
         super(context, new BaseGhoulModel());
         this.shadowRadius = 0.7F;
+        this.addRenderLayer(new GhoulEyes(this));
     }
 
     // stops the vanilla death animation

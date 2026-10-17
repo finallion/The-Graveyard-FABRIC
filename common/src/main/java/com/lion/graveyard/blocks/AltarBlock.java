@@ -76,6 +76,9 @@ public class AltarBlock extends Block {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (!player.canModifyBlocks()) {
+            return ActionResult.PASS;
+        }
         ItemStack stack = player.getStackInHand(hand);
         float blood = 0.0F;
         if (stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
@@ -107,7 +110,6 @@ public class AltarBlock extends Block {
 
                     BlockPos corner = pos.add(-8, 0, -8);
 
-                    // searches square around altar
                     for (int i = 0; i < 16; ++i) {
                         for (int j = 0; j < 16; ++j) {
                             for (int k = 0; k < 2; ++k) {

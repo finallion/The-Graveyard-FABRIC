@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:scorched_log",
+    "graveyard:scorched_wood",
+    "graveyard:stripped_scorched_log",
+    "graveyard:stripped_scorched_wood"
+  ]
+}

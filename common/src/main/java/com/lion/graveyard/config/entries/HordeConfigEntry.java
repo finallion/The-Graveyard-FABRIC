@@ -17,6 +17,11 @@ public class HordeConfigEntry {
         this.additionalRandomizedTicks = additionalRandomizedTicks;
     }
 
+    public HordeConfigEntry sanitized() {
+        return new HordeConfigEntry(enabled, Math.max(0, Math.min(mobSpawnAttempts, 256)),
+                Math.max(0, ticksUntilNextSpawn), Math.max(0, additionalRandomizedTicks));
+    }
+
     public static HordeConfigEntry of(int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {
         return new HordeConfigEntry(mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks);
     }

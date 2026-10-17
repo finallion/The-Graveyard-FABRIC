@@ -4,10 +4,15 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.platform.fabric.HordeSpawner;
 import com.lion.graveyard.platform.fabric.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.fabric.ServerEvents;
-import com.lion.graveyard.util.NBTParser;
 import com.lion.graveyard.util.SpawnHordeCommand;
 import com.lion.graveyard.util.ChronicleCommand;
 import com.lion.graveyard.chronicle.Chronicle;
+import com.lion.graveyard.event.CommonEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.util.TypedActionResult;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -15,10 +20,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceType;
 
-import java.io.IOException;
 
 public class GraveyardFabric implements ModInitializer {
 
@@ -26,13 +29,6 @@ public class GraveyardFabric implements ModInitializer {
     public void onInitialize() {
         Graveyard.init();
         Graveyard.postInit();
-
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            try {
-                NBTParser.parseNBTFiles();
-            } catch (IOException e) {}
-        }
-
 
         registerServerEvents();
         registerCommands();
@@ -55,5 +51,16 @@ public class GraveyardFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(new ServerEvents.DeleteOldConfigs());
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> Chronicle.syncAll(handler.player));
+
+        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> CommonEvents.onEntityLoad(entity));
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> CommonEvents.onDeath(entity));
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            CommonEvents.onUseItem(player, hand);
+            return TypedActionResult.pass(player.getStackInHand(hand));
+        });
+        UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
+            CommonEvents.onUseBlock(player, world, hit.getBlockPos());
+            return CommonEvents.stripSmolderingPillar(player, world, hand, hit);
+        });
     }
 }

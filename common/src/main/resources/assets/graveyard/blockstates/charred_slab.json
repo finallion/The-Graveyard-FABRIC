@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "type=bottom,smoldering=false": {
+      "model": "graveyard:block/charred_slab"
+    },
+    "type=bottom,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_slab_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_slab_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_slab_smoldering_3"
+      }
+    ],
+    "type=double,smoldering=false": {
+      "model": "graveyard:block/charred_planks"
+    },
+    "type=double,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_planks_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_planks_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_planks_smoldering_3"
+      }
+    ],
+    "type=top,smoldering=false": {
+      "model": "graveyard:block/charred_slab_top"
+    },
+    "type=top,smoldering=true": [
+      {
+        "model": "graveyard:block/charred_slab_top_smoldering"
+      },
+      {
+        "model": "graveyard:block/charred_slab_top_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/charred_slab_top_smoldering_3"
+      }
+    ]
+  }
+}

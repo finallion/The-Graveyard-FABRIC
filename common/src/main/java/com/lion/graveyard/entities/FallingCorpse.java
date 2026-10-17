@@ -11,8 +11,11 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -22,22 +25,29 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 
 public class FallingCorpse extends HostileEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation FALLING_ANIMATION = RawAnimation.begin().then("falling", Animation.LoopType.LOOP);
-    private final RawAnimation LANDING_ANIMATION = RawAnimation.begin().then("landing", Animation.LoopType.PLAY_ONCE).then("despawn", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation LANDING_ANIMATION = RawAnimation.begin().then("landing", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation DESPAWN_ANIMATION = RawAnimation.begin().then("despawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final TrackedData<Boolean> IS_FALLING;
     private static final TrackedData<Boolean> HAS_COLLIDED;
+    private static final TrackedData<Boolean> SINKING;
     private final float DAMAGE = 10.0F;
-    private int landingCounter = 40;
+    private static final int LANDING_TICKS = 52;
+    private static final int SINK_START_TICKS = 26;
+    /// Ticks from ground contact to the slam keyframe of the landing animation.
+    private static final int IMPACT_DELAY = 7;
+    private static final int LANDING_TRANSITION_TICKS = 2;
+    private int landingCounter = LANDING_TICKS;
     private int levitationCounter = 15;
     private float rotation;
+    private int impactTicks = -1;
+    private boolean impacted;
 
     public FallingCorpse(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -53,9 +63,11 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         this.rotation = rotation;
     }
 
-    // I don't want the red overlay on death, so bypass landing effects and kill the mob after some ticks (in mobTick())
+    // mobTick discards the mob, because a kill shows the red overlay.
     public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 1.0F);
+        if (!impacted && impactTicks < 0) {
+            impactTicks = IMPACT_DELAY;
+        }
         return false;
     }
 
@@ -76,13 +88,16 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         super.initDataTracker();
         this.dataTracker.startTracking(IS_FALLING, true);
         this.dataTracker.startTracking(HAS_COLLIDED, false);
+        this.dataTracker.startTracking(SINKING, false);
     }
 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
         animationData.add(AnimationTable.<FallingCorpse>create()
+                .transitionTicks(() -> !isFalling() && !isSinking() ? LANDING_TRANSITION_TICKS : AnimationTable.TRANSITION_TICKS)
                 .when(this::isFalling, FALLING_ANIMATION)
+                .when(this::isSinking, DESPAWN_ANIMATION)
                 .otherwise(LANDING_ANIMATION)
                 .build(this, "controller"));
     }
@@ -122,9 +137,16 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
             this.setVelocity(this.getVelocity().add(0.0D, -0.04D, 0.0D));
         }
 
-        // kill after despawn animation has played to avoid red death overlay
+        if (impactTicks > 0 && --impactTicks == 0) {
+            impact();
+        }
+
         if (!isFalling() && landingCounter > 0) {
             landingCounter--;
+        }
+
+        if (landingCounter <= SINK_START_TICKS) {
+            setSinking(true);
         }
 
         if (landingCounter <= 0) {
@@ -140,6 +162,17 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         }
 
         super.mobTick();
+    }
+
+    private void impact() {
+        impactTicks = -1;
+        impacted = true;
+        getEntityWorld().playSound(null, getBlockPos(), SoundEvents.ENTITY_HOSTILE_BIG_FALL, SoundCategory.HOSTILE, 2.0F, 0.8F);
+        getEntityWorld().playSound(null, getBlockPos(), SoundEvents.BLOCK_BONE_BLOCK_BREAK, SoundCategory.HOSTILE, 1.2F, 0.6F);
+        BlockState ground = getEntityWorld().getBlockState(getBlockPos().down());
+        if (getEntityWorld() instanceof ServerWorld world && !ground.isAir()) {
+            world.spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, ground), getX(), getY() + 0.1D, getZ(), 30, 0.6D, 0.05D, 0.6D, 0.15D);
+        }
     }
 
     @Override
@@ -159,6 +192,14 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
         this.dataTracker.set(IS_FALLING, isFalling);
     }
 
+    public boolean isSinking() {
+        return this.dataTracker.get(SINKING);
+    }
+
+    public void setSinking(boolean sinking) {
+        this.dataTracker.set(SINKING, sinking);
+    }
+
     public boolean hasCollided() {
         return this.dataTracker.get(HAS_COLLIDED);
     }
@@ -170,6 +211,7 @@ public class FallingCorpse extends HostileEntity implements GeoEntity {
     static {
         IS_FALLING = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
         HAS_COLLIDED = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
+        SINKING = DataTracker.registerData(FallingCorpse.class, TrackedDataHandlerRegistry.BOOLEAN);
     }
 
 

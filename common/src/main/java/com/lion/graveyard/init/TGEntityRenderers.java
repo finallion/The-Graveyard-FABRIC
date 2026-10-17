@@ -14,9 +14,11 @@ public class TGEntityRenderers {
         RegistryHelper.registerEntityRenderer(TGEntities.GHOUL, GhoulRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.REAPER, ReaperRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.REVENANT, RevenantRenderer::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.TORMENTED_VILLAGER, com.lion.graveyard.entities.renders.TormentedVillagerRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.NIGHTMARE, NightmareRenderer::new);
-        RegistryHelper.registerEntityRenderer(TGEntities.CORRUPTED_PILLAGER, CorruptedPillagerRenderer::new);
-        RegistryHelper.registerEntityRenderer(TGEntities.CORRUPTED_VINDICATOR, CorruptedVindicatorRenderer::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.CORRUPTED_PILLAGER, CorruptedIllagerGeoRenderer::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.CORRUPTED_VINDICATOR, CorruptedIllagerGeoRenderer::new);
+        RegistryHelper.registerEntityRenderer(TGEntities.CORRUPTED_EVOKER, CorruptedIllagerGeoRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.WRAITH, WraithRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.LICH, LichRenderer::new);
         RegistryHelper.registerEntityRenderer(TGEntities.FALLING_CORPSE, FallingCorpseRenderer::new);

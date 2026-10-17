@@ -1,0 +1,58 @@
+{
+  "variants": {
+    "axis=x,smoldering=false": {
+      "model": "graveyard:block/scorched_wood_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,smoldering=false": {
+      "model": "graveyard:block/scorched_wood"
+    },
+    "axis=z,smoldering=false": {
+      "model": "graveyard:block/scorched_wood_horizontal",
+      "x": 90
+    },
+    "axis=x,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering_2",
+        "x": 90,
+        "y": 90
+      },
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering_3",
+        "x": 90,
+        "y": 90
+      }
+    ],
+    "axis=y,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_wood_smoldering"
+      },
+      {
+        "model": "graveyard:block/scorched_wood_smoldering_2"
+      },
+      {
+        "model": "graveyard:block/scorched_wood_smoldering_3"
+      }
+    ],
+    "axis=z,smoldering=true": [
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering",
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering_2",
+        "x": 90
+      },
+      {
+        "model": "graveyard:block/scorched_wood_horizontal_smoldering_3",
+        "x": 90
+      }
+    ]
+  }
+}

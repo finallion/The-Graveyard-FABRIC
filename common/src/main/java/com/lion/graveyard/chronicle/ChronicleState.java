@@ -14,11 +14,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/// Which chronicle pages each player has found. Lives on the overworld so it follows the player
-/// across dimensions; a page is a string id so datapacks can add chapters without touching Java.
+/// Saves the found chronicle pages of each player on the overworld.
 public final class ChronicleState extends PersistentState {
 
     private static final String KEY = "graveyard_chronicle";
+
+    private static final int MAX_PAGES_PER_PLAYER = 512;
 
     private final Map<UUID, Set<String>> found = new HashMap<>();
 
@@ -31,8 +32,10 @@ public final class ChronicleState extends PersistentState {
         return Collections.unmodifiableSet(this.found.getOrDefault(player, Collections.emptySet()));
     }
 
-    /// Returns true only the first time a page is found, so callers can toast on it.
     public boolean add(UUID player, String page) {
+        if (!Chronicle.isValidId(page)) return false;
+        Set<String> existing = this.found.get(player);
+        if (existing != null && existing.size() >= MAX_PAGES_PER_PLAYER && !existing.contains(page)) return false;
         boolean added = this.found.computeIfAbsent(player, id -> new LinkedHashSet<>()).add(page);
         if (added) this.markDirty();
         return added;
@@ -65,11 +68,17 @@ public final class ChronicleState extends PersistentState {
         ChronicleState state = new ChronicleState();
         NbtCompound players = nbt.getCompound("players");
         for (String key : players.getKeys()) {
+            UUID player;
+            try {
+                player = UUID.fromString(key);
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
             Set<String> pages = new LinkedHashSet<>();
             for (NbtElement element : players.getList(key, NbtElement.STRING_TYPE)) {
-                pages.add(element.asString());
+                if (Chronicle.isValidId(element.asString())) pages.add(element.asString());
             }
-            state.found.put(UUID.fromString(key), pages);
+            state.found.put(player, pages);
         }
         return state;
     }

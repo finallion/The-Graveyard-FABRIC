@@ -1,13 +1,22 @@
 {
-	"render_type": "cutout",
+	"format_version": "26.3",
+	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"ambientocclusion": false,
+	"render_type": "cutout",
+	"textures": {
+		"3": "graveyard:block/index",
+		"particle": "graveyard:block/lore_book_cover",
+		"cover": "graveyard:block/lore_book_cover",
+		"pages": "graveyard:block/lore_book_pages",
+		"edge": "graveyard:block/lore_book_edge"
+	},
 	"elements": [
 		{
 			"name": "cover_west",
 			"from": [1.5, 0, 3],
 			"to": [8, 0.5, 13],
-			"rotation": {"angle": 7.5, "axis": "z", "origin": [8, 0, 8]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1.5, 15.5, 8, 16], "texture": "#cover"},
 				"east": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
@@ -21,7 +30,7 @@
 			"name": "cover_east",
 			"from": [8, 0, 3],
 			"to": [14.5, 0.5, 13],
-			"rotation": {"angle": -7.5, "axis": "z", "origin": [8, 0, 8]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8, 15.5, 14.5, 16], "texture": "#cover"},
 				"east": {"uv": [3, 15.5, 13, 16], "texture": "#cover"},
@@ -35,13 +44,13 @@
 			"name": "page_west",
 			"from": [2, 0.5, 3.5],
 			"to": [8, 1.25, 12.5],
-			"rotation": {"angle": 7.5, "axis": "z", "origin": [8, 0, 8]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [2, 14.75, 8, 15.5], "texture": "#pages"},
 				"east": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
 				"south": {"uv": [2, 14.75, 8, 15.5], "texture": "#pages"},
 				"west": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
-				"up": {"uv": [2, 3.5, 8, 12.5], "texture": "#pages"},
+				"up": {"uv": [16, 0, 0, 16], "texture": "#pages"},
 				"down": {"uv": [2, 3.5, 8, 12.5], "texture": "#pages"}
 			}
 		},
@@ -49,20 +58,21 @@
 			"name": "page_east",
 			"from": [8, 0.5, 3.5],
 			"to": [14, 1.25, 12.5],
-			"rotation": {"angle": -7.5, "axis": "z", "origin": [8, 0, 8]},
+			"rotation": {"angle": 0, "axis": "z", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8, 14.75, 14, 15.5], "texture": "#pages"},
 				"east": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
 				"south": {"uv": [8, 14.75, 14, 15.5], "texture": "#pages"},
 				"west": {"uv": [3.5, 14.75, 12.5, 15.5], "texture": "#pages"},
-				"up": {"uv": [8, 3.5, 14, 12.5], "texture": "#pages"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#pages"},
 				"down": {"uv": [8, 3.5, 14, 12.5], "texture": "#pages"}
 			}
 		},
 		{
 			"name": "spine",
-			"from": [7.25, 0, 3],
-			"to": [8.75, 1.5, 13],
+			"from": [7.25, 0, 2.95],
+			"to": [8.75, 1.5, 13.05],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, -0.05]},
 			"faces": {
 				"north": {"uv": [7.25, 14.5, 8.75, 16], "texture": "#edge"},
 				"east": {"uv": [3, 14.5, 13, 16], "texture": "#edge"},
@@ -71,38 +81,60 @@
 				"up": {"uv": [7.25, 3, 8.75, 13], "texture": "#edge"},
 				"down": {"uv": [7.25, 3, 8.75, 13], "texture": "#edge"}
 			}
+		},
+		{
+			"name": "index",
+			"from": [3, 1.26, 7.5],
+			"to": [4, 1.26, 12.5],
+			"rotation": {"angle": 0, "axis": "z", "origin": [3, 1.26, 7.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 0], "texture": "#3"},
+				"east": {"uv": [0, 0, 5, 0], "texture": "#3"},
+				"south": {"uv": [0, 0, 1, 0], "texture": "#3"},
+				"west": {"uv": [0, 0, 5, 0], "texture": "#3"},
+				"up": {"uv": [0, 0, 1, 5], "texture": "#3"},
+				"down": {"uv": [1, 0, 2, 5], "texture": "#3"}
+			}
+		},
+		{
+			"name": "index",
+			"from": [3, 0.26, 12.5],
+			"to": [4, 1.26, 12.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 1.26, 12.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 1, 0], "texture": "#3"},
+				"east": {"uv": [0, 0, 5, 0], "texture": "#3"},
+				"south": {"uv": [0, 0, 1, 0], "texture": "#3"},
+				"west": {"uv": [0, 0, 5, 0], "texture": "#3"},
+				"up": {"uv": [0, 0, 1, 5], "texture": "#3"},
+				"down": {"uv": [1, 0, 2, 5], "texture": "#3"}
+			}
 		}
 	],
-	"textures": {
-		"cover": "graveyard:block/lore_book_cover",
-		"pages": "graveyard:block/lore_book_pages",
-		"edge": "graveyard:block/lore_book_edge",
-		"particle": "graveyard:block/lore_book_cover"
-	},
 	"display": {
 		"thirdperson_righthand": {
-			"scale": [0.6, 0.6, 0.6],
+			"rotation": [0, 45, 0],
 			"translation": [0, 3.78, 0],
-			"rotation": [0, 45, 0]
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"thirdperson_lefthand": {
-			"scale": [0.6, 0.6, 0.6],
+			"rotation": [0, -135, 0],
 			"translation": [0, 3.78, 0],
-			"rotation": [0, 225, 0]
+			"scale": [0.6, 0.6, 0.6]
 		},
 		"firstperson_righthand": {
-			"scale": [0.68, 0.68, 0.68],
+			"rotation": [0, 45, 0],
 			"translation": [0, 4.26, 0],
-			"rotation": [0, 45, 0]
+			"scale": [0.68, 0.68, 0.68]
 		},
 		"firstperson_lefthand": {
-			"scale": [0.68, 0.68, 0.68],
+			"rotation": [0, -135, 0],
 			"translation": [0, 4.26, 0],
-			"rotation": [0, 225, 0]
+			"scale": [0.68, 0.68, 0.68]
 		},
 		"ground": {
-			"scale": [0.45, 0.45, 0.45],
-			"translation": [0, 2.84, 0]
+			"translation": [0, 2.84, 0],
+			"scale": [0.45, 0.45, 0.45]
 		},
 		"gui": {
 			"rotation": [30, 135, 0],
@@ -114,7 +146,7 @@
 			"scale": [1.2, 1.2, 1.2]
 		},
 		"fixed": {
-			"rotation": [0, 180, 0],
+			"rotation": [0, -180, 0],
 			"translation": [0, 4.73, 0],
 			"scale": [0.75, 0.75, 0.75]
 		}

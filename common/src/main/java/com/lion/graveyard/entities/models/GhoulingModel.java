@@ -6,8 +6,6 @@ import net.minecraft.util.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 
 public class GhoulingModel extends GeoModel<GhoulingEntity> {
-    private Identifier texture = new Identifier(Graveyard.MOD_ID, "textures/entity/white_ghouling.png");
-
     @Override
     public Identifier getModelResource(GhoulingEntity object) {
         return new Identifier(Graveyard.MOD_ID, "geo/ghouling.geo.json");
@@ -15,7 +13,11 @@ public class GhoulingModel extends GeoModel<GhoulingEntity> {
 
     @Override
     public Identifier getTextureResource(GhoulingEntity object) {
-        return new Identifier(Graveyard.MOD_ID, "textures/entity/" + object.getVariant() + "_ghouling.png");
+        return new Identifier(Graveyard.MOD_ID, "textures/entity/" + textureVariant(object.getVariant()) + "_ghouling.png");
+    }
+
+    private static int textureVariant(byte variant) {
+        return variant >= 1 && variant <= 5 ? variant : 1;
     }
 
     @Override

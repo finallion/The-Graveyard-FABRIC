@@ -174,16 +174,6 @@
               "tag": "{page:\"the_column\"}"
             }
           ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "graveyard:diary_page",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{page:\"the_faceless\"}"
-            }
-          ]
         }
       ]
     }

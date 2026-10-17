@@ -8,10 +8,19 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class CorruptedVindicator extends CorruptedIllager {
+public class CorruptedVindicator extends AnimatedCorruptedIllager {
 
     public CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, World world) {
-        super(entityType, world, "corrupted_vindicator");
+        this(entityType, world, "corrupted_vindicator");
+    }
+
+    protected CorruptedVindicator(EntityType<? extends CorruptedIllager> entityType, World world, String name) {
+        super(entityType, world, name);
+    }
+
+    @Override
+    protected boolean hasSpawnAnimation() {
+        return true;
     }
 
     @Override
@@ -30,18 +39,11 @@ public class CorruptedVindicator extends CorruptedIllager {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_AMBIENT.get(), 0.8F, 0.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
         this.playSound(TGSounds.CORRUPTED_ILLAGER_HURT.get(), 0.8F, 0.0F);
-    }
-
-    @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_DEATH.get(), 0.8F, 0.0F);
     }
 
     @Override

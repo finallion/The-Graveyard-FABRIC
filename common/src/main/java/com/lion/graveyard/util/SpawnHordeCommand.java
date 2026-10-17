@@ -69,7 +69,6 @@ public class SpawnHordeCommand {
             if (captain) {
                 hordeEntity.setPatrolLeader(true);
                 hordeEntity.setRandomPatrolTarget();
-                world.getServer().getPlayerManager().broadcast(Text.literal("A large Graveyard horde of undead appeared at x:" + pos.getX() + " y:" + pos.getY() + " z:" + pos.getZ() + "."), false);
             }
 
             hordeEntity.setPosition((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());

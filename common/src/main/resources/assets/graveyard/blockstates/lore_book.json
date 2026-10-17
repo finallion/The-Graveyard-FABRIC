@@ -11,10 +11,6 @@
     "variant=leaf,facing=north": { "model": "graveyard:block/lore_book_leaf" },
     "variant=leaf,facing=east": { "model": "graveyard:block/lore_book_leaf", "y": 90 },
     "variant=leaf,facing=south": { "model": "graveyard:block/lore_book_leaf", "y": 180 },
-    "variant=leaf,facing=west": { "model": "graveyard:block/lore_book_leaf", "y": 270 },
-    "variant=scroll,facing=north": { "model": "graveyard:block/lore_book_scroll" },
-    "variant=scroll,facing=east": { "model": "graveyard:block/lore_book_scroll", "y": 90 },
-    "variant=scroll,facing=south": { "model": "graveyard:block/lore_book_scroll", "y": 180 },
-    "variant=scroll,facing=west": { "model": "graveyard:block/lore_book_scroll", "y": 270 }
+    "variant=leaf,facing=west": { "model": "graveyard:block/lore_book_leaf", "y": 270 }
   }
 }

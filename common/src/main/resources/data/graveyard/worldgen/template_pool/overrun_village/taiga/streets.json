@@ -1,0 +1,149 @@
+{
+  "fallback": "graveyard:overrun_village/taiga/terminators",
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/corner_01",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/corner_02",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/corner_03",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_01",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_02",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_03",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_04",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 7
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_05",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 7
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/straight_06",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_01",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_02",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_03",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_04",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_05",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/crossroad_06",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/taiga/streets/turn_01",
+        "processors": "graveyard:overrun_village/taiga/street",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    }
+  ]
+}

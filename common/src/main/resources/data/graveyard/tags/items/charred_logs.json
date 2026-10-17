@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:charred_log",
+    "graveyard:charred_wood",
+    "graveyard:stripped_charred_log",
+    "graveyard:stripped_charred_wood"
+  ]
+}

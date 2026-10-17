@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "graveyard:small_light_gray_urn"
+    }
+  },
+  "result": {
+    "item": "graveyard:light_gray_terracotta_urn"
+  }
+}

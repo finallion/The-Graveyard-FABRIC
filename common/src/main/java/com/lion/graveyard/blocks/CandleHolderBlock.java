@@ -14,7 +14,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
-import org.jetbrains.annotations.Nullable;
 
 public class CandleHolderBlock extends Block implements Waterloggable {
     protected static final VoxelShape SHAPE_NORTH = Block.createCuboidShape(4.0D, 2.0D, 0.0D, 12.0D, 16.0D, 11.0D);

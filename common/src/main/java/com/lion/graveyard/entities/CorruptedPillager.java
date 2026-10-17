@@ -10,7 +10,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class CorruptedPillager extends CorruptedIllager {
+public class CorruptedPillager extends AnimatedCorruptedIllager {
 
     public CorruptedPillager(EntityType<? extends CorruptedIllager> entityType, World world) {
         super(entityType, world, "corrupted_pillager");
@@ -18,6 +18,11 @@ public class CorruptedPillager extends CorruptedIllager {
 
     public static DefaultAttributeContainer.Builder createCorruptedPillagerAttributes() {
         return HostileEntity.createHostileAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3499999940395355D).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 12.0D).add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D);
+    }
+
+    @Override
+    protected boolean hasSpawnAnimation() {
+        return true;
     }
 
     @Override
@@ -31,18 +36,11 @@ public class CorruptedPillager extends CorruptedIllager {
 
     @Override
     public void playAmbientSound() {
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_AMBIENT.get(), 0.8F, 0.0F);
     }
 
     @Override
     protected void playHurtSound(DamageSource source) {
         this.playSound(TGSounds.CORRUPTED_ILLAGER_HURT.get(), 0.8F, 0.0F);
-    }
-
-    @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_DEATH.get(), 0.8F, 0.0F);
     }
 
     @Override

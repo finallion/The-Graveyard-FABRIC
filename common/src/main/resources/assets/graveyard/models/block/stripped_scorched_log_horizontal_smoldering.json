@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "graveyard:block/stripped_scorched_log_top_smoldering",
+    "side": "graveyard:block/stripped_scorched_log_smoldering"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "processors": [
+    {
+      "processor_type": "graveyard:ruin",
+      "on_ground": true,
+      "as_unit": true
+    }
+  ]
+}

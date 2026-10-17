@@ -1,0 +1,53 @@
+{
+	"format_version": "26.3",
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"render_type": "cutout",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "graveyard:block/skeleton",
+		"particle": "graveyard:block/skeleton_particle"
+	},
+	"elements": [
+		{
+			"name": "left_thigh",
+			"from": [5, 4.636, 11.8284],
+			"to": [7, 10.636, 13.8284],
+			"faces": {
+				"north": {"uv": [1, 4.5, 0.5, 6], "texture": "#0"},
+				"east": {"uv": [1, 4.5, 1.5, 6], "texture": "#0"},
+				"south": {"uv": [2, 4.5, 1.5, 6], "texture": "#0"},
+				"west": {"uv": [0, 4.5, 0.5, 6], "texture": "#0"},
+				"up": {"uv": [0.5, 4.5, 1, 4], "texture": "#0"},
+				"down": {"uv": [1, 4, 1.5, 4.5], "texture": "#0"}
+			}
+		},
+		{
+			"name": "left_shin",
+			"from": [4, -1.1, 12],
+			"to": [6, 4.9, 14],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [5, 1.9, 13]},
+			"faces": {
+				"north": {"uv": [0.5, 6, 0, 7.5], "texture": "#0"},
+				"east": {"uv": [1.5, 7.5, 2, 6], "rotation": 180, "texture": "#0"},
+				"south": {"uv": [1, 7.5, 1.5, 6], "rotation": 180, "texture": "#0"},
+				"west": {"uv": [0.5, 7.5, 1, 6], "rotation": 180, "texture": "#0"},
+				"up": {"uv": [1.5, 4, 1, 4.5], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [0.5, 4, 1, 4.5], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"name": "right_leg",
+			"from": [9, -0.364, 11.8284],
+			"to": [11, 11.636, 13.8284],
+			"faces": {
+				"north": {"uv": [0.5, 4.5, 1, 7.5], "texture": "#0"},
+				"east": {"uv": [0.5, 4.5, 0, 7.5], "texture": "#0"},
+				"south": {"uv": [1.5, 4.5, 2, 7.5], "texture": "#0"},
+				"west": {"uv": [1.5, 4.5, 1, 7.5], "texture": "#0"},
+				"up": {"uv": [1, 4.5, 0.5, 4], "texture": "#0"},
+				"down": {"uv": [1.5, 4, 1, 4.5], "texture": "#0"}
+			}
+		}
+	]
+}

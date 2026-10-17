@@ -3,10 +3,15 @@ package com.lion.graveyard.entities.models;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 
 public class LichModel extends GeoModel<LichEntity> {
+    private static final float MAX_HEAD_YAW = 50.0F;
     private Identifier texture = new Identifier(Graveyard.MOD_ID, "textures/entity/lich_texture.png");
 
     @Override
@@ -24,4 +29,17 @@ public class LichModel extends GeoModel<LichEntity> {
         return new Identifier(Graveyard.MOD_ID, "animations/lich/lich.animation.json");
     }
 
+    @Override
+    public void setCustomAnimations(LichEntity animatable, long instanceId, AnimationState<LichEntity> animationState) {
+        if (animatable.getPhase() != 5) {
+            return;
+        }
+        this.getBone("head").ifPresent(head -> {
+            EntityModelData data = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            if (data == null) {
+                return;
+            }
+            head.setRotY(head.getRotY() + MathHelper.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * MathHelper.RADIANS_PER_DEGREE);
+        });
+    }
 }

@@ -1,8 +1,13 @@
 package com.lion.graveyard.init;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.advancements.TGAdvancementTrigger;
+import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 
 public class TGAdvancements {
 
@@ -13,5 +18,46 @@ public class TGAdvancements {
     public static TGAdvancementTrigger SPAWN_WRAITH = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:spawn_wraith")));
     public static TGAdvancementTrigger EQUIP_COFFIN = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:equip_coffin")));
 
+    public static TGAdvancementTrigger REDEEM_TORMENTED_VILLAGER = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:redeem_tormented_villager")));
+    public static TGAdvancementTrigger TORMENTED_VILLAGER_DAWN = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:tormented_villager_dawn")));
+    public static TGAdvancementTrigger EXTINGUISH_SMOLDERING = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:extinguish_smoldering")));
+    public static TGAdvancementTrigger IGNITE_SMOLDERING = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:ignite_smoldering")));
+    public static TGAdvancementTrigger SCARE_CROWS = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:scare_crows")));
+    public static TGAdvancementTrigger MAGPIE_LOOT = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:magpie_loot")));
+    public static TGAdvancementTrigger RAVEN_ON_GRAVESTONE = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:raven_on_gravestone")));
+    public static TGAdvancementTrigger SCARECROW = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:scarecrow")));
+    public static TGAdvancementTrigger FIRST_CHRONICLE_PAGE = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:first_chronicle_page")));
+    public static TGAdvancementTrigger CHRONICLE_ACT_ONE = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:chronicle_act_one")));
+    public static TGAdvancementTrigger CHRONICLE_ACT_TWO = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:chronicle_act_two")));
+    public static TGAdvancementTrigger PLACE_LORE_BOOK = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:place_lore_book")));
+    public static TGAdvancementTrigger BONE_COLLECTOR = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:bone_collector")));
+    public static TGAdvancementTrigger GHOUL_EMERGES = Criteria.register(new TGAdvancementTrigger(new Identifier("graveyard:ghoul_emerges")));
+
+    public static final Identifier REDEEM_TEN_ADVANCEMENT = new Identifier(Graveyard.MOD_ID, "graveyard/redeem_ten_tormented_villagers");
+    public static final int REDEEM_TEN_STEPS = 10;
+
     public static void init() {}
+
+    public static void triggerNearby(ServerWorld world, Vec3d center, double radius, TGAdvancementTrigger trigger) {
+        double radiusSquared = radius * radius;
+        for (ServerPlayerEntity player : world.getPlayers(candidate -> !candidate.isSpectator() && candidate.squaredDistanceTo(center) <= radiusSquared)) {
+            trigger.trigger(player);
+        }
+    }
+
+    public static void grantNextStep(ServerPlayerEntity player, Identifier advancementId, int steps) {
+        Advancement advancement = player.server.getAdvancementLoader().get(advancementId);
+        if (advancement == null) {
+            return;
+        }
+        var progress = player.getAdvancementTracker().getProgress(advancement);
+        for (int step = 1; step <= steps; step++) {
+            String criterion = Integer.toString(step);
+            var criterionProgress = progress.getCriterionProgress(criterion);
+            if (criterionProgress != null && !criterionProgress.isObtained()) {
+                player.getAdvancementTracker().grantCriterion(advancement, criterion);
+                return;
+            }
+        }
+    }
 }

@@ -1,0 +1,92 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/bone_remains",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/skeleton_hand",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/skull_with_rib_cage",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/lying_skeleton",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/skull_pile",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/small_skeleton_remains_0",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/small_skeleton_remains_1",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/small_skeleton_remains_2",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "graveyard:overrun_village/small_remains/small_skeleton_remains_3",
+        "processors": "graveyard:overrun_village/taiga/grounded",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 9,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    }
+  ]
+}

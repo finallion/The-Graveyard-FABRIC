@@ -1,6 +1,5 @@
 package com.lion.graveyard.entities.projectiles;
 
-import com.lion.graveyard.GraveyardClient;
 import com.lion.graveyard.init.TGEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
@@ -13,7 +12,6 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.entity.projectile.WitherSkullEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;

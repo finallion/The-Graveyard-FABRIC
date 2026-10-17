@@ -10,11 +10,6 @@ import java.util.function.Supplier;
 public class TGBlockEntities {
 
     public static final Supplier<BlockEntityType<GravestoneBlockEntity>> GRAVESTONE_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("gravestone_block_entity", () -> BlockEntityType.Builder.create(GravestoneBlockEntity::new,
-            TGBlocks.CARVED_GRAVESTONE.get(),
-            TGBlocks.TALL_CARVED_GRAVESTONE.get(),
-            TGBlocks.EPITAPH.get(),
-            TGBlocks.BROKEN_GRAVESTONE.get(),
-            TGBlocks.TOPPLED_GRAVESTONE.get(),
             TGBlocks.GRAVESTONE.get(),
             TGBlocks.COBBLESTONE_GRAVESTONE.get(),
             TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(),
@@ -46,7 +41,24 @@ public class TGBlockEntities {
             TGBlocks.ORANGE_URN.get(),
             TGBlocks.GREEN_URN.get(),
             TGBlocks.LIME_URN.get(),
-            TGBlocks.WHITE_URN.get()
+            TGBlocks.WHITE_URN.get(),
+            TGBlocks.TERRACOTTA_URN.get(),
+            TGBlocks.BLACK_TERRACOTTA_URN.get(),
+            TGBlocks.BLUE_TERRACOTTA_URN.get(),
+            TGBlocks.BROWN_TERRACOTTA_URN.get(),
+            TGBlocks.CYAN_TERRACOTTA_URN.get(),
+            TGBlocks.GRAY_TERRACOTTA_URN.get(),
+            TGBlocks.GREEN_TERRACOTTA_URN.get(),
+            TGBlocks.LIGHT_BLUE_TERRACOTTA_URN.get(),
+            TGBlocks.LIGHT_GRAY_TERRACOTTA_URN.get(),
+            TGBlocks.LIME_TERRACOTTA_URN.get(),
+            TGBlocks.MAGENTA_TERRACOTTA_URN.get(),
+            TGBlocks.ORANGE_TERRACOTTA_URN.get(),
+            TGBlocks.PINK_TERRACOTTA_URN.get(),
+            TGBlocks.PURPLE_TERRACOTTA_URN.get(),
+            TGBlocks.RED_TERRACOTTA_URN.get(),
+            TGBlocks.WHITE_TERRACOTTA_URN.get(),
+            TGBlocks.YELLOW_TERRACOTTA_URN.get()
     ).build(null));
 
     public static final Supplier<BlockEntityType<SarcophagusBlockEntity>> SARCOPHAGUS_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("sarcophagus_block_entity", () -> BlockEntityType.Builder.create(SarcophagusBlockEntity::new,
@@ -67,11 +79,6 @@ public class TGBlockEntities {
     public static final Supplier<BlockEntityType<BrazierBlockEntity>> BRAZIER_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("brazier_block_entity", () -> BlockEntityType.Builder.create(BrazierBlockEntity::new,
             TGBlocks.SOUL_FIRE_BRAZIER.get(),
             TGBlocks.FIRE_BRAZIER.get()
-    ).build(null));
-
-    public static final Supplier<BlockEntityType<SkeletalRemainsBlockEntity>> SKELETAL_REMAINS_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("skeletal_remains_block_entity", () -> BlockEntityType.Builder.create(SkeletalRemainsBlockEntity::new,
-            TGBlocks.SKELETAL_REMAINS.get(),
-            TGBlocks.WITHER_SKELETAL_REMAINS.get()
     ).build(null));
 
     public static final Supplier<BlockEntityType<LoreBookBlockEntity>> LORE_BOOK_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("lore_book_block_entity", () -> BlockEntityType.Builder.create(LoreBookBlockEntity::new,

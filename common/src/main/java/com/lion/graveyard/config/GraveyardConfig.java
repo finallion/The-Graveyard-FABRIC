@@ -2,6 +2,7 @@ package com.lion.graveyard.config;
 
 import com.lion.graveyard.config.annotations.Description;
 import com.lion.graveyard.config.entries.*;
+import com.lion.graveyard.entities.MobSpawnGate;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -27,15 +28,31 @@ public class GraveyardConfig implements Config {
              Configure if hordes of graveyard mobs can spawn and set their size and frequency.
              Configure if urns have a double chest inventory.
              Configure if the wither skeleton spawner in the large graveyard will be replaced by a skeleton spawner.
+
+             Structures only:
+             structuresOnly stops every graveyard mob from appearing by itself (natural spawns, structure spawns, spawners, hordes, structure guards).
+             Spawn eggs, commands and summons by the player still work.
+             mobSpawnEnabled turns off a single mob in the same way (set it to false).
+             The overrun village variants have their own switches (overrun_plains_village and so on). overrun_village switches all of them.
+
+             Chronicle and extras:
+             chronicleInventoryButton shows the chronicle button in the inventory.
+             chronicleToasts shows a toast for each found chronicle page.
+             corvidsStealItems lets magpies pick up items.
+             ghoulingCollectsItems lets a Ghouling with a coffin pick up items it walks over.
+             crowsEatCrops lets crows eat crops.
+             tormentedVillagerLight lets the tormented villager carry a light.
+             smolderingBlocksInVillages generates smoldering blocks in overrun villages.
              
             """)
 
-    public final Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();
-    public final Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
-    public final Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
-    public final Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
-    public final Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
-    public final Map<String, Boolean> booleanEntries = new HashMap<>();
+    public Map<String, StructureConfigEntry> structureConfigEntries = new HashMap<>();
+    public Map<String, ParticleConfigEntry> particleConfigEntries = new HashMap<>(1);
+    public Map<String, MobConfigEntry> mobConfigEntries = new HashMap<>();
+    public Map<String, HordeConfigEntry> hordeConfigEntries = new HashMap<>();
+    public Map<String, CorruptedChampionEntry> corruptedChampionConfigEntries = new HashMap<>();
+    public Map<String, Boolean> booleanEntries = new HashMap<>();
+    public Map<String, Boolean> mobSpawnEnabled = new HashMap<>();
 
     @Override
     public String getName() {
@@ -54,7 +71,31 @@ public class GraveyardConfig implements Config {
 
     // generation booleans
     public boolean enabled(Identifier id) {
-        return getStructure(id).enabled;
+        String path = id.getPath();
+        if (!structureSwitch(path)) {
+            return false;
+        }
+        boolean overrunVariant = path.startsWith("overrun_") && path.endsWith("_village") && !path.equals("overrun_village");
+        return !overrunVariant || structureSwitch("overrun_village");
+    }
+
+    private boolean structureSwitch(String path) {
+        StructureConfigEntry entry = structureConfigEntries.get(path);
+        return entry == null || entry.enabled;
+    }
+
+    public boolean flag(String key, boolean fallback) {
+        Boolean value = booleanEntries.get(key);
+        return value == null ? fallback : value;
+    }
+
+    public boolean structuresOnly() {
+        return flag("structuresOnly", false);
+    }
+
+    public boolean mobMayAppear(String mobName) {
+        Boolean value = mobSpawnEnabled.get(mobName);
+        return value == null || value;
     }
     public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
@@ -102,10 +143,44 @@ public class GraveyardConfig implements Config {
 
     @Override
     public void save() {
+        fillDefaults();
+        Config.super.save();
+    }
+
+    @Override
+    public void fillDefaults() {
+        if (structureConfigEntries == null) structureConfigEntries = new HashMap<>();
+        if (particleConfigEntries == null) particleConfigEntries = new HashMap<>(1);
+        if (mobConfigEntries == null) mobConfigEntries = new HashMap<>();
+        if (hordeConfigEntries == null) hordeConfigEntries = new HashMap<>();
+        if (corruptedChampionConfigEntries == null) corruptedChampionConfigEntries = new HashMap<>();
+        if (booleanEntries == null) booleanEntries = new HashMap<>();
+        if (mobSpawnEnabled == null) mobSpawnEnabled = new HashMap<>();
+        structureConfigEntries.values().removeIf(Objects::isNull);
+        particleConfigEntries.values().removeIf(Objects::isNull);
+        mobConfigEntries.values().removeIf(Objects::isNull);
+        hordeConfigEntries.values().removeIf(Objects::isNull);
+        corruptedChampionConfigEntries.values().removeIf(Objects::isNull);
+        booleanEntries.values().removeIf(Objects::isNull);
+        mobSpawnEnabled.values().removeIf(Objects::isNull);
+
         booleanEntries.putIfAbsent("urnHasDoubleInventory", true);
         booleanEntries.putIfAbsent("disableWitherSkeletonSpawner", false);
         booleanEntries.putIfAbsent("enableBossMusic", true);
         booleanEntries.putIfAbsent("chroniclePagesInLoot", true);
+        booleanEntries.putIfAbsent("ashParticles", true);
+        booleanEntries.putIfAbsent("structuresOnly", false);
+        booleanEntries.putIfAbsent("chronicleInventoryButton", true);
+        booleanEntries.putIfAbsent("chronicleToasts", true);
+        booleanEntries.putIfAbsent("corvidsStealItems", true);
+        booleanEntries.putIfAbsent("ghoulingCollectsItems", true);
+        booleanEntries.putIfAbsent("crowsEatCrops", true);
+        booleanEntries.putIfAbsent("tormentedVillagerLight", true);
+        booleanEntries.putIfAbsent("smolderingBlocksInVillages", true);
+
+        for (String mob : MobSpawnGate.MANAGED_MOBS) {
+            mobSpawnEnabled.putIfAbsent(mob, true);
+        }
 
         particleConfigEntries.putIfAbsent("graveyard_fog_particle", ParticleConfigEntry.of(50));
 
@@ -128,6 +203,12 @@ public class GraveyardConfig implements Config {
         structureConfigEntries.putIfAbsent("lich_prison", StructureConfigEntry.of());
         structureConfigEntries.putIfAbsent("ruins", StructureConfigEntry.of());
         structureConfigEntries.putIfAbsent("dead_tree", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_village", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_plains_village", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_savanna_village", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_taiga_village", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_snowy_village", StructureConfigEntry.of());
+        structureConfigEntries.putIfAbsent("overrun_desert_village", StructureConfigEntry.of());
 
         mobConfigEntries.putIfAbsent("ghoul", MobConfigEntry.of(true, 25, 2, 5, true, false));
         mobConfigEntries.putIfAbsent("revenant", MobConfigEntry.of(true,25, 5, 8, true, false));
@@ -137,18 +218,27 @@ public class GraveyardConfig implements Config {
         mobConfigEntries.putIfAbsent("reaper", MobConfigEntry.of(true,5, 2, 3, true, false));
         mobConfigEntries.putIfAbsent("corrupted_vindicator", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("corrupted_pillager", MobConfigEntry.of(false,true, false));
+        mobConfigEntries.putIfAbsent("corrupted_evoker", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("wraith", MobConfigEntry.of(false,true, false));
         mobConfigEntries.putIfAbsent("raven", MobConfigEntry.of(true, 8, 2, 4, false, false));
         mobConfigEntries.putIfAbsent("magpie", MobConfigEntry.of(true, 8, 2, 3, false, false));
         mobConfigEntries.putIfAbsent("crow", MobConfigEntry.of(true, 10, 4, 9, false, false));
 
-        corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", CorruptedChampionEntry.of(
-              400.0F, 200.0F, 30.0D, 40.0D, 14.0D, 12.0D, 0.15D,
+        corruptedChampionConfigEntries.putIfAbsent("corrupted_champion", defaultChampion());
+
+        particleConfigEntries.replaceAll((key, entry) -> entry.sanitized());
+        hordeConfigEntries.replaceAll((key, entry) -> entry.sanitized());
+        mobConfigEntries.replaceAll((key, entry) -> entry.sanitized());
+        corruptedChampionConfigEntries.replaceAll((key, entry) -> entry.sanitized(defaultChampion()));
+    }
+
+    private static CorruptedChampionEntry defaultChampion() {
+        return CorruptedChampionEntry.of(
+                400.0F, 200.0F, 30.0D, 40.0D, 14.0D, 12.0D, 0.15D,
                 800, 400,  700, 150, 5,
                 30, 5, 6000, List.of("entity.minecraft.villager"), List.of("item.minecraft.debug_stick"),
                 true, true, true, 400, 600, 400, -15
-        ));
-        Config.super.save();
+        );
     }
 
 }

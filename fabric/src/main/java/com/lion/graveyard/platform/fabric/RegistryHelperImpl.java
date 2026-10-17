@@ -1,8 +1,6 @@
 package com.lion.graveyard.platform.fabric;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.mixin.TrunkPlacerTypeInvoker;
-import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -10,7 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -33,19 +30,15 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.world.gen.trunk.TrunkPlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class RegistryHelperImpl {
@@ -67,8 +60,19 @@ public class RegistryHelperImpl {
                         .icon(() -> new ItemStack(item)).build());
     }
 
+    public static void registerItemGroupWithIcon(RegistryKey<ItemGroup> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
+        Registry.register(Registries.ITEM_GROUP, registryKey,
+                FabricItemGroup.builder()
+                        .displayName(Text.literal(literalName))
+                        .icon(icon).build());
+    }
+
     public static void addToItemGroup(RegistryKey<ItemGroup> itemGroup, Item item) {
         ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> content.add(item.getDefaultStack()));
+    }
+
+    public static void addStacksToItemGroup(RegistryKey<ItemGroup> itemGroup, Supplier<List<ItemStack>> stacks) {
+        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> stacks.get().forEach(content::add));
     }
 
     public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends MobEntity>> type, int backgroundColor, int highlightColor, Item.Settings props) {
@@ -138,15 +142,6 @@ public class RegistryHelperImpl {
     public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
         var registry = RecipeSerializer.register(Graveyard.createStringID(name), serializer);
         return () -> registry;
-    }
-
-    public static Supplier<Feature<?>> registerFeature(String name, Feature<?> feature) {
-        var registry = Registry.register(Registries.FEATURE, new Identifier(Graveyard.MOD_ID, name), feature);
-        return () -> registry;
-    }
-
-    public static <T extends TrunkPlacer> Supplier<TrunkPlacerType<?>> registerTrunkPlacerType(String name, Codec<T> codec) {
-        return () -> TrunkPlacerTypeInvoker.callRegister(Graveyard.createStringID(name), codec);
     }
 
     public static LootConditionType registerLootCondition(String name, LootConditionType type) {

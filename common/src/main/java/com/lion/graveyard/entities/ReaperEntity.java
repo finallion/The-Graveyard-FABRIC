@@ -15,7 +15,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.raid.RaiderEntity;;
+import net.minecraft.entity.raid.RaiderEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,9 +29,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
@@ -50,7 +48,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     protected final byte ANIMATION_ATTACK = 4;
     protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);
 
-    protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);;
+    protected static final TrackedData<Byte> VEX_FLAGS = DataTracker.registerData(ReaperEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final int CHARGING_FLAG = 1;
     MobEntity owner;
     @Nullable

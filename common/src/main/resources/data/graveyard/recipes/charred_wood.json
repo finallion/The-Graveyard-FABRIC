@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "graveyard:charred_log"
+    }
+  },
+  "result": {
+    "item": "graveyard:charred_wood",
+    "count": 3
+  }
+}

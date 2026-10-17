@@ -4,8 +4,7 @@ dependencies {
 
 	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
 
-	// changing = true: the library is consumed from mavenLocal under a fixed version, so without
-	// this Gradle keeps the first copy it ever resolved and a republish never reaches the run.
+	// Gradle caches a fixed version; changing = true makes it check mavenLocal again.
 	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
 	}
@@ -25,4 +24,24 @@ loom {
 
 repositories {
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation platform("org.junit:junit-bom:5.10.2")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+	testImplementation "com.google.code.gson:gson:2.10.1"
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty "graveyard.rootDir", (findProperty("graveyardRoot") ?: rootProject.projectDir.absolutePath).toString()
+	testLogging {
+		events "failed", "skipped"
+		exceptionFormat "short"
+	}
 }

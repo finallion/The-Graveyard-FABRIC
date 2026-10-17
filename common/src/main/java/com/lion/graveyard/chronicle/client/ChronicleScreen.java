@@ -29,7 +29,8 @@ public class ChronicleScreen extends Screen {
     private static final int BOOK_WIDTH = 192;
     private static final int BOOK_HEIGHT = 192;
     private static final int TEXT_WIDTH = 114;
-    private static final int LINES_PER_PAGE = 14;
+    private static final int TEXT_TOP = 38;
+    private static final int LINES_PER_PAGE = 13;
     private static final int LIST_WIDTH = 120;
     private static final int ROW_HEIGHT = 11;
 
@@ -46,8 +47,15 @@ public class ChronicleScreen extends Screen {
     private PageTurnWidget previousButton;
 
     public ChronicleScreen(@Nullable Screen parent) {
+        this(parent, null);
+    }
+
+    public ChronicleScreen(@Nullable Screen parent, @Nullable String openPage) {
         super(Text.translatable("chronicle." + Graveyard.MOD_ID + ".title"));
         this.parent = parent;
+        if (openPage != null) {
+            this.selected = this.chapters.stream().filter(c -> c.id().equals(openPage)).findFirst().orElse(null);
+        }
     }
 
     @Override
@@ -82,8 +90,8 @@ public class ChronicleScreen extends Screen {
     private List<List<OrderedText>> paginate(ChronicleChapters.Chapter chapter) {
         List<OrderedText> lines = new ArrayList<>();
         for (String paragraph : chapter.pages()) {
+            if (!lines.isEmpty()) lines.add(OrderedText.EMPTY);
             lines.addAll(this.textRenderer.wrapLines(Text.literal(paragraph), TEXT_WIDTH));
-            lines.add(OrderedText.EMPTY);
         }
         List<List<OrderedText>> pages = new ArrayList<>();
         for (int i = 0; i < lines.size(); i += LINES_PER_PAGE) {
@@ -127,7 +135,7 @@ public class ChronicleScreen extends Screen {
                 }
             }
             if (rows++ < this.listScroll) continue;
-            if (y > this.height - ROW_HEIGHT) break;
+            if (y > this.progressY() - ROW_HEIGHT) break;
             boolean found = ClientChronicle.isFound(chapter.id());
             boolean hovered = found && mouseX >= this.listX && mouseX < this.listX + LIST_WIDTH && mouseY >= y && mouseY < y + ROW_HEIGHT;
             Text label = found ? Text.translatable(chapter.titleKey()) : Text.literal("? ? ?");
@@ -137,7 +145,11 @@ public class ChronicleScreen extends Screen {
         }
         int foundCount = (int) this.chapters.stream().filter(c -> ClientChronicle.isFound(c.id())).count();
         context.drawText(font, Text.translatable("chronicle." + Graveyard.MOD_ID + ".progress", foundCount, this.chapters.size()).formatted(Formatting.DARK_GRAY),
-                this.listX, this.bookY + BOOK_HEIGHT - 4 + 6, 0xFFFFFF, true);
+                this.listX, this.progressY(), 0xFFFFFF, true);
+    }
+
+    private int progressY() {
+        return Math.min(this.height - ROW_HEIGHT, this.bookY + BOOK_HEIGHT + 2);
     }
 
     private void renderBook(DrawContext context) {
@@ -152,14 +164,11 @@ public class ChronicleScreen extends Screen {
             return;
         }
         Text header = Text.translatable(this.selected.titleKey()).formatted(Formatting.BOLD);
-        context.drawText(this.textRenderer, header, this.bookX + 36, this.bookY + 16, 0x202020, false);
-        if (!this.selected.source().isEmpty()) {
-            context.drawText(this.textRenderer, Text.literal(this.selected.source()).formatted(Formatting.ITALIC), this.bookX + 36, this.bookY + 26, 0x606060, false);
-        }
+        context.drawText(this.textRenderer, header, this.bookX + 36, this.bookY + 14, 0x202020, false);
         Text counter = Text.translatable("book.pageIndicator", this.pageIndex + 1, this.bookPages.size());
-        context.drawText(this.textRenderer, counter, this.bookX + 36 + TEXT_WIDTH - this.textRenderer.getWidth(counter), this.bookY + 16, 0x606060, false);
+        context.drawText(this.textRenderer, counter, this.bookX + 36 + TEXT_WIDTH - this.textRenderer.getWidth(counter), this.bookY + 25, 0x606060, false);
 
-        int y = this.bookY + 40;
+        int y = this.bookY + TEXT_TOP;
         for (OrderedText line : this.bookPages.get(this.pageIndex)) {
             context.drawText(this.textRenderer, line, this.bookX + 36, y, 0x202020, false);
             y += 9;
@@ -178,6 +187,7 @@ public class ChronicleScreen extends Screen {
                     if (rows++ >= this.listScroll) y += ROW_HEIGHT;
                 }
                 if (rows++ < this.listScroll) continue;
+                if (y > this.progressY() - ROW_HEIGHT) break;
                 if (mouseY >= y && mouseY < y + ROW_HEIGHT) {
                     if (ClientChronicle.isFound(chapter.id())) this.select(chapter);
                     return true;

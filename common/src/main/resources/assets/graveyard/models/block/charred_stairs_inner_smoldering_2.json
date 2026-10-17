@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "graveyard:block/charred_planks_smoldering_2",
+    "side": "graveyard:block/charred_planks_smoldering_2",
+    "top": "graveyard:block/charred_planks_smoldering_2"
+  }
+}

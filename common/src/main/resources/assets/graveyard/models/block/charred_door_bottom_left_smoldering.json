@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "textures": {
+    "bottom": "graveyard:block/charred_door_bottom_smoldering",
+    "top": "graveyard:block/charred_door_top_smoldering"
+  },
+  "render_type": "minecraft:cutout"
+}

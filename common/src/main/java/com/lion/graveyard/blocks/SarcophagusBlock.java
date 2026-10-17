@@ -5,7 +5,6 @@ import com.lion.graveyard.blockentities.enums.SarcophagusPart;
 import com.lion.graveyard.entities.WraithEntity;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGBlockEntities;
-import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import net.minecraft.block.*;
@@ -39,20 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-
-/*
-THINGS TO CHECK IF THE MODEL CASTS UNWANTED SHADOWS:
-- Is the hitbox smaller than a block? (!!!)
-- It "ambientocclusion:false" set in the model json (see beacon model)?
-- "shade:false" under parts in the model json might help (see torch model).
-- Is the model renderer set up correctly? Especially the light value (look at chest/bed)?
-- Make your block cast light.
-- Methods: translucent and ambient occlusion from abstract block class might help.
-- Set model sizes from 16 to 15.9 where shadow occurs.
-- renderFlat in model renderer might help.
- */
 
 public class SarcophagusBlock extends BlockWithEntity implements Waterloggable, BlockEntityProvider {
     public static final BooleanProperty WATERLOGGED;

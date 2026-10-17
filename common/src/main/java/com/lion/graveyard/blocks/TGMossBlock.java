@@ -13,6 +13,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class TGMossBlock extends MossBlock {
+    private static final int FOG_SHEET_RARITY = 2;
+
 
     public TGMossBlock(Settings settings) {
         super(settings);
@@ -23,15 +25,14 @@ public class TGMossBlock extends MossBlock {
         return new ItemStack(Blocks.MOSS_BLOCK);
     }
 
-    // graveyard fog
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         super.randomDisplayTick(state, world, pos, random);
 
-        // can spawn
         if (Graveyard.getConfig().fogSpawn(new Identifier(Graveyard.MOD_ID, "graveyard_fog_particle"))) {
-            // how much will spawn
-            if (random.nextInt(Graveyard.getConfig().getParticle(new Identifier(Graveyard.MOD_ID, "graveyard_fog_particle")).spawnChance) == 0) {
-                world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, (double) pos.getX() + random.nextDouble(), (double) pos.getY() + random.nextDouble(), (double) pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            if (random.nextInt(Graveyard.getConfig().getParticle(new Identifier(Graveyard.MOD_ID, "graveyard_fog_particle")).spawnChance * FOG_SHEET_RARITY) == 0) {
+                if (!world.getBlockState(pos.up()).isSolidBlock(world, pos.up())) {
+                    world.addParticle(TGParticles.GRAVEYARD_FOG_PARTICLE, pos.getX() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 1.5D, pos.getY() + 1.0D + 0.05D + random.nextDouble() * 0.3D, pos.getZ() + 0.5D + (random.nextDouble() * 2.0D - 1.0D) * 1.5D, 0.0D, 0.0D, 0.0D);
+                }
             }
 
             if (random.nextInt(250) == 0) {

@@ -7,11 +7,10 @@ public class TGRenderTypes {
     private static final RenderLayer CUTOUT_MIPPED = RenderLayer.getCutoutMipped();
 
     public static void postInit() {
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.GALLOWS.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.GIBBET.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.CHAINED_SKELETON.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.MOUNTED_SKULL.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.RIB_RELIEF.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGOverrunVillage.CHARRED_DOOR.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGOverrunVillage.CHARRED_TRAPDOOR.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGOverrunVillage.SCORCHED_DOOR.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGOverrunVillage.SCORCHED_TRAPDOOR.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SKULL_WITH_RIB_CAGE.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.WITHER_SKULL_WITH_RIB_CAGE.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.LEANING_SKELETON.get());
@@ -37,9 +36,25 @@ public class TGRenderTypes {
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.DARK_IRON_TRAPDOOR.get());
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.OSSUARY.get());
 
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.TURF.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SCARLET_HEART.get());
-        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.GREAT_SCARLET_HEART.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SEATED_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SEATED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SKELETON_SKULL_WITH_AXE.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.WITHER_SKELETON_SKULL_WITH_AXE.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SWORD_IN_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SWORD_IN_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SMALL_SKELETON_REMAINS.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SMALL_WITHER_SKELETON_REMAINS.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.HANGED_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.HANGED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.LYING_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.LYING_FULL_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.BACKSTABBED_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.BACKSTABBED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SHOT_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SHOT_FULL_WITHER_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SIDEWAYS_FULL_SKELETON.get());
+        RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGBlocks.SIDEWAYS_FULL_WITHER_SKELETON.get());
+
 
     }
 

@@ -7,9 +7,11 @@ import com.lion.graveyard.entities.projectiles.SkullEntity;
 import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.sounds.BossMusicPlayer;
 import com.lion.graveyard.util.MathUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.*;
@@ -25,6 +27,9 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,9 +48,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
@@ -62,7 +65,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private static final EntityAttributeModifier ATTACKING_SPEED_BOOST;
     private static final EntityAttributeModifier CRAWL_SPEED_BOOST;
     private static final EntityAttributeModifier DMG_BOOST;
-    // animation
     private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.PLAY_ONCE);
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
@@ -78,6 +80,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private final RawAnimation CONJURE_FANG_ANIMATION = RawAnimation.begin().then("corpse_spell", Animation.LoopType.LOOP);
     private final RawAnimation STUNNED_ANIMATION = RawAnimation.begin().then("stunned", Animation.LoopType.LOOP);
     private final RawAnimation CRAWL_IDLE_ANIMATION = RawAnimation.begin().then("crawl_idle", Animation.LoopType.LOOP);
+    private final RawAnimation PHASE_2_CHARGE_ANIMATION = RawAnimation.begin().then("phase_two_charge", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation CRAWL_ATTACK_ANIMATION = RawAnimation.begin().then("crawl_attack", Animation.LoopType.PLAY_ONCE);
+    private final RawAnimation CRAWL_POUNCE_ANIMATION = RawAnimation.begin().then("crawl_pounce", Animation.LoopType.PLAY_ONCE);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -93,27 +98,27 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     protected static final int ANIMATION_CONJURE_FANG = 12;
     protected static final int ANIMATION_STUNNED = 13;
     protected static final int ANIMATION_CRAWL_IDLE = 14;
-    // data tracker
-    private static final TrackedData<Integer> INVUL_TIMER; // spawn invul timer
-    private static final TrackedData<Integer> PHASE_INVUL_TIMER; // other invul timer
+    protected static final int ANIMATION_PHASE_2_CHARGE = 15;
+    protected static final int ANIMATION_CRAWL_POUNCE = 16;
+    protected static final int ANIMATION_CRAWL_ATTACK = 17;
+    private static final TrackedData<Integer> INVUL_TIMER;
+    private static final TrackedData<Integer> PHASE_INVUL_TIMER;
     private static final TrackedData<Integer> ATTACK_ANIM_TIMER;
     private static final TrackedData<Integer> FIGHT_DURATION_TIMER;
-    private static final TrackedData<Integer> PHASE_TWO_START_ANIM_TIMER; // main phase one to two
-    private static final TrackedData<Integer> PHASE_THREE_START_ANIM_TIMER; // main phase two to three
-    private static final TrackedData<Integer> PHASE; // divides fight into three main phases and two transitions, animations are named after the main phase
+    private static final TrackedData<Integer> PHASE_TWO_START_ANIM_TIMER;
+    private static final TrackedData<Integer> PHASE_THREE_START_ANIM_TIMER;
+    private static final TrackedData<Integer> PHASE;
     private static final TrackedData<Integer> ANIMATION;
     private static final TrackedData<Integer> HUNT_TIMER;
     private static final TrackedData<Boolean> CAN_HUNT_START;
     private static final TrackedData<Boolean> CAN_MOVE;
     private static final TrackedData<Integer> MUSIC_DELAY;
 
-    // spell timer data tracker
     private static final TrackedData<Integer> CONJURE_FANG_TIMER;
     private static final TrackedData<Integer> HEAL_DURATION_TIMER;
     private static final TrackedData<Integer> CORPSE_SPELL_DURATION_TIMER;
     private static final TrackedData<Integer> LEVITATION_DURATION_TIMER;
 
-    // constants
     private static final byte MUSIC_PLAY_ID = 67;
     private static final byte MUSIC_STOP_ID = 68;
     private static final int SPAWN_INVUL_TIMER = 490;
@@ -121,7 +126,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private final float HEALTH_PHASE_01 = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").healthInCastingPhase;
     private final float HEALTH_PHASE_02 = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").healthInHuntingPhase;
     public final int ATTACK_ANIMATION_DURATION = 40;
-    private final int START_PHASE_TWO_ANIMATION_DURATION = 121;
+    private final int START_PHASE_TWO_ANIMATION_DURATION = 120;
     private final int START_PHASE_THREE_ANIMATION_DURATION = 220;
     private final int START_PHASE_TWO_PARTICLES = 80;
     private final int CORPSE_SPELL_DURATION = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").durationFallingCorpseSpell;
@@ -130,12 +135,20 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     private final int HEALING_DURATION = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").durationHealingSpell;
     private final int LEVITATION_DURATION = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").durationLevitationSpell;
     protected static final EntityDimensions CRAWL_DIMENSIONS;
-    // variables
-    private int huntCooldownTicker = 100; // initial cooldown from spawn time until first spell, will be set in goal
+    private int huntCooldownTicker = 100;
     private BlockPos homePos;
     private Direction spawnDirection;
-    private int phaseThreeAttackSoundAge = 120;
+    private int phaseThreeAttackSoundAge;
+    private int lastHurtSoundAge = -100;
+    private int phaseTwoStrikeTicks;
+    private int crawlStrikeTicks;
+    private float pounceYaw;
     private int idleSoundAge = 0;
+    private int chargeTicks;
+    private int chargeCooldown = 100;
+    private int pounceTicks;
+    private int pounceCooldown = 100;
+    private boolean pounceAirborne;
 
     public LichEntity(EntityType<? extends HostileEntity> entityType, World world) {
         super(entityType, world);
@@ -150,25 +163,23 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 .when(() -> getAnimationState() == ANIMATION_SPAWN && getInvulnerableTimer() >= 0, SPAWN_ANIMATION)
                 .when(() -> isDead() || getHealth() < 0.01F, DEATH_ANIMATION)
 
-                /* PHASE 1 */
                 .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_CORPSE_SPELL, CORPSE_SPELL_ANIMATION)
                 .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_SHOOT_SKULL, SHOOT_SKULL_ANIMATION)
                 .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_SUMMON, SUMMON_ANIMATION)
                 .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_CONJURE_FANG, CONJURE_FANG_ANIMATION)
                 .when(() -> getPhase() == 1 && getAttackAnimTimer() > 0 && canMeeleAttack(), ATTACK_ANIMATION)
 
-                /* PHASE 2 */
                 .when(() -> getPhase() == 2 && getAnimationState() == ANIMATION_START_PHASE_2, START_PHASE_2_ANIMATION)
 
-                /* PHASE 3 */
                 .when(() -> getPhase() == 3 && getAnimationState() == ANIMATION_STUNNED, STUNNED_ANIMATION)
+                .when(() -> getPhase() == 3 && getAnimationState() == ANIMATION_PHASE_2_CHARGE, PHASE_2_CHARGE_ANIMATION)
                 .when(() -> getPhase() == 3 && getAnimationState() == ANIMATION_PHASE_2_ATTACK, PHASE_2_ATTACK_ANIMATION)
                 .when(() -> getPhase() == 3, PHASE_2_IDLE_ANIMATION)
 
-                /* PHASE 4 */
                 .when(() -> getPhase() == 4 && getAnimationState() == ANIMATION_START_PHASE_3, START_PHASE_3_ANIMATION)
 
-                /* PHASE 5 */
+                .when(() -> getPhase() == 5 && getAnimationState() == ANIMATION_CRAWL_POUNCE, CRAWL_POUNCE_ANIMATION)
+                .when(() -> getPhase() == 5 && getAnimationState() == ANIMATION_CRAWL_ATTACK, CRAWL_ATTACK_ANIMATION)
                 .when(state -> getPhase() == 5 && AnimationTable.isMoving(state), PHASE_3_ATTACK_ANIMATION)
                 .when(() -> getPhase() == 5, CRAWL_IDLE_ANIMATION)
 
@@ -208,7 +219,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (!getEntityWorld().isClient && getBossMusic() != null) {
+        if (!getEntityWorld().isClient && getBossMusic() != null && AnimationPreview.forcedAnimation(this) == null) {
             if (canPlayMusic() && deathTime == 0) {
                 this.getEntityWorld().sendEntityStatus(this, MUSIC_PLAY_ID);
             } else {
@@ -226,7 +237,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
 
-    /* PARTICLE HANDLING */
     @Override
     public void tickMovement() {
         if (homePos == null) {
@@ -256,7 +266,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             MathUtil.createParticleCircle(this.getWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 5, ParticleTypes.SOUL_FIRE_FLAME, this.getRandom(), 1.0F);
         }
 
-        Vec3d rotation = this.getRotationVec(1.0F);
         if (this.deathTime > 0 && this.deathTime <= 100 && random.nextInt(4) == 0) {
             MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() - 1, this.getZ() - 0.75D, random.nextInt(300) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, false);
         }
@@ -269,14 +278,18 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             MathUtil.createParticleFlare(this.getWorld(), this.getX() - 0.75D, this.getY() + 2.5D, this.getZ() - 0.75D, random.nextInt(100) + 150, ParticleTypes.SOUL, ParticleTypes.SOUL_FIRE_FLAME, random, true);
         }
 
+        if (getWorld().isClient()) {
+            spawnTransitionAndDeathParticles();
+        }
+
         if (getHealTimer() > 0 && getPhase() == 1) {
-            MathUtil.createParticleSpiral(this.getWorld(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, 0.0D, 0.0D, 0.0D, 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+            spawnHealHelix(false);
         }
 
         if (getHealTimer() == 1 && getPhase() == 1) {
             getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_WARDEN_SONIC_BOOM, SoundCategory.HOSTILE, 3.0F, -1.0F);
-            for (int i = 0; i < 20; i++) {
-                MathUtil.createParticleSpiral(this.getWorld(), this.getX() + rotation.x * 3.5, this.getY() - 0.5D, this.getZ() + rotation.z * 3.5, random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), random.nextDouble() - random.nextDouble(), 350, ParticleTypes.SOUL_FIRE_FLAME, random);
+            for (int i = 0; i < 4; i++) {
+                spawnHealHelix(true);
             }
         }
 
@@ -312,6 +325,88 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         super.tickMovement();
     }
 
+    private void spawnHealHelix(boolean burst) {
+        double phase = 2.0D * Math.PI * (age % HELIX_PERIOD_TICKS) / HELIX_PERIOD_TICKS;
+        for (int strand = 0; strand < 2; strand++) {
+            for (int i = 0; i < HELIX_POINTS; i++) {
+                if (!burst && age % 2 != 0 && i % 2 != 0) {
+                    continue;
+                }
+                double progress = (double) i / HELIX_POINTS;
+                double angle = 2.0D * Math.PI * HELIX_TURNS * progress + phase + strand * Math.PI;
+                double cos = Math.cos(angle);
+                double sin = Math.sin(angle);
+                double x = getX() + HELIX_RADIUS * cos;
+                double y = getY() + 0.1D + progress * HELIX_HEIGHT;
+                double z = getZ() + HELIX_RADIUS * sin;
+                getWorld().addParticle(ParticleTypes.SOUL_FIRE_FLAME, x, y, z,
+                        burst ? cos * 0.35D : 0.0D, burst ? 0.12D : 0.01D, burst ? sin * 0.35D : 0.0D);
+                if (!burst && i % 5 == 0) {
+                    getWorld().addParticle(ParticleTypes.SOUL, x, y, z, 0.0D, 0.04D, 0.0D);
+                }
+            }
+        }
+        if (burst) {
+            MathUtil.createParticleCircle(getWorld(), getX(), getY() + 0.2D, getZ(), 0.0D, 0.05D, 0.0D, 3.0F, ParticleTypes.SOUL_FIRE_FLAME, random, 0.5F);
+        }
+    }
+
+    private void spawnTransitionAndDeathParticles() {
+        int phaseTwoTimer = getStartPhaseTwoAnimTimer();
+        if (getPhase() == 2 && phaseTwoTimer > 0 && phaseTwoTimer < START_PHASE_TWO_ANIMATION_DURATION) {
+            for (int i = 0; i < 8; i++) {
+                double angle = age * 0.4D + i * Math.PI / 4.0D;
+                double height = (age * 0.15D + i * 0.5D) % 4.0D;
+                getWorld().addParticle(ParticleTypes.SOUL_FIRE_FLAME, getX() + 1.8D * Math.cos(angle), getY() + height, getZ() + 1.8D * Math.sin(angle), 0.0D, 0.05D, 0.0D);
+            }
+            if (phaseTwoTimer == 2) {
+                spawnOutwardBurst(ParticleTypes.SOUL, 60, 0.3D);
+            }
+        }
+
+        int phaseThreeTimer = getStartPhaseThreeAnimTimer();
+        if (getPhase() == 4 && phaseThreeTimer > 0 && phaseThreeTimer < START_PHASE_THREE_ANIMATION_DURATION) {
+            for (int i = 0; i < 4; i++) {
+                spawnInHitbox(ParticleTypes.ASH, 0.0D);
+            }
+            for (int i = 0; i < 2; i++) {
+                spawnInHitbox(ParticleTypes.SOUL, 0.0D);
+            }
+            if (phaseThreeTimer == 2) {
+                spawnOutwardBurst(ParticleTypes.SOUL_FIRE_FLAME, 60, 0.35D);
+                spawnOutwardBurst(ParticleTypes.LARGE_SMOKE, 30, 0.35D);
+            }
+        }
+
+        if (deathTime > 0 && deathTime <= 140) {
+            for (int i = 0; i < 6; i++) {
+                spawnInHitbox(ParticleTypes.SOUL, 0.05D + random.nextDouble() * 0.1D);
+            }
+            for (int i = 0; i < 4; i++) {
+                spawnInHitbox(ParticleTypes.SOUL_FIRE_FLAME, 0.05D + random.nextDouble() * 0.1D);
+            }
+            if (deathTime % 10 == 0) {
+                MathUtil.createParticleCircle(getWorld(), getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D, 2.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, random, 0.5F);
+            }
+        }
+        if (deathTime == 150) {
+            spawnOutwardBurst(ParticleTypes.SOUL_FIRE_FLAME, 80, 0.4D);
+            spawnOutwardBurst(ParticleTypes.LARGE_SMOKE, 40, 0.4D);
+        }
+    }
+
+    private void spawnInHitbox(ParticleEffect type, double velocityY) {
+        getWorld().addParticle(type, getX() + (random.nextDouble() - 0.5D) * 0.9D, getY() + random.nextDouble() * 4.0D, getZ() + (random.nextDouble() - 0.5D) * 0.9D, 0.0D, velocityY, 0.0D);
+    }
+
+    private void spawnOutwardBurst(ParticleEffect type, int count, double maxSpeed) {
+        for (int i = 0; i < count; i++) {
+            double angle = random.nextDouble() * 2.0D * Math.PI;
+            double speed = maxSpeed * random.nextDouble();
+            getWorld().addParticle(type, getX(), getY() + 2.0D, getZ(), Math.cos(angle) * speed, (random.nextDouble() - 0.3D) * 0.2D, Math.sin(angle) * speed);
+        }
+    }
+
     @Override
     public void baseTick() {
         if (homePos == null) {
@@ -332,7 +427,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         }
         idleSoundAge--;
 
-        /* SUMMON MOB ATTACK */
         int duration = getFightDurationTimer();
         setFightDurationTimer(duration + 1);
         if (duration > 400) {
@@ -343,28 +437,23 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             }
         }
 
-        /* PHASE 5 FIGHT LOGIC */
         if (getPhase() == 5) {
-            if (phaseThreeAttackSoundAge == 120) {
+            if (phaseThreeAttackSoundAge <= 0) {
                 playStartPhaseThreeAttackSound();
-            }
-
-            if (phaseThreeAttackSoundAge == 20) {
-                phaseThreeAttackSoundAge = 120;
+                phaseThreeAttackSoundAge = 160 + random.nextInt(141);
             } else {
                 phaseThreeAttackSoundAge--;
             }
 
             EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
             setCanMove(true);
-            setAnimationState(ANIMATION_PHASE_3_ATTACK);
+            tickCrawlStrike();
             if (!entityAttributeInstance.hasModifier(CRAWL_SPEED_BOOST)) {
                 entityAttributeInstance.addTemporaryModifier(CRAWL_SPEED_BOOST);
             }
+            tickPounce();
         }
-        /* END PHASE 5 FIGHT LOGIC */
 
-        /* PHASE 3 FIGHT LOGIC */
         if (getPhase() == 3) {
             EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
             EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
@@ -407,7 +496,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 if (getHuntTimer() == 400) {
                     playHuntSound();
                 }
-                setAnimationState(ANIMATION_PHASE_2_ATTACK);
+                tickPhaseTwoStrike();
+                tickCharge();
 
                 if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
                     entityAttributeInstance.addTemporaryModifier(ATTACKING_SPEED_BOOST);
@@ -418,11 +508,11 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 }
             }
 
-            // if the hunt runs out, set cooldown
             if (getHuntTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
                 this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                stopRush();
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
-                setAnimationState(ANIMATION_STUNNED);
+                enterStunned();
                 setHuntStart(false);
                 setCanMove(false);
                 entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
@@ -434,14 +524,12 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 this.setHuntTimer(timer);
             }
         }
-        /* END PHASE 3 FIGHT LOGIC */
 
-        /* TRANSITION MAIN PHASE ONE to TWO, == PHASE TWO */
         if (getPhase() == 2) {
             int phaseTwoTimer = getStartPhaseTwoAnimTimer();
             if (getPhaseInvulnerableTimer() == 0) {
                 this.teleport(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
-                setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION); // invul
+                setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION);
             }
             setAnimationState(ANIMATION_START_PHASE_2);
             if (phaseTwoTimer > 0) {
@@ -451,22 +539,19 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 setStartPhaseTwoAnimTimer(phaseTwoTimer - 1);
             }
 
-            // if the transition animation phase has played advance phase
             if (phaseTwoTimer == 1) {
                 setAnimationState(ANIMATION_PHASE_2_IDLE);
                 setPhase(getPhase() + 1);
             }
         }
-        /* END TRANSITION MAIN PHASE ONE to TWO  */
 
-        /* TRANSITION MAIN PHASE TWO to THREE, == PHASE FOUR */
         if (getPhase() == 4) {
-            // config adaption
             if (!Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isInvulnerableDuringSpells && canHuntStart()) {
                 EntityAttributeInstance entityAttributeInstance = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
                 EntityAttributeInstance entityAttributeDmgInstance = this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
 
                 this.teleport(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
+                stopRush();
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
                 setHuntStart(false);
@@ -477,23 +562,25 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
             int phaseThreeTimer = getStartPhaseThreeAnimTimer();
             if (getPhaseInvulnerableTimer() == 0) {
-                setPhaseInvulTimer(START_PHASE_THREE_ANIMATION_DURATION); // invul
+                setPhaseInvulTimer(START_PHASE_THREE_ANIMATION_DURATION);
             }
             setAnimationState(ANIMATION_START_PHASE_3);
             if (phaseThreeTimer > 0) {
                 if (phaseThreeTimer == START_PHASE_THREE_ANIMATION_DURATION) {
                     playStartPhaseThreeSound();
                 }
+                int elapsed = START_PHASE_THREE_ANIMATION_DURATION - phaseThreeTimer;
+                if (isBoneBreakTick(elapsed)) {
+                    ((ServerWorld) getWorld()).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, Blocks.BONE_BLOCK.getDefaultState()), getX(), getY() + 2.5D, getZ(), 25, 0.5D, 1.0D, 0.5D, 0.15D);
+                }
                 setStartPhaseThreeAnimTimer(phaseThreeTimer - 1);
             }
 
-            // if the transition animation phase has played advance phase
             if (phaseThreeTimer == 1) {
                 setAnimationState(ANIMATION_PHASE_3_ATTACK);
                 setPhase(getPhase() + 1);
             }
         }
-        /* END TRANSITION MAIN PHASE TWO TO THREE */
 
         if (this.getPhaseInvulnerableTimer() > 0) {
             int timer = getPhaseInvulnerableTimer() - 1;
@@ -516,7 +603,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             }
         }
 
-        /* SPELL TIMER */
         setHealTimer(getHealTimer() - 1);
         setLevitationDurationTimer(getLevitationDurationTimer() - 1);
         setConjureFangTimer(getConjureFangTimer() - 1);
@@ -539,7 +625,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.bossBar.setPercent(1.0F - (float) i / timer);
             this.setInvulTimer(i);
         } else {
-            // ATTACK TIMER
             if (this.getAttackAnimTimer() == ATTACK_ANIMATION_DURATION) {
                 setAnimationState(ANIMATION_MELEE);
             }
@@ -553,6 +638,182 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
             this.bossBar.setPercent(this.getHealth() / this.getMaxHealthPerPhase());
         }
+    }
+
+    private static final int HELIX_PERIOD_TICKS = 60;
+    private static final int HELIX_POINTS = 40;
+    private static final double HELIX_TURNS = 3.0D;
+    private static final double HELIX_RADIUS = 2.4D;
+    private static final double HELIX_HEIGHT = 6.0D;
+    private static final int CRAWL_STRIKE_TICKS = 23;
+    private static final int CRAWL_STRIKE_HIT_TICK = 13;
+    private static final int PHASE_TWO_STRIKE_TICKS = 40;
+    private static final int PHASE_TWO_STRIKE_HIT_TICK = 19;
+    private static final double POUNCE_AIR_FACTOR = 3.93D;
+    private static final int CHARGE_TICKS = 48;
+    private static final int POUNCE_TICKS = 48;
+    // The controller blends for five ticks. The leap waits for the dive pose.
+    private static final int POUNCE_LEAP_TICK = 15;
+
+    /// Elapsed ticks of the bone break keyframes. Keyframes start six ticks after the state change.
+    private static boolean isBoneBreakTick(int elapsed) {
+        return elapsed == 34 || elapsed == 44 || elapsed == 53 || elapsed == 70 || elapsed == 132 || elapsed == 144;
+    }
+
+    private void enterStunned() {
+        if (getAnimationState() != ANIMATION_STUNNED) {
+            getWorld().playSound(null, getX(), getY(), getZ(), TGSounds.LICH_STUNNED.get(), SoundCategory.HOSTILE, 4.0F, 0.5F);
+        }
+        setAnimationState(ANIMATION_STUNNED);
+    }
+
+    private void tickCharge() {
+        LivingEntity target = getTarget();
+        if (chargeTicks == 0) {
+            chargeCooldown = Math.max(chargeCooldown - 1, 0);
+            if (target == null || !target.isAlive() || chargeCooldown > 0 || !getVisibilityCache().canSee(target)) {
+                return;
+            }
+            double distance = distanceTo(target);
+            if (distance < 6.0D || distance > 18.0D) {
+                return;
+            }
+            chargeTicks = CHARGE_TICKS;
+            phaseTwoStrikeTicks = 0;
+        }
+        if (target == null || !target.isAlive()) {
+            endCharge();
+            return;
+        }
+        chargeTicks--;
+        setAnimationState(ANIMATION_PHASE_2_CHARGE);
+        Vec3d direction = new Vec3d(target.getX() - getX(), 0.0D, target.getZ() - getZ()).normalize();
+        setVelocity(direction.x * 0.6D, getVelocity().y, direction.z * 0.6D);
+        getLookControl().lookAt(target, 60.0F, 60.0F);
+        if (getBoundingBox().expand(0.6D).intersects(target.getBoundingBox())) {
+            tryAttack(target);
+            endCharge();
+        } else if (chargeTicks == 0) {
+            endCharge();
+        }
+    }
+
+    public boolean startCrawlStrike() {
+        if (crawlStrikeTicks > 0 || pounceTicks > 0) {
+            return false;
+        }
+        crawlStrikeTicks = CRAWL_STRIKE_TICKS;
+        return true;
+    }
+
+    private void tickCrawlStrike() {
+        if (crawlStrikeTicks <= 0) {
+            setAnimationState(ANIMATION_PHASE_3_ATTACK);
+            return;
+        }
+        setAnimationState(ANIMATION_CRAWL_ATTACK);
+        if (CRAWL_STRIKE_TICKS - crawlStrikeTicks == CRAWL_STRIKE_HIT_TICK) {
+            LivingEntity target = getTarget();
+            double reach = getWidth() * 2.0D + 1.0D;
+            if (target != null && target.isAlive() && squaredDistanceTo(target) <= reach * reach) {
+                tryAttack(target);
+            }
+        }
+        crawlStrikeTicks--;
+    }
+
+    public boolean startPhaseTwoStrike() {
+        if (phaseTwoStrikeTicks > 0) {
+            return false;
+        }
+        phaseTwoStrikeTicks = PHASE_TWO_STRIKE_TICKS;
+        return true;
+    }
+
+    private void tickPhaseTwoStrike() {
+        if (phaseTwoStrikeTicks <= 0) {
+            setAnimationState(ANIMATION_PHASE_2_IDLE);
+            return;
+        }
+        setAnimationState(ANIMATION_PHASE_2_ATTACK);
+        if (PHASE_TWO_STRIKE_TICKS - phaseTwoStrikeTicks == PHASE_TWO_STRIKE_HIT_TICK) {
+            LivingEntity target = getTarget();
+            double reach = getWidth() * 3.0D + 1.0D;
+            if (target != null && target.isAlive() && squaredDistanceTo(target) <= reach * reach) {
+                tryAttack(target);
+            }
+        }
+        phaseTwoStrikeTicks--;
+    }
+
+    private void stopRush() {
+        chargeTicks = 0;
+        phaseTwoStrikeTicks = 0;
+        pounceTicks = 0;
+        setVelocity(0.0D, getVelocity().y, 0.0D);
+    }
+
+    private void endCharge() {
+        chargeTicks = 0;
+        chargeCooldown = 160 + random.nextInt(81);
+        setAnimationState(ANIMATION_PHASE_2_IDLE);
+    }
+
+    private void tickPounce() {
+        LivingEntity target = getTarget();
+        if (pounceTicks == 0) {
+            pounceCooldown = Math.max(pounceCooldown - 1, 0);
+            if (target == null || !target.isAlive() || pounceCooldown > 0 || !isOnGround() || !getVisibilityCache().canSee(target)) {
+                return;
+            }
+            double distance = distanceTo(target);
+            if (distance < 3.0D || distance > 9.0D) {
+                return;
+            }
+            pounceTicks = POUNCE_TICKS;
+            pounceAirborne = false;
+            pounceYaw = getYaw();
+            crawlStrikeTicks = 0;
+        }
+        pounceTicks--;
+        setAnimationState(ANIMATION_CRAWL_POUNCE);
+        int elapsed = POUNCE_TICKS - pounceTicks;
+        if (elapsed < POUNCE_LEAP_TICK && target != null) {
+            float targetYaw = (float) (MathHelper.atan2(target.getZ() - getZ(), target.getX() - getX()) * 57.2957763671875D) - 90.0F;
+            pounceYaw += MathHelper.clamp(MathHelper.wrapDegrees(targetYaw - pounceYaw), -30.0F, 30.0F);
+            setVelocity(0.0D, getVelocity().y, 0.0D);
+        }
+        if (elapsed == POUNCE_LEAP_TICK && target != null && isOnGround()) {
+            Vec3d direction = new Vec3d(target.getX() - getX(), 0.0D, target.getZ() - getZ());
+            double reach = Math.max(0.0D, direction.length() - (getWidth() + target.getWidth()) / 2.0D + 0.3D);
+            double speed = MathHelper.clamp(reach / POUNCE_AIR_FACTOR, 0.15D, 0.9D);
+            direction = direction.normalize();
+            setVelocity(direction.x * speed, 0.3D, direction.z * speed);
+            velocityDirty = true;
+            pounceAirborne = true;
+        } else if (pounceAirborne && elapsed > POUNCE_LEAP_TICK + 2 && isOnGround()) {
+            pounceAirborne = false;
+            if (target != null && target.isAlive() && getBoundingBox().expand(1.0D).intersects(target.getBoundingBox())) {
+                tryAttack(target);
+            }
+        }
+        if (pounceTicks == 0) {
+            pounceAirborne = false;
+            pounceCooldown = 120 + random.nextInt(61);
+        }
+        if (isPouncing()) {
+            getNavigation().stop();
+            getMoveControl().moveTo(getX(), getY(), getZ(), 0.0D);
+            setForwardSpeed(0.0F);
+            setSidewaysSpeed(0.0F);
+            setYaw(pounceYaw);
+            setBodyYaw(pounceYaw);
+            setHeadYaw(pounceYaw);
+        }
+    }
+
+    public boolean isPouncing() {
+        return pounceTicks > 0 && (POUNCE_TICKS - pounceTicks <= POUNCE_LEAP_TICK || pounceAirborne);
     }
 
     private float getMaxHealthPerPhase() {
@@ -569,7 +830,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         this.bossBar.setName(this.getDisplayName());
     }
 
-    // called by Vial of Blood item
     public void onSummoned(Direction direction, BlockPos altarPos) {
         this.setAnimationState(ANIMATION_SPAWN);
         applyInvulAndResetBossBar(SPAWN_INVUL_TIMER);
@@ -636,7 +896,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
     public void onStartedTrackingBy(ServerPlayerEntity player) {
         super.onStartedTrackingBy(player);
-        this.bossBar.addPlayer(player);
+        if (AnimationPreview.forcedAnimation(this) == null) {
+            this.bossBar.addPlayer(player);
+        }
     }
 
     public void onStoppedTrackingBy(ServerPlayerEntity player) {
@@ -652,7 +914,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
                 return false;
             } else {
                 if (amount > this.getHealth() && getPhase() < 5 && !source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isMultiphaseFight) {
-                    //amount = this.getHealth() - 1;
                     respawn();
                     return false;
                 }
@@ -733,7 +994,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     private boolean summonMob(boolean hard) {
-        if (this.getHuntTimer() <= 1) { // do not summon mobs when lich is hunting
+        if (this.getHuntTimer() <= 1) {
             Box box = (new Box(this.getBlockPos())).expand(35.0D);
             List<HostileGraveyardEntity> mobs = getWorld().getNonSpectatingEntities(HostileGraveyardEntity.class, box);
             if (mobs.size() >= Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").maxSummonedMobs) {
@@ -773,9 +1034,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         return true;
     }
 
-    ///////////////////////
-    /* GETTER AND SETTER */
-    ///////////////////////
     public boolean canHuntStart() {
         return this.dataTracker.get(CAN_HUNT_START);
     }
@@ -913,11 +1171,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         this.dataTracker.set(MUSIC_DELAY, time);
     }
 
-    /* END GETTER AND SETTER */
 
-    ///////////////////////
-    /* SOUNDS */
-    ///////////////////////
     private void playSpawnSound() {
         this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SPAWN.get(), SoundCategory.HOSTILE, 15.0F, 1.0F);
     }
@@ -943,7 +1197,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     private void playStartPhaseThreeAttackSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundCategory.HOSTILE, 7.0F, 0.85F + random.nextFloat() * 0.2F);
     }
 
     private void playDeathSound() {
@@ -951,7 +1205,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     public void playScareSound() {
-        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE.get(), SoundCategory.HOSTILE, 10.0F, 1.0F);
+        this.getEntityWorld().playSound(null, this.getBlockPos(), TGSounds.LICH_SCARE.get(), SoundCategory.HOSTILE, 10.0F, 0.9F + random.nextFloat() * 0.15F);
     }
 
     private void playHuntSound() {
@@ -972,6 +1226,15 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     @Override
+    protected void playHurtSound(DamageSource source) {
+        if (age - lastHurtSoundAge < 15) {
+            return;
+        }
+        lastHurtSoundAge = age;
+        playSound(getHurtSound(source), getSoundVolume(), 0.85F + random.nextFloat() * 0.25F);
+    }
+
+    @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return TGSounds.LICH_HURT.get();
     }
@@ -981,13 +1244,12 @@ public class LichEntity extends HostileEntity implements GeoEntity {
     }
 
     protected boolean canPlayMusic() {
-        return !isSilent() /*&& getTarget() instanceof Player*/;
+        return !isSilent();
     }
 
     public boolean canPlayerHearMusic(PlayerEntity player) {
-        return player != null /*&& canAttack(player)*/ && distanceTo(player) < 2500;
+        return player != null && distanceTo(player) < 2500;
     }
-    /* SOUNDS END */
 
     protected void initDataTracker() {
         super.initDataTracker();
@@ -1009,7 +1271,6 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         this.dataTracker.startTracking(CAN_HUNT_START, false);
     }
 
-    // on game stop
     public void writeCustomDataToNbt(NbtCompound nbt) {
         nbt.putInt("Invul", getInvulnerableTimer());
         nbt.putInt("PhaseInvul", getPhaseInvulnerableTimer());
@@ -1024,13 +1285,15 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         nbt.putFloat("Health", getHealth());
         nbt.putBoolean("CanMove", canMove());
         nbt.putBoolean("CanHunt", canHuntStart());
+        if (homePos != null) {
+            nbt.putLong("HomePos", homePos.asLong());
+        }
         super.writeCustomDataToNbt(nbt);
     }
 
 
-    // on game load
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        if (!nbt.contains("Invul")) { // if tag is empty, set to default phase 1
+        if (!nbt.contains("Invul")) {
             this.setInvulTimer(0);
             this.setPhaseInvulTimer(0);
             this.setPhase(1);
@@ -1058,6 +1321,10 @@ public class LichEntity extends HostileEntity implements GeoEntity {
             this.setFightDurationTimer(nbt.getInt("FightTimer"));
             this.setCanMove(nbt.getBoolean("CanMove"));
             this.setHuntStart(nbt.getBoolean("CanHunt"));
+        }
+
+        if (nbt.contains("HomePos", NbtElement.LONG_TYPE)) {
+            this.homePos = BlockPos.fromLong(nbt.getLong("HomePos"));
         }
 
         if (this.hasCustomName()) {
@@ -1124,6 +1391,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
             pos = this.lich.getBlockPos();
             list = getPlayersInRange(35.0D);
+            positions.clear();
 
             for (int i = -SQUARE_SIZE; i < SQUARE_SIZE; i++) {
                 for (int ii = -SQUARE_SIZE; ii < SQUARE_SIZE; ii++) {
@@ -1139,7 +1407,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public void stop() {
-            setAnimationState(ANIMATION_IDLE);
+            if (getAnimationState() == ANIMATION_CORPSE_SPELL) {
+                setAnimationState(ANIMATION_IDLE);
+            }
             super.stop();
         }
 
@@ -1212,7 +1482,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public void stop() {
-            setAnimationState(ANIMATION_IDLE);
+            if (getAnimationState() == ANIMATION_SHOOT_SKULL) {
+                setAnimationState(ANIMATION_IDLE);
+            }
             super.stop();
         }
 
@@ -1286,7 +1558,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public void stop() {
-            setAnimationState(ANIMATION_IDLE);
+            if (getAnimationState() == ANIMATION_SUMMON) {
+                setAnimationState(ANIMATION_IDLE);
+            }
             super.stop();
         }
 
@@ -1320,7 +1594,7 @@ public class LichEntity extends HostileEntity implements GeoEntity {
         public boolean canStart() {
             return canSpellCast()
                     && random.nextInt(125) == 0
-                    && this.mob.getLevitationDurationTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownLevitationSpell; // cooldown
+                    && this.mob.getLevitationDurationTimer() <= -Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").cooldownLevitationSpell;
         }
 
         public void start() {
@@ -1346,7 +1620,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public void stop() {
-            setAnimationState(ANIMATION_IDLE);
+            if (getAnimationState() == ANIMATION_SUMMON) {
+                setAnimationState(ANIMATION_IDLE);
+            }
             super.stop();
         }
 
@@ -1378,7 +1654,8 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public boolean canStart() {
-            return canSpellCast() && random.nextInt(25) == 0 && this.mob.getConjureFangTimer() <= -100; // cooldown
+            return canSpellCast() && random.nextInt(25) == 0 && this.mob.getConjureFangTimer() <= -100
+                    && this.mob.getTarget() != null && this.mob.squaredDistanceTo(this.mob.getTarget()) <= 64.0D;
         }
 
         public boolean shouldRunEveryTick() {
@@ -1387,7 +1664,9 @@ public class LichEntity extends HostileEntity implements GeoEntity {
 
         @Override
         public void stop() {
-            setAnimationState(ANIMATION_IDLE);
+            if (getAnimationState() == ANIMATION_CONJURE_FANG) {
+                setAnimationState(ANIMATION_IDLE);
+            }
             super.stop();
         }
 

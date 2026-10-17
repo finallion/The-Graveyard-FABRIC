@@ -1,4 +1,4 @@
-package com.lion.graveyard.blocks;;
+package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import net.minecraft.block.*;
@@ -201,7 +201,7 @@ public class GravestoneBlock extends SignBlock implements BlockEntityProvider {
 
     private boolean isOtherPlayerEditing(PlayerEntity player, GravestoneBlockEntity blockEntity) {
         UUID uUID = blockEntity.getEditor();
-        return uUID != null && !uUID.equals(player.getUuid());
+        return uUID != null && !uUID.equals(player.getUuid()) && !blockEntity.isPlayerTooFarToEdit(uUID);
     }
 
 

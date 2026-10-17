@@ -1,6 +1,6 @@
 package com.lion.graveyard.network;
 
-import com.lion.graveyard.GraveyardClient;
+import com.lion.graveyard.Graveyard;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.NetworkDirection;
 import com.lion.graveyard.platform.ChronicleSync;
@@ -11,7 +11,7 @@ public class PacketHandler {
 
     private static final String PROTOCOL_VERSION = "1";
 
-    public static final SimpleChannel SKULL_ENTITY_CHANNEL = NetworkRegistry.newSimpleChannel(GraveyardClient.SKULL_PACKET_ID, () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+    public static final SimpleChannel SKULL_ENTITY_CHANNEL = NetworkRegistry.newSimpleChannel(Graveyard.SKULL_PACKET_ID, () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
     public static final SimpleChannel CHRONICLE_CHANNEL = NetworkRegistry.newSimpleChannel(ChronicleSync.CHANNEL, () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
@@ -22,7 +22,8 @@ public class PacketHandler {
                 SkullEntitySpawnPacket.class,
                 SkullEntitySpawnPacket::encode,
                 SkullEntitySpawnPacket::new,
-                SkullEntitySpawnPacket::handle);
+                SkullEntitySpawnPacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
 }

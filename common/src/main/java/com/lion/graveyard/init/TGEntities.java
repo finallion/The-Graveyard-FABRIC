@@ -4,16 +4,14 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.entities.*;
 import com.lion.graveyard.entities.projectiles.SkullEntity;
-import com.lion.graveyard.mixin.SpawnRestrictionAccessor;
 import com.lion.graveyard.platform.BiomeModifications;
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.SharedConstants;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.world.Heightmap;;
+import net.minecraft.world.Heightmap;
 
 import java.util.function.Supplier;
 
@@ -26,9 +24,11 @@ public class TGEntities {
     public static final Supplier<EntityType<AcolyteEntity>> ACOLYTE = RegistryHelper.registerEntityType("acolyte", () -> EntityType.Builder.create(AcolyteEntity::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.9F).build(Graveyard.createStringID("acolyte")));
     public static final Supplier<EntityType<CorruptedVindicator>> CORRUPTED_VINDICATOR = RegistryHelper.registerEntityType("corrupted_vindicator", () -> EntityType.Builder.create(CorruptedVindicator::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.9F).build(Graveyard.createStringID("corrupted_vindicator")));
     public static final Supplier<EntityType<CorruptedPillager>> CORRUPTED_PILLAGER = RegistryHelper.registerEntityType("corrupted_pillager", () -> EntityType.Builder.create(CorruptedPillager::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.9F).build(Graveyard.createStringID("corrupted_pillager")));
+    public static final Supplier<EntityType<CorruptedEvoker>> CORRUPTED_EVOKER = RegistryHelper.registerEntityType("corrupted_evoker", () -> EntityType.Builder.create(CorruptedEvoker::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.9F).build(Graveyard.createStringID("corrupted_evoker")));
     public static final Supplier<EntityType<SkeletonCreeper>> SKELETON_CREEPER = RegistryHelper.registerEntityType("skeleton_creeper", () -> EntityType.Builder.create(SkeletonCreeper::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.7F).build(Graveyard.createStringID("skeleton_creeper")));
     public static final Supplier<EntityType<FallingCorpse>> FALLING_CORPSE = RegistryHelper.registerEntityType("falling_corpse", () -> EntityType.Builder.create(FallingCorpse::new, SpawnGroup.MISC).setDimensions(0.4F, 0.5F).build(Graveyard.createStringID("falling_corpse")));
     public static final Supplier<EntityType<GhoulEntity>> GHOUL = RegistryHelper.registerEntityType("ghoul", () -> EntityType.Builder.create(GhoulEntity::new, SpawnGroup.MONSTER).setDimensions(0.8F, 2.1F).build(Graveyard.createStringID("ghoul")));
+    public static final Supplier<EntityType<TormentedVillagerEntity>> TORMENTED_VILLAGER = RegistryHelper.registerEntityType("tormented_villager", () -> EntityType.Builder.create(TormentedVillagerEntity::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.95F).build(Graveyard.createStringID("tormented_villager")));
     public static final Supplier<EntityType<RevenantEntity>> REVENANT = RegistryHelper.registerEntityType("revenant", () -> EntityType.Builder.create(RevenantEntity::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.9F).build(Graveyard.createStringID("revenant")));
     public static final Supplier<EntityType<WraithEntity>> WRAITH = RegistryHelper.registerEntityType("wraith", () -> EntityType.Builder.create(WraithEntity::new, SpawnGroup.MONSTER).setDimensions(0.6F, 1.8F).build(Graveyard.createStringID("wraith")));
     public static final Supplier<EntityType<NightmareEntity>> NIGHTMARE = RegistryHelper.registerEntityType("nightmare", () -> EntityType.Builder.create(NightmareEntity::new, SpawnGroup.MONSTER).setDimensions(0.6F, 2.6F).build(Graveyard.createStringID("nightmare")));
@@ -102,31 +102,41 @@ public class TGEntities {
                 config.mobConfigEntries.get("crow").maxGroup);
     }
 
+    private static <T extends MobEntity> SpawnRestriction.SpawnPredicate<T> gated(SpawnRestriction.SpawnPredicate<T> predicate) {
+        return (type, world, reason, pos, random) -> !MobSpawnGate.blocks(type, reason)
+                && !MobSpawnGate.inForbiddenBiome(world, pos, type, reason)
+                && predicate.test(type, world, reason, pos, random);
+    }
+
     private static void addSpawnRestrictions() {
-        SpawnRestrictionAccessor.callRegister(REAPER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(ACOLYTE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnIgnoreLightLevel);
-        SpawnRestrictionAccessor.callRegister(CORRUPTED_VINDICATOR.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnIgnoreLightLevel);
-        SpawnRestrictionAccessor.callRegister(CORRUPTED_PILLAGER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnIgnoreLightLevel);
-        SpawnRestrictionAccessor.callRegister(SKELETON_CREEPER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(FALLING_CORPSE.get(), SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnIgnoreLightLevel);
-        SpawnRestrictionAccessor.callRegister(GHOUL.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(REVENANT.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(WRAITH.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(NIGHTMARE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(LICH.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, HostileEntity::canSpawnInDark);
-        SpawnRestrictionAccessor.callRegister(RAVEN.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
-        SpawnRestrictionAccessor.callRegister(MAGPIE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
-        SpawnRestrictionAccessor.callRegister(CROW.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        SpawnRestriction.register(REAPER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(ACOLYTE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnIgnoreLightLevel));
+        SpawnRestriction.register(CORRUPTED_VINDICATOR.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnIgnoreLightLevel));
+        SpawnRestriction.register(CORRUPTED_PILLAGER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnIgnoreLightLevel));
+        SpawnRestriction.register(CORRUPTED_EVOKER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnIgnoreLightLevel));
+        SpawnRestriction.register(SKELETON_CREEPER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(FALLING_CORPSE.get(), SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnIgnoreLightLevel));
+        SpawnRestriction.register(GHOUL.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(TORMENTED_VILLAGER.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(TormentedVillagerEntity::canSpawn));
+        SpawnRestriction.register(REVENANT.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(WRAITH.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(NIGHTMARE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(LICH.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, gated(HostileEntity::canSpawnInDark));
+        SpawnRestriction.register(RAVEN.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        SpawnRestriction.register(MAGPIE.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        SpawnRestriction.register(CROW.get(), SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, CorvidEntity::canSpawn);
     }
 
     private static void createMobAttributes() {
         RegistryHelper.registerEntityAttribute(TGEntities.REAPER, ReaperEntity::createReaperAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.ACOLYTE, CorruptedIllager::createCorruptedIllagerAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_VINDICATOR, CorruptedIllager::createCorruptedIllagerAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_EVOKER, CorruptedIllager::createCorruptedIllagerAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.CORRUPTED_PILLAGER, CorruptedPillager::createCorruptedPillagerAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.SKELETON_CREEPER, SkeletonCreeper::createSkeletonCreeperAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.FALLING_CORPSE, FallingCorpse::createFallingCorpseAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.GHOUL, GhoulEntity::createGhoulAttributes);
+        RegistryHelper.registerEntityAttribute(TGEntities.TORMENTED_VILLAGER, TormentedVillagerEntity::createTormentedVillagerAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.REVENANT, RevenantEntity::createRevenantAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.WRAITH, WraithEntity::createWraithAttributes);
         RegistryHelper.registerEntityAttribute(TGEntities.NIGHTMARE, NightmareEntity::createNightmareAttributes);

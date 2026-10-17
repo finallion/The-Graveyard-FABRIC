@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:sandstone",
+    "minecraft:sandstone_slab",
+    "minecraft:sandstone_stairs",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:coarse_dirt"
+  ]
+}

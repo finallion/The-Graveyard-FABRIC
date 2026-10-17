@@ -54,17 +54,20 @@ public final class CrowAnchors {
         }
 
         int fieldHits = 0;
-        long fieldX = 0L;
-        long fieldZ = 0L;
+        long nearestField = Long.MAX_VALUE;
+        int fieldX = 0;
+        int fieldZ = 0;
         int landmarkHits = 0;
-        long landmarkX = 0L;
-        long landmarkZ = 0L;
+        long nearestLandmark = Long.MAX_VALUE;
+        int landmarkX = 0;
+        int landmarkZ = 0;
 
         BlockPos.Mutable pos = new BlockPos.Mutable();
         for (int dx = -RADIUS; dx <= RADIUS; dx += STEP) {
             for (int dz = -RADIUS; dz <= RADIUS; dz += STEP) {
                 int x = origin.getX() + dx;
                 int z = origin.getZ() + dz;
+                long distance = (long) dx * dx + (long) dz * dz;
                 // Skip unloaded chunks. A heightmap lookup loads the chunk.
                 if (!world.isChunkLoaded(x >> 4, z >> 4)) {
                     continue;
@@ -73,33 +76,45 @@ public final class CrowAnchors {
                 BlockState ground = world.getBlockState(pos.set(x, topY - 1, z));
                 if (ground.isOf(Blocks.FARMLAND) || ground.isIn(BlockTags.CROPS)) {
                     fieldHits++;
-                    fieldX += x;
-                    fieldZ += z;
+                    if (distance < nearestField) {
+                        nearestField = distance;
+                        fieldX = x;
+                        fieldZ = z;
+                    }
                 } else if (ground.isIn(TGTags.CROW_LANDMARKS)) {
                     landmarkHits++;
-                    landmarkX += x;
-                    landmarkZ += z;
+                    if (distance < nearestLandmark) {
+                        nearestLandmark = distance;
+                        landmarkX = x;
+                        landmarkZ = z;
+                    }
                 } else {
                     // The heightmap ignores blocks without collision, such as skeletons.
                     BlockState surface = world.getBlockState(pos.set(x, topY, z));
                     if (surface.isIn(BlockTags.CROPS)) {
                         fieldHits++;
-                        fieldX += x;
-                        fieldZ += z;
+                        if (distance < nearestField) {
+                            nearestField = distance;
+                            fieldX = x;
+                            fieldZ = z;
+                        }
                     } else if (surface.isIn(TGTags.CORVID_BONES)) {
                         landmarkHits++;
-                        landmarkX += x;
-                        landmarkZ += z;
+                        if (distance < nearestLandmark) {
+                            nearestLandmark = distance;
+                            landmarkX = x;
+                            landmarkZ = z;
+                        }
                     }
                 }
             }
         }
 
         if (fieldHits >= MIN_FIELD_HITS) {
-            return new Anchor(surface(world, (int) (fieldX / fieldHits), (int) (fieldZ / fieldHits)), Kind.FIELD);
+            return new Anchor(surface(world, fieldX, fieldZ), Kind.FIELD);
         }
         if (landmarkHits >= MIN_LANDMARK_HITS) {
-            return new Anchor(surface(world, (int) (landmarkX / landmarkHits), (int) (landmarkZ / landmarkHits)), Kind.LANDMARK);
+            return new Anchor(surface(world, landmarkX, landmarkZ), Kind.LANDMARK);
         }
         return null;
     }

@@ -1,27 +1,24 @@
 package com.lion.graveyard.fabric;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
-import com.lion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
-import com.lion.graveyard.blockentities.renders.CarvedGravestoneRenderer;
-import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
-import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
-import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.*;
-import com.lion.graveyard.item.CarvedGravestoneItem;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
-import com.lion.graveyard.platform.fabric.SkeletalPoseResourceListener;
+import com.lion.graveyard.entities.animation.AnimationPreviewClient;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import com.lion.graveyard.platform.ChronicleSync;
 import com.lion.graveyard.chronicle.client.ClientChronicle;
+import com.lion.graveyard.chronicle.client.ChronicleButton;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.color.world.GrassColors;
@@ -31,9 +28,7 @@ import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 import java.util.UUID;
@@ -46,19 +41,9 @@ public class GraveyardClientFabric implements ClientModInitializer {
         GraveyardClient.postInit();
 
         HandledScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
+        ClientTickEvents.END_CLIENT_TICK.register(AnimationPreviewClient::clientTick);
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> ChronicleButton.addTo(screen, Screens.getButtons(screen)::add));
 
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SkeletalPoseResourceListener());
-
-        // A carved stone has no fixed texture - it is drawn with the one of the block it was carved
-        // from, which is only known from the stack. Registered by type so a new shape of stone needs
-        // nothing here.
-        for (Item item : Registries.ITEM) {
-            if (item instanceof CarvedGravestoneItem) {
-                BuiltinItemRendererRegistry.INSTANCE.register(item,
-                        (stack, mode, matrices, vertexConsumers, light, overlay)
-                                -> CarvedGravestoneRenderer.renderItem(stack, matrices, vertexConsumers, light, overlay));
-            }
-        }
 
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_FOG_PARTICLE, GraveyardFogParticle.FogFactory::new);
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_PARTICLE, GraveyardSoulParticle.Factory::new);
@@ -67,14 +52,11 @@ public class GraveyardClientFabric implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Factory::new);
 
 
-        // coloring of tg_grass_block depending on biome
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.getColor(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get(),
-                TGBlocks.TURF.get());
+                TGBlocks.TG_GRASS_BLOCK.get());
 
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> GrassColors.getColor(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get(),
-                TGBlocks.TURF.get());
+                TGBlocks.TG_GRASS_BLOCK.get());
 
 
         ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.CHANNEL, (client, handler, buf, responseSender) -> {
@@ -82,7 +64,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
             client.execute(() -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(GraveyardClient.SKULL_PACKET_ID, (client, handler, byteBuf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(Graveyard.SKULL_PACKET_ID, (client, handler, byteBuf, responseSender) -> {
             EntityType<?> type = Registries.ENTITY_TYPE.get(byteBuf.readVarInt());
             UUID entityUUID = byteBuf.readUuid();
             int entityID = byteBuf.readVarInt();
@@ -106,7 +88,6 @@ public class GraveyardClientFabric implements ClientModInitializer {
             });
         });
 
-        // changing item texture
         ModelPredicateProviderRegistry.register(TGItems.VIAL_OF_BLOOD.get(), new Identifier("charged"), (stack, world, entity, seed) -> {
             if (entity != null && stack.isOf(TGItems.VIAL_OF_BLOOD.get())) {
                 return VialOfBlood.getBlood(stack);

@@ -4,7 +4,6 @@ import com.lion.graveyard.item.DiaryPageItem;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
 import com.lion.graveyard.item.VialOfBlood;
-import com.lion.graveyard.platform.ItemFactory;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.item.*;
 
@@ -46,6 +45,7 @@ public class TGItems {
     public static final Supplier<Item> ACOLYTE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("acolyte_spawn_egg", TGEntities.ACOLYTE, 2688830, 5898240, new Item.Settings());
     public static final Supplier<Item> GHOUL_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("ghoul_spawn_egg", TGEntities.GHOUL, 6239802, 16487198, new Item.Settings());
     public static final Supplier<Item> REAPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("reaper_spawn_egg", TGEntities.REAPER, 1381653, 7456477, new Item.Settings());
+    public static final Supplier<Item> TORMENTED_VILLAGER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("tormented_villager_spawn_egg", TGEntities.TORMENTED_VILLAGER, 14606046, 5651507, new Item.Settings());
     public static final Supplier<Item> REVENANT_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("revenant_spawn_egg", TGEntities.REVENANT, 12965589, 9765908, new Item.Settings());
     public static final Supplier<Item> NIGHTMARE_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("nightmare_spawn_egg", TGEntities.NIGHTMARE, 592137, 4718849, new Item.Settings());
     public static final Supplier<Item> LICH_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("lich_spawn_egg", TGEntities.LICH, 13750223, 4144959, new Item.Settings());
@@ -53,6 +53,7 @@ public class TGItems {
     public static final Supplier<Item> WRAITH_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("wraith_spawn_egg", TGEntities.WRAITH, 1644568, 16777215, new Item.Settings());
     public static final Supplier<Item> CORRUPTED_PILLAGER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("corrupted_pillager_spawn_egg", TGEntities.CORRUPTED_PILLAGER, 7567737, 4924973, new Item.Settings());
     public static final Supplier<Item> CORRUPTED_VINDICATOR_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("corrupted_vindicator_spawn_egg", TGEntities.CORRUPTED_VINDICATOR, 7567737, 2380632, new Item.Settings());
+    public static final Supplier<Item> CORRUPTED_EVOKER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("corrupted_evoker_spawn_egg", TGEntities.CORRUPTED_EVOKER, 7567737, 1973019, new Item.Settings());
 
     public static final Supplier<Item> BONE_DAGGER = RegistryHelper.registerItem("bone_dagger", () -> new DaggerItem(ToolMaterials.STONE, 4, -2.0F, new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_INGOT = RegistryHelper.registerItem("dark_iron_ingot", () -> new Item(new Item.Settings()));
@@ -82,8 +83,6 @@ public class TGItems {
     public static final Supplier<Item> DARK_IRON_TRAPDOOR = RegistryHelper.registerItem("dark_iron_trapdoor", () -> new BlockItem(TGBlocks.DARK_IRON_TRAPDOOR.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_DOOR = RegistryHelper.registerItem("dark_iron_door", () -> new BlockItem(TGBlocks.DARK_IRON_DOOR.get(), new Item.Settings()));
     public static final Supplier<Item> DARK_IRON_BLOCK = RegistryHelper.registerItem("dark_iron_block", () -> new BlockItem(TGBlocks.DARK_IRON_BLOCK.get(), new Item.Settings()));
-    public static final Supplier<Item> SKELETAL_REMAINS = RegistryHelper.registerItem("skeletal_remains", () -> new BlockItem(TGBlocks.SKELETAL_REMAINS.get(), new Item.Settings()));
-    public static final Supplier<Item> WITHER_SKELETAL_REMAINS = RegistryHelper.registerItem("wither_skeletal_remains", () -> new BlockItem(TGBlocks.WITHER_SKELETAL_REMAINS.get(), new Item.Settings()));
 
     public static final Supplier<Item> SKULL_WITH_RIB_CAGE = RegistryHelper.registerItem("skull_with_rib_cage", () -> new BlockItem(TGBlocks.SKULL_WITH_RIB_CAGE.get(), new Item.Settings()));
     public static final Supplier<Item> LEANING_SKELETON = RegistryHelper.registerItem("leaning_skeleton", () -> new BlockItem(TGBlocks.LEANING_SKELETON.get(), new Item.Settings()));
@@ -99,22 +98,36 @@ public class TGItems {
     public static final Supplier<Item> HANGED_SKELETON = RegistryHelper.registerItem("hanged_skeleton", () -> new BlockItem(TGBlocks.HANGED_SKELETON.get(), new Item.Settings()));
     public static final Supplier<Item> HANGED_WITHER_SKELETON = RegistryHelper.registerItem("hanged_wither_skeleton", () -> new BlockItem(TGBlocks.HANGED_WITHER_SKELETON.get(), new Item.Settings()));
 
+    public static final Supplier<Item> SEATED_FULL_SKELETON = RegistryHelper.registerItem("seated_full_skeleton", () -> new BlockItem(TGBlocks.SEATED_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> SEATED_FULL_WITHER_SKELETON = RegistryHelper.registerItem("seated_full_wither_skeleton", () -> new BlockItem(TGBlocks.SEATED_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> SKELETON_SKULL_WITH_AXE = RegistryHelper.registerItem("skeleton_skull_with_axe", () -> new BlockItem(TGBlocks.SKELETON_SKULL_WITH_AXE.get(), new Item.Settings()));
+    public static final Supplier<Item> WITHER_SKELETON_SKULL_WITH_AXE = RegistryHelper.registerItem("wither_skeleton_skull_with_axe", () -> new BlockItem(TGBlocks.WITHER_SKELETON_SKULL_WITH_AXE.get(), new Item.Settings()));
+
+    public static final Supplier<Item> SWORD_IN_SKELETON = RegistryHelper.registerItem("sword_in_skeleton", () -> new BlockItem(TGBlocks.SWORD_IN_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> SWORD_IN_WITHER_SKELETON = RegistryHelper.registerItem("sword_in_wither_skeleton", () -> new BlockItem(TGBlocks.SWORD_IN_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> SMALL_SKELETON_REMAINS = RegistryHelper.registerItem("small_skeleton_remains", () -> new BlockItem(TGBlocks.SMALL_SKELETON_REMAINS.get(), new Item.Settings()));
+    public static final Supplier<Item> SMALL_WITHER_SKELETON_REMAINS = RegistryHelper.registerItem("small_wither_skeleton_remains", () -> new BlockItem(TGBlocks.SMALL_WITHER_SKELETON_REMAINS.get(), new Item.Settings()));
+
+    public static final Supplier<Item> HANGED_FULL_SKELETON = RegistryHelper.registerItem("hanged_full_skeleton", () -> new BlockItem(TGBlocks.HANGED_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> HANGED_FULL_WITHER_SKELETON = RegistryHelper.registerItem("hanged_full_wither_skeleton", () -> new BlockItem(TGBlocks.HANGED_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> LYING_FULL_SKELETON = RegistryHelper.registerItem("lying_full_skeleton", () -> new BlockItem(TGBlocks.LYING_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> LYING_FULL_WITHER_SKELETON = RegistryHelper.registerItem("lying_full_wither_skeleton", () -> new BlockItem(TGBlocks.LYING_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> BACKSTABBED_FULL_SKELETON = RegistryHelper.registerItem("backstabbed_full_skeleton", () -> new BlockItem(TGBlocks.BACKSTABBED_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> BACKSTABBED_FULL_WITHER_SKELETON = RegistryHelper.registerItem("backstabbed_full_wither_skeleton", () -> new BlockItem(TGBlocks.BACKSTABBED_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> SHOT_FULL_SKELETON = RegistryHelper.registerItem("shot_full_skeleton", () -> new BlockItem(TGBlocks.SHOT_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> SHOT_FULL_WITHER_SKELETON = RegistryHelper.registerItem("shot_full_wither_skeleton", () -> new BlockItem(TGBlocks.SHOT_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
+    public static final Supplier<Item> SIDEWAYS_FULL_SKELETON = RegistryHelper.registerItem("sideways_full_skeleton", () -> new BlockItem(TGBlocks.SIDEWAYS_FULL_SKELETON.get(), new Item.Settings()));
+    public static final Supplier<Item> SIDEWAYS_FULL_WITHER_SKELETON = RegistryHelper.registerItem("sideways_full_wither_skeleton", () -> new BlockItem(TGBlocks.SIDEWAYS_FULL_WITHER_SKELETON.get(), new Item.Settings()));
+
     public static final Supplier<Item> VASE_BLOCK = RegistryHelper.registerItem("vase_block", () -> new BlockItem(TGBlocks.VASE_BLOCK.get(), new Item.Settings()));
 
 
-    public static final Supplier<Item> CARVED_GRAVESTONE = RegistryHelper.registerItem("carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.CARVED_GRAVESTONE.get(), new Item.Settings()));
-    public static final Supplier<Item> TALL_CARVED_GRAVESTONE = RegistryHelper.registerItem("tall_carved_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TALL_CARVED_GRAVESTONE.get(), new Item.Settings()));
-    public static final Supplier<Item> EPITAPH = RegistryHelper.registerItem("epitaph", () -> ItemFactory.carvedGravestone(TGBlocks.EPITAPH.get(), new Item.Settings()));
-    public static final Supplier<Item> BROKEN_GRAVESTONE = RegistryHelper.registerItem("broken_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.BROKEN_GRAVESTONE.get(), new Item.Settings()));
-    public static final Supplier<Item> TOPPLED_GRAVESTONE = RegistryHelper.registerItem("toppled_gravestone", () -> ItemFactory.carvedGravestone(TGBlocks.TOPPLED_GRAVESTONE.get(), new Item.Settings()));
-    public static final Supplier<Item> GARGOYLE = RegistryHelper.registerItem("gargoyle", () -> new BlockItem(TGBlocks.GARGOYLE.get(), new Item.Settings()));
-    public static final Supplier<Item> GALLOWS = RegistryHelper.registerItem("gallows", () -> new BlockItem(TGBlocks.GALLOWS.get(), new Item.Settings()));
-    public static final Supplier<Item> OBELISK = RegistryHelper.registerItem("obelisk", () -> new BlockItem(TGBlocks.OBELISK.get(), new Item.Settings()));
-    public static final Supplier<Item> STONE_CROSS = RegistryHelper.registerItem("stone_cross", () -> new BlockItem(TGBlocks.STONE_CROSS.get(), new Item.Settings()));
-    public static final Supplier<Item> GIBBET = RegistryHelper.registerItem("gibbet", () -> new BlockItem(TGBlocks.GIBBET.get(), new Item.Settings()));
-    public static final Supplier<Item> CHAINED_SKELETON = RegistryHelper.registerItem("chained_skeleton", () -> new BlockItem(TGBlocks.CHAINED_SKELETON.get(), new Item.Settings()));
-    public static final Supplier<Item> MOUNTED_SKULL = RegistryHelper.registerItem("mounted_skull", () -> new BlockItem(TGBlocks.MOUNTED_SKULL.get(), new Item.Settings()));
-    public static final Supplier<Item> RIB_RELIEF = RegistryHelper.registerItem("rib_relief", () -> new BlockItem(TGBlocks.RIB_RELIEF.get(), new Item.Settings()));
     public static final Supplier<Item> GRAVESTONE = RegistryHelper.registerItem("gravestone", () -> new BlockItem(TGBlocks.GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem( "cobblestone_gravestone", () -> new BlockItem(TGBlocks.COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
     public static final Supplier<Item> MOSSY_COBBLESTONE_GRAVESTONE = RegistryHelper.registerItem("mossy_cobblestone_gravestone", () -> new BlockItem(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), new Item.Settings()));
@@ -145,6 +158,23 @@ public class TGItems {
     public static final Supplier<Item> PURPLE_URN = RegistryHelper.registerItem("purple_urn", () -> new BlockItem(TGBlocks.PURPLE_URN.get(), new Item.Settings()));
     public static final Supplier<Item> GREEN_URN = RegistryHelper.registerItem("green_urn", () -> new BlockItem(TGBlocks.GREEN_URN.get(), new Item.Settings()));
     public static final Supplier<Item> LIME_URN = RegistryHelper.registerItem("lime_urn", () -> new BlockItem(TGBlocks.LIME_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> TERRACOTTA_URN = RegistryHelper.registerItem("terracotta_urn", () -> new BlockItem(TGBlocks.TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> BLACK_TERRACOTTA_URN = RegistryHelper.registerItem("black_terracotta_urn", () -> new BlockItem(TGBlocks.BLACK_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> BLUE_TERRACOTTA_URN = RegistryHelper.registerItem("blue_terracotta_urn", () -> new BlockItem(TGBlocks.BLUE_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> BROWN_TERRACOTTA_URN = RegistryHelper.registerItem("brown_terracotta_urn", () -> new BlockItem(TGBlocks.BROWN_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> CYAN_TERRACOTTA_URN = RegistryHelper.registerItem("cyan_terracotta_urn", () -> new BlockItem(TGBlocks.CYAN_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> GRAY_TERRACOTTA_URN = RegistryHelper.registerItem("gray_terracotta_urn", () -> new BlockItem(TGBlocks.GRAY_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> GREEN_TERRACOTTA_URN = RegistryHelper.registerItem("green_terracotta_urn", () -> new BlockItem(TGBlocks.GREEN_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> LIGHT_BLUE_TERRACOTTA_URN = RegistryHelper.registerItem("light_blue_terracotta_urn", () -> new BlockItem(TGBlocks.LIGHT_BLUE_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> LIGHT_GRAY_TERRACOTTA_URN = RegistryHelper.registerItem("light_gray_terracotta_urn", () -> new BlockItem(TGBlocks.LIGHT_GRAY_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> LIME_TERRACOTTA_URN = RegistryHelper.registerItem("lime_terracotta_urn", () -> new BlockItem(TGBlocks.LIME_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> MAGENTA_TERRACOTTA_URN = RegistryHelper.registerItem("magenta_terracotta_urn", () -> new BlockItem(TGBlocks.MAGENTA_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> ORANGE_TERRACOTTA_URN = RegistryHelper.registerItem("orange_terracotta_urn", () -> new BlockItem(TGBlocks.ORANGE_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> PINK_TERRACOTTA_URN = RegistryHelper.registerItem("pink_terracotta_urn", () -> new BlockItem(TGBlocks.PINK_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> PURPLE_TERRACOTTA_URN = RegistryHelper.registerItem("purple_terracotta_urn", () -> new BlockItem(TGBlocks.PURPLE_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> RED_TERRACOTTA_URN = RegistryHelper.registerItem("red_terracotta_urn", () -> new BlockItem(TGBlocks.RED_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> WHITE_TERRACOTTA_URN = RegistryHelper.registerItem("white_terracotta_urn", () -> new BlockItem(TGBlocks.WHITE_TERRACOTTA_URN.get(), new Item.Settings()));
+    public static final Supplier<Item> YELLOW_TERRACOTTA_URN = RegistryHelper.registerItem("yellow_terracotta_urn", () -> new BlockItem(TGBlocks.YELLOW_TERRACOTTA_URN.get(), new Item.Settings()));
 
     public static final Supplier<Item> SMALL_BLACK_URN = RegistryHelper.registerItem("small_black_urn", () -> new BlockItem(TGBlocks.SMALL_BLACK_URN.get(), new Item.Settings()));
     public static final Supplier<Item> SMALL_BROWN_URN = RegistryHelper.registerItem("small_brown_urn", () -> new BlockItem(TGBlocks.SMALL_BROWN_URN.get(), new Item.Settings()));
@@ -215,25 +245,10 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_DOOR.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_TRAPDOOR.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, DARK_IRON_BARS.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SKELETAL_REMAINS.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, WITHER_SKELETAL_REMAINS.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SOUL_FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, FIRE_BRAZIER.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PEDESTAL.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CANDLE_HOLDER.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CARVED_GRAVESTONE.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TALL_CARVED_GRAVESTONE.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, EPITAPH.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BROKEN_GRAVESTONE.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TOPPLED_GRAVESTONE.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GARGOYLE.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GALLOWS.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GIBBET.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, OBELISK.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, STONE_CROSS.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CHAINED_SKELETON.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOUNTED_SKULL.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, RIB_RELIEF.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, COBBLESTONE_GRAVESTONE.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MOSSY_COBBLESTONE_GRAVESTONE.get());
@@ -270,6 +285,25 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, HANGED_SKELETON.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, HANGED_WITHER_SKELETON.get());
 
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SEATED_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SEATED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SKELETON_SKULL_WITH_AXE.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, WITHER_SKELETON_SKULL_WITH_AXE.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SWORD_IN_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SWORD_IN_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SMALL_SKELETON_REMAINS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SMALL_WITHER_SKELETON_REMAINS.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, HANGED_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, HANGED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LYING_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LYING_FULL_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BACKSTABBED_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BACKSTABBED_FULL_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SHOT_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SHOT_FULL_WITHER_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SIDEWAYS_FULL_SKELETON.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, SIDEWAYS_FULL_WITHER_SKELETON.get());
+
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, OSSUARY.get());
 
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BLACK_URN.get());
@@ -281,6 +315,23 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CYAN_URN.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GREEN_URN.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LIME_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BLACK_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BLUE_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, BROWN_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CYAN_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GRAY_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GREEN_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LIGHT_BLUE_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LIGHT_GRAY_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LIME_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MAGENTA_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, ORANGE_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PINK_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PURPLE_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, RED_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, WHITE_TERRACOTTA_URN.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, YELLOW_TERRACOTTA_URN.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PINK_URN.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MAGENTA_URN.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, PURPLE_URN.get());
@@ -329,8 +380,10 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, GHOUL_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, REAPER_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, REVENANT_SPAWN_EGG.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, TORMENTED_VILLAGER_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, NIGHTMARE_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CORRUPTED_VINDICATOR_SPAWN_EGG.get());
+        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CORRUPTED_EVOKER_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, CORRUPTED_PILLAGER_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, WRAITH_SPAWN_EGG.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LICH_SPAWN_EGG.get());

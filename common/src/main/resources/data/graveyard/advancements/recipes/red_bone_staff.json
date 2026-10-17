@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_staff": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:white_bone_staff",
+              "graveyard:black_bone_staff",
+              "graveyard:red_bone_staff",
+              "graveyard:cyan_bone_staff",
+              "graveyard:purple_bone_staff"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "graveyard:red_bone_staff"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_staff",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "graveyard:white_bone_staff",
+      "graveyard:black_bone_staff",
+      "graveyard:red_bone_staff",
+      "graveyard:cyan_bone_staff",
+      "graveyard:purple_bone_staff"
+    ]
+  }
+}

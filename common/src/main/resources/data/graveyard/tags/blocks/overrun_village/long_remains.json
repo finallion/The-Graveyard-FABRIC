@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:lying_full_skeleton",
+    "graveyard:backstabbed_full_skeleton",
+    "graveyard:shot_full_skeleton",
+    "graveyard:sideways_full_skeleton"
+  ]
+}

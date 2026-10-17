@@ -8,8 +8,11 @@ import software.bernie.geckolib.core.object.PlayState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 
 /// Declares which animation plays when, as an ordered table instead of a hand-written if-chain.
@@ -27,8 +30,7 @@ import java.util.function.Predicate;
 /// and flags), which is why both `when` overloads exist.
 public final class AnimationTable<T extends GeoAnimatable> {
 
-    /// Ticks a controller blends over when the animation changes. Zero is a hard cut between poses,
-    /// which is what reads as stuttering.
+    /// Blend length in ticks. Zero gives a hard cut, which looks like stutter.
     public static final int TRANSITION_TICKS = 5;
 
     /// Below this the limb swing is noise, not walking.
@@ -37,6 +39,8 @@ public final class AnimationTable<T extends GeoAnimatable> {
     private final List<Entry<T>> entries = new ArrayList<>();
     @Nullable
     private RawAnimation fallback;
+    @Nullable
+    private IntSupplier transitionTicks;
 
     private AnimationTable() {
     }
@@ -54,17 +58,18 @@ public final class AnimationTable<T extends GeoAnimatable> {
         return when(state -> condition.getAsBoolean(), animation);
     }
 
-    /// Stops the controller instead of playing anything, so another controller on the same model
-    /// can take over. Needed where an entity switches between whole sets of animations.
     public AnimationTable<T> stopWhen(BooleanSupplier condition) {
         this.entries.add(new Entry<>(state -> condition.getAsBoolean(), null));
         return this;
     }
 
-    /// Plays when nothing above matched. Without one the controller stops instead, which leaves the
-    /// model in its last pose.
     public AnimationTable<T> otherwise(RawAnimation animation) {
         this.fallback = animation;
+        return this;
+    }
+
+    public AnimationTable<T> transitionTicks(IntSupplier ticks) {
+        this.transitionTicks = ticks;
         return this;
     }
 
@@ -73,7 +78,15 @@ public final class AnimationTable<T extends GeoAnimatable> {
     }
 
     public AnimationController<T> build(T animatable, String name, int transitionTicks) {
-        return new AnimationController<>(animatable, name, transitionTicks, state -> {
+        return AnimationClock.controller(animatable, name, transitionTicks, state -> {
+            RawAnimation preview = AnimationPreview.frame(state, this::animationNames);
+            if (preview != null) {
+                state.getController().setAnimation(preview);
+                return PlayState.CONTINUE;
+            }
+            if (this.transitionTicks != null) {
+                state.getController().transitionLength(this.transitionTicks.getAsInt());
+            }
             for (Entry<T> entry : this.entries) {
                 if (entry.condition.test(state)) {
                     if (entry.animation == null) {
@@ -94,13 +107,25 @@ public final class AnimationTable<T extends GeoAnimatable> {
         });
     }
 
-    /// One answer to "is it moving", because the entities used to disagree: some asked GeckoLib,
-    /// some measured the limb swing, two did both and combined them differently.
+    private List<String> animationNames() {
+        Set<String> names = new LinkedHashSet<>();
+        for (Entry<T> entry : this.entries) {
+            addName(names, entry.animation);
+        }
+        addName(names, this.fallback);
+        return new ArrayList<>(names);
+    }
+
+    private static void addName(Set<String> names, @Nullable RawAnimation animation) {
+        if (animation != null && !animation.getAnimationStages().isEmpty()) {
+            names.add(animation.getAnimationStages().get(0).animationName());
+        }
+    }
+
     public static boolean isMoving(AnimationState<?> state) {
         return state.isMoving() || Math.abs(state.getLimbSwingAmount()) > MOVEMENT_THRESHOLD;
     }
 
-    /// A null animation means "stop here", see [#stopWhen].
     private record Entry<T extends GeoAnimatable>(Predicate<AnimationState<T>> condition, @Nullable RawAnimation animation) {
     }
 }

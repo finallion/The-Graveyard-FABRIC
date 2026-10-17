@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "graveyard:block/scorched_planks_smoldering",
+    "side": "graveyard:block/scorched_planks_smoldering",
+    "top": "graveyard:block/scorched_planks_smoldering"
+  }
+}

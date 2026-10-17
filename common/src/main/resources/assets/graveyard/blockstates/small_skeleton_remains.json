@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,variant=0": {
+      "model": "graveyard:block/small_skeleton_remains_1"
+    },
+    "facing=north,variant=1": {
+      "model": "graveyard:block/small_skeleton_remains_2"
+    },
+    "facing=north,variant=2": {
+      "model": "graveyard:block/small_skeleton_remains_3"
+    },
+    "facing=north,variant=3": {
+      "model": "graveyard:block/small_skeleton_remains_4"
+    },
+    "facing=east,variant=0": {
+      "model": "graveyard:block/small_skeleton_remains_1",
+      "y": 90
+    },
+    "facing=east,variant=1": {
+      "model": "graveyard:block/small_skeleton_remains_2",
+      "y": 90
+    },
+    "facing=east,variant=2": {
+      "model": "graveyard:block/small_skeleton_remains_3",
+      "y": 90
+    },
+    "facing=east,variant=3": {
+      "model": "graveyard:block/small_skeleton_remains_4",
+      "y": 90
+    },
+    "facing=south,variant=0": {
+      "model": "graveyard:block/small_skeleton_remains_1",
+      "y": 180
+    },
+    "facing=south,variant=1": {
+      "model": "graveyard:block/small_skeleton_remains_2",
+      "y": 180
+    },
+    "facing=south,variant=2": {
+      "model": "graveyard:block/small_skeleton_remains_3",
+      "y": 180
+    },
+    "facing=south,variant=3": {
+      "model": "graveyard:block/small_skeleton_remains_4",
+      "y": 180
+    },
+    "facing=west,variant=0": {
+      "model": "graveyard:block/small_skeleton_remains_1",
+      "y": 270
+    },
+    "facing=west,variant=1": {
+      "model": "graveyard:block/small_skeleton_remains_2",
+      "y": 270
+    },
+    "facing=west,variant=2": {
+      "model": "graveyard:block/small_skeleton_remains_3",
+      "y": 270
+    },
+    "facing=west,variant=3": {
+      "model": "graveyard:block/small_skeleton_remains_4",
+      "y": 270
+    }
+  }
+}
