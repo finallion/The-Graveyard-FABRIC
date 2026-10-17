@@ -40,11 +40,9 @@ public class MobConfigEntry {
         return value == null || !Double.isFinite(value) || value < 0.0D ? 1.0D : Math.max(0.05D, value);
     }
 
-    public MobConfigEntry sanitized() {
-        int safeWeight = Math.max(0, weight);
-        int safeMin = Math.max(safeWeight > 0 ? 1 : 0, minGroup);
-        return new MobConfigEntry(enabled, safeWeight, safeMin, Math.max(safeMin, maxGroup), canBurnInSunlight, canBeWithered,
-                health(), damage(), speed());
+    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered,
+                                    double healthMultiplier, double damageMultiplier, double speedMultiplier) {
+        return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, healthMultiplier, damageMultiplier, speedMultiplier);
     }
 
     public static MobConfigEntry of(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {

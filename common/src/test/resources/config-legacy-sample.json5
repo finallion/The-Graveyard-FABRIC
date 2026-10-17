@@ -1,0 +1,401 @@
+{
+  /* Welcome to The Graveyard Config!
+
+ Structures:
+ Enable or disable structure spawns.
+
+ Mobs:
+ Configure if mobs burn in sunlight and/or if mobs are affected by the wither effect (all graveyard mobs).
+ Configure the biomes, in which graveyard mobs spawn.
+    Fabric:
+        Configure spawning weight and group size of the spawn (ghoul, revenant, nightmare, skeleton creeper).
+    Forge:
+        Spawning weight and group size come from the same config. A weight of 0 turns the natural spawn off.
+    Every mob entry has healthMultiplier, damageMultiplier and speedMultiplier (1.0 = unchanged).
+    enabled switches a mob off, like mobSpawnEnabled. For acolyte, wraith and the corrupted illagers only mobSpawnEnabled counts.
+
+
+ Additional:
+ Configure graveyard fog particles rising from moss and set the chance of spawning them (higher numbers = lower chance of spawning).
+ Configure if hordes of graveyard mobs can spawn and set their size and frequency.
+ Configure if urns have a double chest inventory.
+ Configure if the wither skeleton spawner in the large graveyard will be replaced by a skeleton spawner.
+
+ Structures only:
+ structuresOnly stops every graveyard mob from appearing by itself (natural spawns, structure spawns, spawners, hordes, structure guards).
+ Spawn eggs, commands and summons by the player still work.
+ mobSpawnEnabled turns off a single mob in the same way (set it to false).
+ The overrun village variants have their own switches (overrun_plains_village and so on). overrun_village switches all of them.
+
+ Chronicle and extras:
+ chronicleInventoryButton shows the chronicle button in the inventory.
+ chronicleToasts shows a toast for each found chronicle page.
+ corvidsStealItems lets magpies pick up items.
+ ghoulingCollectsItems lets a Ghouling with a coffin pick up items it walks over.
+ crowsEatCrops lets crows eat crops.
+ tormentedVillagerLight lets the tormented villager carry a light.
+ smolderingBlocksInVillages generates smoldering blocks in overrun villages.
+ skeletonCreeperDestroysBlocks lets the skeleton creeper explosion break blocks. skeletonCreeperExplosionRadius sets its size.
+ wraithGriefing lets wraiths put out torches and lights.
+ corvidTheftChance is the chance per check that a magpie goes for an item.
+ namelessHangedMinOffers and namelessHangedMaxOffers set how many trades the nameless hanged offers.
+ Structures: chance (0 to 1) is the chance that a placed structure generates. crypt and lich_prison also have minY and maxY.
+ Horde: chancePerCheck, minDistance, maxDistance and nightOnly tune the horde spawn.
+
+*/
+  "structureConfigEntries": {
+    "small_grave": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "crypt": {
+      "enabled": true,
+      "chance": 1.0,
+      "minY": -40,
+      "maxY": -10
+    },
+    "small_graveyard": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "small_desert_grave": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "memorial_tree": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "small_desert_graveyard": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "large_graveyard": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "small_savanna_grave": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "mushroom_grave": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "haunted_house": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "giant_mushroom": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "altar": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "ruins": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "medium_graveyard": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "lich_prison": {
+      "enabled": true,
+      "chance": 1.0,
+      "minY": 210,
+      "maxY": 210
+    },
+    "dead_tree": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "small_mountain_grave": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_village": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_plains_village": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_savanna_village": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_taiga_village": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_snowy_village": {
+      "enabled": true,
+      "chance": 1.0
+    },
+    "overrun_desert_village": {
+      "enabled": true,
+      "chance": 1.0
+    }
+  },
+  "particleConfigEntries": {
+    "graveyard_fog_particle": {
+      "canGenerate": true,
+      "spawnChance": 50
+    }
+  },
+  "mobConfigEntries": {
+    "acolyte": {
+      "enabled": false,
+      "weight": 0,
+      "minGroup": 0,
+      "maxGroup": 0,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "revenant": {
+      "enabled": true,
+      "weight": 25,
+      "minGroup": 5,
+      "maxGroup": 8,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "wraith": {
+      "enabled": false,
+      "weight": 0,
+      "minGroup": 0,
+      "maxGroup": 0,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "corrupted_vindicator": {
+      "enabled": false,
+      "weight": 0,
+      "minGroup": 0,
+      "maxGroup": 0,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "skeleton_creeper": {
+      "enabled": true,
+      "weight": 25,
+      "minGroup": 1,
+      "maxGroup": 4,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "corrupted_pillager": {
+      "enabled": false,
+      "weight": 0,
+      "minGroup": 0,
+      "maxGroup": 0,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "ghoul": {
+      "enabled": true,
+      "weight": 25,
+      "minGroup": 2,
+      "maxGroup": 5,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "reaper": {
+      "enabled": false,
+      "weight": 5,
+      "minGroup": 2,
+      "maxGroup": 3,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "nightmare": {
+      "enabled": true,
+      "weight": 10,
+      "minGroup": 1,
+      "maxGroup": 1,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "raven": {
+      "enabled": true,
+      "weight": 8,
+      "minGroup": 2,
+      "maxGroup": 4,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "magpie": {
+      "enabled": true,
+      "weight": 8,
+      "minGroup": 2,
+      "maxGroup": 3,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "crow": {
+      "enabled": true,
+      "weight": 10,
+      "minGroup": 4,
+      "maxGroup": 9,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "corrupted_evoker": {
+      "enabled": false,
+      "weight": 0,
+      "minGroup": 0,
+      "maxGroup": 0,
+      "canBurnInSunlight": true,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    },
+    "tormented_villager": {
+      "enabled": true,
+      "weight": 0,
+      "minGroup": 1,
+      "maxGroup": 1,
+      "canBurnInSunlight": false,
+      "canBeWithered": false,
+      "healthMultiplier": 1.0,
+      "damageMultiplier": 1.0,
+      "speedMultiplier": 1.0
+    }
+  },
+  "hordeConfigEntries": {
+    "horde_spawn": {
+      "enabled": true,
+      "mobSpawnAttempts": 40,
+      "ticksUntilNextSpawn": 24000,
+      "additionalRandomizedTicks": 1200,
+      "chancePerCheck": 0.2,
+      "minDistance": 24,
+      "maxDistance": 48,
+      "nightOnly": true
+    }
+  },
+  "corruptedChampionConfigEntries": {
+    "corrupted_champion": {
+      "healthInCastingPhase": 400.0,
+      "healthInHuntingPhase": 200.0,
+      "damageCastingPhase": 30.0,
+      "damageHuntingPhaseAddition": 40.0,
+      "armor": 14.0,
+      "armorToughness": 12.0,
+      "speedInHuntPhase": 0.15,
+      "durationHuntingPhase": 800,
+      "durationFallingCorpseSpell": 400,
+      "durationHealingSpell": 700,
+      "durationLevitationSpell": 150,
+      "maxAmountSkullsInShootSkullSpell": 5,
+      "maxSummonedMobs": 30,
+      "maxGroupSizeSummonedMobs": 5,
+      "ghoulSpawnTimerInFight": 6000,
+      "isBloodCollectableEntity": [
+        "entity.minecraft.villager"
+      ],
+      "isBossSummonableItem": [
+        "item.minecraft.debug_stick"
+      ],
+      "summoningNeedsStaffFragments": true,
+      "isMultiphaseFight": true,
+      "isInvulnerableDuringSpells": true,
+      "cooldownCorpseSpell": 400,
+      "cooldownTeleportPlayerAndHeal": 600,
+      "cooldownLevitationSpell": 400,
+      "playerTeleportYOffset": -15,
+      "bossBarDarkenSky": true,
+      "bossBarThickenFog": true,
+      "bossMusicVolume": 1.0,
+      "spawnInvulnerableTicks": 410,
+      "phaseInvulnerableTicks": 200,
+      "cooldownHunt": 600,
+      "cooldownCharge": 160,
+      "cooldownPounce": 120,
+      "healThresholdHealth": 300.0,
+      "skullExplosionRadius": 2.0,
+      "skullsDestroyBlocks": false
+    }
+  },
+  "booleanEntries": {
+    "disableWitherSkeletonSpawner": false,
+    "urnHasDoubleInventory": true,
+    "enableBossMusic": true,
+    "chroniclePagesInLoot": true,
+    "ashParticles": true,
+    "structuresOnly": false,
+    "chronicleInventoryButton": true,
+    "chronicleToasts": true,
+    "corvidsStealItems": true,
+    "crowsEatCrops": true,
+    "tormentedVillagerLight": true,
+    "smolderingBlocksInVillages": true,
+    "ghoulingCollectsItems": true,
+    "skeletonCreeperDestroysBlocks": false,
+    "wraithGriefing": true
+  },
+  "mobSpawnEnabled": {
+    "revenant": true,
+    "raven": true,
+    "skeleton_creeper": true,
+    "corrupted_pillager": true,
+    "reaper": true,
+    "nightmare": true,
+    "acolyte": true,
+    "nameless_hanged": true,
+    "wraith": true,
+    "tormented_villager": true,
+    "corrupted_vindicator": true,
+    "ghoul": true,
+    "crow": true,
+    "magpie": true,
+    "corrupted_evoker": true
+  },
+  "numberEntries": {
+    "corvidTheftChance": 0.1,
+    "namelessHangedMinOffers": 7.0,
+    "skeletonCreeperExplosionRadius": 3.5,
+    "namelessHangedMaxOffers": 9.0
+  }
+}

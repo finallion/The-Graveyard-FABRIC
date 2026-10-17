@@ -17,20 +17,16 @@ public class StructureConfigEntry {
         return chance == null ? 1.0D : Math.max(0.0D, Math.min(1.0D, chance));
     }
 
-    public StructureConfigEntry sanitized() {
-        return new StructureConfigEntry(enabled, spawnChance(), minY, maxY);
-    }
-
-    public StructureConfigEntry sanitized(int defaultMinY, int defaultMaxY) {
-        return new StructureConfigEntry(enabled, spawnChance(), minY == null ? defaultMinY : minY, maxY == null ? defaultMaxY : maxY);
-    }
-
     public int lowestY(int fallback) {
         return minY == null ? fallback : minY;
     }
 
     public int highestY(int fallback) {
         return maxY == null ? fallback : maxY;
+    }
+
+    public static StructureConfigEntry of(boolean enabled, double chance, Integer minY, Integer maxY) {
+        return new StructureConfigEntry(enabled, chance, minY, maxY);
     }
 
     public static StructureConfigEntry of() {

@@ -42,10 +42,9 @@ public class HordeConfigEntry {
         return nightOnly == null || nightOnly;
     }
 
-    public HordeConfigEntry sanitized() {
-        return new HordeConfigEntry(enabled, Math.max(0, Math.min(mobSpawnAttempts, 256)),
-                Math.max(0, ticksUntilNextSpawn), Math.max(0, additionalRandomizedTicks),
-                chance(), nearDistance(), farDistance(), onlyAtNight());
+    public static HordeConfigEntry of(boolean enabled, int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks,
+                                      double chancePerCheck, int minDistance, int maxDistance, boolean nightOnly) {
+        return new HordeConfigEntry(enabled, mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks, chancePerCheck, minDistance, maxDistance, nightOnly);
     }
 
     public static HordeConfigEntry of(int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {
