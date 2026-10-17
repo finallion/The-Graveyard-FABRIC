@@ -1,6 +1,7 @@
 package com.lion.graveyard.platform.forge;
 
 import com.lion.graveyard.Graveyard;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
@@ -59,6 +60,8 @@ public class RegistryHelperImpl {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Graveyard.MOD_ID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Graveyard.MOD_ID);
     public static final DeferredRegister<LootItemConditionType> LOOT_CONDITIONS = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, Graveyard.MOD_ID);
+    public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSORS = DeferredRegister.create(Registries.STRUCTURE_PROCESSOR, Graveyard.MOD_ID);
+    public static final List<CriterionTrigger<?>> CRITERIA = new ArrayList<>();
 
 
     public static final Map<ModelLayerLocation, Supplier<LayerDefinition>> ENTITY_MODEL_LAYERS = new ConcurrentHashMap<>();
@@ -122,6 +125,11 @@ public class RegistryHelperImpl {
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
+        STRUCTURE_PROCESSORS.register(name, () -> processorType);
+    }
+
+    public static void registerCriterion(CriterionTrigger<?> trigger) {
+        CRITERIA.add(trigger);
     }
 
     public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {

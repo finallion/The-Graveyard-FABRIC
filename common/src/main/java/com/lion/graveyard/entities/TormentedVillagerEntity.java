@@ -2,7 +2,6 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationPreview;
-import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +51,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
-/// An entity cannot emit block light. Thus the mob carries a light block with it.
 public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity {
 
     private static final EntityDataAccessor<Integer> MOOD = SynchedEntityData.defineId(TormentedVillagerEntity.class, EntityDataSerializers.INT);
@@ -68,15 +66,13 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     private static final double REDEMPTION_WITNESS_RANGE = 16.0D;
     private static final double DAWN_WITNESS_RANGE = 12.0D;
     private static final int LIGHT_LEVEL = 5;
-    private static final int LIGHT_INTERVAL = 4;
-    private static final double LIGHT_REACH = 4.0D;
     private static final int REDEMPTION_EXPERIENCE = 5;
     private static final String LIGHT_KEY = "LightPos";
     private static final int MOOD_TRANSITION_TICKS = 6;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private int moodTicks;
-    private BlockPos lightPos;
+    private BlockPos legacyLightPos;
 
     public TormentedVillagerEntity(EntityType<? extends TormentedVillagerEntity> type, Level world) {
         super(type, world);
@@ -146,8 +142,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
             this.entityData.set(SPAWN_TICKS_LEFT, spawnTicksLeft - 1);
         }
 
-        if (this.tickCount % LIGHT_INTERVAL == 0 && Graveyard.getConfig().flag("tormentedVillagerLight", true)) {
-            this.carryLight();
+        if (this.legacyLightPos != null && this.tickCount % 20 == 0) {
+            this.releaseLegacyLight();
         }
 
         Mood mood = this.getMood();
@@ -238,39 +234,28 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
         }
     }
 
-    private void carryLight() {
-        BlockPos target = this.blockPosition().above();
-
-        if (target.equals(this.lightPos)) {
+    private void releaseLegacyLight() {
+        if (this.legacyLightPos == null || this.level().isClientSide) {
             return;
         }
 
-        this.clearLight();
-
-        if (this.level().getBlockState(target).isAir()) {
-            this.level().setBlock(target, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, LIGHT_LEVEL), Block.UPDATE_CLIENTS);
-            this.lightPos = target;
-        }
-    }
-
-    private void clearLight() {
-        // A saved position far from the mob is stale. A read there can load a chunk.
-        if (this.lightPos != null && this.lightPos.closerThan(this.blockPosition(), LIGHT_REACH)) {
-            BlockState state = this.level().getBlockState(this.lightPos);
-
-            if (state.is(Blocks.LIGHT) && state.getValue(LightBlock.LEVEL) == LIGHT_LEVEL) {
-                this.level().setBlock(this.lightPos, state.getFluidState().createLegacyBlock(), Block.UPDATE_CLIENTS);
-            }
+        if (!this.level().isLoaded(this.legacyLightPos)) {
+            return;
         }
 
-        this.lightPos = null;
+        BlockState state = this.level().getBlockState(this.legacyLightPos);
+
+        if (state.is(Blocks.LIGHT) && state.getValue(LightBlock.LEVEL) == LIGHT_LEVEL) {
+            this.level().setBlock(this.legacyLightPos, state.getFluidState().createLegacyBlock(), Block.UPDATE_CLIENTS);
+        }
+
+        this.legacyLightPos = null;
     }
 
-    /// An unload keeps the light block. The saved position lets the mob remove it after the next load.
     @Override
     public void remove(RemovalReason reason) {
         if (!this.level().isClientSide && reason.shouldDestroy()) {
-            this.clearLight();
+            this.releaseLegacyLight();
         }
 
         super.remove(reason);
@@ -279,11 +264,11 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     @Override
     public void restoreFrom(Entity original) {
         if (original instanceof TormentedVillagerEntity villager && !villager.level().isClientSide) {
-            villager.clearLight();
+            villager.releaseLegacyLight();
         }
 
         super.restoreFrom(original);
-        this.lightPos = null;
+        this.legacyLightPos = null;
     }
 
     @Override
@@ -295,8 +280,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
 
-        if (this.lightPos != null) {
-            nbt.putLong(LIGHT_KEY, this.lightPos.asLong());
+        if (this.legacyLightPos != null) {
+            nbt.putLong(LIGHT_KEY, this.legacyLightPos.asLong());
         }
     }
 
@@ -305,7 +290,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
         super.readAdditionalSaveData(nbt);
 
         if (nbt.contains(LIGHT_KEY)) {
-            this.lightPos = BlockPos.of(nbt.getLong(LIGHT_KEY));
+            this.legacyLightPos = BlockPos.of(nbt.getLong(LIGHT_KEY));
         }
     }
 

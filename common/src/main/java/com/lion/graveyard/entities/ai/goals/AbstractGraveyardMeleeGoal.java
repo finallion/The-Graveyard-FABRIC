@@ -1,6 +1,7 @@
 package com.lion.graveyard.entities.ai.goals;
 
 import java.util.EnumSet;
+import java.util.UUID;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -19,6 +20,10 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathfinderMob> extend
     private int updateCountdownTicks;
     protected int cooldown;
     private long lastUpdateTime;
+    private UUID checkedTargetId;
+    private double checkedTargetX;
+    private double checkedTargetY;
+    private double checkedTargetZ;
     protected int animationTicker;
     protected boolean canFinishAttack = false;
 
@@ -32,30 +37,54 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathfinderMob> extend
 
     @Override
     public boolean canUse() {
-        long l = this.mob.getCommandSenderWorld().getGameTime();
+        long now = this.mob.getCommandSenderWorld().getGameTime();
+        LivingEntity target = this.mob.getTarget();
 
-        if (l - this.lastUpdateTime < 20L) {
-            // Rewind the timer so the goal cannot stay blocked while the target stands still.
-            this.lastUpdateTime -= 20;
-            return canUse();
-        } else {
-            this.lastUpdateTime = l;
-            LivingEntity livingEntity = this.mob.getTarget();
-
-            if (livingEntity == null) {
-                return false;
-            } else if (!livingEntity.isAlive()) {
-                return false;
-            } else {
-                this.path = this.mob.getNavigation().createPath(livingEntity, 0);
-
-                if (this.path != null) {
-                    return true;
-                } else {
-                    return this.getSquaredMaxAttackDistance(livingEntity) >= this.mob.distanceToSqr(livingEntity.getX(), livingEntity.getY(), livingEntity.getZ());
-                }
-            }
+        if (target != null && (this.isNewOrFarMoved(target) || this.isInReach(target))) {
+            this.lastUpdateTime = now - 20L;
         }
+
+        if (now - this.lastUpdateTime < 20L) {
+            return false;
+        }
+
+        this.lastUpdateTime = now;
+
+        if (target == null || !target.isAlive()) {
+            return false;
+        }
+
+        this.rememberChecked(target);
+        this.path = this.mob.getNavigation().createPath(target, 0);
+
+        if (this.path != null) {
+            return true;
+        }
+
+        return this.isInReach(target);
+    }
+
+    private boolean isInReach(LivingEntity target) {
+        return this.getSquaredMaxAttackDistance(target) >= this.mob.distanceToSqr(target.getX(), target.getY(), target.getZ());
+    }
+
+    private boolean isNewOrFarMoved(LivingEntity target) {
+        if (this.checkedTargetId == null || !target.getUUID().equals(this.checkedTargetId)) {
+            return true;
+        }
+
+        double dx = target.getX() - this.checkedTargetX;
+        double dy = target.getY() - this.checkedTargetY;
+        double dz = target.getZ() - this.checkedTargetZ;
+
+        return dx * dx + dy * dy + dz * dz >= 16.0D;
+    }
+
+    private void rememberChecked(LivingEntity target) {
+        this.checkedTargetId = target.getUUID();
+        this.checkedTargetX = target.getX();
+        this.checkedTargetY = target.getY();
+        this.checkedTargetZ = target.getZ();
     }
 
     @Override

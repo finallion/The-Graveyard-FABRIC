@@ -42,7 +42,7 @@ public class GraveyardConfig implements Config {
              corvidsStealItems lets magpies pick up items.
              ghoulingCollectsItems lets a Ghouling with a coffin pick up items it walks over.
              crowsEatCrops lets crows eat crops.
-             tormentedVillagerLight lets the tormented villager carry a light.
+             tormentedVillagerLight has no effect.
              smolderingBlocksInVillages generates smoldering blocks in overrun villages.
              skeletonCreeperDestroysBlocks lets the skeleton creeper explosion break blocks. skeletonCreeperExplosionRadius sets its size.
              wraithGriefing lets wraiths put out torches and lights.

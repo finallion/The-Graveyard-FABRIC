@@ -1,6 +1,7 @@
 package com.lion.graveyard.platform;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.advancements.CriterionTrigger;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -90,6 +91,11 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static void registerCriterion(CriterionTrigger<?> trigger) {
         throw new AssertionError();
     }
 

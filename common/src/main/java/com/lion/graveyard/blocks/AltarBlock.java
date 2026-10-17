@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.pattern.BlockPatternBuilder;
 import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import java.util.Iterator;
 import java.util.function.Predicate;
@@ -117,10 +118,23 @@ public class AltarBlock extends Block {
         return null;
     }
 
+    private static boolean hasLivingLich(Level world, BlockPos altarPos) {
+        BlockPos home = altarPos.above();
+
+        return world.getEntitiesOfClass(LichEntity.class, new AABB(altarPos).inflate(64.0D), lich -> lich.isAlive() && !lich.isRemoved())
+                .stream()
+                .anyMatch(lich -> !lich.isHomeKnown() || lich.getHomePos().equals(home));
+    }
+
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!player.mayBuild()) {
             return InteractionResult.PASS;
+        }
+
+        if (!world.isClientSide && state.is(TGBlocks.ALTAR.get()) && state.getValue(BLOODY) && !hasLivingLich(world, pos)) {
+            state = state.setValue(BLOODY, false);
+            world.setBlock(pos, state, Block.UPDATE_ALL);
         }
 
         ItemStack stack = player.getItemInHand(hand);

@@ -497,6 +497,10 @@ public class BoneStaffItem extends Item {
 
                 if (!calling) {
                     nbt.putInt(MISSES_KEY, misses + 1);
+
+                    if (misses + 1 == MAX_FETCH_MISSES) {
+                        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.gave_up"), true);
+                    }
                 }
             }
 
@@ -527,17 +531,14 @@ public class BoneStaffItem extends Item {
     }
 
     private static void call(ServerLevel world, Player owner, ItemStack stack, UUID ghoulingId) {
-        GhoulingBindings bindings = GhoulingBindings.get(world);
-        GhoulingBindings.Binding binding = bindings.get(ghoulingId);
+        GhoulingBindings.Binding binding = GhoulingBindings.get(world).get(ghoulingId);
 
         if (binding == null) {
             owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.severed"), true);
             return;
         }
 
-        ServerLevel home = world.getServer().getLevel(binding.dimension());
-
-        if (home != null && home.getEntity(ghoulingId) instanceof GhoulingEntity ghouling) {
+        if (findLoaded(world, ghoulingId) instanceof GhoulingEntity ghouling) {
             if (!isOwnedBy(ghouling, owner) || rejectsStaff(ghouling, stack, owner)) {
                 return;
             }
@@ -551,11 +552,11 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        // A bond without a last known position cannot load its chunk.
+        ServerLevel home = world.getServer().getLevel(binding.dimension());
+
         if (home == null || binding.pos() == null) {
             stack.removeTagKey(CALL_KEY);
-            bindings.remove(ghoulingId);
-            owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.severed"), true);
+            owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.not_found"), true);
             return;
         }
 

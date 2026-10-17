@@ -15,10 +15,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +30,11 @@ public class GraveyardHordeSpawner implements CustomSpawner {
     private int ticksUntilNextSpawn;
 
     public GraveyardHordeSpawner() {}
+
+    public static boolean monstersAllowed(ServerLevel world) {
+        return world.getDifficulty() != Difficulty.PEACEFUL && world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)
+                && world.getServer().isSpawningMonsters();
+    }
 
     public int tick(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals) {
         if (!spawnMonsters) {

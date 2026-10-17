@@ -3,6 +3,7 @@ package com.lion.graveyard.platform.forge;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -43,7 +44,9 @@ public class HordeSpawner {
         GraveyardHordeSpawner spawner = spawners.get(event.level.dimensionTypeId().location());
 
         if (spawner != null) {
-            spawner.tick(event.level.getServer().overworld(), true, true);
+            ServerLevel overworld = event.level.getServer().overworld();
+
+            spawner.tick(overworld, GraveyardHordeSpawner.monstersAllowed(overworld), true);
         }
     }
 }

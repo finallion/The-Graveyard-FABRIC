@@ -178,6 +178,7 @@ public class LichEntity extends Monster implements GeoEntity {
     protected static final EntityDimensions CRAWL_DIMENSIONS;
     private int huntCooldownTicker = 100;
     private BlockPos homePos;
+    private boolean homeKnown;
     private Direction spawnDirection;
     private int phaseThreeAttackSoundAge;
     private int lastHurtSoundAge = -100;
@@ -386,12 +387,8 @@ public class LichEntity extends Monster implements GeoEntity {
             spawnHealHelix(true);
         }
 
-        if (!this.isAlive() && homePos != null) {
-            BlockState altar = level().getBlockState(homePos.below());
-
-            if (altar.getBlock() instanceof AltarBlock) {
-                level().setBlock(homePos.below(), altar.setValue(AltarBlock.BLOODY, false), 3);
-            }
+        if (!this.isAlive()) {
+            this.releaseAltar();
         }
 
         if (canHuntStart()) {
@@ -1031,11 +1028,41 @@ public class LichEntity extends Monster implements GeoEntity {
         this.bossBar.setName(this.getDisplayName());
     }
 
+    private void releaseAltar() {
+        if (this.homePos == null || this.level().isClientSide) {
+            return;
+        }
+
+        BlockState altar = this.level().getBlockState(this.homePos.below());
+
+        if (altar.getBlock() instanceof AltarBlock) {
+            this.level().setBlock(this.homePos.below(), altar.setValue(AltarBlock.BLOODY, false), 3);
+        }
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (reason.shouldDestroy()) {
+            this.releaseAltar();
+        }
+
+        super.remove(reason);
+    }
+
+    public BlockPos getHomePos() {
+        return this.homePos;
+    }
+
+    public boolean isHomeKnown() {
+        return this.homeKnown;
+    }
+
     public void onSummoned(Direction direction, BlockPos altarPos) {
         this.setAnimationState(ANIMATION_SPAWN);
         this.entityData.set(SPAWN_DURATION, spawnInvulTicks());
         applyInvulAndResetBossBar(spawnInvulTicks());
         this.homePos = BlockPos.containing(altarPos.getX() + 0.5D, altarPos.getY(), altarPos.getZ() + 0.5D);
+        this.homeKnown = true;
         this.spawnDirection = direction;
         playSpawnSound();
     }
@@ -1551,7 +1578,7 @@ public class LichEntity extends Monster implements GeoEntity {
         nbt.putInt("PhaseTwoTimer", getStartPhaseTwoAnimTimer());
         nbt.putInt("PhaseThreeTimer", getStartPhaseThreeAnimTimer());
 
-        if (homePos != null) {
+        if (homePos != null && this.homeKnown) {
             nbt.putLong("HomePos", homePos.asLong());
         }
 
@@ -1608,6 +1635,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
         if (nbt.contains("HomePos", Tag.TAG_LONG)) {
             this.homePos = BlockPos.of(nbt.getLong("HomePos"));
+            this.homeKnown = true;
         }
 
         if (this.hasCustomName()) {

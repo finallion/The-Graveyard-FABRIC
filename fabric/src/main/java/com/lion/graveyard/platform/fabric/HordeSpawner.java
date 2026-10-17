@@ -54,7 +54,7 @@ public class HordeSpawner {
             if (spawnerList != null) {
                 for (var spawner : spawnerList) {
                     if (spawner != null) {
-                        spawner.tick(world, true, true);
+                        spawner.tick(world, GraveyardHordeSpawner.monstersAllowed(world), true);
                     }
                 }
             }

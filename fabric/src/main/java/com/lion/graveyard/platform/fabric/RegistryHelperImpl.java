@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
@@ -101,6 +103,10 @@ public class RegistryHelperImpl {
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
         Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id(name), processorType);
+    }
+
+    public static void registerCriterion(CriterionTrigger<?> trigger) {
+        CriteriaTriggers.register(trigger);
     }
 
     public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {

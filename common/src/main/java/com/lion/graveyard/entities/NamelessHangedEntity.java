@@ -132,7 +132,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public void tick() {
-        if (getCommandSenderWorld().isDay() && this.offers != null) {
+        if (getCommandSenderWorld().isDay() && this.offers != null && !this.isTrading()) {
             this.offers = null;
         }
 

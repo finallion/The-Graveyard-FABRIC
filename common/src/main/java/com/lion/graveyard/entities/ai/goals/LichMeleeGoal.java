@@ -22,7 +22,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
     public boolean canContinueToUse() {
         LivingEntity target = this.mob.getTarget();
 
-        if (target != null && target.isAlive() && (this.mob.isPouncing() || this.mob.isCharging() || isDirectChase(target))) {
+        if (target != null && target.isAlive() && (this.mob.isPouncing() || this.mob.isCharging() || isDirectChase(target) || isPhaseOneHold(target))) {
             return true;
         }
 
@@ -60,6 +60,11 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
         }
 
         super.tick();
+    }
+
+    private boolean isPhaseOneHold(LivingEntity target) {
+        return this.mob.getPhase() == 1
+                && (this.canFinishAttack || this.mob.distanceToSqr(target) <= this.getSquaredMaxAttackDistance(target));
     }
 
     private boolean isDirectChase(LivingEntity target) {

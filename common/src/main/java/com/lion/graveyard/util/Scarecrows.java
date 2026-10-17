@@ -10,6 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.AABB;
 
 public final class Scarecrows {
@@ -27,17 +29,61 @@ public final class Scarecrows {
             return true;
         }
 
-        for (BlockPos pos : BlockPos.betweenClosed(
-                center.getX() - radius, center.getY() - radius, center.getZ() - radius,
-                center.getX() + radius, center.getY() + radius, center.getZ() + radius)) {
-            BlockState state = world.getBlockState(pos);
+        return hasBlockScarecrow(world, center, radius);
+    }
 
-            if (state.is(TGTags.CROW_REPELLENTS)
-                    || state.is(TGTags.SCARECROW_HEADS) && isBuiltScarecrow(world, pos)) {
-                return true;
+    private static boolean hasBlockScarecrow(Level world, BlockPos center, int radius) {
+        int minX = center.getX() - radius;
+        int maxX = center.getX() + radius;
+        int minZ = center.getZ() - radius;
+        int maxZ = center.getZ() + radius;
+        int minY = Math.max(world.getMinBuildHeight(), center.getY() - radius);
+        int maxY = Math.min(world.getMaxBuildHeight() - 1, center.getY() + radius);
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
+            for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
+                LevelChunk chunk = world.getChunkSource().getChunkNow(chunkX, chunkZ);
+
+                if (chunk == null) {
+                    continue;
+                }
+
+                for (int index = chunk.getSectionIndex(minY); index <= chunk.getSectionIndex(maxY); index++) {
+                    LevelChunkSection section = chunk.getSection(index);
+
+                    if (section.hasOnlyAir() || !section.maybeHas(Scarecrows::isRelevant)) {
+                        continue;
+                    }
+
+                    int baseY = chunk.getSectionYFromSectionIndex(index) << 4;
+
+                    for (int x = Math.max(minX, chunkX << 4); x <= Math.min(maxX, (chunkX << 4) + 15); x++) {
+                        for (int y = Math.max(minY, baseY); y <= Math.min(maxY, baseY + 15); y++) {
+                            for (int z = Math.max(minZ, chunkZ << 4); z <= Math.min(maxZ, (chunkZ << 4) + 15); z++) {
+                                BlockState state = section.getBlockState(x & 15, y & 15, z & 15);
+
+                                if (!isRelevant(state)) {
+                                    continue;
+                                }
+
+                                pos.set(x, y, z);
+
+                                if (state.is(TGTags.CROW_REPELLENTS) || isBuiltScarecrow(world, pos)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+
         return false;
+    }
+
+    private static boolean isRelevant(BlockState state) {
+        return state.is(TGTags.CROW_REPELLENTS) || state.is(TGTags.SCARECROW_HEADS);
     }
 
     private static boolean isWearingPumpkin(ArmorStand stand) {

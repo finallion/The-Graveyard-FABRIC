@@ -2,6 +2,7 @@ package com.lion.graveyard.blocks;
 
 import com.lion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.lion.graveyard.blockentities.enums.SarcophagusPart;
+import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.entities.WraithEntity;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGBlockEntities;
@@ -20,6 +21,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -144,23 +146,32 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     public static void spawnGhost(BlockState state, Level world, BlockPos pos, Player player, Random random) {
         if (!state.getValue(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 62) {
-            BlockPos entityPos = pos;
-            for (int i = 0; i < 10; i++) { // 10 spawn attempts to find air, else just spawn
-                entityPos = player.blockPosition().offset(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+            boolean allowed = !MobSpawnGate.blocks(TGEntities.WRAITH.get(), MobSpawnType.STRUCTURE);
+            WraithEntity ghost = null;
 
-                if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.above()).isAir()) {
-                    break;
+            if (allowed) {
+                BlockPos entityPos = pos;
+                for (int i = 0; i < 10; i++) {
+                    entityPos = player.blockPosition().offset(-2 + random.nextInt(5), 1, -2 + random.nextInt(5));
+
+                    if (world.getBlockState(entityPos).isAir() && world.getBlockState(entityPos.above()).isAir()) {
+                        break;
+                    }
+                }
+                ghost = TGEntities.WRAITH.get().create(world);
+
+                if (ghost != null) {
+                    ghost.moveTo(entityPos, 0.0F, 0.0F);
+                    ghost.startSpawnAnimation();
+                    world.addFreshEntity(ghost);
                 }
             }
-            WraithEntity ghost = TGEntities.WRAITH.get().create(world);
-            ghost.moveTo(entityPos, 0.0F, 0.0F);
-            ghost.startSpawnAnimation();
-            world.addFreshEntity(ghost);
+
             world.setBlock(pos, state.setValue(PLAYER_PLACED, true), 3);
             BlockPos otherPartPos = pos.relative(getDirectionTowardsOtherPart(state.getValue(PART), state.getValue(FACING)));
             BlockState otherPart = world.getBlockState(otherPartPos);
 
-            if (player instanceof ServerPlayer) {
+            if (ghost != null && player instanceof ServerPlayer) {
                 TGAdvancements.SPAWN_WRAITH.trigger((ServerPlayer) player);
             }
 

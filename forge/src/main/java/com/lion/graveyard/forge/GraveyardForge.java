@@ -2,28 +2,28 @@ package com.lion.graveyard.forge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
-import com.lion.graveyard.init.TGOverrunVillage;
-import com.lion.graveyard.init.TGProcessors;
 import com.lion.graveyard.network.PacketHandler;
 import com.lion.graveyard.platform.forge.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.forge.RegistryHelperImpl;
 import com.lion.graveyard.util.SpawnHordeCommand;
 import com.lion.graveyard.util.ChronicleCommand;
 import com.lion.graveyard.chronicle.Chronicle;
+import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.event.CommonEvents;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.state.BlockState;
@@ -78,6 +78,7 @@ public class GraveyardForge {
         RegistryHelperImpl.RECIPE_SERIALIZERS.register(bus);
         RegistryHelperImpl.CREATIVE_TABS.register(bus);
         RegistryHelperImpl.MENUS.register(bus);
+        RegistryHelperImpl.STRUCTURE_PROCESSORS.register(bus);
         BIOME_MODIFIERS.register(bus);
 
         bus.addListener(GraveyardForge::init);
@@ -96,22 +97,35 @@ public class GraveyardForge {
         forgeBus.addListener(EventPriority.LOWEST, (LivingDeathEvent event) -> CommonEvents.onDeath(event.getEntity()));
         forgeBus.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickItem event) -> CommonEvents.onUseItem(event.getEntity(), event.getHand()));
         forgeBus.addListener(EventPriority.LOWEST, GraveyardForge::onRightClickBlock);
+        forgeBus.addListener(EventPriority.LOWEST, GraveyardForge::gatePositionCheck);
+        forgeBus.addListener(EventPriority.LOWEST, GraveyardForge::gateSpawnPlacement);
         forgeBus.addListener(GraveyardForge::onToolModification);
     }
 
     private static void init(final FMLCommonSetupEvent event) {
-        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("remove_waterlogged_processor"), TGProcessors.REMOVE_WATERLOGGED);
-        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("switch_spawner_processor"), TGProcessors.SWITCH_SPAWNER);
-        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("waterlogged_crypt_processor"), TGProcessors.REMOVE_WATERLOGGED_CRYPT);
-        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("ruin"), TGOverrunVillage.RUIN);
-        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id("pool_aliases"), TGOverrunVillage.POOL_ALIASES);
-
+        event.enqueueWork(() -> RegistryHelperImpl.CRITERIA.forEach(CriteriaTriggers::register));
         event.enqueueWork(Graveyard::postInit);
     }
 
     private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         if (event.getUseBlock() != Event.Result.DENY) {
             CommonEvents.onUseBlock(event.getEntity(), event.getLevel(), event.getPos());
+        }
+    }
+
+    private static void gatePositionCheck(MobSpawnEvent.PositionCheck event) {
+        Mob mob = event.getEntity();
+
+        if (MobSpawnGate.blocks(mob.getType(), event.getSpawnType())
+                || MobSpawnGate.inForbiddenBiome(event.getLevel(), mob.blockPosition(), mob.getType(), event.getSpawnType())) {
+            event.setResult(Event.Result.DENY);
+        }
+    }
+
+    private static void gateSpawnPlacement(MobSpawnEvent.SpawnPlacementCheck event) {
+        if (MobSpawnGate.blocks(event.getEntityType(), event.getSpawnType())
+                || MobSpawnGate.inForbiddenBiome(event.getLevel(), event.getPos(), event.getEntityType(), event.getSpawnType())) {
+            event.setResult(Event.Result.DENY);
         }
     }
 
