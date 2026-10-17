@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.monster.Creeper;
 
 @Environment(EnvType.CLIENT)
 public class SkeletonCreeperRender extends MobRenderer<SkeletonCreeper, CreeperModel<SkeletonCreeper>> {
@@ -26,7 +25,8 @@ public class SkeletonCreeperRender extends MobRenderer<SkeletonCreeper, CreeperM
         this.addLayer(new SkeletonCreeperEyes(this));
     }
 
-    protected void scale(Creeper creeperEntity, PoseStack matrixStack, float f) {
+    @Override
+    protected void scale(SkeletonCreeper creeperEntity, PoseStack matrixStack, float f) {
         float g = creeperEntity.getSwelling(f);
         float h = 1.0F + Mth.sin(g * 100.0F) * g * 0.01F;
         g = Mth.clamp(g, 0.0F, 1.0F);
