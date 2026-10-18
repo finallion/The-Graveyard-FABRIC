@@ -20,7 +20,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 
 public class GraveyardMinionEntity extends PathfinderMob {
     protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID;
@@ -29,8 +29,8 @@ public class GraveyardMinionEntity extends PathfinderMob {
 
     public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, Level world) {
         super(entityType, world);
-        this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(PathType.POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(PathType.DANGER_POWDER_SNOW, -1.0F);
     }
 
     @Override

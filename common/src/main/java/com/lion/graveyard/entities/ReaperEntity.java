@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -77,7 +76,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.moveControl = new ReaperMoveControl(this);
     }
 
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -121,11 +119,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    @Override
     public void move(MoverType movementType, Vec3 movement) {
         super.move(movementType, movement);
         this.checkInsideBlocks();
@@ -144,14 +137,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         this.setNoGravity(true);
     }
 
-
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
-
 
     private void tickDown(EntityDataAccessor<Integer> timer) {
         int ticks = this.entityData.get(timer);
@@ -194,7 +185,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         return this.bounds;
     }
 
-
     private boolean areFlagsSet(int mask) {
         int i = (Byte)this.entityData.get(VEX_FLAGS);
         return (i & mask) != 0;
@@ -226,7 +216,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
                 .add(Attributes.ATTACK_DAMAGE, 4.0D);
     }
 
-
     public byte getAnimation() {
         return entityData.get(ANIMATION);
     }
@@ -234,7 +223,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     public void setAnimation(byte animation) {
         entityData.set(ANIMATION, animation);
     }
-
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
@@ -249,12 +237,10 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
                 .build(this, "controller"));
     }
 
-
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return factory;
     }
-
 
     @Override
     public void playAmbientSound() {
@@ -415,6 +401,5 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             super.start();
         }
     }
-
 
 }

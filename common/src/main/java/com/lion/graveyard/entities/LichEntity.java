@@ -41,7 +41,6 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -322,7 +321,6 @@ public class LichEntity extends Monster implements GeoEntity {
         }
     }
 
-
     @Override
     public void aiStep() {
         if (homePos == null) {
@@ -396,7 +394,7 @@ public class LichEntity extends Monster implements GeoEntity {
         }
 
         if (!canHuntStart() && random.nextInt(5) == 0) {
-            getCommandSenderWorld().playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE, SoundSource.HOSTILE, 4.0F, -10.0F);
+            getCommandSenderWorld().playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 4.0F, -10.0F);
         }
 
         if (getMusicDelay() < 78) {
@@ -573,7 +571,7 @@ public class LichEntity extends Monster implements GeoEntity {
                             BlockPos targetPos = BlockPos.containing(this.getX() + Mth.nextInt(random, -10, 10), this.getY(), this.getZ() + Mth.nextInt(random, -10, 10));
 
                             if (getCommandSenderWorld().getBlockState(targetPos).isAir() && getCommandSenderWorld().getBlockState(targetPos.above()).isAir() && getCommandSenderWorld().getBlockState(targetPos.below()).isRedstoneConductor(getCommandSenderWorld(), targetPos.below())) {
-                                player.teleportToWithTicket(targetPos.getX(), targetPos.getY(), targetPos.getZ());
+                                player.teleportTo(targetPos.getX(), targetPos.getY(), targetPos.getZ());
                                 break;
                             }
                         }
@@ -612,7 +610,7 @@ public class LichEntity extends Monster implements GeoEntity {
             }
 
             if (getHuntTimer() == 1 && getHuntCooldownTicker() == 0 && canHuntStart()) {
-                this.teleportToWithTicket(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                this.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 stopRush();
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 enterStunned();
@@ -632,7 +630,7 @@ public class LichEntity extends Monster implements GeoEntity {
             int phaseTwoTimer = getStartPhaseTwoAnimTimer();
 
             if (getPhaseInvulnerableTimer() == 0) {
-                this.teleportToWithTicket(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                this.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
                 setPhaseInvulTimer(START_PHASE_TWO_ANIMATION_DURATION);
             }
 
@@ -657,7 +655,7 @@ public class LichEntity extends Monster implements GeoEntity {
                 AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
                 AttributeInstance entityAttributeDmgInstance = this.getAttribute(Attributes.ATTACK_DAMAGE);
 
-                this.teleportToWithTicket(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
+                this.teleportTo(homePos.getX() + 0.75D, homePos.getY() + 0.5D, homePos.getZ() + 0.75D);
                 stopRush();
                 this.setHuntCooldownTicker(HUNT_COOLDOWN);
                 setAnimationState(ANIMATION_STUNNED);
@@ -704,7 +702,7 @@ public class LichEntity extends Monster implements GeoEntity {
             List<Player> playersInRange = getPlayersInRange(30.0D);
             for (Player player : playersInRange) {
                 if (getHealTimer() == HEALING_DURATION && !player.isCreative()) {
-                    player.teleportToWithTicket(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
+                    player.teleportTo(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
                 }
 
                 if (!player.hasEffect(MobEffects.DIG_SLOWDOWN) && !player.isCreative()) {
@@ -1005,7 +1003,6 @@ public class LichEntity extends Monster implements GeoEntity {
         }
     }
 
-
     @Override
     public void setCustomName(@Nullable Component name) {
         super.setCustomName(name);
@@ -1100,11 +1097,6 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    @Override
     protected boolean canRide(Entity entity) {
         return false;
     }
@@ -1148,7 +1140,6 @@ public class LichEntity extends Monster implements GeoEntity {
                 } else {
                     setHealTimer(0);
                 }
-
 
                 return super.hurt(source, amount);
             }
@@ -1363,7 +1354,6 @@ public class LichEntity extends Monster implements GeoEntity {
         this.entityData.set(HUNT_TIMER, ticks);
     }
 
-
     public int getAnimationState() {
         return this.entityData.get(ANIMATION);
     }
@@ -1419,7 +1409,6 @@ public class LichEntity extends Monster implements GeoEntity {
     public void setMusicDelay(int time) {
         this.entityData.set(MUSIC_DELAY, time);
     }
-
 
     private void openFight() {
         if (getTarget() == null) {
@@ -1580,7 +1569,6 @@ public class LichEntity extends Monster implements GeoEntity {
         super.addAdditionalSaveData(nbt);
     }
 
-
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         if (!nbt.contains("Invul")) {
@@ -1705,7 +1693,7 @@ public class LichEntity extends Monster implements GeoEntity {
                 playCorpseSpellSound();
 
                 if (!isAtHome()) {
-                    this.lich.teleportToWithTicket(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 0.5D, this.lich.homePos.getZ() + 0.5D);
+                    this.lich.teleportTo(this.lich.homePos.getX() + 0.5D, this.lich.homePos.getY() + 0.5D, this.lich.homePos.getZ() + 0.5D);
                 }
             }
 
@@ -1785,7 +1773,6 @@ public class LichEntity extends Monster implements GeoEntity {
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
             serverWorld.addFreshEntity(corpse);
-
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
                 FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld);
@@ -1908,7 +1895,7 @@ public class LichEntity extends Monster implements GeoEntity {
             openingTicks = 0;
 
             if (!isAtHome()) {
-                this.mob.teleportToWithTicket(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
+                this.mob.teleportTo(homePos.getX() + 0.5D, homePos.getY() + 0.5D, homePos.getZ() + 0.5D);
             }
 
             playHealSound();

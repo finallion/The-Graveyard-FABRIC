@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:acolyte",
+    "graveyard:corrupted_vindicator",
+    "graveyard:corrupted_pillager",
+    "graveyard:corrupted_evoker"
+  ]
+}

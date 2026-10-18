@@ -83,7 +83,6 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     public NightmareEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "nightmare");
-        this.setMaxUpStep(1.0F);
     }
 
     @Override
@@ -201,7 +200,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                 .add(Attributes.ARMOR, 3.0D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.19D)
-                .add(Attributes.FOLLOW_RANGE, 64.0D);
+                .add(Attributes.FOLLOW_RANGE, 64.0D)
+                .add(Attributes.STEP_HEIGHT, 1.0D);
     }
 
     @Override

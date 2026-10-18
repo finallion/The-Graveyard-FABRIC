@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "graveyard:ghoul",
+    "graveyard:lich",
+    "graveyard:reaper",
+    "graveyard:revenant",
+    "graveyard:skeleton_creeper",
+    "graveyard:wraith"
+  ]
+}

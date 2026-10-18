@@ -114,7 +114,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
 
     @Override
     public void aiStep() {
-        if (this.getFeetBlockState().isAir()) {
+        if (this.getInBlockState().isAir()) {
             for (int i = 0; i < 10; i++) {
                 BlockPos pos = this.blockPosition().offset(0, -i, 0);
                 BlockState state = this.getCommandSenderWorld().getBlockState(pos);
@@ -158,7 +158,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
             setIsFalling(false);
         }
 
-        if (this.getFeetBlockState().isAir()) {
+        if (this.getInBlockState().isAir()) {
             setIsFalling(true);
         }
 

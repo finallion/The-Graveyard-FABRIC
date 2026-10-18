@@ -12,7 +12,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
@@ -40,11 +39,6 @@ public class SkeletonCreeper extends Creeper {
     }
 
     @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    @Override
     protected void dropCustomDeathLoot(DamageSource source, int lootingMultiplier, boolean allowDrops) {
         Entity entity = source.getEntity();
 
@@ -58,7 +52,6 @@ public class SkeletonCreeper extends Creeper {
             super.dropCustomDeathLoot(source, lootingMultiplier, allowDrops);
         }
     }
-
 
     public void explode() {
         if (!this.getCommandSenderWorld().isClientSide) {
@@ -97,7 +90,6 @@ public class SkeletonCreeper extends Creeper {
         }
     }
 
-
     @Override
     public void aiStep() {
         if (random.nextInt(7) == 0) {
@@ -107,7 +99,6 @@ public class SkeletonCreeper extends Creeper {
 
         super.aiStep();
     }
-
 
     private static float explosionRadius(GraveyardConfig config) {
         double radius = config.number("skeletonCreeperExplosionRadius", 3.5D);

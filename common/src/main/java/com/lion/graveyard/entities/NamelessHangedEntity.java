@@ -231,12 +231,12 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundEvents.SOUL_ESCAPE;
+        return SoundEvents.SOUL_ESCAPE.value();
     }
 
     @Override
     protected SoundEvent getTradeUpdatedSound(boolean sold) {
-        return SoundEvents.SOUL_ESCAPE;
+        return SoundEvents.SOUL_ESCAPE.value();
     }
 
 

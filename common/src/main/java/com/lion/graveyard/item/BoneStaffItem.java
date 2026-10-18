@@ -192,7 +192,7 @@ public class BoneStaffItem extends Item {
         return nbt != null && nbt.hasUUID("GhoulingUUID") && nbt.getUUID("GhoulingUUID").equals(ghouling.getUUID());
     }
 
-    private static final SoundEvent STORE_DONE_SOUND = SoundEvents.SOUL_ESCAPE;
+    private static final SoundEvent STORE_DONE_SOUND = SoundEvents.SOUL_ESCAPE.value();
 
     public static void startDrawing(Player player, GhoulingEntity ghouling) {
         DRAWING.put(player.getUUID(), ghouling.getUUID());

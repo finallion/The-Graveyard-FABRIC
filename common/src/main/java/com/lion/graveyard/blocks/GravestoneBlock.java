@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.resources.ResourceLocation;
 
@@ -208,7 +208,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
 
     private boolean isTextLiteralOrEmpty(Player player, GravestoneBlockEntity blockEntity) {
         SignText signText = blockEntity.getText();
-        return Arrays.stream(signText.getMessages(player.isTextFilteringEnabled())).allMatch((message) -> message.equals(CommonComponents.EMPTY) || message.getContents() instanceof LiteralContents);
+        return Arrays.stream(signText.getMessages(player.isTextFilteringEnabled())).allMatch((message) -> message.equals(CommonComponents.EMPTY) || message.getContents() instanceof PlainTextContents);
     }
 
     public void openEditScreen(Player player, GravestoneBlockEntity blockEntity, Level world, BlockPos pos, BlockState state) {

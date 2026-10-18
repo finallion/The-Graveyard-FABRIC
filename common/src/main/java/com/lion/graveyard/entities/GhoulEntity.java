@@ -18,7 +18,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -107,7 +106,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private static final int DEATH_ANIMATION_DURATION = 44 + AnimationTable.TRANSITION_TICKS;
     public final int RAGE_ANIMATION_COOLDOWN = 300;
 
-
     public GhoulEntity(EntityType<? extends GhoulEntity> entityType, Level world) {
         super(entityType, world, "ghoul");
     }
@@ -141,7 +139,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
     }
 
-
     public static AttributeSupplier.Builder createGhoulAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.FOLLOW_RANGE, 30.0D)
@@ -149,12 +146,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
                 .add(Attributes.ATTACK_DAMAGE, 4.0D)
                 .add(Attributes.ARMOR, 3.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
-    }
-
-
-    @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
     }
 
     public int getAnimationState() {
@@ -393,7 +384,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
         }
     }
-
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {

@@ -7,12 +7,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -25,13 +27,15 @@ import net.minecraft.world.phys.Vec3;
 public class SkullEntity extends AbstractHurtingProjectile {
 
     private static final EntityDataAccessor<Boolean> CHARGED;
+    private static final double INITIAL_SPEED = 0.001D;
 
     public SkullEntity(EntityType<? extends SkullEntity> entityType, Level world) {
         super(entityType, world);
     }
 
     public SkullEntity(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
-        super(TGEntities.SKULL.get(), owner, directionX, directionY, directionZ, world);
+        super(TGEntities.SKULL.get(), owner, new Vec3(directionX, directionY, directionZ), world);
+        this.setDeltaMovement(new Vec3(directionX, directionY, directionZ).normalize().scale(INITIAL_SPEED));
     }
 
     @Override
@@ -68,8 +72,8 @@ public class SkullEntity extends AbstractHurtingProjectile {
                 damaged = entity.hurt(this.damageSources().indirectMagic(this, livingEntity), 10.0F);
 
                 if (damaged) {
-                    if (entity.isAlive()) {
-                        this.doEnchantDamageEffects(livingEntity, entity);
+                    if (entity.isAlive() && this.level() instanceof ServerLevel serverLevel) {
+                        EnchantmentHelper.doPostAttackEffects(serverLevel, entity, this.damageSources().indirectMagic(this, livingEntity));
                     }
                 }
             }

@@ -223,7 +223,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
             }
         }
 
-        this.playSound(SoundEvents.SOUL_ESCAPE, 1.0F, 1.0F);
+        this.playSound(SoundEvents.SOUL_ESCAPE.value(), 1.0F, 1.0F);
         this.discard();
     }
 

@@ -11,9 +11,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -71,12 +71,6 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Override
-    public MobType getMobType() {
-        return MobType.ILLAGER;
-    }
-
-
-    @Override
     public boolean canAttack(LivingEntity target) {
         return target instanceof AbstractVillager && target.isBaby() ? false : super.canAttack(target);
     }
@@ -117,7 +111,6 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         return false;
     }
 
-
     public static AttributeSupplier.Builder createCorruptedIllagerAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MOVEMENT_SPEED, 0.3499999940395355D)
@@ -146,12 +139,11 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         return entityData2;
     }
 
-
     @Override
     public boolean isAlliedTo(Entity other) {
         if (super.isAlliedTo(other)) {
             return true;
-        } else if (other instanceof LivingEntity && ((LivingEntity)other).getMobType() == MobType.ILLAGER) {
+        } else if (other instanceof LivingEntity && other.getType().is(EntityTypeTags.ILLAGER)) {
             return this.getTeam() == null && other.getTeam() == null;
         } else {
             return false;

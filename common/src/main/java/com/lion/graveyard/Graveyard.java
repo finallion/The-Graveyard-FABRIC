@@ -8,7 +8,6 @@ import com.lion.graveyard.platform.ConfigDirectory;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.bernie.geckolib.GeckoLib;
 
 public class Graveyard {
 
@@ -29,8 +28,6 @@ public class Graveyard {
     }
 
     public static void init() {
-        GeckoLib.initialize();
-
         TGAdvancements.init();
         TGItems.init();
         TGBlocks.init();

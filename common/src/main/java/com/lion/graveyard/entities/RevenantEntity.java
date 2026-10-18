@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -40,8 +39,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.UUID;
-
 public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final ResourceLocation SLOWNESS_ID = Graveyard.id("slowness_id");
@@ -61,7 +58,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("attack");
     private final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().then("running", Animation.LoopType.LOOP);
     private final RawAnimation REANIMATE_ANIMATION = RawAnimation.begin().thenPlayAndHold("reanimate");
-
 
     protected static final int ANIMATION_IDLE = 0;
     protected static final int ANIMATION_WALK = 1;
@@ -83,7 +79,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public RevenantEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "revenant");
     }
-
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -109,11 +104,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, IronGolem.class, true));
     }
 
-    @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
     public static AttributeSupplier.Builder createRevenantAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 25.0D)
@@ -122,8 +112,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
                 .add(Attributes.MOVEMENT_SPEED, 0.155D)
                 .add(Attributes.FOLLOW_RANGE, 25.0D);
     }
-
-
 
     @Override
     public void tick() {
@@ -212,7 +200,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         super.aiStep();
     }
 
-
     @Override
     protected void tickDeath() {
         ++this.deathTime;
@@ -260,7 +247,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         return factory;
     }
 
-
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<RevenantEntity>create()
@@ -278,7 +264,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     private boolean isRunning(AnimationState<RevenantEntity> state) {
         return AnimationTable.isMoving(state) && this.entityData.get(CHASING) && !isInWaterRainOrBubble();
     }
-
 
     @Override
     public void playAmbientSound() {
@@ -362,6 +347,5 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         CHASING = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.BOOLEAN);
         SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, -0.3D, AttributeModifier.Operation.ADD_VALUE);
     }
-
 
 }

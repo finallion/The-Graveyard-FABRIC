@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import java.util.EnumSet;
 
@@ -77,15 +77,15 @@ public class FollowOwnerGoal extends Goal {
     @Override
     public void start() {
         this.updateCountdownTicks = 0;
-        this.oldWaterPathfindingPenalty = this.tameable.getPathfindingMalus(BlockPathTypes.WATER);
-        this.tameable.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.oldWaterPathfindingPenalty = this.tameable.getPathfindingMalus(PathType.WATER);
+        this.tameable.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
     @Override
     public void stop() {
         this.owner = null;
         this.navigation.stop();
-        this.tameable.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterPathfindingPenalty);
+        this.tameable.setPathfindingMalus(PathType.WATER, this.oldWaterPathfindingPenalty);
     }
 
     @Override
@@ -135,9 +135,9 @@ public class FollowOwnerGoal extends Goal {
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        BlockPathTypes pathNodeType = WalkNodeEvaluator.getBlockPathTypeStatic(this.world, pos.mutable());
+        PathType pathNodeType = WalkNodeEvaluator.getPathTypeStatic(this.tameable, pos);
 
-        if (pathNodeType != BlockPathTypes.WALKABLE) {
+        if (pathNodeType != PathType.WALKABLE) {
             return false;
         } else {
             BlockState blockState = this.world.getBlockState(pos.below());

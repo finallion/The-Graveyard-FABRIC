@@ -191,7 +191,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
         if (getTeleportTimer() > 0) {
             if (getTeleportTimer() == 10) {
-                playSound(SoundEvents.SOUL_ESCAPE, 2.0F, -10.0F);
+                playSound(SoundEvents.SOUL_ESCAPE.value(), 2.0F, -10.0F);
             }
 
             MathUtil.createParticleCircle(getCommandSenderWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getCommandSenderWorld().random, 0.5F);

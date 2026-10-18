@@ -89,7 +89,7 @@ public class GraveyardConfig {
 
     public double structureChance(ResourceLocation id) {
         double chance = getStructure(id).spawnChance();
-        return isOverrunVariant(id.getPath()) ? chance * getStructure(new ResourceLocation(id.getNamespace(), "overrun_village")).spawnChance() : chance;
+        return isOverrunVariant(id.getPath()) ? chance * getStructure(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "overrun_village")).spawnChance() : chance;
     }
 
     public boolean flag(String key, boolean fallback) {

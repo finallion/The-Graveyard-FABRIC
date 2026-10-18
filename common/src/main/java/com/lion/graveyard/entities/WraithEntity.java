@@ -23,7 +23,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -55,7 +54,7 @@ import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
@@ -68,7 +67,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
-import java.util.UUID;
 
 public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
@@ -95,17 +93,15 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private BlockPos homePosition;
     private int timeSinceExtinguish;
 
-
     public WraithEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "wraith");
         this.moveControl = new FlyingMoveControl(this, 0, true);
-        this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER_BORDER, 16.0F);
-        this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
-        this.setPathfindingMalus(BlockPathTypes.FENCE, -1.0F);
+        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
     }
-
 
     @Override
     public void move(MoverType movementType, Vec3 movement) {
@@ -120,7 +116,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
 
     }
-
 
     @Override
     protected void registerGoals() {
@@ -171,7 +166,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
@@ -207,7 +201,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-
     private BlockPos getHomePosition() {
         return homePosition;
     }
@@ -239,8 +232,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
     }
 
-
-
     @Override
     public void aiStep() {
         if (getCommandSenderWorld().isClientSide() && isSpawning()) {
@@ -258,8 +249,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             }
         }
 
-
-
         if (!this.isAlive()) {
             addDeathParticles();
         }
@@ -270,14 +259,9 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
-        world.playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE, SoundSource.HOSTILE,2.0F, -5.0F);
+        world.playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE,2.0F, -5.0F);
         startSpawnAnimation();
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
-    }
-
-    @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
     }
 
     @Override
@@ -289,7 +273,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             this.remove(RemovalReason.KILLED);
         }
     }
-
 
     private void addParticles() {
         getCommandSenderWorld().addParticle(ParticleTypes.SOUL, this.getX() + (random.nextDouble() - random.nextDouble()), this.getY(), this.getZ() + (random.nextDouble() - random.nextDouble()), 0, 0.05F, 0);
@@ -305,7 +288,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return this.timeSinceExtinguish;
     }
 
-
     void addExtinguishCounter() {
         ++this.timeSinceExtinguish;
     }
@@ -314,7 +296,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     public boolean hasHomePosition() {
         return this.homePosition != null;
     }
-
 
     @Override
     public boolean isInvulnerableTo(DamageSource damageSource) {
@@ -327,7 +308,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return super.isInvulnerableTo(damageSource);
     }
 
-
     public static AttributeSupplier.Builder createWraithAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 27.5D)
@@ -335,8 +315,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.FLYING_SPEED, 0.35);
     }
-
-
 
     /// The vanilla melee goal stops at each path end.
     private void trackChase() {
@@ -361,7 +339,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         entityData.set(ANIMATION, animation);
     }
 
-
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(AnimationTable.<WraithEntity>create()
@@ -379,12 +356,10 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         return this.entityData.get(SPAWN_TIMER) > 0;
     }
 
-
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return factory;
     }
-
 
     boolean isWithinDistance(BlockPos pos, int distance) {
         if (pos == null) {
@@ -415,7 +390,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             this.playSound(TGSounds.WRAITH_AMBIENT.get(), 2.5F, -10.0F);
         }
     }
-
 
     @Override
     public boolean canCollideWith(Entity other) {
@@ -458,7 +432,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             return super.canContinueToUse();
         }
     }
-
 
     private class ExtinguishGoal extends Goal {
 
@@ -553,7 +526,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-
     class WraithWanderAroundGoal extends Goal {
         private static final int MAX_DISTANCE = 15;
 
@@ -566,12 +538,10 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             return WraithEntity.this.navigation.isDone() && WraithEntity.this.random.nextInt(10) == 0;
         }
 
-
         @Override
         public boolean canContinueToUse() {
             return WraithEntity.this.navigation.isInProgress();
         }
-
 
         @Override
         public void start() {
@@ -593,7 +563,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
             } else {
                 vec3d2 = WraithEntity.this.getViewVector(0.0F);
             }
-
 
             Vec3 vec3d3 = HoverRandomPos.getPos(WraithEntity.this, 8, 2, vec3d2.x, vec3d2.z, 1.5707964F, 2, 1);
             return vec3d3 != null ? vec3d3 : AirAndWaterRandomPos.getPos(WraithEntity.this, 8, 2, -2, vec3d2.x, vec3d2.z, 1.5707963705062866D);
