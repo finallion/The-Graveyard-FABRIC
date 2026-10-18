@@ -123,7 +123,7 @@ public final class CommonEvents {
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
             }
 
-            stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
 
         return InteractionResult.sidedSuccess(world.isClientSide);

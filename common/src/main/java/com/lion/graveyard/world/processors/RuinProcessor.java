@@ -594,14 +594,14 @@ public class RuinProcessor extends StructureProcessor {
             String stem = id.getPath()
                     .replaceFirst("^stripped_", "")
                     .replaceFirst("_(log|wood)$", "");
-            return BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(id.getNamespace(), stem + "_planks")).orElse(Blocks.OAK_PLANKS);
+            return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), stem + "_planks")).orElse(Blocks.OAK_PLANKS);
         }
 
         private static Block slabOf(Block block, Block fallback) {
             ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
             String path = id.getPath();
             String stem = path.endsWith("_planks") ? path.substring(0, path.length() - 7) : (path.endsWith("_bricks") ? path.substring(0, path.length() - 1) : path);
-            return BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(id.getNamespace(), stem + "_slab")).orElse(fallback);
+            return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), stem + "_slab")).orElse(fallback);
         }
 
         boolean isSmall() {

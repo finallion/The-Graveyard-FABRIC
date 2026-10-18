@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
     private GhoulingEntity ghouling;
@@ -45,7 +45,7 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
 
         if (bone.getName().equals("torso") && ghouling != null && ghouling.hasCoffin()) {
             poseStack.pushPose();
-            RenderUtils.prepMatrixForBone(poseStack, bone);
+            RenderUtil.prepMatrixForBone(poseStack, bone);
             poseStack.mulPose(Axis.XP.rotationDegrees(90));
             poseStack.mulPose(Axis.YP.rotationDegrees(90));
             poseStack.mulPose(Axis.ZP.rotationDegrees(-25));

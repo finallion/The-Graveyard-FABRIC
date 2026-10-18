@@ -20,7 +20,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/container/stonecutter.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/container/stonecutter.png");
     private static final ItemStack INPUT_HINT = new ItemStack(Items.BONE_BLOCK);
     private static final Component INPUT_HINT_TEXT = Component.translatable("container.graveyard.ossuary.input_hint");
     private float scrollAmount;

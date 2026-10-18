@@ -1,8 +1,10 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,7 +22,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
 public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity implements NeutralMob {
-    private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
+    private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
     private static final AttributeModifier ATTACKING_SPEED_BOOST;
     private static final EntityDataAccessor<Boolean> ANGRY;
     private static final EntityDataAccessor<Boolean> PROVOKED;
@@ -43,11 +45,11 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
 
-        this.entityData.define(ANGRY, false);
-        this.entityData.define(PROVOKED, false);
+        builder.define(ANGRY, false);
+        builder.define(PROVOKED, false);
     }
 
     @Override
@@ -108,14 +110,14 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
             this.ageWhenTargetSet = this.tickCount;
             this.entityData.set(ANGRY, true);
 
-            if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
+            if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST_ID)) {
                 entityAttributeInstance.addTransientModifier(ATTACKING_SPEED_BOOST);
             }
         }
     }
 
     static {
-        ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.15000000596046448D, AttributeModifier.Operation.ADDITION);
+        ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, 0.15000000596046448D, AttributeModifier.Operation.ADD_VALUE);
         ANGRY = SynchedEntityData.defineId(AngerableGraveyardEntity.class, EntityDataSerializers.BOOLEAN);
         PROVOKED = SynchedEntityData.defineId(AngerableGraveyardEntity.class, EntityDataSerializers.BOOLEAN);
         ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);

@@ -39,10 +39,10 @@ import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
@@ -79,12 +79,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VEX_FLAGS, (byte)0);
-        this.entityData.define(ANIMATION, ANIMATION_IDLE);
-        this.entityData.define(SPAWN_TIMER, 0);
-        this.entityData.define(ATTACK_TIMER, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VEX_FLAGS, (byte)0);
+        builder.define(ANIMATION, ANIMATION_IDLE);
+        builder.define(SPAWN_TIMER, 0);
+        builder.define(ATTACK_TIMER, 0);
     }
 
     @Override
@@ -147,9 +147,9 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
 

@@ -7,9 +7,9 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import com.lion.graveyard.init.TGSounds;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Supplier;
@@ -86,15 +86,15 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DECAY, (byte) 0);
-        this.entityData.define(SPAWN_TIMER, 0);
-        this.entityData.define(ATTACK_TIMER, 0);
-        this.entityData.define(ATTACK_KIND, ATTACK_BITE);
-        this.entityData.define(GLITCH_TIMER, 0);
-        this.entityData.define(CLAWS, (byte) -1);
-        this.entityData.define(WANDERING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DECAY, (byte) 0);
+        builder.define(SPAWN_TIMER, 0);
+        builder.define(ATTACK_TIMER, 0);
+        builder.define(ATTACK_KIND, ATTACK_BITE);
+        builder.define(GLITCH_TIMER, 0);
+        builder.define(CLAWS, (byte) -1);
+        builder.define(WANDERING, false);
     }
 
     public int getDecay() {
@@ -136,8 +136,8 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
-        SpawnGroupData result = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+        SpawnGroupData result = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         this.entityData.set(DECAY, (byte) (this.random.nextInt(DECAY_LEVELS) + 1));
         this.entityData.set(CLAWS, (byte) this.random.nextInt((LEFT_CLAW | RIGHT_CLAW) + 1));
         boolean unseenSpawn = spawnReason == MobSpawnType.CHUNK_GENERATION || spawnReason == MobSpawnType.STRUCTURE;

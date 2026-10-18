@@ -67,18 +67,13 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         this.patrolling = nbt.getBoolean("Patrolling");
     }
 
-    @Override
-    public double getMyRidingOffset() {
-        return -0.45D;
-    }
-
     public boolean canLead() {
         return true;
     }
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         if (spawnReason != MobSpawnType.PATROL && spawnReason != MobSpawnType.EVENT && spawnReason != MobSpawnType.STRUCTURE && this.random.nextFloat() < 0.06F && this.canLead()) {
             this.patrolLeader = true;
         }
@@ -87,7 +82,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
             this.patrolling = true;
         }
 
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
     @Override

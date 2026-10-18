@@ -15,7 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -105,8 +105,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack itemStack = player.getItemInHand(hand);
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         Item item = itemStack.getItem();
         Item item2 = itemStack.getItem();
         SignApplicator signChangingItem;
@@ -130,7 +129,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
 
                 if (signBlockEntity.isWaxed()) {
                     world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS);
-                    return InteractionResult.PASS;
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                 } else if (canApplySignItem && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, player)) {
                     boolean useOnSign = false;
 
@@ -151,22 +150,22 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
 
                         world.gameEvent(GameEvent.BLOCK_CHANGE, signBlockEntity.getBlockPos(), GameEvent.Context.of(player, signBlockEntity.getBlockState()));
                         player.awardStat(Stats.ITEM_USED.get(item));
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
                 } else if (ranCommand) {
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 } else if (!this.isOtherPlayerEditing(player, signBlockEntity) && player.mayBuild() && this.isTextLiteralOrEmpty(player, signBlockEntity)) {
                     this.openEditScreen(player, signBlockEntity, world, pos, state);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 } else {
-                    return InteractionResult.PASS;
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                 }
             } else {
-                return !canApplySignItem && !signBlockEntity.isWaxed() ? InteractionResult.CONSUME : InteractionResult.SUCCESS;
+                return !canApplySignItem && !signBlockEntity.isWaxed() ? ItemInteractionResult.CONSUME : ItemInteractionResult.SUCCESS;
             }
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public boolean useDyeOnSign(Level world, GravestoneBlockEntity signBlockEntity, DyeColor color) {

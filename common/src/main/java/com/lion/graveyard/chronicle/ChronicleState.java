@@ -1,11 +1,13 @@
 package com.lion.graveyard.chronicle;
 
 import com.lion.graveyard.Graveyard;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public final class ChronicleState extends SavedData {
 
     public static ChronicleState get(MinecraftServer server) {
         return server.overworld().getDataStorage()
-                .computeIfAbsent(ChronicleState::fromNbt, ChronicleState::new, KEY);
+                .computeIfAbsent(new SavedData.Factory<>(ChronicleState::new, ChronicleState::fromNbt, DataFixTypes.LEVEL), KEY);
     }
 
     public Set<String> found(UUID player) {
@@ -70,7 +72,7 @@ public final class ChronicleState extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
         CompoundTag players = new CompoundTag();
         this.found.forEach((id, pages) -> {
             ListTag list = new ListTag();
@@ -81,7 +83,7 @@ public final class ChronicleState extends SavedData {
         return nbt;
     }
 
-    public static ChronicleState fromNbt(CompoundTag nbt) {
+    public static ChronicleState fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
         ChronicleState state = new ChronicleState();
         CompoundTag players = nbt.getCompound("players");
         for (String key : players.getAllKeys()) {

@@ -11,8 +11,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -46,11 +47,10 @@ public final class SmolderingWood {
         return state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED);
     }
 
-    public static InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+    public static ItemInteractionResult use(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
 
         if (!player.getAbilities().mayBuild) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         boolean lit = state.getValue(SMOLDERING);
@@ -72,11 +72,11 @@ public final class SmolderingWood {
                         stack.shrink(1);
                     }
                 } else {
-                    stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
+                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 }
             }
 
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
 
         if (lit && (stack.getItem() instanceof ShovelItem || stack.is(Items.WATER_BUCKET))) {
@@ -94,14 +94,14 @@ public final class SmolderingWood {
                 }
 
                 if (!stack.is(Items.WATER_BUCKET)) {
-                    stack.hurtAndBreak(1, player, user -> user.broadcastBreakEvent(hand));
+                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 }
             }
 
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static void setLit(Level world, BlockPos pos, BlockState state, boolean lit) {

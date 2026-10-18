@@ -124,7 +124,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         Random random = new Random();
 
         if (world.isClientSide) {

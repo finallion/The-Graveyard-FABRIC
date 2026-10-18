@@ -1,8 +1,10 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,19 +32,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.UUID;
 
 public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A4");
+    private static final ResourceLocation SLOWNESS_ID = Graveyard.id("slowness_id");
     private static final AttributeModifier SLOWNESS_EFFECT;
 
     private static final EntityDataAccessor<Integer> ATTACK_ANIM_TIMER;
@@ -84,13 +86,13 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ANIMATION, ANIMATION_IDLE);
-        this.entityData.define(ATTACK_ANIM_TIMER, 0);
-        this.entityData.define(REANIMATE_ANIM_TIMER, 0);
-        this.entityData.define(CAN_REANIMATE, true);
-        this.entityData.define(CHASING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ANIMATION, ANIMATION_IDLE);
+        builder.define(ATTACK_ANIM_TIMER, 0);
+        builder.define(REANIMATE_ANIM_TIMER, 0);
+        builder.define(CAN_REANIMATE, true);
+        builder.define(CHASING, false);
     }
 
     @Override
@@ -198,11 +200,11 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         if (getReanimateAnimTimer() > 0) {
             this.getLookControl().setLookAt(this.getX(), this.getY(), this.getZ());
 
-            if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+            if (!entityAttributeInstance.hasModifier(SLOWNESS_ID)) {
                 entityAttributeInstance.addTransientModifier(SLOWNESS_EFFECT);
             }
         } else {
-            if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+            if (entityAttributeInstance.hasModifier(SLOWNESS_ID)) {
                 entityAttributeInstance.removeModifier(SLOWNESS_EFFECT);
             }
         }
@@ -358,7 +360,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         ANIMATION = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.INT);
         CAN_REANIMATE = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.BOOLEAN);
         CHASING = SynchedEntityData.defineId(RevenantEntity.class, EntityDataSerializers.BOOLEAN);
-        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, AttributeModifier.Operation.ADDITION);
+        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, -0.3D, AttributeModifier.Operation.ADD_VALUE);
     }
 
 

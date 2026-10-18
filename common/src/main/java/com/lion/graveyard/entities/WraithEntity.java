@@ -1,9 +1,11 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.blocks.BrazierBlock;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -59,10 +61,10 @@ import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
@@ -70,8 +72,8 @@ import java.util.UUID;
 
 public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private static final UUID ATTACKING_SPEED_BOOST_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A0");
-    private static final AttributeModifier ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, "Attacking speed boost", 0.2D, AttributeModifier.Operation.ADDITION);
+    private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
+    private static final AttributeModifier ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, 0.2D, AttributeModifier.Operation.ADD_VALUE);
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
     private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("spawn");
@@ -171,11 +173,11 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ANIMATION, ANIMATION_IDLE);
-        this.entityData.define(SPAWN_TIMER, 0);
-        this.entityData.define(CHASING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ANIMATION, ANIMATION_IDLE);
+        builder.define(SPAWN_TIMER, 0);
+        builder.define(CHASING, false);
     }
 
     public void startSpawnAnimation() {
@@ -251,7 +253,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
             if (this.getTarget() == null) {
                 entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
-            } else if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST)) {
+            } else if (!entityAttributeInstance.hasModifier(ATTACKING_SPEED_BOOST_ID)) {
                 entityAttributeInstance.addTransientModifier(ATTACKING_SPEED_BOOST);
             }
         }
@@ -267,10 +269,10 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         world.playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE, SoundSource.HOSTILE,2.0F, -5.0F);
         startSpawnAnimation();
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
     @Override

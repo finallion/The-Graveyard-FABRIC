@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 /// `BlockAndItemGeoLayer` applies the bone rotation twice, so this layer does the bone transform itself.
 public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
@@ -31,7 +31,7 @@ public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
         }
 
         poseStack.pushPose();
-        RenderUtils.translateToPivotPoint(poseStack, bone);
+        RenderUtil.translateToPivotPoint(poseStack, bone);
         // Beak tip: head pivot at z=-6, beak end at z=-9, two units above the pivot.
         poseStack.translate(0.0F, 0.09F, -0.24F);
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));

@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 /// The small "page found" notice, drawn on the vanilla advancement-toast frame.
 @Environment(EnvType.CLIENT)
 public class ChronicleToast implements Toast {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/toasts.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/toasts.png");
     private static final long DURATION = 5000L;
 
     private final Component title;

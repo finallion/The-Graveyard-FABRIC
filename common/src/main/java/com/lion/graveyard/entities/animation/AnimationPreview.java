@@ -2,11 +2,11 @@ package com.lion.graveyard.entities.animation;
 
 import com.lion.graveyard.platform.DevEnvironment;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationProcessor;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationProcessor;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.RawAnimation;
 
 import java.util.HashMap;
 import java.util.List;

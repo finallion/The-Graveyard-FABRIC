@@ -39,7 +39,7 @@ public class VialOfBlood extends Item {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
         float blood = 0;
 
         if (stack.hasTag()) {

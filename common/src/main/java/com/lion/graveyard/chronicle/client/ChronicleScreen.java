@@ -24,7 +24,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class ChronicleScreen extends Screen {
     public static final ResourceLocation BUTTON_TEXTURE = Graveyard.id("textures/gui/chronicle_button.png");
-    private static final ResourceLocation BOOK_TEXTURE = new ResourceLocation("textures/gui/book.png");
+    private static final ResourceLocation BOOK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/book.png");
 
     private static final int BOOK_WIDTH = 192;
     private static final int BOOK_HEIGHT = 192;

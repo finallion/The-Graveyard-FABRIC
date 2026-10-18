@@ -34,10 +34,10 @@ public class GraveyardMinionEntity extends PathfinderMob {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(OWNER_UUID, Optional.empty());
-        this.entityData.define(TAMEABLE_FLAGS, (byte)0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(TAMEABLE_FLAGS, (byte)0);
     }
 
     @Override

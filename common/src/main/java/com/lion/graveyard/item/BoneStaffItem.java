@@ -345,7 +345,7 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
         CompoundTag nbt = stack.getTag();
 
         if (nbt != null && nbt.contains(STORED_KEY)) {
@@ -368,7 +368,7 @@ public class BoneStaffItem extends Item {
             tooltip.add(Component.translatable("item.graveyard.bone_staff.stored", name));
         }
 
-        super.appendHoverText(stack, world, tooltip, context);
+        super.appendHoverText(stack, tooltipContext, tooltip, context);
     }
 
     private static Entity findLoaded(ServerLevel world, UUID id) {

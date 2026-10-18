@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -126,9 +126,9 @@ public class AltarBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!player.mayBuild()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!world.isClientSide && state.is(TGBlocks.ALTAR.get()) && state.getValue(BLOODY) && !hasLivingLich(world, pos)) {
@@ -136,7 +136,6 @@ public class AltarBlock extends Block {
             world.setBlock(pos, state, Block.UPDATE_ALL);
         }
 
-        ItemStack stack = player.getItemInHand(hand);
         float blood = 0.0F;
 
         if (stack.is(TGItems.VIAL_OF_BLOOD.get())) {
@@ -209,14 +208,14 @@ public class AltarBlock extends Block {
                     lich.setInvisible(true);
                     world.addFreshEntity(lich);
 
-                    return InteractionResult.CONSUME;
+                    return ItemInteractionResult.CONSUME;
                 }
 
-                return InteractionResult.sidedSuccess(player.level().isClientSide);
+                return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }
 
 
-        return super.use(state, world, pos, player, hand, hit);
+        return super.useItemOn(stack, state, world, pos, player, hand, hit);
     }
 }

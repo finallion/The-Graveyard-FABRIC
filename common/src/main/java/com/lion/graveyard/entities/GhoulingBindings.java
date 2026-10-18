@@ -2,6 +2,7 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.LevelResource;
@@ -36,7 +38,7 @@ public final class GhoulingBindings extends SavedData {
     public static GhoulingBindings get(ServerLevel world) {
         MinecraftServer server = world.getServer();
         return server.overworld().getDataStorage()
-                .computeIfAbsent(GhoulingBindings::fromNbt, () -> importLegacy(server), KEY);
+                .computeIfAbsent(new SavedData.Factory<>(() -> importLegacy(server), GhoulingBindings::fromNbt, DataFixTypes.LEVEL), KEY);
     }
 
     /// `pos` is unknown for bonds imported from the legacy file until the Ghouling ticks once.
@@ -67,7 +69,7 @@ public final class GhoulingBindings extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
         ListTag list = new ListTag();
         this.bindings.forEach((ghouling, binding) -> {
             CompoundTag entry = new CompoundTag();
@@ -88,7 +90,7 @@ public final class GhoulingBindings extends SavedData {
         return nbt;
     }
 
-    private static GhoulingBindings fromNbt(CompoundTag nbt) {
+    private static GhoulingBindings fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
         GhoulingBindings state = new GhoulingBindings();
         ListTag list = nbt.getList("ghoulings", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {

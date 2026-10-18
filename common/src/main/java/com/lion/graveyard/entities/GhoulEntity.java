@@ -1,8 +1,10 @@
 package com.lion.graveyard.entities;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -37,13 +39,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import com.lion.graveyard.init.TGAdvancements;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +57,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final int EMERGE_WITNESS_INTERVAL = 10;
     private static final double EMERGE_WITNESS_RANGE = 4.0D;
-    private static final UUID SLOWNESS_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A1");
+    private static final ResourceLocation SLOWNESS_ID = Graveyard.id("slowness_id");
     private static final AttributeModifier SLOWNESS_EFFECT;
 
     private static final EntityDataAccessor<Byte> VARIANT;
@@ -98,8 +100,8 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private static final int SPAWN_ANIMATION_DURATION = 92;
     private static final int CHASE_SOUND_COOLDOWN_TICKS = 200;
     private static final int CHASE_END_TICKS = 20;
-    private static final UUID BIPED_SPEED_ID = UUID.fromString("020E0DFB-87AE-4653-9556-831010E291A2");
-    private static final AttributeModifier BIPED_SPEED_BOOST = new AttributeModifier(BIPED_SPEED_ID, "Biped run boost", 0.05D, AttributeModifier.Operation.ADDITION);
+    private static final ResourceLocation BIPED_SPEED_ID = Graveyard.id("biped_speed_id");
+    private static final AttributeModifier BIPED_SPEED_BOOST = new AttributeModifier(BIPED_SPEED_ID, 0.05D, AttributeModifier.Operation.ADD_VALUE);
     private static final float WALK_STEP_DISTANCE = 1.0F;
     private static final float CHASE_STEP_DISTANCE = 0.55F;
     private static final int DEATH_ANIMATION_DURATION = 44 + AnimationTable.TRANSITION_TICKS;
@@ -111,18 +113,18 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
 
-        this.entityData.define(VARIANT, (byte) 0);
-        this.entityData.define(ANIMATION, ANIMATION_IDLE);
-        this.entityData.define(ATTACK_ANIM_TIMER, 0);
-        this.entityData.define(RAGE_ANIM_TIMER, 0);
-        this.entityData.define(SPAWN_TIMER, SPAWN_ANIMATION_DURATION);
-        this.entityData.define(IS_RAGING, false);
-        this.entityData.define(RUN_CRAWLING, false);
-        this.entityData.define(NAVIGATING, false);
-        this.entityData.define(RUNNING, false);
+        builder.define(VARIANT, (byte) 0);
+        builder.define(ANIMATION, ANIMATION_IDLE);
+        builder.define(ATTACK_ANIM_TIMER, 0);
+        builder.define(RAGE_ANIM_TIMER, 0);
+        builder.define(SPAWN_TIMER, SPAWN_ANIMATION_DURATION);
+        builder.define(IS_RAGING, false);
+        builder.define(RUN_CRAWLING, false);
+        builder.define(NAVIGATING, false);
+        builder.define(RUNNING, false);
     }
 
     @Override
@@ -274,11 +276,11 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         AttributeInstance entityAttributeInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (isRaging()) {
-            if (!entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+            if (!entityAttributeInstance.hasModifier(SLOWNESS_ID)) {
                 entityAttributeInstance.addTransientModifier(SLOWNESS_EFFECT);
             }
         } else {
-            if (entityAttributeInstance.hasModifier(SLOWNESS_EFFECT)) {
+            if (entityAttributeInstance.hasModifier(SLOWNESS_ID)) {
                 entityAttributeInstance.removeModifier(SLOWNESS_EFFECT);
             }
         }
@@ -286,7 +288,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         if (!this.getCommandSenderWorld().isClientSide()) {
             boolean biped = ChaseTarget.isLive(this) && this.chaseTargetId != null && !this.entityData.get(RUN_CRAWLING);
 
-            if (biped != entityAttributeInstance.hasModifier(BIPED_SPEED_BOOST)) {
+            if (biped != entityAttributeInstance.hasModifier(BIPED_SPEED_ID)) {
                 if (biped) {
                     entityAttributeInstance.addTransientModifier(BIPED_SPEED_BOOST);
                 } else {
@@ -464,7 +466,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         RUN_CRAWLING = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.BOOLEAN);
         NAVIGATING = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.BOOLEAN);
         RUNNING = SynchedEntityData.defineId(GhoulEntity.class, EntityDataSerializers.BOOLEAN);
-        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, "Slowness effect", -0.3D, AttributeModifier.Operation.ADDITION);
+        SLOWNESS_EFFECT = new AttributeModifier(SLOWNESS_ID, -0.3D, AttributeModifier.Operation.ADD_VALUE);
     }
 
 }

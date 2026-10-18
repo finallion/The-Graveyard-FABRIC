@@ -17,7 +17,7 @@ public class Graveyard {
     public static final GraveyardConfig CONFIG = new GraveyardConfig(ConfigFiles.load(ConfigDirectory.getConfigDirectory().resolve("graveyard"), new Slf4jConfigLog(LOGGER)));
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static GraveyardConfig getConfig() {

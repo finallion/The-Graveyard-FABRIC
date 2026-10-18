@@ -46,9 +46,9 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CHASING, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHASING, false);
     }
 
     @Override
@@ -137,12 +137,12 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
-        SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+        SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
         RandomSource random = world.getRandom();
         this.populateDefaultEquipmentSlots(random, difficulty);
-        this.populateDefaultEquipmentEnchantments(random, difficulty);
+        this.populateDefaultEquipmentEnchantments(world, random, difficulty);
         return entityData2;
     }
 

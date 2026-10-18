@@ -156,7 +156,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     }
 
     static {
-        defaultLayer = RenderType.entitySolid(new ResourceLocation("textures/entity/signs/oak.png"));
+        defaultLayer = RenderType.entitySolid(ResourceLocation.withDefaultNamespace("textures/entity/signs/oak.png"));
         LAYERS.put(TGBlocks.GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
         LAYERS.put(TGBlocks.COBBLESTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
         LAYERS.put(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));

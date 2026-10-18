@@ -27,9 +27,9 @@ public abstract class HostileGraveyardEntity extends Monster {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(CAN_BURN_IN_SUNLIGHT, true);
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(CAN_BURN_IN_SUNLIGHT, true);
+        super.defineSynchedData(builder);
     }
 
     @Override
@@ -69,7 +69,7 @@ public abstract class HostileGraveyardEntity extends Monster {
 
     @Override
     public boolean canBeAffected(MobEffectInstance effect) {
-        if (effect.getEffect() == MobEffects.WITHER) {
+        if (effect.is(MobEffects.WITHER)) {
             return Graveyard.getConfig().mobConfigEntries.get(name).canBeWithered;
         }
 

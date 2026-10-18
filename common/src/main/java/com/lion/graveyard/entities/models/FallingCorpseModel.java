@@ -14,7 +14,7 @@ public class FallingCorpseModel extends GeoModel<FallingCorpse> {
 
     @Override
     public ResourceLocation getTextureResource(FallingCorpse object) {
-        return new ResourceLocation("textures/entity/skeleton/stray.png");
+        return ResourceLocation.withDefaultNamespace("textures/entity/skeleton/stray.png");
     }
 
     @Override

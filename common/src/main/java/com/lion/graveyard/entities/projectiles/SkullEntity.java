@@ -2,18 +2,11 @@ package com.lion.graveyard.entities.projectiles;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGEntities;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,21 +24,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class SkullEntity extends AbstractHurtingProjectile {
 
-    public static Packet<ClientGamePacketListener> createPacket(Entity entity) {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(entity.getType()));
-        buf.writeUUID(entity.getUUID());
-        buf.writeVarInt(entity.getId());
-        buf.writeDouble(entity.getX());
-        buf.writeDouble(entity.getY());
-        buf.writeDouble(entity.getZ());
-        buf.writeByte(Mth.floor(entity.getXRot() * 256.0F / 360.0F));
-        buf.writeByte(Mth.floor(entity.getYRot() * 256.0F / 360.0F));
-        buf.writeFloat(entity.getXRot());
-        buf.writeFloat(entity.getYRot());
-        return new ClientboundAddEntityPacket(entity, buf.arrayOffset());
-    }
-
     private static final EntityDataAccessor<Boolean> CHARGED;
 
     public SkullEntity(EntityType<? extends SkullEntity> entityType, Level world) {
@@ -55,12 +33,6 @@ public class SkullEntity extends AbstractHurtingProjectile {
     public SkullEntity(Level world, LivingEntity owner, double directionX, double directionY, double directionZ) {
         super(TGEntities.SKULL.get(), owner, directionX, directionY, directionZ, world);
     }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return createPacket(this);
-    }
-
 
     @Override
     protected float getInertia() {
@@ -139,8 +111,9 @@ public class SkullEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(CHARGED, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHARGED, false);
     }
 
     public boolean isCharged() {

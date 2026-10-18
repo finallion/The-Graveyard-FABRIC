@@ -3,7 +3,7 @@ package com.lion.graveyard.init;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.advancements.TGAdvancementTrigger;
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +54,7 @@ public class TGAdvancements {
     }
 
     public static void grantNextStep(ServerPlayer player, ResourceLocation advancementId, int steps) {
-        Advancement advancement = player.server.getAdvancements().getAdvancement(advancementId);
+        AdvancementHolder advancement = player.server.getAdvancements().get(advancementId);
 
         if (advancement == null) {
             return;

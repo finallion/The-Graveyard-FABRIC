@@ -52,6 +52,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -60,11 +61,11 @@ import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
@@ -139,15 +140,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ANIMATION, ANIMATION_IDLE);
-        this.entityData.define(STAFF, ItemStack.EMPTY);
-        this.entityData.define(ATTACK_ANIM_TIMER, 0);
-        this.entityData.define(COFFIN, false);
-        this.entityData.define(SPAWN_TIMER, 0);
-        this.entityData.define(TELEPORT_TIMER, 0);
-        this.entityData.define(VARIANT, (byte)0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(ANIMATION, ANIMATION_IDLE);
+        builder.define(STAFF, ItemStack.EMPTY);
+        builder.define(ATTACK_ANIM_TIMER, 0);
+        builder.define(COFFIN, false);
+        builder.define(SPAWN_TIMER, 0);
+        builder.define(TELEPORT_TIMER, 0);
+        builder.define(VARIANT, (byte)0);
     }
 
 
@@ -580,7 +581,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     for (int i = 0; i < this.inventory.getContainerSize(); i++) {
                         ItemStack stack = this.inventory.removeItemNoUpdate(i);
 
-                        if (!stack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(stack)) {
+                        if (!stack.isEmpty() && !EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
                             this.spawnAtLocation(stack.copy());
                         }
                     }

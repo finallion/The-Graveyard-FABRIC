@@ -117,9 +117,15 @@ class TrackedStateTest {
 
     // ---------------------------------------------------------------- check 9: deterministic defaults
 
+    private static List<String> defineArguments(String code) {
+        List<String> all = new ArrayList<>(JavaText.callArguments(code, "entityData.define("));
+        all.addAll(JavaText.callArguments(code, "builder.define("));
+        return all;
+    }
+
     static List<String> trackedDefaultProblems(String code) {
         List<String> problems = new ArrayList<>();
-        for (String args : JavaText.callArguments(code, "entityData.define(")) {
+        for (String args : defineArguments(code)) {
             List<String> parts = JavaText.splitTopLevel(args, ',');
 
             if (parts.size() >= 2 && RANDOM.matcher(parts.get(1)).find()) {
@@ -132,7 +138,7 @@ class TrackedStateTest {
     @TestFactory
     Stream<DynamicTest> trackedDefaultsAreConstants() {
         return Floors.atLeast(12, "files that define tracked data", ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> Sources.code(file).contains("entityData.define("))
+                .filter(file -> !defineArguments(Sources.code(file)).isEmpty())
                 .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), trackedDefaultProblems(Sources.code(file))))));
     }
 

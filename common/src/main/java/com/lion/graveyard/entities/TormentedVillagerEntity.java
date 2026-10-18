@@ -6,10 +6,10 @@ import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -96,10 +96,10 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(MOOD, Mood.WANDERING.ordinal());
-        this.entityData.define(SPAWN_TICKS_LEFT, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(MOOD, Mood.WANDERING.ordinal());
+        builder.define(SPAWN_TICKS_LEFT, 0);
     }
 
     @Override
@@ -117,11 +117,11 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         this.setMood(Mood.SPAWNING, Mood.SPAWNING.ticks);
         this.entityData.set(SPAWN_TICKS_LEFT, Mood.SPAWNING.ticks);
         this.playSound(TGSounds.TORMENTED_VILLAGER_SPAWN.get(), 1.0F, 1.0F);
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
     public Mood getMood() {

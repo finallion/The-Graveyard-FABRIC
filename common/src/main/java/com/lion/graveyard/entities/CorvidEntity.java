@@ -49,9 +49,9 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class CorvidEntity extends PathfinderMob implements GeoEntity {
@@ -215,19 +215,19 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLIGHT_STATE, FlightState.IDLE.id);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLIGHT_STATE, FlightState.IDLE.id);
     }
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason,
-            @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+            @Nullable SpawnGroupData entityData) {
         if (spawnReason != MobSpawnType.SPAWN_EGG && spawnReason != MobSpawnType.COMMAND && spawnReason != MobSpawnType.BUCKET) {
             this.home = this.blockPosition();
         }
 
-        return super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }
 
     @Override

@@ -162,7 +162,7 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                 }
 
                 hordeEntity.setPos((double)pos.getX(), (double)pos.getY(), (double)pos.getZ());
-                hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, (SpawnGroupData)null, (CompoundTag)null);
+                hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, (SpawnGroupData)null);
                 hordeEntity.getNavigation().stop();
                 world.addFreshEntityWithPassengers(hordeEntity);
                 return true;

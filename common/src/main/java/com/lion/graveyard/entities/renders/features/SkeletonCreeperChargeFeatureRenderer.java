@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.Creeper;
 
 public class SkeletonCreeperChargeFeatureRenderer<T extends Creeper> extends EnergySwirlLayer<T, CreeperModel<T>> {
-    private static final ResourceLocation SKIN = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private static final ResourceLocation SKIN = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
     private final CreeperModel<Creeper> model;
 
     public SkeletonCreeperChargeFeatureRenderer(RenderLayerParent<T, CreeperModel<T>> context, EntityModelSet loader) {

@@ -1,8 +1,8 @@
 package com.lion.graveyard.entities.animation;
 
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimationController;
 
 import java.util.Map;
 import java.util.WeakHashMap;
