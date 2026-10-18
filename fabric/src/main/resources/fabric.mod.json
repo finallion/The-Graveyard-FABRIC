@@ -33,10 +33,10 @@
 
   "depends": {
     "fabricloader": ">=0.16.0",
-    "fabric-api": ">=0.116.0",
+    "fabric-api": ">=0.136.1",
     "villagertradingplus": ">=1.0.0 <2",
-    "minecraft": "1.21.1",
-    "geckolib": ">=4.9.3 <5",
+    "minecraft": "1.21.8",
+    "geckolib": ">=5.2.2 <6",
     "java": ">=21"
   },
   "custom": {
