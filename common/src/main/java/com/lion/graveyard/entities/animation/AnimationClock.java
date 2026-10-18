@@ -2,7 +2,7 @@ package com.lion.graveyard.entities.animation;
 
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationController;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -75,6 +75,7 @@ public final class AnimationClock {
         private final ToDoubleFunction<T> startOffset;
         @Nullable
         private String lastStarted;
+        private final T animatable;
 
         ClockController(
                 T animatable,
@@ -84,7 +85,8 @@ public final class AnimationClock {
                 @Nullable String offsetAnimation,
                 @Nullable ToDoubleFunction<T> startOffset
         ) {
-            super(animatable, name, transitionTicks, handler);
+            super(name, transitionTicks, handler);
+            this.animatable = animatable;
             this.offsetAnimation = offsetAnimation;
             this.startOffset = startOffset;
         }

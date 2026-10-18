@@ -1,10 +1,11 @@
 package com.lion.graveyard.entities.animation;
 
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.PlayState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public final class AnimationTable<T extends GeoAnimatable> {
         return new AnimationTable<>();
     }
 
-    public AnimationTable<T> when(Predicate<AnimationState<T>> condition, RawAnimation animation) {
+    public AnimationTable<T> when(Predicate<AnimationTest<T>> condition, RawAnimation animation) {
         this.entries.add(new Entry<>(condition, animation));
         return this;
     }
@@ -80,19 +81,19 @@ public final class AnimationTable<T extends GeoAnimatable> {
             RawAnimation preview = AnimationPreview.frame(state, this::animationNames);
 
             if (preview != null) {
-                state.getController().setAnimation(preview);
+                state.controller().setAnimation(preview);
                 return PlayState.CONTINUE;
             }
 
             int blend = this.transitionTicks != null ? this.transitionTicks.getAsInt() : transitionTicks;
-            state.getController().transitionLength(state.getController().getCurrentAnimation() == null ? 0 : blend);
+            state.controller().transitionLength(state.controller().getCurrentAnimation() == null ? 0 : blend);
             for (Entry<T> entry : this.entries) {
                 if (entry.condition.test(state)) {
                     if (entry.animation == null) {
                         return PlayState.STOP;
                     }
 
-                    state.getController().setAnimation(entry.animation);
+                    state.controller().setAnimation(entry.animation);
                     return PlayState.CONTINUE;
                 }
             }
@@ -101,7 +102,7 @@ public final class AnimationTable<T extends GeoAnimatable> {
                 return PlayState.STOP;
             }
 
-            state.getController().setAnimation(this.fallback);
+            state.controller().setAnimation(this.fallback);
             return PlayState.CONTINUE;
         }, this.offsetAnimation, this.startOffset);
     }
@@ -121,10 +122,11 @@ public final class AnimationTable<T extends GeoAnimatable> {
         }
     }
 
-    public static boolean isMoving(AnimationState<?> state) {
-        return state.isMoving() || Math.abs(state.getLimbSwingAmount()) > MOVEMENT_THRESHOLD;
+    public static boolean isMoving(AnimationTest<?> state) {
+        return state.isMoving()
+                || state.renderState() instanceof LivingEntityRenderState living && Math.abs(living.walkAnimationSpeed) > MOVEMENT_THRESHOLD;
     }
 
-    private record Entry<T extends GeoAnimatable>(Predicate<AnimationState<T>> condition, @Nullable RawAnimation animation) {
+    private record Entry<T extends GeoAnimatable>(Predicate<AnimationTest<T>> condition, @Nullable RawAnimation animation) {
     }
 }

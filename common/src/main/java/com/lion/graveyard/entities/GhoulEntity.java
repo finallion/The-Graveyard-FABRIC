@@ -40,12 +40,12 @@ import net.minecraft.world.phys.AABB;
 import com.lion.graveyard.init.TGAdvancements;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import com.mojang.serialization.Codec;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -410,7 +410,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         return !isInWaterOrRain() && swing > (wasRunning ? RUN_STOP_LIMB_SWING : RUN_START_LIMB_SWING);
     }
 
-    private boolean isRunning(AnimationState<GhoulEntity> state) {
+    private boolean isRunning(AnimationTest<GhoulEntity> state) {
         return AnimationTable.isMoving(state) && !isInWaterOrRain() && this.entityData.get(RUNNING);
     }
 

@@ -5,26 +5,29 @@ import com.lion.graveyard.entities.CorvidEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationProcessor;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationProcessor;
+import software.bernie.geckolib.animatable.processing.AnimationState;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class CorvidModel extends GeoModel<CorvidEntity> {
-    private static final ResourceLocation ANIMATION = Graveyard.id("animations/corvid/corvid.animation.json");
+    private static final ResourceLocation ANIMATION = Graveyard.id("corvid/corvid");
+    private static final DataTicket<CorvidEntity.Species> SPECIES = DataTicket.create("graveyard_corvid_species", CorvidEntity.Species.class);
+    private static final DataTicket<Float> LOOK_WEIGHT = DataTicket.create("graveyard_corvid_look_weight", Float.class);
     private static final float MAX_HEAD_PITCH = 40.0F;
     private static final float MAX_HEAD_YAW = 75.0F;
 
     @Override
-    public ResourceLocation getModelResource(CorvidEntity entity) {
-        return entity.getSpecies().getModel();
+    public ResourceLocation getModelResource(GeoRenderState renderState) {
+        return renderState.getGeckolibData(SPECIES).getModel();
     }
 
     @Override
-    public ResourceLocation getTextureResource(CorvidEntity entity) {
-        return entity.getSpecies().getTexture();
+    public ResourceLocation getTextureResource(GeoRenderState renderState) {
+        return renderState.getGeckolibData(SPECIES).getTexture();
     }
 
     @Override
@@ -33,32 +36,32 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
     }
 
     @Override
-    public void setCustomAnimations(
-            CorvidEntity animatable,
-            long instanceId,
-            AnimationState<CorvidEntity> animationState
-    ) {
+    public void addAdditionalStateData(CorvidEntity animatable, GeoRenderState renderState) {
         // The additive look rotation fights the head motion of the peck animation.
-        float weight = animatable.stepLookWeight(this.isPlayingPeck(animatable, instanceId), animationState.getPartialTick());
+        float partialTick = renderState.getGeckolibData(DataTickets.PARTIAL_TICK);
+        boolean peck = this.isPlayingPeck(renderState.getGeckolibData(DataTickets.ANIMATABLE_MANAGER));
+        renderState.addGeckolibData(SPECIES, animatable.getSpecies());
+        renderState.addGeckolibData(LOOK_WEIGHT, animatable.stepLookWeight(peck, partialTick));
+    }
+
+    @Override
+    public void setCustomAnimations(AnimationState<CorvidEntity> animationState) {
+        float weight = animationState.getDataOrDefault(LOOK_WEIGHT, 0.0F);
 
         if (weight <= 0.0F) {
             return;
         }
 
         this.getBone("head").ifPresent(head -> {
-            EntityModelData data = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            float headPitch = animationState.getData(DataTickets.ENTITY_PITCH);
+            float headYaw = animationState.getData(DataTickets.ENTITY_YAW);
 
-            if (data == null) {
-                return;
-            }
-
-            head.setRotX(head.getRotX() + Mth.clamp(data.headPitch(), -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * Mth.DEG_TO_RAD * weight);
-            head.setRotY(head.getRotY() + Mth.clamp(data.netHeadYaw(), -MAX_HEAD_YAW, MAX_HEAD_YAW) * Mth.DEG_TO_RAD * weight);
+            head.setRotX(head.getRotX() - Mth.clamp(headPitch, -MAX_HEAD_PITCH, MAX_HEAD_PITCH) * Mth.DEG_TO_RAD * weight);
+            head.setRotY(head.getRotY() - Mth.clamp(headYaw, -MAX_HEAD_YAW, MAX_HEAD_YAW) * Mth.DEG_TO_RAD * weight);
         });
     }
 
-    private boolean isPlayingPeck(CorvidEntity animatable, long instanceId) {
-        AnimatableManager<CorvidEntity> manager = animatable.getAnimatableInstanceCache().getManagerForId(instanceId);
+    private boolean isPlayingPeck(AnimatableManager<CorvidEntity> manager) {
         AnimationController<CorvidEntity> controller = manager.getAnimationControllers().get("controller");
 
         if (controller == null) {

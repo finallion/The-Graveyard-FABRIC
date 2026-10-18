@@ -2,9 +2,9 @@ package com.lion.graveyard.entities.animation;
 
 import com.lion.graveyard.platform.DevEnvironment;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationProcessor;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationProcessor;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
 import software.bernie.geckolib.animation.Animation;
 import software.bernie.geckolib.animation.RawAnimation;
 
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
@@ -43,8 +44,8 @@ public final class AnimationPreview {
     }
 
     @Nullable
-    public static RawAnimation frame(AnimationState<?> state, Supplier<List<String>> sequence) {
-        if (!(state.getAnimatable() instanceof Entity entity)) {
+    public static RawAnimation frame(AnimationTest<?> state, Supplier<List<String>> sequence) {
+        if (!(state.animatable() instanceof Entity entity)) {
             return null;
         }
 
@@ -54,7 +55,7 @@ public final class AnimationPreview {
             return null;
         }
 
-        AnimationController<?> controller = state.getController();
+        AnimationController<?> controller = state.controller();
         controller.transitionLength(AnimationTable.TRANSITION_TICKS);
 
         if (!ALL.equals(forced)) {
@@ -67,7 +68,8 @@ public final class AnimationPreview {
             return null;
         }
 
-        String name = names.get(nextIndex(controller, names, entity.tickCount + state.getPartialTick()));
+        double clock = state.renderState() instanceof EntityRenderState render ? render.ageInTicks : entity.tickCount;
+        String name = names.get(nextIndex(controller, names, clock));
         return PLAYS.computeIfAbsent(name, key -> RawAnimation.begin().then(key, Animation.LoopType.PLAY_ONCE));
     }
 

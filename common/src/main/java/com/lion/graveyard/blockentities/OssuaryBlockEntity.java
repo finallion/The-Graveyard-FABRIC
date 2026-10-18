@@ -13,7 +13,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -30,8 +33,8 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
-        data.add(new AnimationController<>(this, "controller", 0, event -> {
-            AnimationController.State state = event.getController().getAnimationState();
+        data.add(new AnimationController<>("controller", 0, event -> {
+            AnimationController.State state = event.controller().getAnimationState();
 
             if (this.getBlockState().getValue(OssuaryBlock.OPEN)) {
                 if (state == AnimationController.State.STOPPED || state == AnimationController.State.PAUSED)  {
@@ -44,12 +47,12 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
                         }
                     }
 
-                    event.getController().setAnimation(OPEN);
+                    event.controller().setAnimation(OPEN);
                 }
 
                 return PlayState.CONTINUE;
             } else if (!this.getBlockState().getValue(OssuaryBlock.OPEN) && state == AnimationController.State.PAUSED) {
-                event.getController().setAnimation(CLOSE);
+                event.controller().setAnimation(CLOSE);
 
                 if (playedSound) {
                     playedSound = false;

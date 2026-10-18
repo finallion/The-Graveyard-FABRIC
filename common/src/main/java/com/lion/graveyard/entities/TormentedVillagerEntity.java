@@ -7,7 +7,7 @@ import com.lion.graveyard.init.TGSounds;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.Animation;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
@@ -355,8 +355,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
             Mood mood = this.getMood();
             // A blend from the bind pose shows a pose the mob never has.
-            boolean cut = mood == Mood.SPAWNING || state.getController().getCurrentAnimation() == null;
-            state.getController().transitionLength(cut ? 0 : MOOD_TRANSITION_TICKS);
+            boolean cut = mood == Mood.SPAWNING || state.controller().getCurrentAnimation() == null;
+            state.controller().transitionLength(cut ? 0 : MOOD_TRANSITION_TICKS);
 
             if (mood == Mood.WANDERING) {
                 return state.setAndContinue(this.isWalking() ? Mood.WALK : mood.animation);

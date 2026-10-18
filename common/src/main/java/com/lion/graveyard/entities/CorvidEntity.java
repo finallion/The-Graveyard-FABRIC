@@ -51,7 +51,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -143,7 +143,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
         // The raven model is larger. Its peck and death clips move the parts farther.
         Species(String name, String bodyClips) {
             this.texture = Graveyard.id("textures/entity/" + name + ".png");
-            this.model = Graveyard.id("geo/" + name + ".geo.json");
+            this.model = Graveyard.id(name);
             this.walkAnimation = RawAnimation.begin().thenLoop("animation." + name + ".walk");
             this.peckAnimation = RawAnimation.begin().thenPlay("animation." + bodyClips + ".peck");
             this.deathAnimation = RawAnimation.begin().thenPlayAndHold("animation." + bodyClips + ".death");

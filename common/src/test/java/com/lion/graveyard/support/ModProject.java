@@ -29,8 +29,8 @@ public final class ModProject {
     public static final String TEXTURES = "textures";
     public static final String SOUNDS = "sounds";
     public static final String LANG = "lang";
-    public static final String GEO = "geo";
-    public static final String ANIMATIONS = "animations";
+    public static final String GEO = "geckolib/models";
+    public static final String ANIMATIONS = "geckolib/animations";
     public static final String PARTICLES = "particles";
 
     public static final String LOOT_TABLES = "loot_table";

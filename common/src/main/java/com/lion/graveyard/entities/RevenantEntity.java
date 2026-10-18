@@ -34,10 +34,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animatable.processing.AnimationTest;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -263,7 +263,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
                 .build(this, "controller"));
     }
 
-    private boolean isRunning(AnimationState<RevenantEntity> state) {
+    private boolean isRunning(AnimationTest<RevenantEntity> state) {
         return AnimationTable.isMoving(state) && this.entityData.get(CHASING) && !isInWaterOrRain();
     }
 
