@@ -10,8 +10,8 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 
 public class VialOfBlood extends Item {
-    public VialOfBlood() {
-        super(new Item.Properties().stacksTo(1));
+    public VialOfBlood(Properties properties) {
+        super(properties);
     }
 
     public static float getBlood(ItemStack stack) {

@@ -28,33 +28,33 @@ public class TGEntities {
 
     private TGEntities() {}
 
-    public static final Supplier<EntityType<ReaperEntity>> REAPER = RegistryHelper.registerEntityType("reaper", () -> EntityType.Builder.of(ReaperEntity::new, MobCategory.MONSTER).sized(0.5F, 1.4F).build(Graveyard.createStringID("reaper")));
-    public static final Supplier<EntityType<AcolyteEntity>> ACOLYTE = RegistryHelper.registerEntityType("acolyte", () -> EntityType.Builder.of(AcolyteEntity::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("acolyte")));
-    public static final Supplier<EntityType<CorruptedVindicator>> CORRUPTED_VINDICATOR = RegistryHelper.registerEntityType("corrupted_vindicator", () -> EntityType.Builder.of(CorruptedVindicator::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("corrupted_vindicator")));
-    public static final Supplier<EntityType<CorruptedPillager>> CORRUPTED_PILLAGER = RegistryHelper.registerEntityType("corrupted_pillager", () -> EntityType.Builder.of(CorruptedPillager::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("corrupted_pillager")));
-    public static final Supplier<EntityType<CorruptedEvoker>> CORRUPTED_EVOKER = RegistryHelper.registerEntityType("corrupted_evoker", () -> EntityType.Builder.of(CorruptedEvoker::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("corrupted_evoker")));
-    public static final Supplier<EntityType<SkeletonCreeper>> SKELETON_CREEPER = RegistryHelper.registerEntityType("skeleton_creeper", () -> EntityType.Builder.of(SkeletonCreeper::new, MobCategory.MONSTER).sized(0.6F, 1.7F).build(Graveyard.createStringID("skeleton_creeper")));
-    public static final Supplier<EntityType<FallingCorpse>> FALLING_CORPSE = RegistryHelper.registerEntityType("falling_corpse", () -> EntityType.Builder.of(FallingCorpse::new, MobCategory.MISC).sized(0.4F, 0.5F).build(Graveyard.createStringID("falling_corpse")));
-    public static final Supplier<EntityType<GhoulEntity>> GHOUL = RegistryHelper.registerEntityType("ghoul", () -> EntityType.Builder.of(GhoulEntity::new, MobCategory.MONSTER).sized(0.8F, 2.1F).ridingOffset(-0.7F).build(Graveyard.createStringID("ghoul")));
-    public static final Supplier<EntityType<TormentedVillagerEntity>> TORMENTED_VILLAGER = RegistryHelper.registerEntityType("tormented_villager", () -> EntityType.Builder.of(TormentedVillagerEntity::new, MobCategory.MONSTER).sized(0.6F, 1.95F).build(Graveyard.createStringID("tormented_villager")));
-    public static final Supplier<EntityType<RevenantEntity>> REVENANT = RegistryHelper.registerEntityType("revenant", () -> EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("revenant")));
-    public static final Supplier<EntityType<WraithEntity>> WRAITH = RegistryHelper.registerEntityType("wraith", () -> EntityType.Builder.of(WraithEntity::new, MobCategory.MONSTER).sized(0.6F, 1.8F).build(Graveyard.createStringID("wraith")));
-    public static final Supplier<EntityType<NightmareEntity>> NIGHTMARE = RegistryHelper.registerEntityType("nightmare", () -> EntityType.Builder.of(NightmareEntity::new, MobCategory.MONSTER).sized(0.6F, 2.6F).eyeHeight(2.55F).build(Graveyard.createStringID("nightmare")));
-    public static final Supplier<EntityType<GhoulingEntity>> GHOULING = RegistryHelper.registerEntityType("ghouling", () -> EntityType.Builder.of(GhoulingEntity::new, MobCategory.CREATURE).sized(0.7F, 2.0F).build(Graveyard.createStringID("ghouling")));
-    public static final Supplier<EntityType<LichEntity>> LICH = RegistryHelper.registerEntityType("lich", () -> EntityType.Builder.of(LichEntity::new, MobCategory.MONSTER).sized(0.9F, 4.0F).eyeHeight(4.0F).build(Graveyard.createStringID("lich")));
+    public static final Supplier<EntityType<ReaperEntity>> REAPER = RegistryHelper.registerEntityType("reaper", EntityType.Builder.of(ReaperEntity::new, MobCategory.MONSTER).sized(0.5F, 1.4F));
+    public static final Supplier<EntityType<AcolyteEntity>> ACOLYTE = RegistryHelper.registerEntityType("acolyte", EntityType.Builder.of(AcolyteEntity::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<CorruptedVindicator>> CORRUPTED_VINDICATOR = RegistryHelper.registerEntityType("corrupted_vindicator", EntityType.Builder.of(CorruptedVindicator::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<CorruptedPillager>> CORRUPTED_PILLAGER = RegistryHelper.registerEntityType("corrupted_pillager", EntityType.Builder.of(CorruptedPillager::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<CorruptedEvoker>> CORRUPTED_EVOKER = RegistryHelper.registerEntityType("corrupted_evoker", EntityType.Builder.of(CorruptedEvoker::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<SkeletonCreeper>> SKELETON_CREEPER = RegistryHelper.registerEntityType("skeleton_creeper", EntityType.Builder.of(SkeletonCreeper::new, MobCategory.MONSTER).sized(0.6F, 1.7F));
+    public static final Supplier<EntityType<FallingCorpse>> FALLING_CORPSE = RegistryHelper.registerEntityType("falling_corpse", EntityType.Builder.of(FallingCorpse::new, MobCategory.MISC).sized(0.4F, 0.5F));
+    public static final Supplier<EntityType<GhoulEntity>> GHOUL = RegistryHelper.registerEntityType("ghoul", EntityType.Builder.of(GhoulEntity::new, MobCategory.MONSTER).sized(0.8F, 2.1F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<TormentedVillagerEntity>> TORMENTED_VILLAGER = RegistryHelper.registerEntityType("tormented_villager", EntityType.Builder.of(TormentedVillagerEntity::new, MobCategory.MONSTER).sized(0.6F, 1.95F));
+    public static final Supplier<EntityType<RevenantEntity>> REVENANT = RegistryHelper.registerEntityType("revenant", EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F));
+    public static final Supplier<EntityType<WraithEntity>> WRAITH = RegistryHelper.registerEntityType("wraith", EntityType.Builder.of(WraithEntity::new, MobCategory.MONSTER).sized(0.6F, 1.8F));
+    public static final Supplier<EntityType<NightmareEntity>> NIGHTMARE = RegistryHelper.registerEntityType("nightmare", EntityType.Builder.of(NightmareEntity::new, MobCategory.MONSTER).sized(0.6F, 2.6F).eyeHeight(2.55F));
+    public static final Supplier<EntityType<GhoulingEntity>> GHOULING = RegistryHelper.registerEntityType("ghouling", EntityType.Builder.of(GhoulingEntity::new, MobCategory.CREATURE).sized(0.7F, 2.0F));
+    public static final Supplier<EntityType<LichEntity>> LICH = RegistryHelper.registerEntityType("lich", EntityType.Builder.of(LichEntity::new, MobCategory.MONSTER).sized(0.9F, 4.0F).eyeHeight(4.0F));
     public static final Supplier<EntityType<SkullEntity>> SKULL = RegistryHelper.registerEntityType(
             "skull",
-            () -> EntityType.Builder.<SkullEntity>of(SkullEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10).build(Graveyard.createStringID("skull"))
+            EntityType.Builder.<SkullEntity>of(SkullEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10)
     );
-    public static final Supplier<EntityType<NamelessHangedEntity>> NAMELESS_HANGED = RegistryHelper.registerEntityType("nameless_hanged", () -> EntityType.Builder.of(NamelessHangedEntity::new, MobCategory.MONSTER).sized(0.8F, 2.5F).eyeHeight(2.0F).build(Graveyard.createStringID("nameless_hanged")));
-    public static final Supplier<EntityType<CorvidEntity>> RAVEN = RegistryHelper.registerEntityType("raven", () -> EntityType.Builder.of(CorvidEntity::new, MobCategory.AMBIENT).sized(0.5F, 0.6F).build(Graveyard.createStringID("raven")));
+    public static final Supplier<EntityType<NamelessHangedEntity>> NAMELESS_HANGED = RegistryHelper.registerEntityType("nameless_hanged", EntityType.Builder.of(NamelessHangedEntity::new, MobCategory.MONSTER).sized(0.8F, 2.5F).eyeHeight(2.0F));
+    public static final Supplier<EntityType<CorvidEntity>> RAVEN = RegistryHelper.registerEntityType("raven", EntityType.Builder.of(CorvidEntity::new, MobCategory.AMBIENT).sized(0.5F, 0.6F));
     public static final Supplier<EntityType<CorvidEntity>> MAGPIE = RegistryHelper.registerEntityType(
             "magpie",
-            () -> EntityType.Builder.<CorvidEntity>of(MagpieEntity::new, MobCategory.AMBIENT).sized(0.4F, 0.5F).build(Graveyard.createStringID("magpie"))
+            EntityType.Builder.<CorvidEntity>of(MagpieEntity::new, MobCategory.AMBIENT).sized(0.4F, 0.5F)
     );
     public static final Supplier<EntityType<CorvidEntity>> CROW = RegistryHelper.registerEntityType(
             "crow",
-            () -> EntityType.Builder.<CorvidEntity>of(CrowEntity::new, MobCategory.AMBIENT).sized(0.45F, 0.55F).build(Graveyard.createStringID("crow"))
+            EntityType.Builder.<CorvidEntity>of(CrowEntity::new, MobCategory.AMBIENT).sized(0.45F, 0.55F)
     );
 
 
@@ -73,9 +73,13 @@ public class TGEntities {
             MobCategory group,
             Supplier<? extends EntityType<?>> type
     ) {
+        public int weight() {
+            return Graveyard.getConfig().mobEntry(mob).weight;
+        }
+
         public MobSpawnSettings.SpawnerData entry() {
             MobConfigEntry entry = Graveyard.getConfig().mobEntry(mob);
-            return entry.weight <= 0 ? null : new MobSpawnSettings.SpawnerData(type.get(), entry.weight, entry.minGroup, entry.maxGroup);
+            return entry.weight <= 0 ? null : new MobSpawnSettings.SpawnerData(type.get(), entry.minGroup, entry.maxGroup);
         }
     }
 
@@ -107,7 +111,7 @@ public class TGEntities {
             MobSpawnSettings.SpawnerData entry = spawn.entry();
 
             if (entry != null) {
-                BiomeModifications.addMobSpawn(spawn.tag(), spawn.group(), entry.type, entry.getWeight().asInt(), entry.minCount, entry.maxCount);
+                BiomeModifications.addMobSpawn(spawn.tag(), spawn.group(), entry.type(), spawn.weight(), entry.minCount(), entry.maxCount());
             }
         }
     }

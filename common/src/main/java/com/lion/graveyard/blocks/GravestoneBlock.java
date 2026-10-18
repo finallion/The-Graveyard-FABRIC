@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SignBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
@@ -70,8 +69,8 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     private static final VoxelShape SHAPE_FACING_NS = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
     private final ResourceLocation texture;
 
-    public GravestoneBlock(ResourceLocation texture) {
-        super(WoodType.OAK, BlockBehaviour.Properties.of().noCollission().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(1.5F));
+    public GravestoneBlock(BlockBehaviour.Properties properties, ResourceLocation texture) {
+        super(WoodType.OAK, properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(FLOOR, true)

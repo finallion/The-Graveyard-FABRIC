@@ -9,6 +9,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -18,8 +19,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public class VariantBoneDisplayBlock extends BoneDisplayBlock {
     public static final IntegerProperty VARIANT = IntegerProperty.create("variant", 0, 3);
 
-    public VariantBoneDisplayBlock() {
-        super();
+    public VariantBoneDisplayBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.defaultBlockState().setValue(VARIANT, 0));
     }
 

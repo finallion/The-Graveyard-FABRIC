@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,8 +73,8 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
         return CODEC;
     }
 
-    public LoreBookBlock() {
-        super(BlockBehaviour.Properties.of().noOcclusion().noCollission().strength(0.5F).sound(SoundType.WOOL));
+    public LoreBookBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(WATERLOGGED, false)

@@ -33,7 +33,7 @@ class DataFilesTest {
         java.util.regex.Matcher m = java.util.regex.Pattern.compile("registerBlock\\(\\s*\"([^\"]+)\"([^;]*);").matcher(
                 com.lion.graveyard.support.Sources.code(ModProject.JAVA.resolve("init/TGBlocks.java")));
         while (m.find()) {
-            if (m.group(2).contains("dropsLike")
+            if (m.group(2).contains("overrideLootTable")
                     || m.group(2).contains("noLootTable")) {
                 ids.add(m.group(1));
             }

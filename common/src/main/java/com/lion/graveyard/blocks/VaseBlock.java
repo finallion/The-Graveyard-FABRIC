@@ -8,7 +8,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -28,8 +27,8 @@ public class VaseBlock extends Block implements SimpleWaterloggedBlock {
     private static final VoxelShape VASE_SHAPE_THREE;
     private static final VoxelShape VASE_SHAPE_FOUR;
 
-    public VaseBlock() {
-        super(BlockBehaviour.Properties.of().instabreak().noCollission().noOcclusion().sound(SoundType.GLASS));
+    public VaseBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(VASES, 1)
                 .setValue(WATERLOGGED, false));

@@ -9,25 +9,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.StainedGlassBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class DaggerItem extends SwordItem {
+public class DaggerItem extends Item {
 
-    public DaggerItem(Tier material, float effectiveDamage, float effectiveSpeed, Item.Properties settings) {
-        super(
-                material,
-                settings.attributes(SwordItem.createAttributes(
-                        material,
-                        (int) (effectiveDamage - material.getAttackDamageBonus()),
-                        effectiveSpeed
-                ))
-        );
+    public DaggerItem(Item.Properties settings) {
+        super(settings.sword(ToolMaterial.STONE, 3.0F, -2.0F));
     }
 
     @Override
@@ -40,7 +32,7 @@ public class DaggerItem extends SwordItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (target.isDeadOrDying() && Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBloodCollectableEntity.contains(target.getType().toString()) && attacker instanceof Player playerEntity) {
             ItemStack stackOffhand = attacker.getOffhandItem();
 
@@ -55,7 +47,7 @@ public class DaggerItem extends SwordItem {
 
         }
 
-        return super.hurtEnemy(stack, target, attacker);
+        super.hurtEnemy(stack, target, attacker);
     }
 
     private static boolean fillHotbarVial(Player player) {

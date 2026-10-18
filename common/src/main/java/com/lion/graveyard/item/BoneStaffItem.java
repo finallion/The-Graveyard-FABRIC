@@ -90,8 +90,8 @@ public class BoneStaffItem extends Item {
 
     private final byte ghoulVariant;
 
-    public BoneStaffItem(byte ghoulVariant) {
-        super(new Item.Properties().stacksTo(1));
+    public BoneStaffItem(Properties properties, byte ghoulVariant) {
+        super(properties);
         this.ghoulVariant = ghoulVariant;
     }
 

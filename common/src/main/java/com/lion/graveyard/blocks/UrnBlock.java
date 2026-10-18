@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,8 +50,8 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
         return CODEC;
     }
 
-    public UrnBlock() {
-        super(BlockBehaviour.Properties.of().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(0.3F));
+    public UrnBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(WATERLOGGED, false)

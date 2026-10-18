@@ -3,6 +3,7 @@ package com.lion.graveyard.platform;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.advancements.CriterionTrigger;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -39,7 +41,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 public class RegistryHelper {
 
     @ExpectPlatform
-    public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
+    public static <T extends Block> Supplier<T> registerBlock(
+            String name,
+            Function<BlockBehaviour.Properties, T> factory,
+            BlockBehaviour.Properties properties
+    ) {
         throw new AssertionError();
     }
 
@@ -59,7 +65,11 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
+    public static <T extends Item> Supplier<T> registerItem(
+            String name,
+            Function<Item.Properties, T> factory,
+            Item.Properties properties
+    ) {
         throw new AssertionError();
     }
 
@@ -87,8 +97,6 @@ public class RegistryHelper {
     public static <T extends Item> Supplier<T> registerSpawnEggItem(
             String name,
             Supplier<? extends EntityType<? extends Mob>> type,
-            int backgroundColor,
-            int highlightColor,
             Item.Properties props
     ) {
         throw new AssertionError();
@@ -137,7 +145,7 @@ public class RegistryHelper {
     @ExpectPlatform
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
             String name,
-            Supplier<EntityType<T>> entityType
+            EntityType.Builder<T> builder
     ) {
         throw new AssertionError();
     }

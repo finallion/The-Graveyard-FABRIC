@@ -18,6 +18,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -39,23 +40,35 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RegistryHelperImpl {
 
-    public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
-        var registry = Registry.register(BuiltInRegistries.BLOCK, Graveyard.id(name), block.get());
+    public static <T extends Block> Supplier<T> registerBlock(
+            String name,
+            Function<BlockBehaviour.Properties, T> factory,
+            BlockBehaviour.Properties properties
+    ) {
+        ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Graveyard.id(name));
+        var registry = Registry.register(BuiltInRegistries.BLOCK, key, factory.apply(properties.setId(key)));
         return () -> registry;
     }
 
-    public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
-        var registry = Registry.register(BuiltInRegistries.ITEM, Graveyard.id(name), item.get());
+    public static <T extends Item> Supplier<T> registerItem(
+            String name,
+            Function<Item.Properties, T> factory,
+            Item.Properties properties
+    ) {
+        ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Graveyard.id(name));
+        var registry = Registry.register(BuiltInRegistries.ITEM, key, factory.apply(properties.setId(key)));
         return () -> registry;
     }
 
@@ -100,15 +113,13 @@ public class RegistryHelperImpl {
     public static <T extends Item> Supplier<T> registerSpawnEggItem(
             String name,
             Supplier<? extends EntityType<? extends Mob>> type,
-            int backgroundColor,
-            int highlightColor,
             Item.Properties props
     ) {
-        return (Supplier<T>) registerItem(name, () -> new SpawnEggItem(type.get(), backgroundColor, highlightColor, props));
+        return (Supplier<T>) registerItem(name, itemProperties -> new SpawnEggItem(type.get(), itemProperties), props);
     }
 
     public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, Item.Properties props) {
-        return (Supplier<T>) registerItem(name, () -> new Item(props));
+        return (Supplier<T>) registerItem(name, Item::new, props);
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
@@ -178,9 +189,10 @@ public class RegistryHelperImpl {
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
             String name,
-            Supplier<EntityType<T>> entityType
+            EntityType.Builder<T> builder
     ) {
-        var registry = Registry.register(BuiltInRegistries.ENTITY_TYPE, Graveyard.id(name), entityType.get());
+        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Graveyard.id(name));
+        var registry = Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
         return () -> registry;
     }
 

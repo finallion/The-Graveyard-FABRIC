@@ -27,18 +27,19 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -73,8 +75,15 @@ public class RegistryHelperImpl {
     public static final HashMap<ResourceKey<CreativeModeTab>, List<Item>> ITEMS_TO_ADD = new HashMap<>();
     public static final HashMap<ResourceKey<CreativeModeTab>, List<Supplier<List<ItemStack>>>> STACKS_TO_ADD = new HashMap<>();
 
-    public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
-        return BLOCKS.register(name, block);
+    public static <T extends Block> Supplier<T> registerBlock(
+            String name,
+            Function<BlockBehaviour.Properties, T> factory,
+            BlockBehaviour.Properties properties
+    ) {
+        return BLOCKS.register(
+                name,
+                id -> factory.apply(properties.setId(ResourceKey.create(Registries.BLOCK, id)))
+        );
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
@@ -109,8 +118,15 @@ public class RegistryHelperImpl {
         );
     }
 
-    public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
-        return ITEMS.register(name, item);
+    public static <T extends Item> Supplier<T> registerItem(
+            String name,
+            Function<Item.Properties, T> factory,
+            Item.Properties properties
+    ) {
+        return ITEMS.register(
+                name,
+                id -> factory.apply(properties.setId(ResourceKey.create(Registries.ITEM, id)))
+        );
     }
 
     public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
@@ -130,15 +146,13 @@ public class RegistryHelperImpl {
     public static <T extends Item> Supplier<T> registerSpawnEggItem(
             String name,
             Supplier<? extends EntityType<? extends Mob>> type,
-            int backgroundColor,
-            int highlightColor,
             Item.Properties props
     ) {
-        return (Supplier<T>) registerItem(name, () -> new DeferredSpawnEggItem(type, backgroundColor, highlightColor, props));
+        return (Supplier<T>) registerItem(name, itemProperties -> new SpawnEggItem(type.get(), itemProperties), props);
     }
 
     public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, Item.Properties props) {
-        return (Supplier<T>) registerItem(name, () -> new Item(props));
+        return (Supplier<T>) registerItem(name, Item::new, props);
     }
 
     public static <T extends Structure> void registerStructureType(String name, StructureType<T> structureType) {
@@ -177,9 +191,12 @@ public class RegistryHelperImpl {
 
     public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
             String name,
-            Supplier<EntityType<T>> entityType
+            EntityType.Builder<T> builder
     ) {
-        return ENTITIES.register(name, entityType);
+        return ENTITIES.register(
+                name,
+                id -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, id))
+        );
     }
 
     public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
