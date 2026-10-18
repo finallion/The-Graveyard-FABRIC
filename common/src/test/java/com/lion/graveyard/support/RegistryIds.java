@@ -24,7 +24,7 @@ public final class RegistryIds {
     public static final String DATA_COMPONENT = "datacomponent";
 
     private static final Pattern HELPER_CALL = Pattern.compile("RegistryHelper\\.register(\\w*)\\(\\s*\"([^\"]+)\"");
-    private static final Pattern TRIGGER_CALL = Pattern.compile("(?<![\w.])trigger\(\s*\"([^\"]+)\"");
+    private static final Pattern TRIGGER_CALL = Pattern.compile("(?<![\\w.])trigger\\(\\s*\"([^\"]+)\"");
     private static final Pattern SOUND_CALL = Pattern.compile("(?<![\\w.])register\\(\\s*\"([^\"]+)\"");
 
     private static final Map<String, String> CATEGORY_BY_CALL = Map.ofEntries(

@@ -4,9 +4,12 @@ import com.lion.graveyard.blockentities.animation.SarcophagusLidAnimator;
 import com.lion.graveyard.blocks.SarcophagusBlock;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.util.LegacyItemStacks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -71,21 +74,21 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 
         if (!this.tryLoadLootTable(nbt)) {
-            ContainerHelper.loadAllItems(nbt, this.inventory);
+            LegacyItemStacks.loadSlots(nbt.getList("Items", Tag.TAG_COMPOUND), this.inventory, registries);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
         if (!this.trySaveLootTable(nbt)) {
-            ContainerHelper.saveAllItems(nbt, this.inventory);
+            ContainerHelper.saveAllItems(nbt, this.inventory, registries);
         }
     }
 

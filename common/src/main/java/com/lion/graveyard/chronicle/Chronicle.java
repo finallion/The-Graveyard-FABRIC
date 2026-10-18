@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.WritableBookContent;
+import net.minecraft.world.item.component.WrittenBookContent;
 
 public final class Chronicle {
 
@@ -94,24 +94,19 @@ public final class Chronicle {
 
     @Nullable
     public static String pageOf(ItemStack book) {
-        CompoundTag nbt = book.getTag();
-
-        if (nbt == null) {
-            return null;
-        }
-
         if (book.is(Items.WRITTEN_BOOK)) {
-            return SIGNED_BOOKS.get(nbt.getString("title"));
+            WrittenBookContent content = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
+            return content == null ? null : SIGNED_BOOKS.get(content.title().raw());
         }
 
         if (book.is(Items.WRITABLE_BOOK)) {
-            ListTag pages = nbt.getList("pages", Tag.TAG_STRING);
+            WritableBookContent content = book.get(DataComponents.WRITABLE_BOOK_CONTENT);
 
-            if (pages.isEmpty()) {
+            if (content == null || content.pages().isEmpty()) {
                 return null;
             }
 
-            String first = pages.getString(0);
+            String first = content.pages().get(0).raw();
             for (Map.Entry<String, String> entry : UNSIGNED_BOOKS.entrySet()) {
                 if (first.startsWith(entry.getKey())) {
                     return entry.getValue();

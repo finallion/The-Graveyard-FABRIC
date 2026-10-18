@@ -8,11 +8,14 @@ import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -68,19 +71,13 @@ public class BoneStaffItem extends Item {
     private static final TicketType<UUID> FETCH_TICKET =
             TicketType.create("graveyard_ghouling_fetch", UUID::compareTo, 60);
 
-    private static final String CALL_KEY = "FetchCall";
-
-    private static final String MISSES_KEY = "FetchMisses";
     private static final int MAX_FETCH_MISSES = 5;
-
-    public static final String BOND_KEY = "BondId";
     private static final int MAX_LANDING_DROP = 8;
 
     private static final int CALL_TIMEOUT = 200;
     private static final double ITEM_AIM_DISTANCE = 24.0D;
     private static final double ITEM_AIM_MARGIN = 0.3D;
 
-    private static final String STORED_KEY = "StoredGhouling";
     private static final int STORE_TICKS = 30;
     private static final double STORE_RANGE = 12.0D;
     private static final double STORE_RANGE_SQ = STORE_RANGE * STORE_RANGE;
@@ -106,13 +103,13 @@ public class BoneStaffItem extends Item {
         ItemStack stack = context.getItemInHand();
 
         if (player != null && world.isClientSide) {
-            CompoundTag nbt = stack.getTag();
+            UUID owner = LegacyItemData.ownerUuid(stack);
 
-            if (nbt != null && nbt.hasUUID("OwnerUUID") && !nbt.getUUID("OwnerUUID").equals(player.getUUID())) {
+            if (owner != null && !owner.equals(player.getUUID())) {
                 return InteractionResult.FAIL;
             }
 
-            if (isUnbound(stack) || isStored(stack)) {
+            if (isUnbound(stack) || LegacyItemData.isStored(stack)) {
                 return InteractionResult.SUCCESS;
             }
 
@@ -120,28 +117,28 @@ public class BoneStaffItem extends Item {
         }
 
         if (player != null && world instanceof ServerLevel serverWorld) {
-            CompoundTag nbt = stack.getTag();
+            UUID owner = LegacyItemData.ownerUuid(stack);
 
-            if (nbt != null && nbt.hasUUID("OwnerUUID") && !nbt.getUUID("OwnerUUID").equals(player.getUUID())) {
+            if (owner != null && !owner.equals(player.getUUID())) {
                 player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
                 return InteractionResult.FAIL;
             }
 
             BlockPos spawnPos = spawnPosition(world, blockPos, context.getClickedFace());
 
-            if (nbt != null && nbt.contains(STORED_KEY)) {
+            if (LegacyItemData.isStored(stack)) {
                 release(serverWorld, player, stack, spawnPos);
                 player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
                 return InteractionResult.SUCCESS;
             }
 
-            if (nbt != null && nbt.hasUUID("GhoulingUUID") && isAlive(serverWorld, nbt.getUUID("GhoulingUUID"))) {
-                if (!(findLoaded(serverWorld, nbt.getUUID("GhoulingUUID")) instanceof GhoulingEntity bound)
+            UUID boundId = LegacyItemData.ghoulingUuid(stack);
+
+            if (boundId != null && isAlive(serverWorld, boundId)) {
+                if (!(findLoaded(serverWorld, boundId) instanceof GhoulingEntity bound)
                         || !rejectsStaff(bound, stack, player)) {
                     return InteractionResult.PASS;
                 }
-
-                nbt = stack.getTag();
             }
 
             GhoulingEntity ghouling = TGEntities.GHOULING.get().create(world);
@@ -151,11 +148,17 @@ public class BoneStaffItem extends Item {
 
             UUID bondId = UUID.randomUUID();
             ghouling.setBondId(bondId);
-            stack.getOrCreateTag().putUUID("GhoulingUUID", ghouling.getUUID());
-            stack.getTag().putUUID(BOND_KEY, bondId);
+            boolean firstBond = LegacyItemData.ownerUuid(stack) == null;
+            LegacyItemData.edit(stack, data -> {
+                data.putUUID(LegacyItemData.GHOULING_UUID, ghouling.getUUID());
+                data.putUUID(LegacyItemData.BOND_ID, bondId);
 
-            if (!stack.getTag().hasUUID("OwnerUUID")) {
-                stack.getTag().putUUID("OwnerUUID", player.getUUID());
+                if (firstBond) {
+                    data.putUUID(LegacyItemData.OWNER_UUID, player.getUUID());
+                }
+            });
+
+            if (firstBond) {
                 player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.spawn"), true);
             } else {
                 player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.respawn"), true);
@@ -182,14 +185,8 @@ public class BoneStaffItem extends Item {
         return block.getType() == HitResult.Type.MISS ? end : block.getLocation();
     }
 
-    private static boolean isStored(ItemStack stack) {
-        CompoundTag nbt = stack.getTag();
-        return nbt != null && nbt.contains(STORED_KEY);
-    }
-
     public static boolean isBoundTo(ItemStack stack, GhoulingEntity ghouling) {
-        CompoundTag nbt = stack.getTag();
-        return nbt != null && nbt.hasUUID("GhoulingUUID") && nbt.getUUID("GhoulingUUID").equals(ghouling.getUUID());
+        return ghouling.getUUID().equals(LegacyItemData.ghoulingUuid(stack));
     }
 
     private static final SoundEvent STORE_DONE_SOUND = SoundEvents.SOUL_ESCAPE.value();
@@ -225,20 +222,19 @@ public class BoneStaffItem extends Item {
     }
 
     private static void release(ServerLevel world, Player player, ItemStack stack, BlockPos spawnPos) {
-        CompoundTag nbt = stack.getTag();
-        CompoundTag saved = nbt.getCompound(STORED_KEY);
+        CompoundTag saved = LegacyItemData.view(stack).getCompound(LegacyItemData.STORED_GHOULING);
 
         if (EntityType.create(saved, world).orElse(null) instanceof GhoulingEntity ghouling) {
             ghouling.moveTo(spawnPos, 0.0F, 0.0F);
             ghouling.setSitting(false);
             ItemStack staff = stack.copy();
-            staff.getTag().remove(STORED_KEY);
+            LegacyItemData.clearStored(staff);
             ghouling.setStaff(staff);
             ghouling.prepareSpawn();
 
             if (world.addFreshEntity(ghouling)) {
                 ghouling.playSpawnSounds();
-                nbt.remove(STORED_KEY);
+                LegacyItemData.clearStored(stack);
                 GhoulingBindings.get(world).update(ghouling);
                 player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.released"), true);
                 return;
@@ -256,7 +252,7 @@ public class BoneStaffItem extends Item {
         }
 
         world.playSound(null, ghouling.blockPosition(), STORE_DONE_SOUND, SoundSource.PLAYERS, 2.0F, 1.0F);
-        stack.getOrCreateTag().put(STORED_KEY, ghouling.removeForStorage());
+        LegacyItemData.store(stack, ghouling.removeForStorage());
         player.getCooldowns().addCooldown(stack.getItem(), 20);
         player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.stored"), true);
     }
@@ -267,7 +263,7 @@ public class BoneStaffItem extends Item {
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             NbtIo.write(probe, new DataOutputStream(bytes));
-            NbtIo.read(new DataInputStream(new ByteArrayInputStream(bytes.toByteArray())), new NbtAccounter(MAX_STORED_NBT));
+            NbtIo.read(new DataInputStream(new ByteArrayInputStream(bytes.toByteArray())), NbtAccounter.create(MAX_STORED_NBT));
             return true;
         } catch (IOException | RuntimeException e) {
             Graveyard.LOGGER.debug("The Ghouling does not fit into the staff stack", e);
@@ -276,7 +272,7 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
@@ -299,14 +295,14 @@ public class BoneStaffItem extends Item {
 
         if (!(findLoaded(serverWorld, drawn) instanceof GhoulingEntity ghouling) || !ghouling.isAlive()
                 || ghouling.distanceToSqr(player) > STORE_RANGE_SQ || !ghouling.isOwner(player)
-                || !isBoundTo(stack, ghouling) || isStored(stack) || !ghouling.acceptsStaff(stack)) {
+                || !isBoundTo(stack, ghouling) || LegacyItemData.isStored(stack) || !ghouling.acceptsStaff(stack)) {
             DRAWING.remove(player.getUUID());
             stopDrawSound(serverWorld, player);
             user.releaseUsingItem();
             return;
         }
 
-        int used = getUseDuration(stack) - remainingUseTicks;
+        int used = getUseDuration(stack, user) - remainingUseTicks;
         streamSouls(serverWorld, player, ghouling, used);
 
         if (used == DRAW_SOUND_DELAY) {
@@ -332,7 +328,7 @@ public class BoneStaffItem extends Item {
             stopDrawSound(serverWorld, player);
         }
 
-        if (drawn != null && getUseDuration(stack) - remainingUseTicks < SIT_CLICK_TICKS
+        if (drawn != null && getUseDuration(stack, user) - remainingUseTicks < SIT_CLICK_TICKS
                 && findLoaded(serverWorld, drawn) instanceof GhoulingEntity ghouling && ghouling.isAlive()
                 && !rejectsStaff(ghouling, stack, player)) {
             ghouling.toggleSitting(player);
@@ -341,20 +337,19 @@ public class BoneStaffItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return isStored(stack) || super.isFoil(stack);
+        return LegacyItemData.isStored(stack) || super.isFoil(stack);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
-        CompoundTag nbt = stack.getTag();
-
-        if (nbt != null && nbt.contains(STORED_KEY)) {
-            CompoundTag saved = nbt.getCompound(STORED_KEY);
+        if (LegacyItemData.isStored(stack)) {
+            CompoundTag saved = LegacyItemData.view(stack).getCompound(LegacyItemData.STORED_GHOULING);
             Component name = null;
 
-            if (saved.contains("CustomName", 8)) {
+            if (saved.contains("CustomName", Tag.TAG_STRING)) {
                 try {
-                    name = Component.Serializer.fromJson(saved.getString("CustomName"));
+                    HolderLookup.Provider registries = tooltipContext.registries() == null ? RegistryAccess.EMPTY : tooltipContext.registries();
+                    name = Component.Serializer.fromJson(saved.getString("CustomName"), registries);
                 } catch (RuntimeException e) {
                     Graveyard.LOGGER.debug("Cannot read the stored Ghouling name", e);
                     name = null;
@@ -383,17 +378,17 @@ public class BoneStaffItem extends Item {
     }
 
     public static boolean isUnbound(ItemStack stack) {
-        CompoundTag nbt = stack.getTag();
-        return nbt == null || !nbt.hasUUID("GhoulingUUID");
+        return LegacyItemData.ghoulingUuid(stack) == null;
     }
 
     public static void rebind(ItemStack stack, Player player, GhoulingEntity ghouling) {
         UUID bondId = UUID.randomUUID();
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putUUID("OwnerUUID", player.getUUID());
-        nbt.putUUID("GhoulingUUID", ghouling.getUUID());
-        nbt.putUUID(BOND_KEY, bondId);
-        nbt.remove(CALL_KEY);
+        LegacyItemData.edit(stack, data -> {
+            data.putUUID(LegacyItemData.OWNER_UUID, player.getUUID());
+            data.putUUID(LegacyItemData.GHOULING_UUID, ghouling.getUUID());
+            data.putUUID(LegacyItemData.BOND_ID, bondId);
+            data.remove(LegacyItemData.FETCH_CALL);
+        });
         ghouling.setBondId(bondId);
         ghouling.setStaff(stack.copy());
 
@@ -405,9 +400,9 @@ public class BoneStaffItem extends Item {
     }
 
     public static boolean rejectsStaff(GhoulingEntity ghouling, ItemStack stack, Player player) {
-        CompoundTag nbt = stack.getTag();
+        UUID bound = LegacyItemData.ghoulingUuid(stack);
 
-        if (nbt != null && nbt.hasUUID("GhoulingUUID") && !nbt.getUUID("GhoulingUUID").equals(ghouling.getUUID())) {
+        if (bound != null && !bound.equals(ghouling.getUUID())) {
             return false;
         }
 
@@ -415,12 +410,7 @@ public class BoneStaffItem extends Item {
             return false;
         }
 
-        if (nbt != null) {
-            nbt.remove("OwnerUUID");
-            nbt.remove("GhoulingUUID");
-            nbt.remove(BOND_KEY);
-            nbt.remove(CALL_KEY);
-        }
+        LegacyItemData.clearBond(stack);
 
         player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.forgotten"), true);
         return true;
@@ -451,17 +441,18 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        CompoundTag nbt = stack.getTag();
+        CompoundTag nbt = LegacyItemData.view(stack);
 
-        if (nbt == null || nbt.contains(STORED_KEY) || !nbt.hasUUID("GhoulingUUID") || !nbt.hasUUID("OwnerUUID")
-                || !nbt.getUUID("OwnerUUID").equals(player.getUUID())) {
+        if (nbt.contains(LegacyItemData.STORED_GHOULING) || !nbt.hasUUID(LegacyItemData.GHOULING_UUID) || !nbt.hasUUID(LegacyItemData.OWNER_UUID)
+                || !nbt.getUUID(LegacyItemData.OWNER_UUID).equals(player.getUUID())) {
             return;
         }
 
-        boolean calling = nbt.getLong(CALL_KEY) > 0L;
+        long callDeadline = nbt.getLong(LegacyItemData.FETCH_CALL);
+        boolean calling = callDeadline > 0L;
 
-        if (calling && world.getGameTime() > nbt.getLong(CALL_KEY)) {
-            nbt.remove(CALL_KEY);
+        if (calling && world.getGameTime() > callDeadline) {
+            LegacyItemData.clearFetchCall(stack);
             player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.lost"), true);
             calling = false;
         }
@@ -470,11 +461,11 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        UUID ghoulingId = nbt.getUUID("GhoulingUUID");
+        UUID ghoulingId = nbt.getUUID(LegacyItemData.GHOULING_UUID);
         GhoulingBindings.Binding binding = GhoulingBindings.get(serverWorld).get(ghoulingId);
 
         if (binding == null) {
-            nbt.remove(CALL_KEY);
+            LegacyItemData.clearFetchCall(stack);
             return;
         }
 
@@ -485,21 +476,21 @@ public class BoneStaffItem extends Item {
         ServerLevel home = serverWorld.getServer().getLevel(binding.dimension());
 
         if (home == null) {
-            nbt.remove(CALL_KEY);
+            LegacyItemData.clearFetchCall(stack);
             return;
         }
 
         GhoulingEntity ghouling = home.getEntity(ghoulingId) instanceof GhoulingEntity found ? found : null;
 
         if (ghouling == null) {
-            int misses = nbt.getInt(MISSES_KEY);
+            int misses = LegacyItemData.fetchMisses(stack);
 
             if (binding.pos() != null && player.getUUID().equals(binding.owner()) && (calling || !ownerAirborne(player))
                     && (calling || misses < MAX_FETCH_MISSES)) {
                 home.getChunkSource().addRegionTicket(FETCH_TICKET, new ChunkPos(binding.pos()), 2, ghoulingId);
 
                 if (!calling) {
-                    nbt.putInt(MISSES_KEY, misses + 1);
+                    LegacyItemData.edit(stack, data -> data.putInt(LegacyItemData.FETCH_MISSES, misses + 1));
 
                     if (misses + 1 == MAX_FETCH_MISSES) {
                         player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.gave_up"), true);
@@ -510,14 +501,14 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        nbt.remove(MISSES_KEY);
+        LegacyItemData.clearFetchMisses(stack);
 
         if (!isOwnedBy(ghouling, player) || rejectsStaff(ghouling, stack, player)) {
             return;
         }
 
         if (calling) {
-            nbt.remove(CALL_KEY);
+            LegacyItemData.clearFetchCall(stack);
 
             if (!fetch(ghouling, serverWorld, player)) {
                 player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.no_landing"), true);
@@ -546,7 +537,7 @@ public class BoneStaffItem extends Item {
                 return;
             }
 
-            stack.removeTagKey(CALL_KEY);
+            LegacyItemData.clearFetchCall(stack);
 
             if (!fetch(ghouling, world, owner)) {
                 owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.no_landing"), true);
@@ -558,14 +549,15 @@ public class BoneStaffItem extends Item {
         ServerLevel home = world.getServer().getLevel(binding.dimension());
 
         if (home == null || binding.pos() == null) {
-            stack.removeTagKey(CALL_KEY);
+            LegacyItemData.clearFetchCall(stack);
             owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.not_found"), true);
             return;
         }
 
         home.getChunkSource().addRegionTicket(FETCH_TICKET, new ChunkPos(binding.pos()), 2, ghoulingId);
-        stack.removeTagKey(MISSES_KEY);
-        stack.getOrCreateTag().putLong(CALL_KEY, world.getGameTime() + CALL_TIMEOUT);
+        long callDeadline = world.getGameTime() + CALL_TIMEOUT;
+        LegacyItemData.clearFetchMisses(stack);
+        LegacyItemData.edit(stack, data -> data.putLong(LegacyItemData.FETCH_CALL, callDeadline));
         owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.call"), true);
     }
 
@@ -639,13 +631,12 @@ public class BoneStaffItem extends Item {
     }
 
     private static boolean startFarDraw(Level world, Player user, InteractionHand hand, ItemStack stack) {
-        CompoundTag nbt = stack.getTag();
+        UUID id = LegacyItemData.ghoulingUuid(stack);
 
-        if (user.isShiftKeyDown() || isStored(stack) || nbt == null || !nbt.hasUUID("GhoulingUUID")) {
+        if (user.isShiftKeyDown() || LegacyItemData.isStored(stack) || id == null) {
             return false;
         }
 
-        UUID id = nbt.getUUID("GhoulingUUID");
         Vec3 start = user.getEyePosition();
         Vec3 end = clipAtBlocks(user, start, start.add(user.getViewVector(1.0F).scale(STORE_RANGE)));
         AABB area = user.getBoundingBox().expandTowards(end.subtract(start)).inflate(1.0D);
@@ -672,10 +663,10 @@ public class BoneStaffItem extends Item {
             user.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
         }
 
-        CompoundTag nbt = stack.getTag();
-        boolean owned = nbt != null && nbt.hasUUID("OwnerUUID");
+        UUID ownerId = LegacyItemData.ownerUuid(stack);
+        boolean owned = ownerId != null;
 
-        if (owned && !nbt.getUUID("OwnerUUID").equals(user.getUUID())) {
+        if (owned && !ownerId.equals(user.getUUID())) {
             if (!world.isClientSide) {
                 user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
             }
@@ -691,14 +682,14 @@ public class BoneStaffItem extends Item {
             return owned ? InteractionResultHolder.sidedSuccess(stack, true) : super.use(world, user, hand);
         }
 
-        if (isStored(stack)) {
+        if (LegacyItemData.isStored(stack)) {
             user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.resting"), true);
             return InteractionResultHolder.sidedSuccess(stack, false);
         }
 
-        if (nbt != null && nbt.contains("GhoulingUUID") && owned) {
-            UUID ghoulingUUID = nbt.getUUID("GhoulingUUID");
+        UUID ghoulingUUID = LegacyItemData.ghoulingUuid(stack);
 
+        if (ghoulingUUID != null && owned) {
             if (user.isShiftKeyDown()) {
                 if (world instanceof ServerLevel serverWorld) {
                     call(serverWorld, user, stack, ghoulingUUID);
@@ -715,11 +706,11 @@ public class BoneStaffItem extends Item {
                         if (entity instanceof LivingEntity target && ghouling.canAttack(target) && ghouling.canAttackWithOwner(target, user)) {
                             if (entity instanceof TamableAnimal tameableEntity) {
                                 if (tameableEntity.getOwnerUUID() != null) {
-                                    return tameableEntity.getOwnerUUID().compareTo(nbt.getUUID("OwnerUUID")) != 0;
+                                    return tameableEntity.getOwnerUUID().compareTo(ownerId) != 0;
                                 }
                             } else if (entity instanceof GraveyardMinionEntity minion) {
                                 if (minion.getOwnerUuid() != null) {
-                                    return minion.getOwnerUuid().compareTo(nbt.getUUID("OwnerUUID")) != 0;
+                                    return minion.getOwnerUuid().compareTo(ownerId) != 0;
                                 }
                             }
 

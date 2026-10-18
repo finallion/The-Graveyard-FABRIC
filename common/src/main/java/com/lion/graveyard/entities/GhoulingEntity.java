@@ -8,6 +8,8 @@ import com.lion.graveyard.blocks.SarcophagusBlock;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.BoneStaffItem;
+import com.lion.graveyard.item.LegacyItemData;
+import com.lion.graveyard.util.LegacyItemStacks;
 import com.lion.graveyard.util.MathUtil;
 import com.lion.graveyard.entities.ai.goals.SitGoal;
 import com.lion.graveyard.entities.ai.goals.FollowOwnerGoal;
@@ -534,16 +536,14 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         UUID known = this.bondId;
 
         if (getCommandSenderWorld().isClientSide()) {
-            CompoundTag tracked = getStaff().getTag();
-            known = tracked != null && tracked.hasUUID(BoneStaffItem.BOND_KEY) ? tracked.getUUID(BoneStaffItem.BOND_KEY) : null;
+            known = LegacyItemData.bondId(getStaff());
         }
 
         if (known == null) {
             return true;
         }
 
-        CompoundTag nbt = staff.getTag();
-        return nbt != null && nbt.hasUUID(BoneStaffItem.BOND_KEY) && known.equals(nbt.getUUID(BoneStaffItem.BOND_KEY));
+        return known.equals(LegacyItemData.bondId(staff));
     }
 
     public ItemStack getStaff() {
@@ -666,17 +666,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         nbt.putByte("ghoulVariant", getVariant());
 
         if (this.bondId != null) {
-            nbt.putUUID(BoneStaffItem.BOND_KEY, this.bondId);
+            nbt.putUUID(LegacyItemData.BOND_ID, this.bondId);
         }
 
-        if (getStaff() != null) {
-            nbt.put("Staff", getStaff().save(new CompoundTag()));
-        }
+        nbt.put("Staff", getStaff().saveOptional(registryAccess()));
 
         if (inventory != null) {
             final ListTag inv = new ListTag();
             for (int i = 0; i < this.inventory.getContainerSize(); i++) {
-                inv.add(inventory.getItem(i).save(new CompoundTag()));
+                inv.add(inventory.getItem(i).saveOptional(registryAccess()));
             }
             nbt.put("Inventory", inv);
         }
@@ -687,17 +685,17 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         super.readAdditionalSaveData(nbt);
         this.setHasCoffin(nbt.getBoolean("CoffinGhouling"));
         this.setVariant(nbt.getByte("ghoulVariant"));
-        this.bondId = nbt.hasUUID(BoneStaffItem.BOND_KEY) ? nbt.getUUID(BoneStaffItem.BOND_KEY) : null;
+        this.bondId = nbt.hasUUID(LegacyItemData.BOND_ID) ? nbt.getUUID(LegacyItemData.BOND_ID) : null;
 
         if (nbt.contains("Staff")) {
-            setStaff(ItemStack.of(nbt.getCompound("Staff")));
+            setStaff(LegacyItemStacks.parse(registryAccess(), nbt.getCompound("Staff")));
         }
 
         if (nbt.contains("Inventory")) {
             final ListTag inv = nbt.getList("Inventory", 10);
             inventory = new CoffinInventory(this, Math.max(54, inv.size()));
             for (int i = 0; i < inv.size(); i++) {
-                inventory.setItem(i, ItemStack.of(inv.getCompound(i)));
+                inventory.setItem(i, LegacyItemStacks.parse(registryAccess(), inv.getCompound(i)));
             }
         }
     }

@@ -4,6 +4,7 @@ import com.lion.graveyard.blocks.SmolderingPillarBlock;
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.entities.ai.goals.FleeGraveyardMobsGoal;
 import com.lion.graveyard.item.BoneStaffItem;
+import com.lion.graveyard.item.LegacyItemData;
 import com.lion.graveyard.mixin.MobEntityAccessor;
 import com.lion.graveyard.entities.CorvidEntity;
 import com.lion.graveyard.util.CrowAnchors;
@@ -50,7 +51,7 @@ public final class CommonEvents {
         } else if (entity instanceof WanderingTrader trader) {
             addFleeGoal(trader, 0.5D, 0.5D);
         } else if (entity instanceof ItemEntity item && item.getItem().getItem() instanceof BoneStaffItem
-                && item.getItem().hasTag() && item.getItem().getTag().contains("StoredGhouling")) {
+                && LegacyItemData.isStored(item.getItem())) {
             item.setUnlimitedLifetime();
             item.setInvulnerable(true);
         }

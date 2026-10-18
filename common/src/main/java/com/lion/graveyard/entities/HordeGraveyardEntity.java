@@ -3,7 +3,7 @@ package com.lion.graveyard.entities;
 import com.lion.graveyard.init.TGAdvancements;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
@@ -46,7 +46,11 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         super.addAdditionalSaveData(nbt);
 
         if (this.patrolTarget != null) {
-            nbt.put("PatrolTarget", NbtUtils.writeBlockPos(this.patrolTarget));
+            CompoundTag target = new CompoundTag();
+            target.putInt("X", this.patrolTarget.getX());
+            target.putInt("Y", this.patrolTarget.getY());
+            target.putInt("Z", this.patrolTarget.getZ());
+            nbt.put("PatrolTarget", target);
         }
 
         nbt.putBoolean("PatrolLeader", this.patrolLeader);
@@ -59,7 +63,13 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         super.readAdditionalSaveData(nbt);
 
         if (nbt.contains("PatrolTarget")) {
-            this.patrolTarget = NbtUtils.readBlockPos(nbt.getCompound("PatrolTarget"));
+            if (nbt.contains("PatrolTarget", Tag.TAG_INT_ARRAY)) {
+                int[] coordinates = nbt.getIntArray("PatrolTarget");
+                this.patrolTarget = coordinates.length == 3 ? new BlockPos(coordinates[0], coordinates[1], coordinates[2]) : null;
+            } else {
+                CompoundTag target = nbt.getCompound("PatrolTarget");
+                this.patrolTarget = new BlockPos(target.getInt("X"), target.getInt("Y"), target.getInt("Z"));
+            }
         }
 
         this.patrolLeader = nbt.getBoolean("PatrolLeader");

@@ -21,27 +21,25 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public class DiaryPageItem extends BlockItem {
-    public static final String PAGE_KEY = "page";
-
     public DiaryPageItem(Block block, Properties settings) {
         super(block, settings);
     }
 
     public static ItemStack of(Item item, String page) {
         ItemStack stack = new ItemStack(item);
-        stack.getOrCreateTag().putString(PAGE_KEY, page);
+        LegacyItemData.edit(stack, data -> data.putString(LegacyItemData.PAGE, page));
         return stack;
     }
 
     @Nullable
     public static String pageOf(ItemStack stack) {
-        CompoundTag nbt = stack.getTag();
+        CompoundTag nbt = LegacyItemData.view(stack);
 
-        if (nbt == null || !nbt.contains(PAGE_KEY, Tag.TAG_STRING)) {
+        if (!nbt.contains(LegacyItemData.PAGE, Tag.TAG_STRING)) {
             return null;
         }
 
-        String page = nbt.getString(PAGE_KEY);
+        String page = nbt.getString(LegacyItemData.PAGE);
         return Chronicle.isValidId(page) ? page : null;
     }
 

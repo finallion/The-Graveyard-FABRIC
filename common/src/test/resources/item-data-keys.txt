@@ -1,0 +1,9 @@
+# Format: Class:Key
+BoneStaffItem:BondId
+BoneStaffItem:FetchCall
+BoneStaffItem:FetchMisses
+BoneStaffItem:GhoulingUUID
+BoneStaffItem:OwnerUUID
+BoneStaffItem:StoredGhouling
+DiaryPageItem:page
+VialOfBlood:Blood

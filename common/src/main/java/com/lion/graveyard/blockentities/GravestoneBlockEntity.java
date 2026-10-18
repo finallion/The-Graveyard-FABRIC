@@ -7,6 +7,7 @@ import com.mojang.serialization.DataResult;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -68,9 +69,9 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
-        DataResult<Tag> encodedText = SignText.DIRECT_CODEC.encodeStart(NbtOps.INSTANCE, this.text);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
+        DataResult<Tag> encodedText = SignText.DIRECT_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this.text);
         Logger errorLogger = LOGGER;
         Objects.requireNonNull(errorLogger);
         encodedText.resultOrPartial(errorLogger::error).ifPresent((frontText) -> {
@@ -80,13 +81,13 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         DataResult<SignText> parsedText;
         Logger errorLogger;
 
         if (nbt.contains("front_text")) {
-            parsedText = SignText.DIRECT_CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
+            parsedText = SignText.DIRECT_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), nbt.getCompound("front_text"));
             errorLogger = LOGGER;
             Objects.requireNonNull(errorLogger);
             parsedText.resultOrPartial(errorLogger::error).ifPresent((signText) -> {
@@ -199,8 +200,8 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     @Override

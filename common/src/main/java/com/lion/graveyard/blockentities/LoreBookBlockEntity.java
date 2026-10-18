@@ -3,6 +3,7 @@ package com.lion.graveyard.blockentities;
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.init.TGBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
@@ -32,8 +33,8 @@ public class LoreBookBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt) {
-        super.saveAdditional(nbt);
+    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.saveAdditional(nbt, registries);
 
         if (this.page != null) {
             nbt.putString(PAGE_KEY, this.page);
@@ -41,15 +42,15 @@ public class LoreBookBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+        super.loadAdditional(nbt, registries);
         String stored = nbt.contains(PAGE_KEY, Tag.TAG_STRING) ? nbt.getString(PAGE_KEY) : null;
         this.page = Chronicle.isValidId(stored) ? stored : null;
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     @Nullable

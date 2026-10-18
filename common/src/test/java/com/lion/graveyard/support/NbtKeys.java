@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class NbtKeys {
-    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:load(?=\\s*\\(\\s*CompoundTag)|readAdditionalSaveData|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
+    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:loadAdditional(?=\\s*\\(\\s*CompoundTag)|readAdditionalSaveData|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
     private static final Pattern CONSTANT = Pattern.compile("static\\s+final\\s+String\\s+(\\w+)\\s*=\\s*\"([^\"]+)\"");
     private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|has\\w*|remove)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
     private static final Pattern WRITE_CALL = Pattern.compile("\\.put\\w*\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
