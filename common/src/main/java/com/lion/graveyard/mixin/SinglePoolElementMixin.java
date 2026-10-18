@@ -17,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
@@ -45,14 +46,14 @@ public abstract class SinglePoolElementMixin {
     }
 
     @Inject(method = "getSettings", at = @At("RETURN"))
-    private void graveyard$keepWorldWaterOut(Rotation rotation, BoundingBox box, boolean keepJigsaws, CallbackInfoReturnable<StructurePlaceSettings> callback) {
+    private void graveyard$keepWorldWaterOut(Rotation rotation, BoundingBox box, LiquidSettings liquidSettings, boolean keepJigsaws, CallbackInfoReturnable<StructurePlaceSettings> callback) {
         if (!this.processors.isBound()) {
             return;
         }
 
         for (StructureProcessor processor : this.processors.value().list()) {
             if (processor instanceof RemoveWaterloggedProcessor || processor instanceof RemoveWaterloggedCryptProcessor) {
-                callback.getReturnValue().setKeepLiquids(false);
+                callback.getReturnValue().setLiquidSettings(LiquidSettings.IGNORE_WATERLOGGING);
                 return;
             }
         }

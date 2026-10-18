@@ -1,6 +1,7 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.util.StaffRecipeLock;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,18 +18,27 @@ import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 @Mixin(CraftingMenu.class)
 public abstract class CraftingScreenHandlerMixin {
     @Inject(method = "slotChangedCraftingGrid", at = @At("HEAD"), cancellable = true)
-    private static void graveyard$requireKnownStaffRecipe(AbstractContainerMenu handler, Level world, Player player, CraftingContainer craftingInventory, ResultContainer resultInventory, CallbackInfo info) {
+    private static void graveyard$requireKnownStaffRecipe(
+            AbstractContainerMenu handler,
+            Level world,
+            Player player,
+            CraftingContainer craftingInventory,
+            ResultContainer resultInventory,
+            @Nullable RecipeHolder<CraftingRecipe> lastRecipe,
+            CallbackInfo info
+    ) {
         if (world.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
-        Optional<CraftingRecipe> match = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+        Optional<RecipeHolder<CraftingRecipe>> match = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), world, lastRecipe);
 
         if (match.isEmpty() || !StaffRecipeLock.isLocked(serverPlayer, match.get())) {
             return;

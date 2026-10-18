@@ -11,7 +11,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,13 +23,9 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientLevel level;
 
-    @Final
-    @Shadow
-    private Minecraft minecraft;
-
     @Inject(method = "handleOpenSignEditor", at = @At(value = "HEAD"), cancellable = true)
     public void openSignEditor(ClientboundOpenSignEditorPacket packet, CallbackInfo info) {
-        PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, this.minecraft);
+        PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, Minecraft.getInstance());
         BlockPos blockPos = packet.getPos();
 
         BlockEntity foundEntity = this.level.getBlockEntity(blockPos);

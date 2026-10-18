@@ -1,7 +1,6 @@
 package com.lion.graveyard.mixin;
 
 import com.lion.graveyard.entities.MobSpawnGate;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -28,7 +27,7 @@ public abstract class MobEntitySpawnMixin {
 
     // Structure entities and spawners with custom rules never call canSpawn.
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
-    private void graveyard$discardGatedStructureMob(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt, CallbackInfoReturnable<SpawnGroupData> callback) {
+    private void graveyard$discardGatedStructureMob(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, CallbackInfoReturnable<SpawnGroupData> callback) {
         Mob mob = (Mob) (Object) this;
 
         if ((spawnReason == MobSpawnType.STRUCTURE || spawnReason == MobSpawnType.SPAWNER) && MobSpawnGate.blocks(mob.getType(), spawnReason)) {
