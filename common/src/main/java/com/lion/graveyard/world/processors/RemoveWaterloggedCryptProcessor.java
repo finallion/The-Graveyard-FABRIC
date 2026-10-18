@@ -1,7 +1,7 @@
 package com.lion.graveyard.world.processors;
 
 import com.lion.graveyard.init.TGProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -11,7 +11,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 /// SinglePoolElementMixin disables fluid placement for pieces that use this processor.
 public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
-    public static final Codec<RemoveWaterloggedCryptProcessor> CODEC = Codec.unit(RemoveWaterloggedCryptProcessor::new);
+    public static final MapCodec<RemoveWaterloggedCryptProcessor> CODEC = MapCodec.unit(RemoveWaterloggedCryptProcessor::new);
 
     public RemoveWaterloggedCryptProcessor() { }
 

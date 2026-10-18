@@ -53,10 +53,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
                 TGBlocks.TG_GRASS_BLOCK.get());
 
 
-        ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.CHANNEL, (client, handler, buf, responseSender) -> {
-            ChronicleSync.Payload payload = ChronicleSync.read(buf);
-            client.execute(() -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
-        });
+        ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.TYPE, (payload, context) -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
 
 
         ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), ResourceLocation.withDefaultNamespace("charged"), (stack, world, entity, seed) -> {

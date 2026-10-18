@@ -1,6 +1,7 @@
 package com.lion.graveyard.fabric;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.platform.ChronicleSync;
 import com.lion.graveyard.platform.fabric.HordeSpawner;
 import com.lion.graveyard.platform.fabric.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.fabric.ServerEvents;
@@ -13,6 +14,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -29,6 +31,8 @@ public class GraveyardFabric implements ModInitializer {
     public void onInitialize() {
         Graveyard.init();
         Graveyard.postInit();
+
+        PayloadTypeRegistry.playS2C().register(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC);
 
         registerServerEvents();
         registerCommands();

@@ -1,5 +1,6 @@
 package com.lion.graveyard.network;
 
+import com.lion.graveyard.platform.ChronicleSync;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 public class PacketHandler {
@@ -8,7 +9,7 @@ public class PacketHandler {
 
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         event.registrar(PROTOCOL_VERSION)
-                .playToClient(ChroniclePayload.TYPE, ChroniclePayload.CODEC,
+                .playToClient(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC,
                         (payload, context) -> context.enqueueWork(() -> ClientPayloadHandler.handle(payload)));
     }
 }

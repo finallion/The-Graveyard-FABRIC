@@ -1,8 +1,5 @@
 package com.lion.graveyard.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import com.lion.graveyard.Graveyard;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -28,17 +25,5 @@ public class PagesInLootCondition implements LootItemCondition {
     @Override
     public boolean test(LootContext context) {
         return Graveyard.getConfig().booleanEntries.getOrDefault(CONFIG_KEY, true);
-    }
-
-    /// The condition has no arguments, so both directions are empty.
-    public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<PagesInLootCondition> {
-        @Override
-        public void serialize(JsonObject json, PagesInLootCondition condition, JsonSerializationContext context) {
-        }
-
-        @Override
-        public PagesInLootCondition deserialize(JsonObject json, JsonDeserializationContext context) {
-            return INSTANCE;
-        }
     }
 }

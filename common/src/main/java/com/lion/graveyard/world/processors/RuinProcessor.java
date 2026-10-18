@@ -83,7 +83,7 @@ public class RuinProcessor extends StructureProcessor {
     private static final int STRIPPED_WOOD_PART = 9;
     private static final List<TagKey<Block>> WOOD_PARTS = List.of(BlockTags.PLANKS, BlockTags.LOGS_THAT_BURN, BlockTags.WOODEN_STAIRS, BlockTags.WOODEN_SLABS, BlockTags.WOODEN_FENCES, BlockTags.FENCE_GATES, BlockTags.WOODEN_TRAPDOORS);
 
-    public static final Codec<RuinProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<RuinProcessor> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("collapse", true).forGetter(processor -> processor.collapse),
             Codec.floatRange(0.0F, 1.0F).optionalFieldOf("min_severity", 0.15F).forGetter(processor -> processor.minSeverity),
             Codec.floatRange(0.0F, 1.0F).optionalFieldOf("max_severity", 0.75F).forGetter(processor -> processor.maxSeverity),

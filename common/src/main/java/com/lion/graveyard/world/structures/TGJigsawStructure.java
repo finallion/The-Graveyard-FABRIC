@@ -4,6 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.config.entries.StructureConfigEntry;
 import com.lion.graveyard.init.TGStructures;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -21,11 +22,14 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 
 public class TGJigsawStructure extends Structure {
 
-    public static final Codec<TGJigsawStructure> CODEC = RecordCodecBuilder.create(instance ->
+    public static final MapCodec<TGJigsawStructure> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     StructureSettings.CODEC.forGetter(feature -> feature.config),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(config -> config.startPool),
@@ -117,7 +121,10 @@ public class TGJigsawStructure extends Structure {
                 this.size, blockpos,
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
-                this.maxDistanceFromCenter);
+                this.maxDistanceFromCenter,
+                PoolAliasLookup.EMPTY,
+                DimensionPadding.ZERO,
+                LiquidSettings.APPLY_WATERLOGGING);
     }
 
 

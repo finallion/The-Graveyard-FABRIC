@@ -2,7 +2,7 @@ package com.lion.graveyard.world.processors;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SwitchSpawnerProcessor extends StructureProcessor {
     public static final SwitchSpawnerProcessor INSTANCE = new SwitchSpawnerProcessor();
-    public static final Codec<SwitchSpawnerProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<SwitchSpawnerProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     @Nullable
     @Override

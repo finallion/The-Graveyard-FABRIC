@@ -1,32 +1,35 @@
 package com.lion.graveyard.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 
-public abstract class CarvingRecipe implements Recipe<Container> {
+public abstract class CarvingRecipe implements Recipe<SingleRecipeInput> {
     protected final Ingredient input;
     protected final ItemStack output;
     private final RecipeType<?> type;
     private final RecipeSerializer<?> serializer;
-    protected final ResourceLocation id;
     protected final String group;
 
-    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, ResourceLocation id, String group, Ingredient input, ItemStack output) {
+    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, String group, Ingredient input, ItemStack output) {
         this.type = type;
         this.serializer = serializer;
-        this.id = id;
         this.group = group;
         this.input = input;
         this.output = output;
@@ -40,11 +43,6 @@ public abstract class CarvingRecipe implements Recipe<Container> {
     @Override
     public RecipeSerializer<?> getSerializer() {
         return this.serializer;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return this.id;
     }
 
     @Override
@@ -69,56 +67,52 @@ public abstract class CarvingRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inventory, RegistryAccess registryManager) {
+    public ItemStack assemble(SingleRecipeInput inventory, HolderLookup.Provider registries) {
         return this.output.copy();
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryManager) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return this.output;
     }
 
+    private static DataResult<Item> notAir(Item item) {
+        return item == Items.AIR ? DataResult.error(() -> "Carving result must not be air") : DataResult.success(item);
+    }
+
     public static class Serializer<T extends CarvingRecipe> implements RecipeSerializer<T> {
-        final Serializer.RecipeFactory<T> recipeFactory;
+        private final MapCodec<T> codec;
+        private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
 
         public Serializer(Serializer.RecipeFactory<T> recipeFactory) {
-            this.recipeFactory = recipeFactory;
+            this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                    Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
+                    Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(recipe -> recipe.input),
+                    BuiltInRegistries.ITEM.byNameCodec().validate(CarvingRecipe::notAir).fieldOf("result").forGetter(recipe -> recipe.output.getItem()),
+                    ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(recipe -> recipe.output.getCount())
+            ).apply(instance, (group, ingredient, item, count) -> recipeFactory.create(group, ingredient, new ItemStack(item, count))));
+            this.streamCodec = StreamCodec.composite(
+                    ByteBufCodecs.STRING_UTF8,
+                    recipe -> recipe.group,
+                    Ingredient.CONTENTS_STREAM_CODEC,
+                    recipe -> recipe.input,
+                    ItemStack.STREAM_CODEC,
+                    recipe -> recipe.output,
+                    recipeFactory::create);
         }
 
         @Override
-        public T fromJson(ResourceLocation identifier, JsonObject jsonObject) {
-            String string = GsonHelper.getAsString(jsonObject, "group", "");
-            Ingredient ingredient;
-
-            if (GsonHelper.isArrayNode(jsonObject, "ingredient")) {
-                ingredient = Ingredient.fromJson(GsonHelper.getAsJsonArray(jsonObject, "ingredient"));
-            } else {
-                ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(jsonObject, "ingredient"));
-            }
-
-            String string2 = GsonHelper.getAsString(jsonObject, "result");
-            int i = GsonHelper.getAsInt(jsonObject, "count");
-            ItemStack itemStack = new ItemStack((ItemLike) BuiltInRegistries.ITEM.get(new ResourceLocation(string2)), i);
-            return this.recipeFactory.create(identifier, string, ingredient, itemStack);
+        public MapCodec<T> codec() {
+            return this.codec;
         }
 
         @Override
-        public T fromNetwork(ResourceLocation identifier, FriendlyByteBuf packetByteBuf) {
-            String string = packetByteBuf.readUtf();
-            Ingredient ingredient = Ingredient.fromNetwork(packetByteBuf);
-            ItemStack itemStack = packetByteBuf.readItem();
-            return this.recipeFactory.create(identifier, string, ingredient, itemStack);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf packetByteBuf, T cuttingRecipe) {
-            packetByteBuf.writeUtf(cuttingRecipe.group);
-            cuttingRecipe.input.toNetwork(packetByteBuf);
-            packetByteBuf.writeItem(cuttingRecipe.output);
+        public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
+            return this.streamCodec;
         }
 
         public interface RecipeFactory<T extends CarvingRecipe> {
-            T create(ResourceLocation id, String group, Ingredient input, ItemStack output);
+            T create(String group, Ingredient input, ItemStack output);
         }
     }
 }

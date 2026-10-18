@@ -2,6 +2,7 @@ package com.lion.graveyard.world.processors;
 
 import com.lion.graveyard.init.TGOverrunVillage;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,8 @@ public class PoolAliasProcessor extends StructureProcessor {
 
     private static final String POOL_KEY = "pool";
 
-    public static final Codec<PoolAliasProcessor> CODEC = Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC)
-            .fieldOf("aliases").xmap(PoolAliasProcessor::new, processor -> processor.aliases).codec();
+    public static final MapCodec<PoolAliasProcessor> CODEC = Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC)
+            .fieldOf("aliases").xmap(PoolAliasProcessor::new, processor -> processor.aliases);
 
     private final Map<ResourceLocation, ResourceLocation> aliases;
 

@@ -10,42 +10,46 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public final class ChronicleSync {
-    public static final ResourceLocation CHANNEL = Graveyard.id("chronicle");
+public record ChronicleSync(Set<String> found, @Nullable String newlyFound) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ChronicleSync> TYPE = new CustomPacketPayload.Type<>(Graveyard.id("chronicle"));
 
-    private ChronicleSync() {}
+    public static final StreamCodec<FriendlyByteBuf, ChronicleSync> STREAM_CODEC = StreamCodec.of(ChronicleSync::write, ChronicleSync::read);
+
+    @Override
+    public CustomPacketPayload.Type<ChronicleSync> type() {
+        return TYPE;
+    }
 
     @ExpectPlatform
     public static void send(ServerPlayer player, Collection<String> found, @Nullable String newlyFound) {
         throw new AssertionError();
     }
 
-    public static void write(FriendlyByteBuf buf, Collection<String> found, @Nullable String newlyFound) {
-        List<String> valid = found.stream()
+    private static void write(FriendlyByteBuf buf, ChronicleSync payload) {
+        List<String> valid = payload.found().stream()
                 .filter(Chronicle::isValidId)
                 .toList();
         buf.writeVarInt(valid.size());
         valid.forEach(buf::writeUtf);
-        boolean sendNew = Chronicle.isValidId(newlyFound);
+        boolean sendNew = Chronicle.isValidId(payload.newlyFound());
         buf.writeBoolean(sendNew);
 
         if (sendNew) {
-            buf.writeUtf(newlyFound);
+            buf.writeUtf(payload.newlyFound());
         }
     }
 
-    public record Payload(Set<String> found, @Nullable String newlyFound) {}
-
-    public static Payload read(FriendlyByteBuf buf) {
+    private static ChronicleSync read(FriendlyByteBuf buf) {
         int count = buf.readVarInt();
         Set<String> found = new LinkedHashSet<>();
         for (int i = 0; i < count; i++) {
             found.add(buf.readUtf());
         }
         String newlyFound = buf.readBoolean() ? buf.readUtf() : null;
-        return new Payload(found, newlyFound);
+        return new ChronicleSync(found, newlyFound);
     }
 }

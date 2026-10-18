@@ -39,7 +39,7 @@ public class TGAdvancements {
     public static void init() {}
 
     private static TGAdvancementTrigger trigger(String name) {
-        TGAdvancementTrigger trigger = new TGAdvancementTrigger(Graveyard.id(name));
+        TGAdvancementTrigger trigger = new TGAdvancementTrigger();
 
         RegistryHelper.registerCriterion(name, trigger);
 

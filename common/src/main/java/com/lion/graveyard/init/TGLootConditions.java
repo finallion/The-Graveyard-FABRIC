@@ -1,5 +1,6 @@
 package com.lion.graveyard.init;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.loot.PagesInLootCondition;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -13,6 +14,6 @@ public final class TGLootConditions {
 
     public static void init() {
         PagesInLootCondition.TYPE = RegistryHelper.registerLootCondition("pages_in_loot",
-                new LootItemConditionType(new PagesInLootCondition.Serializer()));
+                new LootItemConditionType(MapCodec.unit(PagesInLootCondition.INSTANCE)));
     }
 }

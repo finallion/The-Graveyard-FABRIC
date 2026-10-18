@@ -1,6 +1,7 @@
 package com.lion.graveyard.gui;
 
 import com.lion.graveyard.recipe.OssuaryRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -76,7 +77,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
             int i = this.leftPos + 52;
             int j = this.topPos + 14;
             int k = this.scrollOffset + 12;
-            List<OssuaryRecipe> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
+            List<RecipeHolder<OssuaryRecipe>> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
 
             for(int l = this.scrollOffset; l < k && l < ((OssuaryScreenHandler)this.menu).getAvailableRecipeCount(); ++l) {
                 int m = l - this.scrollOffset;
@@ -84,7 +85,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
                 int o = j + m / 4 * 18 + 2;
 
                 if (x >= n && x < n + 16 && y >= o && y < o + 18) {
-                    context.renderTooltip(this.font, ((OssuaryRecipe)list.get(l)).getResultItem(this.minecraft.level.registryAccess()), x, y);
+                    context.renderTooltip(this.font, list.get(l).value().getResultItem(this.minecraft.level.registryAccess()), x, y);
                 }
             }
         }
@@ -110,14 +111,14 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
     }
 
     private void renderRecipeIcons(GuiGraphics context, int x, int y, int scrollOffset) {
-        List<OssuaryRecipe> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
+        List<RecipeHolder<OssuaryRecipe>> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
 
         for(int i = this.scrollOffset; i < scrollOffset && i < ((OssuaryScreenHandler)this.menu).getAvailableRecipeCount(); ++i) {
             int j = i - this.scrollOffset;
             int k = x + j % 4 * 16;
             int l = j / 4;
             int m = y + l * 18 + 2;
-            context.renderItem(((OssuaryRecipe)list.get(i)).getResultItem(this.minecraft.level.registryAccess()), k, m);
+            context.renderItem(list.get(i).value().getResultItem(this.minecraft.level.registryAccess()), k, m);
         }
 
     }
