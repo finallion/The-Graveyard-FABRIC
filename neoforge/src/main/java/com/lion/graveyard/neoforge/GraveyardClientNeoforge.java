@@ -9,6 +9,8 @@ import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
 import com.lion.graveyard.chronicle.client.ChronicleButton;
 import com.lion.graveyard.client.FragmentSpotHints;
 import com.lion.graveyard.entities.animation.AnimationPreviewClient;
+import com.lion.graveyard.gui.GravestoneSignRenderState;
+import com.lion.graveyard.gui.GravestoneSignRenderer;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGBlocks;
@@ -36,6 +38,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import java.util.Map;
@@ -72,6 +75,11 @@ public class GraveyardClientNeoforge {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
+    }
+
+    @SubscribeEvent
+    public static void registerPictureInPictureRenderers(RegisterPictureInPictureRenderersEvent event) {
+        event.register(GravestoneSignRenderState.class, GravestoneSignRenderer::new);
     }
 
     @SubscribeEvent

@@ -4,9 +4,11 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -14,12 +16,13 @@ import net.minecraft.world.item.ItemStack;
 /// The small "page found" notice, drawn on the vanilla advancement-toast frame.
 @Environment(EnvType.CLIENT)
 public class ChronicleToast implements Toast {
-    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/toasts.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 5000L;
 
     private final Component title;
     private final Component description;
     private final ItemStack icon;
+    private Visibility wantedVisibility = Visibility.SHOW;
 
     public ChronicleToast(String page) {
         this.title = Component.translatable("chronicle." + Graveyard.MOD_ID + ".toast");
@@ -28,11 +31,20 @@ public class ChronicleToast implements Toast {
     }
 
     @Override
-    public Visibility render(GuiGraphics context, ToastComponent manager, long startTime) {
-        context.blit(TEXTURE, 0, 0, 0, 0, this.width(), this.height());
-        context.drawString(manager.getMinecraft().font, this.title, 30, 7, 0xFF500050, false);
-        context.drawString(manager.getMinecraft().font, this.description, 30, 18, 0xFF000000, false);
+    public Visibility getWantedVisibility() {
+        return this.wantedVisibility;
+    }
+
+    @Override
+    public void update(ToastManager manager, long visibleTime) {
+        this.wantedVisibility = visibleTime >= DURATION ? Visibility.HIDE : Visibility.SHOW;
+    }
+
+    @Override
+    public void render(GuiGraphics context, Font font, long visibleTime) {
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, this.width(), this.height());
+        context.drawString(font, this.title, 30, 7, 0xFF500050, false);
+        context.drawString(font, this.description, 30, 18, 0xFF000000, false);
         context.renderItem(this.icon, 8, 8);
-        return startTime >= DURATION ? Visibility.HIDE : Visibility.SHOW;
     }
 }

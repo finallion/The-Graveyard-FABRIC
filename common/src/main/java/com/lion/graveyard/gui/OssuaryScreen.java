@@ -6,7 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,9 +50,9 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
     protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
         int i = this.leftPos;
         int j = this.topPos;
-        context.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
         int k = (int)(41.0F * this.scrollAmount);
-        context.blit(TEXTURE, i + 119, j + 15 + k, 176 + (this.shouldScroll() ? 0 : 12), 0, 12, 15);
+        context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i + 119, j + 15 + k, 176.0F + (this.shouldScroll() ? 0 : 12), 0.0F, 12, 15, 256, 256);
         int l = this.leftPos + 52;
         int m = this.topPos + 14;
         int n = this.scrollOffset + 12;
@@ -64,7 +64,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
             int sx = this.leftPos + input.x;
             int sy = this.topPos + input.y;
             context.renderFakeItem(INPUT_HINT, sx, sy);
-            context.fill(RenderType.guiGhostRecipeOverlay(), sx, sy, sx + 16, sy + 16, 0x808B8B8B);
+            context.fill(sx, sy, sx + 16, sy + 16, 0x808B8B8B);
         }
     }
 
@@ -74,7 +74,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         Slot input = this.menu.getSlot(0);
 
         if (!input.hasItem() && this.menu.getCarried().isEmpty() && this.isHovering(input.x, input.y, 16, 16, x, y)) {
-            context.renderTooltip(this.font, INPUT_HINT_TEXT, x, y);
+            context.setTooltipForNextFrame(this.font, INPUT_HINT_TEXT, x, y);
         }
 
         if (this.canCraft) {
@@ -109,7 +109,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
                 n += 36;
             }
 
-            context.blit(TEXTURE, k, m - 1, 0, n, 16, 18);
+            context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, k, m - 1, 0.0F, (float) n, 16, 18, 256, 256);
         }
 
     }

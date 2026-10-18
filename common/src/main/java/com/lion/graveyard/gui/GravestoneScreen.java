@@ -2,44 +2,36 @@ package com.lion.graveyard.gui;
 
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.SignBlock;
-import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.SignText;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import org.joml.Matrix4f;
 
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Environment(EnvType.CLIENT)
 public class GravestoneScreen extends Screen {
+    private static final float SIGN_SCALE = 62.500004F;
+    private static final float TEXT_SCALE = 0.9765628F;
+    private static final float SIGN_Y_OFFSET = 90.0F;
     private final GravestoneBlockEntity sign;
     private int ticksSinceOpened;
     private int currentRow;
     private TextFieldHelper selectionManager;
     private WoodType signType;
-    private SignRenderer.SignModel model;
+    private Model model;
     private String[] text;
     private SignText signText;
 
@@ -54,7 +46,6 @@ public class GravestoneScreen extends Screen {
         this.signType = SignBlock.getWoodType(blockEntity.getBlockState().getBlock());
         this.text = IntStream.range(0, 4).mapToObj((line) -> this.signText.getMessage(line, filtered)).map(Component::getString).toArray(String[]::new);
     }
-
 
     @Override
     protected void init() {
@@ -132,100 +123,81 @@ public class GravestoneScreen extends Screen {
 
     @Override
     public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        PoseStack matrices = context.pose();
-
-        Lighting.setupForFlatItems();
         this.renderTransparentBackground(context);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
-        matrices.pushPose();
-        matrices.translate((double) (this.width / 2), 0.0D, 50.0D);
+    }
 
-        matrices.scale(93.75F, -93.75F, 93.75F);
-        matrices.translate(0.0D, -1.3125D, 0.0D);
-        BlockState blockState = this.sign.getBlockState();
-        boolean standingSign = blockState.getBlock() instanceof StandingSignBlock;
+    @Override
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 40, 0xFFFFFFFF);
+        context.pose().pushMatrix();
+        context.pose().translate((float) this.width / 2.0F, SIGN_Y_OFFSET);
+        context.pose().pushMatrix();
+        this.renderSignBackground(context);
+        context.pose().popMatrix();
+        this.renderSignText(context);
+        context.pose().popMatrix();
+    }
 
-        if (!standingSign) {
-            matrices.translate(0.0D, -0.3125D, 0.0D);
+    private void renderSignBackground(GuiGraphics context) {
+        if (this.model == null) {
+            return;
         }
 
-        matrices.pushPose();
-        matrices.scale(0.6666667F, -0.6666667F, -0.6666667F);
-        MultiBufferSource.BufferSource immediate = this.minecraft.renderBuffers().bufferSource();
+        int center = this.width / 2;
+        ScreenRectangle scissor = context.scissorStack.peek();
+        context.guiRenderState.submitPicturesInPictureState(
+                new GravestoneSignRenderState(this.model, this.sign.getBlockState().getBlock(), center - 48, 66, center + 48, 168, SIGN_SCALE, scissor)
+        );
+    }
 
-        SignRenderer.SignModel signModel = this.model;
-        Objects.requireNonNull(signModel);
+    private void renderSignText(GuiGraphics context) {
+        context.pose().scale(TEXT_SCALE, TEXT_SCALE);
+        int color = ARGB.opaque(this.signText.getColor().getTextColor());
+        boolean caretVisible = this.ticksSinceOpened / 6 % 2 == 0;
+        int cursor = this.selectionManager.getCursorPos();
+        int selection = this.selectionManager.getSelectionPos();
+        int lineHeight = this.sign.getTextLineHeight();
+        int halfHeight = 4 * lineHeight / 2;
+        int caretY = this.currentRow * lineHeight - halfHeight;
 
-        VertexConsumer vertexConsumer2 = GravestoneBlockEntityRenderer.getConsumer(immediate, this.sign.getBlockState().getBlock());
+        for (int row = 0; row < this.text.length; ++row) {
+            String line = this.text[row];
 
-        this.model.stick.visible = false;
-        this.model.root.render(matrices, vertexConsumer2, 15728880, OverlayTexture.NO_OVERLAY);
-        matrices.popPose();
+            if (line == null) {
+                continue;
+            }
 
-        matrices.translate(0.0D, 0.3333333432674408D, 0.046666666865348816D);
-        matrices.scale(0.010416667F, -0.010416667F, 0.010416667F);
-        int i = this.signText.getColor().getTextColor();
-        int j = this.selectionManager.getCursorPos();
-        int k = this.selectionManager.getSelectionPos();
-        int l = this.text.length * 5;
-        Matrix4f matrix4f = matrices.last().pose();
+            if (this.font.isBidirectional()) {
+                line = this.font.bidirectionalShaping(line);
+            }
 
-        int m = this.currentRow * 10 - l;
-        int n;
-        String string;
-        int o;
-        int p;
-        for(n = 0; n < this.text.length; ++n) {
-            string = this.text[n];
+            int x = -this.font.width(line) / 2;
+            context.drawString(this.font, line, x, row * lineHeight - halfHeight, color, false);
 
-            if (string != null) {
-                if (this.font.isBidirectional()) {
-                    string = this.font.bidirectionalShaping(string);
-                }
-
-                float f = (float)(-this.minecraft.font.width(string) / 2);
-                this.minecraft.font.drawInBatch(string, f, (float)(n * 10 - l), i, false, matrix4f, immediate, Font.DisplayMode.NORMAL, 0, 15728880, false);
-
-                if (n == this.currentRow && j >= 0 && standingSign) {
-                    o = this.minecraft.font.width(string.substring(0, Math.min(j, string.length())));
-                    p = o - this.minecraft.font.width(string) / 2;
-
-                    if (j >= string.length()) {
-                        this.minecraft.font.drawInBatch("_", (float)p, (float)m, i, false, matrix4f, immediate, Font.DisplayMode.NORMAL, 0, 15728880, false);
-                    }
-                }
+            if (row == this.currentRow && cursor >= 0 && caretVisible && cursor >= line.length()) {
+                int caretX = this.font.width(line.substring(0, Math.min(cursor, line.length()))) - this.font.width(line) / 2;
+                context.drawString(this.font, "_", caretX, caretY, color, false);
             }
         }
 
-        immediate.endBatch();
+        String current = this.text[this.currentRow];
 
-        for(n = 0; n < this.text.length; ++n) {
-            string = this.text[n];
-
-            if (string != null && n == this.currentRow && j >= 0) {
-                int q = this.minecraft.font.width(string.substring(0, Math.min(j, string.length())));
-                o = q - this.minecraft.font.width(string) / 2;
-
-                if (standingSign && j < string.length()) {
-                    context.fill(o, m - 1, o + 1, m + 10, -16777216 | i);
-                }
-
-                if (k != j) {
-                    p = Math.min(j, k);
-                    int r = Math.max(j, k);
-                    int s = this.minecraft.font.width(string.substring(0, p)) - this.minecraft.font.width(string) / 2;
-                    int t = this.minecraft.font.width(string.substring(0, r)) - this.minecraft.font.width(string) / 2;
-                    int u = Math.min(s, t);
-                    int v = Math.max(s, t);
-                    RenderSystem.enableColorLogicOp();
-                    RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-                    context.fill(u, m, v, m + 10, -16776961);
-                    RenderSystem.disableColorLogicOp();
-                }
-            }
+        if (current == null || cursor < 0) {
+            return;
         }
 
-        matrices.popPose();
-        Lighting.setupFor3DItems();
+        int halfWidth = this.font.width(current) / 2;
+
+        if (caretVisible && cursor < current.length()) {
+            int caretX = this.font.width(current.substring(0, cursor)) - halfWidth;
+            context.fill(caretX, caretY - 1, caretX + 1, caretY + lineHeight, color);
+        }
+
+        if (selection != cursor) {
+            int fromX = this.font.width(current.substring(0, Math.min(cursor, selection))) - halfWidth;
+            int toX = this.font.width(current.substring(0, Math.max(cursor, selection))) - halfWidth;
+            context.textHighlight(Math.min(fromX, toX), caretY, Math.max(fromX, toX), caretY + lineHeight);
+        }
     }
 }

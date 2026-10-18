@@ -21,7 +21,7 @@ public final class ClientChronicle {
 
         if (newlyFound != null && Graveyard.getConfig().flag("chronicleToasts", true)) {
             Minecraft client = Minecraft.getInstance();
-            client.getToasts().addToast(new ChronicleToast(newlyFound));
+            client.getToastManager().addToast(new ChronicleToast(newlyFound));
         }
     }
 

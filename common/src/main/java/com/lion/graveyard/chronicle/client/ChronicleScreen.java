@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -135,7 +136,7 @@ public class ChronicleScreen extends Screen {
     private void renderList(GuiGraphics context, int mouseX, int mouseY) {
         Font font = this.font;
         int y = this.listY;
-        context.drawString(font, this.title, this.listX, y, 0xFFFFFF, true);
+        context.drawString(font, this.title, this.listX, y, 0xFFFFFFFF, true);
         y += 14;
         int lastAct = -1;
         int rows = 0;
@@ -144,7 +145,7 @@ public class ChronicleScreen extends Screen {
                 lastAct = chapter.act();
 
                 if (rows++ >= this.listScroll) {
-                    context.drawString(font, Component.translatable("chronicle." + Graveyard.MOD_ID + ".act." + lastAct).withStyle(ChatFormatting.GOLD), this.listX, y, 0xFFFFFF, true);
+                    context.drawString(font, Component.translatable("chronicle." + Graveyard.MOD_ID + ".act." + lastAct).withStyle(ChatFormatting.GOLD), this.listX, y, 0xFFFFFFFF, true);
                     y += ROW_HEIGHT;
                 }
             }
@@ -160,7 +161,7 @@ public class ChronicleScreen extends Screen {
             boolean found = ClientChronicle.isFound(chapter.id());
             boolean hovered = found && mouseX >= this.listX && mouseX < this.listX + LIST_WIDTH && mouseY >= y && mouseY < y + ROW_HEIGHT;
             Component label = found ? Component.translatable(chapter.titleKey()) : Component.literal("? ? ?");
-            int color = chapter == this.selected ? 0xFFE0A0 : hovered ? 0xFFFFFF : found ? 0xC0C0C0 : 0x505050;
+            int color = chapter == this.selected ? 0xFFFFE0A0 : hovered ? 0xFFFFFFFF : found ? 0xFFC0C0C0 : 0xFF505050;
             context.drawString(font, Component.literal("  ").append(label), this.listX, y, color, true);
             y += ROW_HEIGHT;
         }
@@ -172,7 +173,7 @@ public class ChronicleScreen extends Screen {
                 Component.translatable("chronicle." + Graveyard.MOD_ID + ".progress", foundCount, this.chapters.size()).withStyle(ChatFormatting.DARK_GRAY),
                 this.listX,
                 this.progressY(),
-                0xFFFFFF,
+                0xFFFFFFFF,
                 true
         );
     }
@@ -182,26 +183,26 @@ public class ChronicleScreen extends Screen {
     }
 
     private void renderBook(GuiGraphics context) {
-        context.blit(BOOK_TEXTURE, this.bookX, this.bookY, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
+        context.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEXTURE, this.bookX, this.bookY, 0.0F, 0.0F, BOOK_WIDTH, BOOK_HEIGHT, 256, 256);
 
         if (this.selected == null) {
             List<FormattedCharSequence> hint = this.font.split(Component.translatable("chronicle." + Graveyard.MOD_ID + ".empty"), TEXT_WIDTH);
             int y = this.bookY + 40;
             for (FormattedCharSequence line : hint) {
-                context.drawString(this.font, line, this.bookX + 36, y, 0x404040, false);
+                context.drawString(this.font, line, this.bookX + 36, y, 0xFF404040, false);
                 y += 9;
             }
             return;
         }
 
         Component header = Component.translatable(this.selected.titleKey()).withStyle(ChatFormatting.BOLD);
-        context.drawString(this.font, header, this.bookX + 36, this.bookY + 14, 0x202020, false);
+        context.drawString(this.font, header, this.bookX + 36, this.bookY + 14, 0xFF202020, false);
         Component counter = Component.translatable("book.pageIndicator", this.pageIndex + 1, this.bookPages.size());
-        context.drawString(this.font, counter, this.bookX + 36 + TEXT_WIDTH - this.font.width(counter), this.bookY + 25, 0x606060, false);
+        context.drawString(this.font, counter, this.bookX + 36 + TEXT_WIDTH - this.font.width(counter), this.bookY + 25, 0xFF606060, false);
 
         int y = this.bookY + TEXT_TOP;
         for (FormattedCharSequence line : this.bookPages.get(this.pageIndex)) {
-            context.drawString(this.font, line, this.bookX + 36, y, 0x202020, false);
+            context.drawString(this.font, line, this.bookX + 36, y, 0xFF202020, false);
             y += 9;
         }
     }

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class ChronicleButton extends Button {
@@ -40,7 +41,7 @@ public class ChronicleButton extends Button {
     @Override
     protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.followInventory();
-        context.blit(ChronicleScreen.BUTTON_TEXTURE, this.getX(), this.getY(), 0, this.isHoveredOrFocused() ? 20 : 0, 20, 20, 20, 40);
+        context.blit(RenderPipelines.GUI_TEXTURED, ChronicleScreen.BUTTON_TEXTURE, this.getX(), this.getY(), 0.0F, this.isHoveredOrFocused() ? 20.0F : 0.0F, 20, 20, 20, 40);
     }
 
     private void followInventory() {

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSetting
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.JigsawBlockInfo;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
@@ -32,14 +34,25 @@ public abstract class SinglePoolElementMixin {
     protected Holder<StructureProcessorList> processors;
 
     @Inject(method = "getShuffledJigsawBlocks", at = @At("RETURN"), cancellable = true)
-    private void graveyard$applyPoolAliases(StructureTemplateManager structureTemplateManager, BlockPos pos, Rotation rotation, RandomSource random, CallbackInfoReturnable<List<StructureBlockInfo>> callback) {
+    private void graveyard$applyPoolAliases(StructureTemplateManager structureTemplateManager, BlockPos pos, Rotation rotation, RandomSource random, CallbackInfoReturnable<List<JigsawBlockInfo>> callback) {
         if (!this.processors.isBound()) {
             return;
         }
 
         for (StructureProcessor processor : this.processors.value().list()) {
             if (processor instanceof PoolAliasProcessor poolAliases) {
-                callback.setReturnValue(poolAliases.apply(callback.getReturnValue()));
+                List<StructureBlockInfo> infos = callback.getReturnValue()
+                        .stream()
+                        .map(JigsawBlockInfo::info)
+                        .toList();
+                List<JigsawBlockInfo> aliased = new ArrayList<>();
+
+                for (StructureBlockInfo info : poolAliases.apply(infos)) {
+                    aliased.add(JigsawBlockInfo.of(info));
+                }
+
+                callback.setReturnValue(aliased);
+
                 return;
             }
         }

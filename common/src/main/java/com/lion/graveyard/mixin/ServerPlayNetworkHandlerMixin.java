@@ -25,7 +25,7 @@ public class ServerPlayNetworkHandlerMixin {
     @Inject(method = "updateSignText(Lnet/minecraft/network/protocol/game/ServerboundSignUpdatePacket;Ljava/util/List;)V", at = @At(value = "HEAD"))
     private void signUpdate(ServerboundSignUpdatePacket packet, List<FilteredText> signText, CallbackInfo info) {
         this.player.resetLastActionTime();
-        ServerLevel serverWorld = this.player.serverLevel();
+        ServerLevel serverWorld = this.player.level();
         BlockPos blockPos = packet.getPos();
 
         if (serverWorld.hasChunkAt(blockPos)) {

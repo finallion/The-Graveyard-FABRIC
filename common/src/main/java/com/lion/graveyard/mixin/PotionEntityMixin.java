@@ -4,13 +4,13 @@ import com.lion.graveyard.blocks.SmolderingWood;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.AbstractThrownPotion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ThrownPotion.class)
+@Mixin(AbstractThrownPotion.class)
 public abstract class PotionEntityMixin {
 
     @Inject(method = "dowseFire", at = @At("HEAD"))
