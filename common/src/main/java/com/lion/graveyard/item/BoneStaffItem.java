@@ -4,6 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.GhoulingBindings;
 import com.lion.graveyard.entities.GhoulingEntity;
 import com.lion.graveyard.entities.GraveyardMinionEntity;
+import com.lion.graveyard.entities.LegacyEntityData;
 import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
@@ -15,7 +16,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -25,11 +25,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.RelativeMovement;
@@ -45,6 +47,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -150,11 +155,11 @@ public class BoneStaffItem extends Item {
             ghouling.setBondId(bondId);
             boolean firstBond = LegacyItemData.ownerUuid(stack) == null;
             LegacyItemData.edit(stack, data -> {
-                data.putUUID(LegacyItemData.GHOULING_UUID, ghouling.getUUID());
-                data.putUUID(LegacyItemData.BOND_ID, bondId);
+                LegacyItemData.putUuid(data, LegacyItemData.GHOULING_UUID, ghouling.getUUID());
+                LegacyItemData.putUuid(data, LegacyItemData.BOND_ID, bondId);
 
                 if (firstBond) {
-                    data.putUUID(LegacyItemData.OWNER_UUID, player.getUUID());
+                    LegacyItemData.putUuid(data, LegacyItemData.OWNER_UUID, player.getUUID());
                 }
             });
 
@@ -222,9 +227,10 @@ public class BoneStaffItem extends Item {
     }
 
     private static void release(ServerLevel world, Player player, ItemStack stack, BlockPos spawnPos) {
-        CompoundTag saved = LegacyItemData.view(stack).getCompound(LegacyItemData.STORED_GHOULING);
+        CompoundTag saved = LegacyItemData.view(stack).getCompoundOrEmpty(LegacyItemData.STORED_GHOULING);
+        ValueInput savedInput = TagValueInput.create(ProblemReporter.DISCARDING, world.registryAccess(), saved);
 
-        if (EntityType.create(saved, world).orElse(null) instanceof GhoulingEntity ghouling) {
+        if (EntityType.create(savedInput, world, EntitySpawnReason.SPAWN_ITEM_USE).orElse(null) instanceof GhoulingEntity ghouling) {
             ghouling.moveTo(spawnPos, 0.0F, 0.0F);
             ghouling.setSitting(false);
             ItemStack staff = stack.copy();
@@ -258,8 +264,10 @@ public class BoneStaffItem extends Item {
     }
 
     private static boolean fitsInStack(GhoulingEntity ghouling) {
-        CompoundTag probe = new CompoundTag();
-        ghouling.saveAsPassenger(probe);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, ghouling.registryAccess());
+        ghouling.saveAsPassenger(output);
+        CompoundTag probe = output.buildResult();
+
         try {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             NbtIo.write(probe, new DataOutputStream(bytes));
@@ -348,18 +356,9 @@ public class BoneStaffItem extends Item {
             TooltipFlag context
     ) {
         if (LegacyItemData.isStored(stack)) {
-            CompoundTag saved = LegacyItemData.view(stack).getCompound(LegacyItemData.STORED_GHOULING);
-            Component name = null;
-
-            if (saved.contains("CustomName", Tag.TAG_STRING)) {
-                try {
-                    HolderLookup.Provider registries = tooltipContext.registries() == null ? RegistryAccess.EMPTY : tooltipContext.registries();
-                    name = Component.Serializer.fromJson(saved.getString("CustomName"), registries);
-                } catch (RuntimeException e) {
-                    Graveyard.LOGGER.debug("Cannot read the stored Ghouling name", e);
-                    name = null;
-                }
-            }
+            CompoundTag saved = LegacyItemData.view(stack).getCompoundOrEmpty(LegacyItemData.STORED_GHOULING);
+            HolderLookup.Provider registries = tooltipContext.registries() == null ? RegistryAccess.EMPTY : tooltipContext.registries();
+            Component name = LegacyEntityData.storedCustomName(registries, saved);
 
             if (name == null) {
                 name = TGEntities.GHOULING.get().getDescription();
@@ -389,9 +388,9 @@ public class BoneStaffItem extends Item {
     public static void rebind(ItemStack stack, Player player, GhoulingEntity ghouling) {
         UUID bondId = UUID.randomUUID();
         LegacyItemData.edit(stack, data -> {
-            data.putUUID(LegacyItemData.OWNER_UUID, player.getUUID());
-            data.putUUID(LegacyItemData.GHOULING_UUID, ghouling.getUUID());
-            data.putUUID(LegacyItemData.BOND_ID, bondId);
+            LegacyItemData.putUuid(data, LegacyItemData.OWNER_UUID, player.getUUID());
+            LegacyItemData.putUuid(data, LegacyItemData.GHOULING_UUID, ghouling.getUUID());
+            LegacyItemData.putUuid(data, LegacyItemData.BOND_ID, bondId);
             data.remove(LegacyItemData.FETCH_CALL);
         });
         ghouling.setBondId(bondId);
@@ -448,12 +447,15 @@ public class BoneStaffItem extends Item {
 
         CompoundTag nbt = LegacyItemData.view(stack);
 
-        if (nbt.contains(LegacyItemData.STORED_GHOULING) || !nbt.hasUUID(LegacyItemData.GHOULING_UUID) || !nbt.hasUUID(LegacyItemData.OWNER_UUID)
-                || !nbt.getUUID(LegacyItemData.OWNER_UUID).equals(player.getUUID())) {
+        UUID boundGhouling = LegacyItemData.ghoulingUuid(stack);
+        UUID boundOwner = LegacyItemData.ownerUuid(stack);
+
+        if (nbt.contains(LegacyItemData.STORED_GHOULING) || boundGhouling == null || boundOwner == null
+                || !boundOwner.equals(player.getUUID())) {
             return;
         }
 
-        long callDeadline = nbt.getLong(LegacyItemData.FETCH_CALL);
+        long callDeadline = nbt.getLongOr(LegacyItemData.FETCH_CALL, 0L);
         boolean calling = callDeadline > 0L;
 
         if (calling && world.getGameTime() > callDeadline) {
@@ -466,7 +468,7 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        UUID ghoulingId = nbt.getUUID(LegacyItemData.GHOULING_UUID);
+        UUID ghoulingId = boundGhouling;
         GhoulingBindings.Binding binding = GhoulingBindings.get(serverWorld).get(ghoulingId);
 
         if (binding == null) {
@@ -717,8 +719,8 @@ public class BoneStaffItem extends Item {
                     Predicate<Entity> predicate = entity -> {
                         if (entity instanceof LivingEntity target && ghouling.canAttack(target) && ghouling.canAttackWithOwner(target, user)) {
                             if (entity instanceof TamableAnimal tameableEntity) {
-                                if (tameableEntity.getOwnerUUID() != null) {
-                                    return tameableEntity.getOwnerUUID().compareTo(ownerId) != 0;
+                                if (tameableEntity.getOwnerReference() != null) {
+                                    return tameableEntity.getOwnerReference().getUUID().compareTo(ownerId) != 0;
                                 }
                             } else if (entity instanceof GraveyardMinionEntity minion) {
                                 if (minion.getOwnerUuid() != null) {

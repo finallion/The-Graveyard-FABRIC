@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -49,6 +48,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity {
@@ -288,21 +289,22 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.legacyLightPos != null) {
-            nbt.putLong(LIGHT_KEY, this.legacyLightPos.asLong());
+            output.putLong(LIGHT_KEY, this.legacyLightPos.asLong());
         }
+
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
 
-        if (nbt.contains(LIGHT_KEY)) {
-            this.legacyLightPos = BlockPos.of(nbt.getLong(LIGHT_KEY));
-        }
+        input.getLong(LIGHT_KEY).ifPresent(light -> this.legacyLightPos = BlockPos.of(light));
+        LegacyEntityData.read(this, input);
     }
 
     @Override

@@ -19,6 +19,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import java.util.Collection;
 import java.util.Random;
 
@@ -37,6 +39,18 @@ public class SkeletonCreeper extends Creeper {
     public boolean canStart() {
         this.closestPlayer = this.getCommandSenderWorld().getNearestPlayer(this, 8.0D);
         return this.closestPlayer != null;
+    }
+
+    @Override
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        LegacyEntityData.write(output);
+    }
+
+    @Override
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        LegacyEntityData.read(this, input);
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -36,18 +35,18 @@ public class SwitchSpawnerProcessor extends StructureProcessor {
         }
 
         CompoundTag patched = nbt.copy();
-        boolean changed = swapEntityId(patched.getCompound("SpawnData").getCompound("entity"));
-        ListTag potentials = patched.getList("SpawnPotentials", Tag.TAG_COMPOUND);
+        boolean changed = swapEntityId(patched.getCompoundOrEmpty("SpawnData").getCompoundOrEmpty("entity"));
+        ListTag potentials = patched.getListOrEmpty("SpawnPotentials");
 
         for (int i = 0; i < potentials.size(); i++) {
-            changed |= swapEntityId(potentials.getCompound(i).getCompound("data").getCompound("entity"));
+            changed |= swapEntityId(potentials.getCompoundOrEmpty(i).getCompoundOrEmpty("data").getCompoundOrEmpty("entity"));
         }
 
         return changed ? new StructureTemplate.StructureBlockInfo(structureBlockInfo2.pos(), structureBlockInfo2.state(), patched) : structureBlockInfo2;
     }
 
     private static boolean swapEntityId(CompoundTag entity) {
-        if ("minecraft:wither_skeleton".equals(entity.getString("id"))) {
+        if ("minecraft:wither_skeleton".equals(entity.getStringOr("id", ""))) {
             entity.putString("id", "minecraft:skeleton");
             return true;
         }

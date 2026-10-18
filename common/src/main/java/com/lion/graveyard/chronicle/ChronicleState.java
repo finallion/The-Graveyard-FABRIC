@@ -1,7 +1,7 @@
 package com.lion.graveyard.chronicle;
 
 import com.lion.graveyard.Graveyard;
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -23,11 +24,14 @@ public final class ChronicleState extends SavedData {
 
     private static final int MAX_PAGES_PER_PLAYER = 512;
 
+    private static final Codec<ChronicleState> CODEC = CompoundTag.CODEC.xmap(ChronicleState::fromNbt, ChronicleState::toNbt);
+
+    private static final SavedDataType<ChronicleState> TYPE = new SavedDataType<>(KEY, ChronicleState::new, CODEC, DataFixTypes.LEVEL);
+
     private final Map<UUID, Set<String>> found = new HashMap<>();
 
     public static ChronicleState get(MinecraftServer server) {
-        return server.overworld().getDataStorage()
-                .computeIfAbsent(new SavedData.Factory<>(ChronicleState::new, ChronicleState::fromNbt, DataFixTypes.LEVEL), KEY);
+        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
     public Set<String> found(UUID player) {
@@ -71,8 +75,8 @@ public final class ChronicleState extends SavedData {
         }
     }
 
-    @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
+    private CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
         CompoundTag players = new CompoundTag();
         this.found.forEach((id, pages) -> {
             ListTag list = new ListTag();
@@ -83,10 +87,10 @@ public final class ChronicleState extends SavedData {
         return nbt;
     }
 
-    public static ChronicleState fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
+    private static ChronicleState fromNbt(CompoundTag nbt) {
         ChronicleState state = new ChronicleState();
-        CompoundTag players = nbt.getCompound("players");
-        for (String key : players.getAllKeys()) {
+        CompoundTag players = nbt.getCompoundOrEmpty("players");
+        for (String key : players.keySet()) {
             UUID player;
             try {
                 player = UUID.fromString(key);
@@ -95,9 +99,11 @@ public final class ChronicleState extends SavedData {
                 continue;
             }
             Set<String> pages = new LinkedHashSet<>();
-            for (Tag element : players.getList(key, Tag.TAG_STRING)) {
-                if (Chronicle.isValidId(element.getAsString())) {
-                    pages.add(element.getAsString());
+            for (Tag element : players.getListOrEmpty(key)) {
+                String page = element.asString().orElse(null);
+
+                if (element instanceof StringTag && Chronicle.isValidId(page)) {
+                    pages.add(page);
                 }
             }
             state.found.put(player, pages);

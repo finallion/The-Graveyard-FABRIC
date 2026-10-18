@@ -1,5 +1,6 @@
 package com.lion.graveyard.item;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +53,7 @@ public final class LegacyItemData {
     @Nullable
     public static UUID uuid(ItemStack stack, String key) {
         CompoundTag data = view(stack);
-        return data.hasUUID(key) ? data.getUUID(key) : null;
+        return data.read(key, UUIDUtil.CODEC).orElse(null);
     }
 
     @Nullable
@@ -71,7 +72,11 @@ public final class LegacyItemData {
     }
 
     public static int fetchMisses(ItemStack stack) {
-        return view(stack).getInt(FETCH_MISSES);
+        return view(stack).getIntOr(FETCH_MISSES, 0);
+    }
+
+    public static void putUuid(CompoundTag data, String key, UUID value) {
+        data.store(key, UUIDUtil.CODEC, value);
     }
 
     public static boolean isStored(ItemStack stack) {

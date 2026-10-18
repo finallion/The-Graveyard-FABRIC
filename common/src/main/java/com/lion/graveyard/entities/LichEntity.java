@@ -17,8 +17,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -58,6 +56,8 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -1537,35 +1537,36 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        nbt.putInt("Invul", getInvulnerableTimer());
-        nbt.putInt("PhaseInvul", getPhaseInvulnerableTimer());
-        nbt.putInt("Phase", Math.max(getPhase(), 1));
-        nbt.putInt("AttackTimer", getAttackAnimTimer());
-        nbt.putInt("FightTimer", getFightDurationTimer());
-        nbt.putInt("LevTimer", getLevitationDurationTimer());
-        nbt.putInt("HealTimer", getHealTimer());
-        nbt.putInt("CorpseSpellTimer", getCorpseSpellTimer());
-        nbt.putInt("ConjureTimer", getConjureFangTimer());
-        nbt.putInt("Anim", getAnimationState());
-        nbt.putFloat("Health", getHealth());
-        nbt.putBoolean("CanMove", canMove());
-        nbt.putBoolean("CanHunt", canHuntStart());
-        nbt.putInt("HuntTimer", getHuntTimer());
-        nbt.putInt("HuntCooldown", huntCooldownTicker);
-        nbt.putInt("PhaseTwoTimer", getStartPhaseTwoAnimTimer());
-        nbt.putInt("PhaseThreeTimer", getStartPhaseThreeAnimTimer());
+    public void addAdditionalSaveData(ValueOutput output) {
+        output.putInt("Invul", getInvulnerableTimer());
+        output.putInt("PhaseInvul", getPhaseInvulnerableTimer());
+        output.putInt("Phase", Math.max(getPhase(), 1));
+        output.putInt("AttackTimer", getAttackAnimTimer());
+        output.putInt("FightTimer", getFightDurationTimer());
+        output.putInt("LevTimer", getLevitationDurationTimer());
+        output.putInt("HealTimer", getHealTimer());
+        output.putInt("CorpseSpellTimer", getCorpseSpellTimer());
+        output.putInt("ConjureTimer", getConjureFangTimer());
+        output.putInt("Anim", getAnimationState());
+        output.putFloat("Health", getHealth());
+        output.putBoolean("CanMove", canMove());
+        output.putBoolean("CanHunt", canHuntStart());
+        output.putInt("HuntTimer", getHuntTimer());
+        output.putInt("HuntCooldown", huntCooldownTicker);
+        output.putInt("PhaseTwoTimer", getStartPhaseTwoAnimTimer());
+        output.putInt("PhaseThreeTimer", getStartPhaseThreeAnimTimer());
 
         if (homePos != null && this.homeKnown) {
-            nbt.putLong("HomePos", homePos.asLong());
+            output.putLong("HomePos", homePos.asLong());
         }
 
-        super.addAdditionalSaveData(nbt);
+        super.addAdditionalSaveData(output);
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        if (!nbt.contains("Invul")) {
+    public void readAdditionalSaveData(ValueInput input) {
+        if (input.getInt("Invul").isEmpty()) {
             this.setInvulTimer(0);
             this.setPhaseInvulTimer(0);
             this.setPhase(1);
@@ -1580,47 +1581,40 @@ public class LichEntity extends Monster implements GeoEntity {
             this.setCanMove(false);
             this.setHuntStart(false);
         } else {
-            this.setInvulTimer(nbt.getInt("Invul"));
-            this.setPhaseInvulTimer(nbt.getInt("PhaseInvul"));
-            this.setPhase(nbt.getInt("Phase"));
-            this.setAnimationState(nbt.getInt("Anim"));
-            this.setHealth(nbt.getFloat("Health"));
-            this.setAttackAnimTimer(nbt.getInt("AttackTimer"));
-            this.setHealTimer(nbt.getInt("HealTimer"));
-            this.setLevitationDurationTimer(nbt.getInt("LevTimer"));
-            this.setCorpseSpellTimer(nbt.getInt("CorpseSpellTimer"));
-            this.setConjureFangTimer(nbt.getInt("ConjureTimer"));
-            this.setFightDurationTimer(nbt.getInt("FightTimer"));
-            this.setCanMove(nbt.getBoolean("CanMove"));
-            this.setHuntStart(nbt.getBoolean("CanHunt"));
+            this.setInvulTimer(input.getIntOr("Invul", 0));
+            this.setPhaseInvulTimer(input.getIntOr("PhaseInvul", 0));
+            this.setPhase(input.getIntOr("Phase", 0));
+            this.setAnimationState(input.getIntOr("Anim", 0));
+            this.setHealth(input.getFloatOr("Health", 0.0F));
+            this.setAttackAnimTimer(input.getIntOr("AttackTimer", 0));
+            this.setHealTimer(input.getIntOr("HealTimer", 0));
+            this.setLevitationDurationTimer(input.getIntOr("LevTimer", 0));
+            this.setCorpseSpellTimer(input.getIntOr("CorpseSpellTimer", 0));
+            this.setConjureFangTimer(input.getIntOr("ConjureTimer", 0));
+            this.setFightDurationTimer(input.getIntOr("FightTimer", 0));
+            this.setCanMove(input.getBooleanOr("CanMove", false));
+            this.setHuntStart(input.getBooleanOr("CanHunt", false));
 
-            if (nbt.contains("HuntTimer")) {
-                this.setHuntTimer(nbt.getInt("HuntTimer"));
-            }
+            input.getInt("HuntTimer").ifPresent(this::setHuntTimer);
 
-            if (nbt.contains("HuntCooldown")) {
-                this.huntCooldownTicker = nbt.getInt("HuntCooldown");
-            }
+            input.getInt("HuntCooldown").ifPresent(cooldown -> this.huntCooldownTicker = cooldown);
 
-            if (nbt.contains("PhaseTwoTimer")) {
-                this.setStartPhaseTwoAnimTimer(nbt.getInt("PhaseTwoTimer"));
-            }
+            input.getInt("PhaseTwoTimer").ifPresent(this::setStartPhaseTwoAnimTimer);
 
-            if (nbt.contains("PhaseThreeTimer")) {
-                this.setStartPhaseThreeAnimTimer(nbt.getInt("PhaseThreeTimer"));
-            }
+            input.getInt("PhaseThreeTimer").ifPresent(this::setStartPhaseThreeAnimTimer);
         }
 
-        if (nbt.contains("HomePos", Tag.TAG_LONG)) {
-            this.homePos = BlockPos.of(nbt.getLong("HomePos"));
+        input.getLong("HomePos").ifPresent(pos -> {
+            this.homePos = BlockPos.of(pos);
             this.homeKnown = true;
-        }
+        });
+
+        super.readAdditionalSaveData(input);
+        LegacyEntityData.read(this, input);
 
         if (this.hasCustomName()) {
             this.bossBar.setName(this.getDisplayName());
         }
-
-        super.readAdditionalSaveData(nbt);
     }
 
     static {

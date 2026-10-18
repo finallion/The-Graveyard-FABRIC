@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -35,11 +34,7 @@ public class DiaryPageItem extends BlockItem {
     public static String pageOf(ItemStack stack) {
         CompoundTag nbt = LegacyItemData.view(stack);
 
-        if (!nbt.contains(LegacyItemData.PAGE, Tag.TAG_STRING)) {
-            return null;
-        }
-
-        String page = nbt.getString(LegacyItemData.PAGE);
+        String page = nbt.getString(LegacyItemData.PAGE).orElse(null);
         return Chronicle.isValidId(page) ? page : null;
     }
 

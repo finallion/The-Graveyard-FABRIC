@@ -3,9 +3,8 @@ package com.lion.graveyard.entities;
 import com.lion.graveyard.Graveyard;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,9 +20,11 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class GraveyardMinionEntity extends PathfinderMob {
-    protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID;
+    protected static final EntityDataAccessor<String> OWNER_UUID;
     protected static final EntityDataAccessor<Byte> TAMEABLE_FLAGS;
     private boolean sitting;
 
@@ -36,31 +37,29 @@ public class GraveyardMinionEntity extends PathfinderMob {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(OWNER_UUID, "");
         builder.define(TAMEABLE_FLAGS, (byte)0);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.getOwnerUuid() != null) {
-            nbt.putUUID("Owner", this.getOwnerUuid());
+            output.store("Owner", UUIDUtil.CODEC, this.getOwnerUuid());
         }
 
-        nbt.putBoolean("Sitting", this.sitting);
+        output.putBoolean("Sitting", this.sitting);
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        UUID ownerId;
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        UUID ownerId = input.read("Owner", UUIDUtil.CODEC).orElse(null);
 
-        if (nbt.hasUUID("Owner")) {
-            ownerId = nbt.getUUID("Owner");
-        } else {
-            String string = nbt.getString("Owner");
-            ownerId = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), string);
+        if (ownerId == null) {
+            ownerId = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), input.getStringOr("Owner", ""));
         }
 
         if (ownerId != null) {
@@ -71,17 +70,28 @@ public class GraveyardMinionEntity extends PathfinderMob {
             }
         }
 
-        this.sitting = nbt.getBoolean("Sitting");
+        this.sitting = input.getBooleanOr("Sitting", false);
         this.setInSittingPose(this.sitting);
+        LegacyEntityData.read(this, input);
     }
 
     @Nullable
     public UUID getOwnerUuid() {
-        return this.entityData.get(OWNER_UUID).orElse(null);
+        String stored = this.entityData.get(OWNER_UUID);
+
+        if (stored.isEmpty()) {
+            return null;
+        }
+
+        try {
+            return UUID.fromString(stored);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public void setOwnerUuid(@Nullable UUID uuid) {
-        this.entityData.set(OWNER_UUID, Optional.ofNullable(uuid));
+        this.entityData.set(OWNER_UUID, uuid == null ? "" : uuid.toString());
     }
 
     public void setOwner(Player player) {
@@ -142,7 +152,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
             return owner.equals(minion.getOwnerUuid());
         }
 
-        return target instanceof TamableAnimal tameable && owner.equals(tameable.getOwnerUUID());
+        return target instanceof TamableAnimal tameable && tameable.getOwnerReference() != null && owner.equals(tameable.getOwnerReference().getUUID());
     }
 
     public boolean isOwner(LivingEntity entity) {
@@ -190,7 +200,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
 
     static {
         TAMEABLE_FLAGS = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.BYTE);
-        OWNER_UUID = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+        OWNER_UUID = SynchedEntityData.defineId(GraveyardMinionEntity.class, EntityDataSerializers.STRING);
     }
 
 }

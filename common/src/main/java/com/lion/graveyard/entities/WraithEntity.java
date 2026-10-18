@@ -8,7 +8,6 @@ import com.lion.graveyard.init.TGSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -55,6 +54,8 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
@@ -206,27 +207,27 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.homePosition != null) {
-            nbt.putInt("BoundX", this.homePosition.getX());
-            nbt.putInt("BoundY", this.homePosition.getY());
-            nbt.putInt("BoundZ", this.homePosition.getZ());
+            output.putInt("BoundX", this.homePosition.getX());
+            output.putInt("BoundY", this.homePosition.getY());
+            output.putInt("BoundZ", this.homePosition.getZ());
         }
 
-        nbt.putInt("timeSinceExtinguish", this.timeSinceExtinguish);
+        output.putInt("timeSinceExtinguish", this.timeSinceExtinguish);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
 
-        if (nbt.contains("BoundX")) {
-            this.homePosition = new BlockPos(nbt.getInt("BoundX"), nbt.getInt("BoundY"), nbt.getInt("BoundZ"));
+        if (input.getInt("BoundX").isPresent()) {
+            this.homePosition = new BlockPos(input.getIntOr("BoundX", 0), input.getIntOr("BoundY", 0), input.getIntOr("BoundZ", 0));
         }
 
-        this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
+        this.timeSinceExtinguish = input.getIntOr("timeSinceExtinguish", 0);
     }
 
     @Override

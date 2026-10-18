@@ -10,7 +10,6 @@ import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.init.TGTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -46,6 +45,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -235,21 +236,22 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.home != null) {
-            nbt.putLong("HomePos", this.home.asLong());
+            output.putLong("HomePos", this.home.asLong());
         }
+
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
 
-        if (nbt.contains("HomePos")) {
-            this.home = BlockPos.of(nbt.getLong("HomePos"));
-        }
+        input.getLong("HomePos").ifPresent(pos -> this.home = BlockPos.of(pos));
+        LegacyEntityData.read(this, input);
     }
 
     @Nullable

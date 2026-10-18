@@ -13,8 +13,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Supplier;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,6 +25,8 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /// Animation predicates read these timers on the render thread.
 public abstract class AnimatedCorruptedIllager extends CorruptedIllager implements GeoEntity {
@@ -155,27 +155,24 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-        nbt.putByte("Decay", (byte) this.getDecay());
-        nbt.putByte("Claws", (byte) this.getClaws());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putByte("Decay", (byte) this.getDecay());
+        output.putByte("Claws", (byte) this.getClaws());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
 
-        if (nbt.contains("Decay", Tag.TAG_ANY_NUMERIC)) {
-            byte decay = nbt.getByte("Decay");
+        input.getInt("Decay").ifPresent(stored -> {
+            byte decay = stored.byteValue();
 
             if (decay >= 1 && decay <= DECAY_LEVELS) {
                 this.entityData.set(DECAY, decay);
             }
-        }
-
-        if (nbt.contains("Claws", Tag.TAG_ANY_NUMERIC)) {
-            this.entityData.set(CLAWS, nbt.getByte("Claws"));
-        }
+        });
+        input.getInt("Claws").ifPresent(claws -> this.entityData.set(CLAWS, claws.byteValue()));
     }
 
     @Override

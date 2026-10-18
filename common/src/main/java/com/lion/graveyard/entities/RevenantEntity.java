@@ -6,7 +6,6 @@ import com.lion.graveyard.entities.ai.goals.RevenantMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +28,8 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -319,24 +320,24 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-        nbt.putBoolean("canReanimate", canReanimate());
-        nbt.putInt("ReanimateTimer", getReanimateAnimTimer());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("canReanimate", canReanimate());
+        output.putInt("ReanimateTimer", getReanimateAnimTimer());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        setCanReanimate(nbt.getBoolean("canReanimate"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        setCanReanimate(input.getBooleanOr("canReanimate", false));
 
-        if (nbt.contains("ReanimateTimer")) {
-            setReanimateAnimTimer(nbt.getInt("ReanimateTimer"));
+        input.getInt("ReanimateTimer").ifPresent(timer -> {
+            setReanimateAnimTimer(timer);
 
             if (getReanimateAnimTimer() > 40) {
                 setAnimationState(ANIMATION_FAKE_DEATH);
             }
-        }
+        });
     }
 
     static {

@@ -29,7 +29,7 @@ public class PoolAliasProcessor extends StructureProcessor {
     public List<StructureBlockInfo> apply(List<StructureBlockInfo> jigsaws) {
         List<StructureBlockInfo> result = new ArrayList<>(jigsaws.size());
         for (StructureBlockInfo jigsaw : jigsaws) {
-            ResourceLocation alias = jigsaw.nbt() == null ? null : this.aliases.get(ResourceLocation.tryParse(jigsaw.nbt().getString(POOL_KEY)));
+            ResourceLocation alias = jigsaw.nbt() == null ? null : this.aliases.get(ResourceLocation.tryParse(jigsaw.nbt().getStringOr(POOL_KEY, "")));
 
             if (alias == null) {
                 result.add(jigsaw);

@@ -1,23 +1,32 @@
 package com.lion.graveyard.blockentities;
 
 import com.lion.graveyard.init.TGBlockEntities;
+import com.lion.graveyard.util.LegacyItemStacks;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.FilteredText;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.util.datafix.fixes.References;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +35,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +49,7 @@ import java.util.function.UnaryOperator;
 
 public class GravestoneBlockEntity extends BlockEntity {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final List<String> LEGACY_LINE_KEYS = List.of("messages", "filtered_messages");
     @Nullable
     private UUID editor;
     private SignText text;
@@ -69,33 +81,89 @@ public class GravestoneBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
-        DataResult<Tag> encodedText = SignText.DIRECT_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this.text);
-        Logger errorLogger = LOGGER;
-        Objects.requireNonNull(errorLogger);
-        encodedText.resultOrPartial(errorLogger::error).ifPresent((frontText) -> {
-            nbt.put("front_text", frontText);
-        });
-        nbt.putBoolean("is_waxed", this.waxed);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.store("front_text", SignText.DIRECT_CODEC, this.text);
+        LegacyItemStacks.writeDataVersion(output);
+        output.putBoolean("is_waxed", this.waxed);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
-        DataResult<SignText> parsedText;
-        Logger errorLogger;
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        int storedVersion = LegacyItemStacks.readDataVersion(input);
+        int fromVersion = storedVersion == LegacyItemStacks.UNKNOWN_VERSION
+                ? LegacyItemStacks.PORT_1_21_1_DATA_VERSION
+                : storedVersion;
+        boolean legacyText = fromVersion < LegacyItemStacks.currentDataVersion();
 
-        if (nbt.contains("front_text")) {
-            parsedText = SignText.DIRECT_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), nbt.getCompound("front_text"));
-            errorLogger = LOGGER;
+        input.read("front_text", CompoundTag.CODEC).ifPresent(frontText -> {
+            RegistryOps<Tag> ops = input.lookup().createSerializationContext(NbtOps.INSTANCE);
+            CompoundTag stored = legacyText ? convertLegacyText(input.lookup(), frontText, fromVersion) : frontText;
+            Logger errorLogger = LOGGER;
             Objects.requireNonNull(errorLogger);
-            parsedText.resultOrPartial(errorLogger::error).ifPresent((signText) -> {
-                this.text = this.parseLines(signText);
+            SignText.DIRECT_CODEC
+                    .parse(ops, stored)
+                    .resultOrPartial(errorLogger::error)
+                    .ifPresent(signText -> this.text = this.parseLines(signText));
+        });
+
+        this.waxed = input.getBooleanOr("is_waxed", false);
+    }
+
+    private static CompoundTag convertLegacyText(
+            HolderLookup.Provider registries,
+            CompoundTag frontText,
+            int fromVersion
+    ) {
+        try {
+            Dynamic<Tag> empty = new Dynamic<>(NbtOps.INSTANCE, new CompoundTag());
+            Dynamic<Tag> sign = empty
+                    .set("id", empty.createString("minecraft:sign"))
+                    .set("front_text", new Dynamic<>(NbtOps.INSTANCE, frontText.copy()));
+            Dynamic<Tag> fixed = DataFixers.getDataFixer()
+                    .update(References.BLOCK_ENTITY, sign, fromVersion, LegacyItemStacks.currentDataVersion());
+
+            if (fixed.getValue() instanceof CompoundTag fixedSign && fixedSign.get("front_text") instanceof CompoundTag fixedText) {
+                return fixedText;
+            }
+        } catch (RuntimeException e) {
+            LOGGER.warn("Cannot run the data fixer on the gravestone text", e);
+        }
+
+        return convertLegacyLines(registries, frontText);
+    }
+
+    private static CompoundTag convertLegacyLines(HolderLookup.Provider registries, CompoundTag frontText) {
+        CompoundTag converted = frontText.copy();
+
+        for (String key : LEGACY_LINE_KEYS) {
+            converted.getList(key).ifPresent(lines -> {
+                for (int i = 0; i < lines.size(); i++) {
+                    lines.set(i, convertLegacyLine(registries, lines.get(i)));
+                }
             });
         }
 
-        this.waxed = nbt.getBoolean("is_waxed");
+        return converted;
+    }
+
+    private static Tag convertLegacyLine(HolderLookup.Provider registries, Tag line) {
+        if (!(line instanceof StringTag)) {
+            return line;
+        }
+
+        String json = line.asString().orElse("");
+
+        try {
+            return ComponentSerialization.CODEC
+                    .parse(registries.createSerializationContext(JsonOps.INSTANCE), JsonParser.parseString(json))
+                    .flatMap(component -> ComponentSerialization.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), component))
+                    .result()
+                    .orElse(line);
+        } catch (JsonParseException e) {
+            return line;
+        }
     }
 
     private SignText parseLines(SignText signText) {
@@ -180,10 +248,9 @@ public class GravestoneBlockEntity extends BlockEntity {
 
         for (Component text : lines) {
             Style style = text.getStyle();
-            ClickEvent clickEvent = style.getClickEvent();
 
-            if (clickEvent != null && clickEvent.getAction() == ClickEvent.Action.RUN_COMMAND) {
-                player.getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), clickEvent.getValue());
+            if (style.getClickEvent() instanceof ClickEvent.RunCommand runCommand) {
+                player.getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), runCommand.command());
                 ranCommand = true;
             }
         }
@@ -205,11 +272,6 @@ public class GravestoneBlockEntity extends BlockEntity {
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return this.saveWithoutMetadata(registries);
-    }
-
-    @Override
-    public boolean onlyOpCanSetNbt() {
-        return true;
     }
 
     public void setEditor(@Nullable UUID editor) {

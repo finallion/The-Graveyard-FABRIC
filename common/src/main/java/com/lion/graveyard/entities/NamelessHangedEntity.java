@@ -6,7 +6,6 @@ import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
 import net.minecraft.core.particles.ParticleTypes;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -32,6 +31,8 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -147,15 +148,17 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-        nbt.putLong(OFFERS_DAY_KEY, this.offersDay);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putLong(OFFERS_DAY_KEY, this.offersDay);
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        this.offersDay = nbt.contains(OFFERS_DAY_KEY) ? nbt.getLong(OFFERS_DAY_KEY) : -1L;
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.offersDay = input.getLongOr(OFFERS_DAY_KEY, -1L);
+        LegacyEntityData.read(this, input);
     }
 
     private long currentDay() {

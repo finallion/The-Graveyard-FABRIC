@@ -19,7 +19,7 @@ public class VialOfBlood extends Item {
             return 0.1F;
         }
 
-        return LegacyItemData.view(stack).getFloat(LegacyItemData.BLOOD);
+        return LegacyItemData.view(stack).getFloatOr(LegacyItemData.BLOOD, 0.0F);
     }
 
     public static void setBlood(ItemStack stack, float blood) {
@@ -40,7 +40,7 @@ public class VialOfBlood extends Item {
             List<Component> tooltip,
             TooltipFlag context
     ) {
-        float blood = LegacyItemData.view(stack).getFloat(LegacyItemData.BLOOD);
+        float blood = LegacyItemData.view(stack).getFloatOr(LegacyItemData.BLOOD, 0.0F);
 
         if (blood > 0.8F && blood < 0.9F) {
             tooltip.add(Component.translatable("item.graveyard.vial_of_blood.level_full").withStyle(ChatFormatting.GRAY));

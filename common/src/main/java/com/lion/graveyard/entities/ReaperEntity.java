@@ -3,7 +3,6 @@ package com.lion.graveyard.entities;
 import com.lion.graveyard.init.TGSounds;
 import net.minecraft.core.BlockPos;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,6 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
@@ -86,22 +87,22 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
 
-        if (nbt.contains("BoundX")) {
-            this.bounds = new BlockPos(nbt.getInt("BoundX"), nbt.getInt("BoundY"), nbt.getInt("BoundZ"));
+        if (input.getInt("BoundX").isPresent()) {
+            this.bounds = new BlockPos(input.getIntOr("BoundX", 0), input.getIntOr("BoundY", 0), input.getIntOr("BoundZ", 0));
         }
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.bounds != null) {
-            nbt.putInt("BoundX", this.bounds.getX());
-            nbt.putInt("BoundY", this.bounds.getY());
-            nbt.putInt("BoundZ", this.bounds.getZ());
+            output.putInt("BoundX", this.bounds.getX());
+            output.putInt("BoundY", this.bounds.getY());
+            output.putInt("BoundZ", this.bounds.getZ());
         }
     }
 

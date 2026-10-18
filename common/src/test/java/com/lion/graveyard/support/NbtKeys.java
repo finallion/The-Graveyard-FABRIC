@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class NbtKeys {
-    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:loadAdditional(?=\\s*\\(\\s*CompoundTag)|readAdditionalSaveData|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
+    private static final Pattern DECLARES_READER = Pattern.compile("\\b(?:loadAdditional(?=\\s*\\(\\s*(?:CompoundTag|ValueInput))|readAdditionalSaveData|fromNbt)\\s*\\([^)]*\\)\\s*\\{");
     private static final Pattern CONSTANT = Pattern.compile("static\\s+final\\s+String\\s+(\\w+)\\s*=\\s*\"([^\"]+)\"");
-    private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|has\\w*|remove)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
+    private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|has\\w*|remove|read|child\\w*|list\\w*)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
     private static final Pattern WRITE_CALL = Pattern.compile("\\.put\\w*\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
 
     private NbtKeys() {}
@@ -23,12 +23,16 @@ public final class NbtKeys {
     public static Set<String> readKeys(String code) {
         Set<String> keys = collect(READ_CALL, code);
 
-        if (code.contains("ContainerHelper.loadAllItems")) {
+        if (code.contains("ContainerHelper.loadAllItems") || code.contains("LegacyItemStacks.loadSlots")) {
             keys.add("Items");
         }
 
         if (code.contains("tryLoadLootTable")) {
             keys.add("LootTable");
+        }
+
+        if (code.contains("LegacyItemStacks.readDataVersion") || code.contains("LegacyItemStacks.loadSlots") || code.contains("LegacyEntityData.read(")) {
+            keys.add("GraveyardDataVersion");
         }
 
         return keys;
@@ -37,7 +41,7 @@ public final class NbtKeys {
     public static Set<String> writeKeys(String code) {
         Set<String> keys = collect(WRITE_CALL, code);
 
-        if (code.contains("ContainerHelper.saveAllItems")) {
+        if (code.contains("ContainerHelper.saveAllItems") || code.contains("LegacyItemStacks.saveSlots")) {
             keys.add("Items");
         }
 

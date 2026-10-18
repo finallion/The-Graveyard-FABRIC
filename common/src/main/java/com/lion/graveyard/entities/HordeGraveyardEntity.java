@@ -2,8 +2,6 @@ package com.lion.graveyard.entities;
 
 import com.lion.graveyard.init.TGAdvancements;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
@@ -17,11 +15,14 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
@@ -42,39 +43,38 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
 
         if (this.patrolTarget != null) {
-            CompoundTag target = new CompoundTag();
+            ValueOutput target = output.child("PatrolTarget");
             target.putInt("X", this.patrolTarget.getX());
             target.putInt("Y", this.patrolTarget.getY());
             target.putInt("Z", this.patrolTarget.getZ());
-            nbt.put("PatrolTarget", target);
         }
 
-        nbt.putBoolean("PatrolLeader", this.patrolLeader);
-        nbt.putBoolean("HordeCaptain", this.hordeCaptain);
-        nbt.putBoolean("Patrolling", this.patrolling);
+        output.putBoolean("PatrolLeader", this.patrolLeader);
+        output.putBoolean("HordeCaptain", this.hordeCaptain);
+        output.putBoolean("Patrolling", this.patrolling);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        Optional<int[]> coordinates = input.getIntArray("PatrolTarget");
 
-        if (nbt.contains("PatrolTarget")) {
-            if (nbt.contains("PatrolTarget", Tag.TAG_INT_ARRAY)) {
-                int[] coordinates = nbt.getIntArray("PatrolTarget");
-                this.patrolTarget = coordinates.length == 3 ? new BlockPos(coordinates[0], coordinates[1], coordinates[2]) : null;
-            } else {
-                CompoundTag target = nbt.getCompound("PatrolTarget");
-                this.patrolTarget = new BlockPos(target.getInt("X"), target.getInt("Y"), target.getInt("Z"));
-            }
+        if (coordinates.isPresent()) {
+            int[] values = coordinates.get();
+            this.patrolTarget = values.length == 3 ? new BlockPos(values[0], values[1], values[2]) : null;
+        } else {
+            input.child("PatrolTarget").ifPresent(target -> {
+                this.patrolTarget = new BlockPos(target.getIntOr("X", 0), target.getIntOr("Y", 0), target.getIntOr("Z", 0));
+            });
         }
 
-        this.patrolLeader = nbt.getBoolean("PatrolLeader");
-        this.hordeCaptain = nbt.contains("HordeCaptain") ? nbt.getBoolean("HordeCaptain") : this.patrolLeader;
-        this.patrolling = nbt.getBoolean("Patrolling");
+        this.patrolLeader = input.getBooleanOr("PatrolLeader", false);
+        this.hordeCaptain = input.getBooleanOr("HordeCaptain", this.patrolLeader);
+        this.patrolling = input.getBooleanOr("Patrolling", false);
     }
 
     public boolean canLead() {

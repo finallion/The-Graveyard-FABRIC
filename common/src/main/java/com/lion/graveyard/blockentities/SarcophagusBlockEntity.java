@@ -6,16 +6,12 @@ import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.util.LegacyItemStacks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -27,6 +23,8 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
     private NonNullList<ItemStack> inventory;
@@ -80,21 +78,21 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.loadAdditional(nbt, registries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 
-        if (!this.tryLoadLootTable(nbt)) {
-            LegacyItemStacks.loadSlots(nbt.getList("Items", Tag.TAG_COMPOUND), this.inventory, registries);
+        if (!this.tryLoadLootTable(input)) {
+            LegacyItemStacks.loadSlots(input, this.inventory);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
-        super.saveAdditional(nbt, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
 
-        if (!this.trySaveLootTable(nbt)) {
-            ContainerHelper.saveAllItems(nbt, this.inventory, registries);
+        if (!this.trySaveLootTable(output)) {
+            LegacyItemStacks.saveSlots(output, this.inventory);
         }
     }
 

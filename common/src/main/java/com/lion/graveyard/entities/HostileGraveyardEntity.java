@@ -1,8 +1,8 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,6 +16,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class HostileGraveyardEntity extends Monster {
     private String name;
@@ -51,20 +53,17 @@ public abstract class HostileGraveyardEntity extends Monster {
 
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        nbt.putBoolean("canBurn", canBurnInSunlight());
-        super.addAdditionalSaveData(nbt);
+    public void addAdditionalSaveData(ValueOutput output) {
+        output.putBoolean("canBurn", canBurnInSunlight());
+        super.addAdditionalSaveData(output);
+        LegacyEntityData.write(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        if (!nbt.contains("canBurn")) {
-            this.setCanBurnInSunlight(canBurnInSunlight());
-        } else {
-            this.setCanBurnInSunlight(nbt.getBoolean("canBurn"));
-        }
-
-        super.readAdditionalSaveData(nbt);
+    public void readAdditionalSaveData(ValueInput input) {
+        input.read("canBurn", Codec.BOOL).ifPresent(this::setCanBurnInSunlight);
+        super.readAdditionalSaveData(input);
+        LegacyEntityData.read(this, input);
     }
 
     @Override

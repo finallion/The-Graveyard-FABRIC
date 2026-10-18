@@ -1,12 +1,12 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.LevelResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +34,19 @@ public final class GhoulingBindings extends SavedData {
 
     private static final String LEGACY_FILE = "graveyardGhoulingUUIDmapping.txt";
 
+    private static final Codec<GhoulingBindings> CODEC = CompoundTag.CODEC.xmap(GhoulingBindings::fromNbt, GhoulingBindings::toNbt);
+
+    private static final SavedDataType<GhoulingBindings> TYPE = new SavedDataType<>(
+            KEY,
+            context -> importLegacy(context.levelOrThrow().getServer()),
+            context -> CODEC,
+            DataFixTypes.LEVEL
+    );
+
     private final Map<UUID, Binding> bindings = new HashMap<>();
 
     public static GhoulingBindings get(ServerLevel world) {
-        MinecraftServer server = world.getServer();
-        return server.overworld().getDataStorage()
-                .computeIfAbsent(new SavedData.Factory<>(() -> importLegacy(server), GhoulingBindings::fromNbt, DataFixTypes.LEVEL), KEY);
+        return world.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
     /// `pos` is unknown for bonds imported from the legacy file until the Ghouling ticks once.
@@ -70,13 +78,13 @@ public final class GhoulingBindings extends SavedData {
         }
     }
 
-    @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
+    private CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
         ListTag list = new ListTag();
         this.bindings.forEach((ghouling, binding) -> {
             CompoundTag entry = new CompoundTag();
-            entry.putUUID("ghouling", ghouling);
-            entry.putUUID("owner", binding.owner());
+            entry.store("ghouling", UUIDUtil.CODEC, ghouling);
+            entry.store("owner", UUIDUtil.CODEC, binding.owner());
             entry.putString("dimension", binding.dimension().location().toString());
 
             if (binding.pos() != null) {
@@ -92,30 +100,34 @@ public final class GhoulingBindings extends SavedData {
         return nbt;
     }
 
-    private static GhoulingBindings fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
+    private static GhoulingBindings fromNbt(CompoundTag nbt) {
         GhoulingBindings state = new GhoulingBindings();
-        ListTag list = nbt.getList("ghoulings", Tag.TAG_COMPOUND);
+        ListTag list = nbt.getListOrEmpty("ghoulings");
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag entry = list.getCompound(i);
+            CompoundTag entry = list.getCompoundOrEmpty(i);
+            UUID ghouling = entry.read("ghouling", UUIDUtil.CODEC).orElse(null);
+            UUID owner = entry.read("owner", UUIDUtil.CODEC).orElse(null);
 
-            if (!entry.hasUUID("ghouling") || !entry.hasUUID("owner")) {
+            if (ghouling == null || owner == null) {
                 continue;
             }
 
-            ResourceLocation dimension = ResourceLocation.tryParse(entry.getString("dimension"));
+            ResourceLocation dimension = ResourceLocation.tryParse(entry.getStringOr("dimension", ""));
 
             if (dimension == null) {
                 continue;
             }
 
-            BlockPos pos = entry.contains("x") ? new BlockPos(entry.getInt("x"), entry.getInt("y"), entry.getInt("z")) : null;
+            BlockPos pos = entry.contains("x")
+                    ? new BlockPos(entry.getIntOr("x", 0), entry.getIntOr("y", 0), entry.getIntOr("z", 0))
+                    : null;
             state.bindings.put(
-                    entry.getUUID("ghouling"),
+                    ghouling,
                     new Binding(
-                            entry.getUUID("owner"),
+                            owner,
                             ResourceKey.create(Registries.DIMENSION, dimension),
                             pos,
-                            entry.getBoolean("sitting")
+                            entry.getBooleanOr("sitting", false)
                     )
             );
         }

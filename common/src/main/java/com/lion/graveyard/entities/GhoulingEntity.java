@@ -16,10 +16,10 @@ import com.lion.graveyard.entities.ai.goals.FollowOwnerGoal;
 import com.lion.graveyard.entities.ai.goals.AttackWithOwnerGoal;
 import com.lion.graveyard.entities.ai.goals.TrackOwnerAttackerGoal;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -59,6 +60,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
@@ -71,6 +75,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
+import java.util.List;
 
 public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, MenuProvider {
     public static final int BINDING_INTERVAL = 40;
@@ -481,8 +486,9 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         }
 
         stopRiding();
-        CompoundTag saved = new CompoundTag();
-        saveAsPassenger(saved);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registryAccess());
+        saveAsPassenger(output);
+        CompoundTag saved = output.buildResult();
         saved.remove("Pos");
         saved.remove("Motion");
         saved.remove("Staff");
@@ -660,44 +666,42 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
-        super.addAdditionalSaveData(nbt);
-        nbt.putBoolean("CoffinGhouling", this.hasCoffin());
-        nbt.putByte("ghoulVariant", getVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("CoffinGhouling", this.hasCoffin());
+        output.putByte("ghoulVariant", getVariant());
 
         if (this.bondId != null) {
-            nbt.putUUID(LegacyItemData.BOND_ID, this.bondId);
+            output.store(LegacyItemData.BOND_ID, UUIDUtil.CODEC, this.bondId);
         }
 
-        nbt.put("Staff", getStaff().saveOptional(registryAccess()));
+        output.store("Staff", ItemStack.OPTIONAL_CODEC, getStaff());
 
         if (inventory != null) {
-            final ListTag inv = new ListTag();
+            ValueOutput.TypedOutputList<ItemStack> inv = output.list("Inventory", ItemStack.OPTIONAL_CODEC);
             for (int i = 0; i < this.inventory.getContainerSize(); i++) {
-                inv.add(inventory.getItem(i).saveOptional(registryAccess()));
+                inv.add(inventory.getItem(i));
             }
-            nbt.put("Inventory", inv);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        this.setHasCoffin(nbt.getBoolean("CoffinGhouling"));
-        this.setVariant(nbt.getByte("ghoulVariant"));
-        this.bondId = nbt.hasUUID(LegacyItemData.BOND_ID) ? nbt.getUUID(LegacyItemData.BOND_ID) : null;
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        int dataVersion = LegacyItemStacks.readDataVersion(input);
+        this.setHasCoffin(input.getBooleanOr("CoffinGhouling", false));
+        this.setVariant(input.getByteOr("ghoulVariant", (byte) 0));
+        this.bondId = input.read(LegacyItemData.BOND_ID, UUIDUtil.CODEC).orElse(null);
 
-        if (nbt.contains("Staff")) {
-            setStaff(LegacyItemStacks.parse(registryAccess(), nbt.getCompound("Staff")));
-        }
+        input.read("Staff", CompoundTag.CODEC).ifPresent(staff -> setStaff(LegacyItemStacks.parse(input.lookup(), staff, dataVersion)));
 
-        if (nbt.contains("Inventory")) {
-            final ListTag inv = nbt.getList("Inventory", 10);
-            inventory = new CoffinInventory(this, Math.max(54, inv.size()));
-            for (int i = 0; i < inv.size(); i++) {
-                inventory.setItem(i, LegacyItemStacks.parse(registryAccess(), inv.getCompound(i)));
+        input.list("Inventory", CompoundTag.CODEC).ifPresent(inv -> {
+            List<CompoundTag> stacks = inv.stream().toList();
+            inventory = new CoffinInventory(this, Math.max(54, stacks.size()));
+            for (int i = 0; i < stacks.size(); i++) {
+                inventory.setItem(i, LegacyItemStacks.parse(input.lookup(), stacks.get(i), dataVersion));
             }
-        }
+        });
     }
 
     @Override
