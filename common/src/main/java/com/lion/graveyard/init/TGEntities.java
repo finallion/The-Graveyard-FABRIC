@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -39,11 +40,11 @@ public class TGEntities {
     public static final Supplier<EntityType<TormentedVillagerEntity>> TORMENTED_VILLAGER = RegistryHelper.registerEntityType("tormented_villager", () -> EntityType.Builder.of(TormentedVillagerEntity::new, MobCategory.MONSTER).sized(0.6F, 1.95F).build(Graveyard.createStringID("tormented_villager")));
     public static final Supplier<EntityType<RevenantEntity>> REVENANT = RegistryHelper.registerEntityType("revenant", () -> EntityType.Builder.of(RevenantEntity::new, MobCategory.MONSTER).sized(0.6F, 1.9F).ridingOffset(-0.7F).build(Graveyard.createStringID("revenant")));
     public static final Supplier<EntityType<WraithEntity>> WRAITH = RegistryHelper.registerEntityType("wraith", () -> EntityType.Builder.of(WraithEntity::new, MobCategory.MONSTER).sized(0.6F, 1.8F).build(Graveyard.createStringID("wraith")));
-    public static final Supplier<EntityType<NightmareEntity>> NIGHTMARE = RegistryHelper.registerEntityType("nightmare", () -> EntityType.Builder.of(NightmareEntity::new, MobCategory.MONSTER).sized(0.6F, 2.6F).build(Graveyard.createStringID("nightmare")));
+    public static final Supplier<EntityType<NightmareEntity>> NIGHTMARE = RegistryHelper.registerEntityType("nightmare", () -> EntityType.Builder.of(NightmareEntity::new, MobCategory.MONSTER).sized(0.6F, 2.6F).eyeHeight(2.55F).build(Graveyard.createStringID("nightmare")));
     public static final Supplier<EntityType<GhoulingEntity>> GHOULING = RegistryHelper.registerEntityType("ghouling", () -> EntityType.Builder.of(GhoulingEntity::new, MobCategory.CREATURE).sized(0.7F, 2.0F).build(Graveyard.createStringID("ghouling")));
-    public static final Supplier<EntityType<LichEntity>> LICH = RegistryHelper.registerEntityType("lich", () -> EntityType.Builder.of(LichEntity::new, MobCategory.MONSTER).sized(0.9F, 4.0F).build(Graveyard.createStringID("lich")));
+    public static final Supplier<EntityType<LichEntity>> LICH = RegistryHelper.registerEntityType("lich", () -> EntityType.Builder.of(LichEntity::new, MobCategory.MONSTER).sized(0.9F, 4.0F).eyeHeight(4.0F).build(Graveyard.createStringID("lich")));
     public static final Supplier<EntityType<SkullEntity>> SKULL = RegistryHelper.registerEntityType("skull", () -> EntityType.Builder.<SkullEntity>of(SkullEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10).build(Graveyard.createStringID("skull")));
-    public static final Supplier<EntityType<NamelessHangedEntity>> NAMELESS_HANGED = RegistryHelper.registerEntityType("nameless_hanged", () -> EntityType.Builder.of(NamelessHangedEntity::new, MobCategory.MONSTER).sized(0.8F, 2.5F).build(Graveyard.createStringID("nameless_hanged")));
+    public static final Supplier<EntityType<NamelessHangedEntity>> NAMELESS_HANGED = RegistryHelper.registerEntityType("nameless_hanged", () -> EntityType.Builder.of(NamelessHangedEntity::new, MobCategory.MONSTER).sized(0.8F, 2.5F).eyeHeight(2.0F).build(Graveyard.createStringID("nameless_hanged")));
     public static final Supplier<EntityType<CorvidEntity>> RAVEN = RegistryHelper.registerEntityType("raven", () -> EntityType.Builder.of(CorvidEntity::new, MobCategory.AMBIENT).sized(0.5F, 0.6F).build(Graveyard.createStringID("raven")));
     public static final Supplier<EntityType<CorvidEntity>> MAGPIE = RegistryHelper.registerEntityType("magpie", () -> EntityType.Builder.<CorvidEntity>of(MagpieEntity::new, MobCategory.AMBIENT).sized(0.4F, 0.5F).build(Graveyard.createStringID("magpie")));
     public static final Supplier<EntityType<CorvidEntity>> CROW = RegistryHelper.registerEntityType("crow", () -> EntityType.Builder.<CorvidEntity>of(CrowEntity::new, MobCategory.AMBIENT).sized(0.45F, 0.55F).build(Graveyard.createStringID("crow")));
@@ -122,7 +123,7 @@ public class TGEntities {
         RegistryHelper.registerSpawnPlacement(CROW, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
     }
 
-    private static final List<Attribute> SCALED_ATTRIBUTES = List.of(Attributes.MAX_HEALTH, Attributes.ATTACK_DAMAGE,
+    private static final List<Holder<Attribute>> SCALED_ATTRIBUTES = List.of(Attributes.MAX_HEALTH, Attributes.ATTACK_DAMAGE,
             Attributes.MOVEMENT_SPEED, Attributes.FLYING_SPEED);
 
     private static Supplier<AttributeSupplier.Builder> scaled(String mob, Supplier<AttributeSupplier.Builder> base) {
@@ -130,7 +131,7 @@ public class TGEntities {
             MobConfigEntry entry = Graveyard.getConfig().mobEntry(mob);
             AttributeSupplier defaults = base.get().build();
             AttributeSupplier.Builder result = base.get();
-            for (Attribute attribute : SCALED_ATTRIBUTES) {
+            for (Holder<Attribute> attribute : SCALED_ATTRIBUTES) {
                 double factor = factor(entry, attribute);
 
                 if (factor != 1.0D && defaults.hasAttribute(attribute)) {
@@ -141,7 +142,7 @@ public class TGEntities {
         };
     }
 
-    private static double factor(MobConfigEntry entry, Attribute attribute) {
+    private static double factor(MobConfigEntry entry, Holder<Attribute> attribute) {
         if (attribute == Attributes.MAX_HEALTH) {
             return entry.health();
         }

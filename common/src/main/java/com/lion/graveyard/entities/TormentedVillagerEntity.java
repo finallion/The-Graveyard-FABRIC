@@ -272,7 +272,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    public boolean canChangeDimensions() {
+    public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
         return false;
     }
 
@@ -296,11 +296,6 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Override
     public boolean fireImmune() {
-        return true;
-    }
-
-    @Override
-    public boolean canBreatheUnderwater() {
         return true;
     }
 

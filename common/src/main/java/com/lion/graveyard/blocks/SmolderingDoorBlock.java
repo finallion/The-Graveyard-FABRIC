@@ -17,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class SmolderingDoorBlock extends DoorBlock {
 
     public SmolderingDoorBlock(Properties settings, BlockSetType setType) {
-        super(settings, setType);
+        super(setType, settings);
         registerDefaultState(defaultBlockState().setValue(SmolderingWood.SMOLDERING, false));
     }
 

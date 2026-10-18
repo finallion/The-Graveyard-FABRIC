@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.blockentities.LoreBookBlockEntity;
 import com.lion.graveyard.chronicle.Chronicle;
 import com.lion.graveyard.init.TGItems;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -64,6 +66,13 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     private static final VoxelShape SHAPE = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 3.0D, 13.0D);
+
+    public static final MapCodec<LoreBookBlock> CODEC = MapCodec.unit(LoreBookBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public LoreBookBlock() {
         super(BlockBehaviour.Properties.of().noOcclusion().noCollission().strength(0.5F).sound(SoundType.WOOL));
@@ -152,7 +161,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
         if (world.getBlockEntity(pos) instanceof LoreBookBlockEntity book && book.getPage() != null) {
             return DiaryPageItem.of(TGItems.DIARY_PAGE.get(), book.getPage());
         }

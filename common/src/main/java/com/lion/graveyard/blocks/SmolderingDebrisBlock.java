@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.blockentities.SmolderingDebrisBlockEntity;
 import com.lion.graveyard.init.TGOverrunVillage;
 import net.minecraft.core.BlockPos;
@@ -18,6 +19,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class SmolderingDebrisBlock extends BaseEntityBlock {
+
+    public static final MapCodec<SmolderingDebrisBlock> CODEC = simpleCodec(SmolderingDebrisBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public SmolderingDebrisBlock(BlockBehaviour.Properties settings) {
         super(settings);

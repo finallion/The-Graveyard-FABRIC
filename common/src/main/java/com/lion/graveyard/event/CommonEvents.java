@@ -10,7 +10,6 @@ import com.lion.graveyard.entities.CorvidEntity;
 import com.lion.graveyard.util.CrowAnchors;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -136,6 +135,6 @@ public final class CommonEvents {
 
     private static boolean mayModify(Player player, Level world, BlockPos pos, ItemStack stack) {
         return player.getAbilities().mayBuild
-                || stack.hasAdventureModePlaceTagForBlock(world.registryAccess().registryOrThrow(Registries.BLOCK), new BlockInWorld(world, pos, false));
+                || stack.canPlaceOnBlockInAdventureMode(new BlockInWorld(world, pos, false));
     }
 }

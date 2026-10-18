@@ -6,6 +6,6 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 public class TGDoorBlock extends DoorBlock {
 
     public TGDoorBlock(Properties settings) {
-        super(settings, BlockSetType.IRON);
+        super(BlockSetType.IRON, settings);
     }
 }

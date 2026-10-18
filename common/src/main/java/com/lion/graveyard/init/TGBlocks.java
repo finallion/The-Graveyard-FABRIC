@@ -17,19 +17,19 @@ public class TGBlocks {
     public static List<Block> coffins = new ArrayList<>();
 
 
-    public static final Supplier<Block> TG_ROOTED_DIRT = RegistryHelper.registerBlock("tg_rooted_dirt", () -> new Block(BlockBehaviour.Properties.copy(Blocks.ROOTED_DIRT).dropsLike(Blocks.ROOTED_DIRT)));
-    public static final Supplier<Block> TG_TUFF = RegistryHelper.registerBlock("tg_tuff", () -> new Block(BlockBehaviour.Properties.copy(Blocks.TUFF).dropsLike(Blocks.TUFF)));
-    public static final Supplier<Block> TG_MOSS_BLOCK = RegistryHelper.registerBlock("tg_moss_block", () -> new TGMossBlock(BlockBehaviour.Properties.copy(Blocks.MOSS_BLOCK).dropsLike(Blocks.MOSS_BLOCK)));
-    public static final Supplier<Block> TG_DEEPSLATE = RegistryHelper.registerBlock("tg_deepslate", () -> new TGDeepslateBlock(() -> Blocks.DEEPSLATE, BlockBehaviour.Properties.copy(Blocks.DEEPSLATE).dropsLike(Blocks.DEEPSLATE)));
+    public static final Supplier<Block> TG_ROOTED_DIRT = RegistryHelper.registerBlock("tg_rooted_dirt", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ROOTED_DIRT).dropsLike(Blocks.ROOTED_DIRT)));
+    public static final Supplier<Block> TG_TUFF = RegistryHelper.registerBlock("tg_tuff", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.TUFF).dropsLike(Blocks.TUFF)));
+    public static final Supplier<Block> TG_MOSS_BLOCK = RegistryHelper.registerBlock("tg_moss_block", () -> new TGMossBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK).dropsLike(Blocks.MOSS_BLOCK)));
+    public static final Supplier<Block> TG_DEEPSLATE = RegistryHelper.registerBlock("tg_deepslate", () -> new TGDeepslateBlock(() -> Blocks.DEEPSLATE, BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE).dropsLike(Blocks.DEEPSLATE)));
 
-    public static final Supplier<Block> TG_GRASS_BLOCK = RegistryHelper.registerBlock("tg_grass_block", () -> new TGGrassBlock(BlockBehaviour.Properties.copy(Blocks.GRASS_BLOCK).dropsLike(Blocks.GRASS_BLOCK)));
-    public static final Supplier<Block> TG_DIRT = RegistryHelper.registerBlock("tg_dirt", () -> new TGStoneBlock(() -> Blocks.DIRT, BlockBehaviour.Properties.copy(Blocks.DIRT).dropsLike(Blocks.DIRT)));
-    public static final Supplier<Block> TG_COARSE_DIRT = RegistryHelper.registerBlock("tg_coarse_dirt", () -> new TGStoneBlock(() -> Blocks.COARSE_DIRT, BlockBehaviour.Properties.copy(Blocks.COARSE_DIRT).dropsLike(Blocks.COARSE_DIRT)));
-    public static final Supplier<Block> TG_ANDESITE = RegistryHelper.registerBlock("tg_andesite", () -> new TGStoneBlock(() -> Blocks.ANDESITE, BlockBehaviour.Properties.copy(Blocks.ANDESITE).dropsLike(Blocks.ANDESITE)));
-    public static final Supplier<Block> TG_GRANITE = RegistryHelper.registerBlock("tg_granite", () -> new TGStoneBlock(() -> Blocks.GRANITE, BlockBehaviour.Properties.copy(Blocks.GRANITE).dropsLike(Blocks.GRANITE)));
-    public static final Supplier<Block> TG_DIORITE = RegistryHelper.registerBlock("tg_diorite", () -> new TGStoneBlock(() -> Blocks.DIORITE, BlockBehaviour.Properties.copy(Blocks.DIORITE).dropsLike(Blocks.DIORITE)));
-    public static final Supplier<Block> TG_STONE = RegistryHelper.registerBlock("tg_stone", () -> new TGStoneBlock(() -> Blocks.STONE, BlockBehaviour.Properties.copy(Blocks.STONE).dropsLike(Blocks.STONE)));
-    public static final Supplier<Block> TG_PODZOL = RegistryHelper.registerBlock("tg_podzol", () -> new TGStoneBlock(() -> Blocks.PODZOL, BlockBehaviour.Properties.copy(Blocks.PODZOL).dropsLike(Blocks.PODZOL)));
+    public static final Supplier<Block> TG_GRASS_BLOCK = RegistryHelper.registerBlock("tg_grass_block", () -> new TGGrassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK).dropsLike(Blocks.GRASS_BLOCK)));
+    public static final Supplier<Block> TG_DIRT = RegistryHelper.registerBlock("tg_dirt", () -> new TGStoneBlock(() -> Blocks.DIRT, BlockBehaviour.Properties.ofFullCopy(Blocks.DIRT).dropsLike(Blocks.DIRT)));
+    public static final Supplier<Block> TG_COARSE_DIRT = RegistryHelper.registerBlock("tg_coarse_dirt", () -> new TGStoneBlock(() -> Blocks.COARSE_DIRT, BlockBehaviour.Properties.ofFullCopy(Blocks.COARSE_DIRT).dropsLike(Blocks.COARSE_DIRT)));
+    public static final Supplier<Block> TG_ANDESITE = RegistryHelper.registerBlock("tg_andesite", () -> new TGStoneBlock(() -> Blocks.ANDESITE, BlockBehaviour.Properties.ofFullCopy(Blocks.ANDESITE).dropsLike(Blocks.ANDESITE)));
+    public static final Supplier<Block> TG_GRANITE = RegistryHelper.registerBlock("tg_granite", () -> new TGStoneBlock(() -> Blocks.GRANITE, BlockBehaviour.Properties.ofFullCopy(Blocks.GRANITE).dropsLike(Blocks.GRANITE)));
+    public static final Supplier<Block> TG_DIORITE = RegistryHelper.registerBlock("tg_diorite", () -> new TGStoneBlock(() -> Blocks.DIORITE, BlockBehaviour.Properties.ofFullCopy(Blocks.DIORITE).dropsLike(Blocks.DIORITE)));
+    public static final Supplier<Block> TG_STONE = RegistryHelper.registerBlock("tg_stone", () -> new TGStoneBlock(() -> Blocks.STONE, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).dropsLike(Blocks.STONE)));
+    public static final Supplier<Block> TG_PODZOL = RegistryHelper.registerBlock("tg_podzol", () -> new TGStoneBlock(() -> Blocks.PODZOL, BlockBehaviour.Properties.ofFullCopy(Blocks.PODZOL).dropsLike(Blocks.PODZOL)));
 
     public static final Supplier<Block> DARK_IRON_BARS = RegistryHelper.registerBlock("dark_iron_bars", () -> new DarkIronBars(BlockBehaviour.Properties.of().strength(1.0F).noOcclusion()));
     public static final Supplier<Block> SOUL_FIRE_BRAZIER = RegistryHelper.registerBlock("soul_fire_brazier", () -> new BrazierBlock(BlockBehaviour.Properties.of().strength(1.0F).noOcclusion().lightLevel(BrazierBlock.STATE_TO_LUMINANCE).sound(SoundType.METAL), ParticleTypes.SOUL_FIRE_FLAME));

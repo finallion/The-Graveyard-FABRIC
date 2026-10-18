@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.blockentities.OssuaryBlockEntity;
 import com.lion.graveyard.gui.OssuaryScreenHandler;
 import com.lion.graveyard.init.TGBlockEntities;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -49,6 +49,13 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
     private static final Component TITLE = Component.translatable("container.ossuary");
     public static final DirectionProperty FACING;
     public static final BooleanProperty OPEN;
+
+    public static final MapCodec<OssuaryBlock> CODEC = simpleCodec(OssuaryBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public OssuaryBlock(Properties settings) {
         super(settings);
@@ -111,7 +118,7 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 

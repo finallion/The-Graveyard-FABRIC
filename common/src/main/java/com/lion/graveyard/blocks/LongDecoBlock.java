@@ -107,7 +107,7 @@ public class LongDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         // Removing the foot here drops its loot through the neighbor update.
         if (!world.isClientSide && player.isCreative() && state.getValue(PART) == BedPart.HEAD) {
             BlockPos otherPos = otherPartPos(pos, state);
@@ -119,7 +119,7 @@ public class LongDecoBlock extends Block implements SimpleWaterloggedBlock {
             }
         }
 
-        super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override

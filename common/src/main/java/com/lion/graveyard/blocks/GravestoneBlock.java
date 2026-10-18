@@ -71,7 +71,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     private final ResourceLocation texture;
 
     public GravestoneBlock(ResourceLocation texture) {
-        super(BlockBehaviour.Properties.of().noCollission().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(1.5F), WoodType.OAK);
+        super(WoodType.OAK, BlockBehaviour.Properties.of().noCollission().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(1.5F));
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(FLOOR, true)
@@ -274,7 +274,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 

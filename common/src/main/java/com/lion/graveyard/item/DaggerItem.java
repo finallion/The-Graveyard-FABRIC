@@ -20,7 +20,10 @@ import net.minecraft.world.level.block.state.BlockState;
 public class DaggerItem extends SwordItem {
 
     public DaggerItem(Tier material, float effectiveDamage, float effectiveSpeed, Item.Properties settings) {
-        super(material, (int) (effectiveDamage - material.getAttackDamageBonus()), effectiveSpeed, settings);
+        super(material, settings.attributes(SwordItem.createAttributes(
+                material,
+                (int) (effectiveDamage - material.getAttackDamageBonus()),
+                effectiveSpeed)));
     }
 
     @Override

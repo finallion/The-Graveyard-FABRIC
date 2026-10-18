@@ -17,7 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class SmolderingFenceGateBlock extends FenceGateBlock {
 
     public SmolderingFenceGateBlock(Properties settings, WoodType woodType) {
-        super(settings, woodType);
+        super(woodType, settings);
         registerDefaultState(defaultBlockState().setValue(SmolderingWood.SMOLDERING, false));
     }
 

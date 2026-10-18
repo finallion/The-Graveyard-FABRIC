@@ -17,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import java.util.Collection;
 import java.util.Random;
@@ -39,7 +40,7 @@ public class SkeletonCreeper extends Creeper {
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource source, int lootingMultiplier, boolean allowDrops) {
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         Entity entity = source.getEntity();
 
         if (entity instanceof Creeper) {
@@ -49,7 +50,7 @@ public class SkeletonCreeper extends Creeper {
                 this.spawnAtLocation(TGBlocks.CREEPER_SKELETON.get().asItem());
             }
         } else {
-            super.dropCustomDeathLoot(source, lootingMultiplier, allowDrops);
+            super.dropCustomDeathLoot(level, source, recentlyHit);
         }
     }
 

@@ -160,13 +160,17 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         }
 
         @Override
-        protected double getAttackReachSqr(LivingEntity entity) {
+        protected boolean canPerformAttack(LivingEntity entity) {
             if (this.mob.getVehicle() instanceof Ravager) {
                 float f = this.mob.getVehicle().getBbWidth() - 0.1F;
-                return (double)(f * 2.0F * f * 2.0F + entity.getBbWidth());
-            } else {
-                return super.getAttackReachSqr(entity);
+                double reachSqr = f * 2.0F * f * 2.0F + entity.getBbWidth();
+
+                return this.isTimeToAttack()
+                        && this.mob.distanceToSqr(entity) <= reachSqr
+                        && this.mob.getSensing().hasLineOfSight(entity);
             }
+
+            return super.canPerformAttack(entity);
         }
     }
 

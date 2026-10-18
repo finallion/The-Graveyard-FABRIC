@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.blockentities.UrnBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,9 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,6 +43,13 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
     public static final BooleanProperty OPEN;
     private static final VoxelShape LARGE_URN = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 16.0D, 14.0D);
     private static final VoxelShape SMALL_URN = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 10.0D, 13.0D);
+
+    public static final MapCodec<UrnBlock> CODEC = MapCodec.unit(UrnBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public UrnBlock() {
         super(BlockBehaviour.Properties.of().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(0.3F));
@@ -145,7 +151,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
@@ -160,18 +166,6 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
     @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
-    }
-
-    @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        if (itemStack.hasCustomHoverName()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-
-            if (blockEntity instanceof UrnBlockEntity) {
-                ((UrnBlockEntity)blockEntity).setCustomName(itemStack.getHoverName());
-            }
-        }
-
     }
 
     @Override

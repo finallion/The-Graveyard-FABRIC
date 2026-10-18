@@ -105,9 +105,9 @@ public class TallDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         TallDeco.onBreak(world, pos, state, player);
-        super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
     /// Only one half may drop, or a broken piece would hand out two.

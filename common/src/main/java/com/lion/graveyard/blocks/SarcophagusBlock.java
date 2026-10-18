@@ -1,5 +1,6 @@
 package com.lion.graveyard.blocks;
 
+import com.mojang.serialization.MapCodec;
 import com.lion.graveyard.blockentities.SarcophagusBlockEntity;
 import com.lion.graveyard.blockentities.enums.SarcophagusPart;
 import com.lion.graveyard.entities.MobSpawnGate;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -71,6 +73,13 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     public static final EnumProperty<SarcophagusPart> PART = EnumProperty.create("part", SarcophagusPart.class);
     private final Supplier<Item> lid;
     private final Supplier<Item> base;
+
+    public static final MapCodec<SarcophagusBlock> CODEC = simpleCodec(properties -> new SarcophagusBlock(properties, false, () -> Items.AIR, () -> Items.AIR));
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public SarcophagusBlock(Properties settings, boolean isCoffin, Supplier<Item> lid, Supplier<Item> base) {
         super(settings);
@@ -219,7 +228,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         if (!world.isClientSide && player.isCreative()) {
             SarcophagusPart part = state.getValue(PART);
 
@@ -234,7 +243,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
             }
         }
 
-        super.playerWillDestroy(world, pos, state, player);
+        return super.playerWillDestroy(world, pos, state, player);
     }
 
 
@@ -286,7 +295,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 

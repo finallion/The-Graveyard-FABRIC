@@ -54,6 +54,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -1068,22 +1069,12 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
         if (pose == Pose.CROUCHING) {
-            return 2.0F;
-        } else {
-            return 4.0F;
-        }
-    }
-
-    @Override
-    public EntityDimensions getDimensions(Pose pose) {
-        if (pose == Pose.CROUCHING) {
-            setPose(Pose.CROUCHING);
             return CRAWL_DIMENSIONS;
         }
 
-        return super.getDimensions(pose);
+        return super.getDefaultDimensions(pose);
     }
 
     @Override
@@ -1102,7 +1093,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean canChangeDimensions() {
+    public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
         return false;
     }
 
@@ -1155,7 +1146,7 @@ public class LichEntity extends Monster implements GeoEntity {
         setAttackAnimTimer(0);
 
         if (getPhase() == 4 || getPhase() == 5) {
-            getDimensions(Pose.CROUCHING);
+            setPose(Pose.CROUCHING);
         }
     }
 
@@ -1206,7 +1197,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean ignoreExplosion() {
+    public boolean ignoreExplosion(Explosion explosion) {
         return true;
     }
 
@@ -1649,7 +1640,7 @@ public class LichEntity extends Monster implements GeoEntity {
         MUSIC_DELAY = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
         CAN_ATTACK_PREDICATE = Entity::isAlwaysTicking;
         HEAD_TARGET_PREDICATE = TargetingConditions.forCombat().range(20.0D).selector(CAN_ATTACK_PREDICATE);
-        CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F);
+        CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F).withEyeHeight(2.0F);
         CRAWL_SPEED_BOOST = new AttributeModifier(CRAWL_SPEED_BOOST_ID, 0.18D, AttributeModifier.Operation.ADD_VALUE);
         ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").speedInHuntPhase, AttributeModifier.Operation.ADD_VALUE);
         DMG_BOOST = new AttributeModifier(ATTACKING_DMG_BOOST_ID, Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").damageHuntingPhaseAddition, AttributeModifier.Operation.ADD_VALUE);
