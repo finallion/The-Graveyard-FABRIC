@@ -30,7 +30,7 @@ public record ConfigSpawnsBiomeModifier(String mob) implements BiomeModifier {
             MobSpawnSettings.SpawnerData entry = spawn.entry();
 
             if (entry != null) {
-                builder.getMobSpawnSettings().addSpawn(spawn.group(), entry);
+                builder.getMobSpawnSettings().addSpawn(spawn.group(), spawn.weight(), entry);
             }
         }
     }

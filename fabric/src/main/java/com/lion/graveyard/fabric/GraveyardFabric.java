@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 
 
 public class GraveyardFabric implements ModInitializer {
@@ -60,7 +60,7 @@ public class GraveyardFabric implements ModInitializer {
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> CommonEvents.onDeath(entity));
         UseItemCallback.EVENT.register((player, world, hand) -> {
             CommonEvents.onUseItem(player, hand);
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         });
         UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
             CommonEvents.onUseBlock(player, world, hit.getBlockPos());

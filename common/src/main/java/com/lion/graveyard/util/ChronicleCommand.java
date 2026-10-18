@@ -29,13 +29,13 @@ public final class ChronicleCommand {
                         .then(Commands.argument("page", StringArgumentType.word()).executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             String page = StringArgumentType.getString(context, "page");
-                            ChronicleState.get(player.server).remove(player.getUUID(), page);
+                            ChronicleState.get(player.getServer()).remove(player.getUUID(), page);
                             Chronicle.syncAll(player);
                             return 1;
                         })))
                 .then(Commands.literal("reset").executes(context -> {
                     ServerPlayer player = context.getSource().getPlayerOrException();
-                    ChronicleState.get(player.server).clear(player.getUUID());
+                    ChronicleState.get(player.getServer()).clear(player.getUUID());
                     Chronicle.syncAll(player);
                     return 1;
                 }))

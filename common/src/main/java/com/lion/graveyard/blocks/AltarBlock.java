@@ -17,9 +17,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -99,7 +100,7 @@ public class AltarBlock extends Block {
             return "block.graveyard.altar.peaceful";
         }
 
-        if (!world.isNight() && !world.dimensionType().hasFixedTime()) {
+        if (!world.isDarkOutside() && !world.dimensionType().hasFixedTime()) {
             return "block.graveyard.altar.night_only";
         }
 
@@ -126,7 +127,7 @@ public class AltarBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
+    protected InteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level world,
@@ -136,7 +137,7 @@ public class AltarBlock extends Block {
             BlockHitResult hit
     ) {
         if (!player.mayBuild()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!world.isClientSide && state.is(TGBlocks.ALTAR.get()) && state.getValue(BLOODY) && !hasLivingLich(world, pos)) {
@@ -158,7 +159,7 @@ public class AltarBlock extends Block {
             }
         }
 
-        if (state.is(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getDescriptionId())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isNight() || world.dimensionType().hasFixedTime())) {
+        if (state.is(TGBlocks.ALTAR.get()) && (blood >= 0.8F || Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").isBossSummonableItem.contains(stack.getItem().getDescriptionId())) && world.getDifficulty() != Difficulty.PEACEFUL && (world.isDarkOutside() || world.dimensionType().hasFixedTime())) {
             BlockPattern.BlockPatternMatch result = AltarBlock.getCompletedFramePattern().find(world, pos);
 
             if (!state.getValue(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
@@ -200,12 +201,12 @@ public class AltarBlock extends Block {
                         }
                     }
 
-                    LichEntity lich = (LichEntity) TGEntities.LICH.get().create(world);
+                    LichEntity lich = (LichEntity) TGEntities.LICH.get().create(world, EntitySpawnReason.TRIGGERED);
                     BlockPos blockPos = pos.above();
                     lich.setYRot(direction.getOpposite().toYRot());
                     lich.setYBodyRot(direction.getOpposite().toYRot());
                     lich.setYHeadRot(direction.getOpposite().toYRot());
-                    lich.moveTo((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
+                    lich.snapTo((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D, 0.0F, 0.0F);
                     lich.onSummoned(direction.getOpposite(), pos.above());
 
                     for (ServerPlayer serverPlayerEntity : world.getEntitiesOfClass(ServerPlayer.class, lich.getBoundingBox().inflate(50.0D))) {
@@ -216,10 +217,10 @@ public class AltarBlock extends Block {
                     lich.setInvisible(true);
                     world.addFreshEntity(lich);
 
-                    return ItemInteractionResult.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
 
-                return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 

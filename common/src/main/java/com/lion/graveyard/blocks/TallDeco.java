@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,7 +28,7 @@ public final class TallDeco {
     public static BlockState placementState(BlockPlaceContext ctx, BlockState lowerHalf) {
         BlockPos pos = ctx.getClickedPos();
 
-        if (pos.getY() >= ctx.getLevel().getMaxBuildHeight() - 1 || !ctx.getLevel().getBlockState(pos.above()).canBeReplaced(ctx)) {
+        if (pos.getY() >= ctx.getLevel().getMaxY() || !ctx.getLevel().getBlockState(pos.above()).canBeReplaced(ctx)) {
             return null;
         }
 
@@ -61,7 +60,7 @@ public final class TallDeco {
     public static BlockState hangingPlacementState(BlockPlaceContext ctx, BlockState upperHalf) {
         BlockPos pos = ctx.getClickedPos();
 
-        if (pos.getY() <= ctx.getLevel().getMinBuildHeight() || !ctx.getLevel().getBlockState(pos.below()).canBeReplaced(ctx)) {
+        if (pos.getY() <= ctx.getLevel().getMinY() || !ctx.getLevel().getBlockState(pos.below()).canBeReplaced(ctx)) {
             return null;
         }
 
@@ -93,7 +92,7 @@ public final class TallDeco {
             BlockState state,
             Direction direction,
             BlockState neighbor,
-            LevelAccessor world,
+            LevelReader world,
             BlockPos pos
     ) {
         DoubleBlockHalf half = state.getValue(HALF);

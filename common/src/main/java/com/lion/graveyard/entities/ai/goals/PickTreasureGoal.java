@@ -10,7 +10,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 /// Only flies to the item. The vanilla `loot()` path does the pickup, as for the fox.
 public class PickTreasureGoal extends Goal {
@@ -35,22 +35,21 @@ public class PickTreasureGoal extends Goal {
             return false;
         }
 
-        Level world = this.magpie.level();
         // The vanilla pickup needs the mobGriefing game rule.
-        if (!world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
+        if (!(this.magpie.level() instanceof ServerLevel world) || !world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
             return false;
         }
 
-        this.target = this.findTreasure();
+        this.target = this.findTreasure(world);
         return this.target != null;
     }
 
     @Nullable
-    private ItemEntity findTreasure() {
-        List<ItemEntity> items = this.magpie.level().getEntitiesOfClass(
+    private ItemEntity findTreasure(ServerLevel world) {
+        List<ItemEntity> items = world.getEntitiesOfClass(
                 ItemEntity.class,
                 this.magpie.getBoundingBox().inflate(8.0D, 4.0D, 8.0D),
-                item -> !item.hasPickUpDelay() && this.magpie.wantsToPickUp(item.getItem())
+                item -> !item.hasPickUpDelay() && this.magpie.wantsToPickUp(world, item.getItem())
         );
         ItemEntity closest = null;
         double closestDistance = Double.MAX_VALUE;

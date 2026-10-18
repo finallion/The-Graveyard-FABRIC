@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +24,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -48,7 +48,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<Variant> VARIANT = EnumProperty.create("variant", Variant.class);
 
@@ -66,7 +66,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
     private static final VoxelShape SHAPE = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 3.0D, 13.0D);
 
-    public static final MapCodec<LoreBookBlock> CODEC = MapCodec.unit(LoreBookBlock::new);
+    public static final MapCodec<LoreBookBlock> CODEC = simpleCodec(LoreBookBlock::new);
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
@@ -146,7 +146,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
                 world.setBlock(pos, state.setValue(VARIANT, state.getValue(VARIANT).next()), Block.UPDATE_ALL);
             }
 
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         if (!(world.getBlockEntity(pos) instanceof LoreBookBlockEntity book) || book.getPage() == null) {
@@ -157,7 +157,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
             serverPlayer.displayClientMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY), true);
         }
 
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -172,7 +172,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
         if (world.getBlockEntity(pos) instanceof LoreBookBlockEntity book && book.getPage() != null) {
             return DiaryPageItem.of(TGItems.DIARY_PAGE.get(), book.getPage());
         }
@@ -188,17 +188,19 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     @Override
     public BlockState updateShape(
             BlockState state,
-            Direction direction,
-            BlockState neighborState,
-            LevelAccessor world,
+            LevelReader world,
+            ScheduledTickAccess tickAccess,
             BlockPos pos,
-            BlockPos neighborPos
+            Direction direction,
+            BlockPos neighborPos,
+            BlockState neighborState,
+            RandomSource random
     ) {
         if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
-        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, world, tickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override

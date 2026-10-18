@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -118,7 +119,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     public void tick() {
         super.tick();
 
-        if (this.getCommandSenderWorld().isClientSide()) {
+        if (this.level().isClientSide()) {
             restartAttackClipOnRearm();
         }
     }
@@ -139,7 +140,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         trackChase();
 
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
@@ -164,7 +165,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             this.setReanimateAnimTimer(animTimer);
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     /// The vanilla melee goal stops at each path end.
@@ -205,14 +206,14 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == 35 && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte)60);
+        if (this.deathTime == 35 && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
         if (source.is(DamageTypeTags.BYPASSES_RESISTANCE) || source.is(DamageTypeTags.IS_FIRE)) {
             int lyingTicks = getReanimateAnimTimer();
             boolean lyingDead = getAnimationState() == ANIMATION_FAKE_DEATH && lyingTicks > 40;
@@ -220,7 +221,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             setReanimateAnimTimer(0);
 
             if (lyingDead) {
-                boolean hurt = super.hurt(source, Float.MAX_VALUE);
+                boolean hurt = super.hurtServer(serverLevel, source, Float.MAX_VALUE);
 
                 if (isAlive()) {
                     setReanimateAnimTimer(lyingTicks);
@@ -240,7 +241,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             return false;
         }
 
-        return super.hurt(source, amount);
+        return super.hurtServer(serverLevel, source, amount);
     }
 
     @Override
@@ -263,7 +264,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     }
 
     private boolean isRunning(AnimationState<RevenantEntity> state) {
-        return AnimationTable.isMoving(state) && this.entityData.get(CHASING) && !isInWaterRainOrBubble();
+        return AnimationTable.isMoving(state) && this.entityData.get(CHASING) && !isInWaterOrRain();
     }
 
     @Override

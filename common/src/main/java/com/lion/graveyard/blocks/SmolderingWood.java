@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +46,7 @@ public final class SmolderingWood {
         return state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED);
     }
 
-    public static ItemInteractionResult use(
+    public static InteractionResult use(
             ItemStack stack,
             BlockState state,
             Level world,
@@ -56,7 +56,7 @@ public final class SmolderingWood {
     ) {
 
         if (!player.getAbilities().mayBuild) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         boolean lit = state.getValue(SMOLDERING);
@@ -82,7 +82,7 @@ public final class SmolderingWood {
                 }
             }
 
-            return ItemInteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         if (lit && (stack.getItem() instanceof ShovelItem || stack.is(Items.WATER_BUCKET))) {
@@ -104,10 +104,10 @@ public final class SmolderingWood {
                 }
             }
 
-            return ItemInteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public static void setLit(Level world, BlockPos pos, BlockState state, boolean lit) {

@@ -160,7 +160,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimationState(ANIMATION_MELEE);
         }
@@ -182,18 +182,18 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             GhoulingBindings.get(serverWorld).update(this);
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
     public void aiStep() {
         if (isInSittingPose() && random.nextInt(5) == 0) {
-            MathUtil.createParticleCircle(getCommandSenderWorld(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getCommandSenderWorld().random, 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().random, 0.5F);
         }
 
         if (isAggressive() && playAttackSound) {
             playAttackSound = false;
-            getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.GHOULING_ATTACK.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
+            level().playSound(null, this.blockPosition(), TGSounds.GHOULING_ATTACK.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
         }
 
         if (getTeleportTimer() > 0) {
@@ -201,8 +201,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 playSound(SoundEvents.SOUL_ESCAPE.value(), 2.0F, -10.0F);
             }
 
-            MathUtil.createParticleCircle(getCommandSenderWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, getCommandSenderWorld().random, 0.5F);
-            MathUtil.createParticleCircle(getCommandSenderWorld(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, getCommandSenderWorld().random, 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().random, 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, level().random, 0.5F);
         }
 
         super.aiStep();
@@ -210,7 +210,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
 
     @Override
     public void tick() {
-        if (getSpawnTimer() > 0 && getCommandSenderWorld() != null) {
+        if (getSpawnTimer() > 0 && level() != null) {
             RandomSource random = this.getRandom();
             BlockState blockState = this.getBlockStateOn();
 
@@ -219,24 +219,24 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     double d = this.getX() + (double) Mth.randomBetween(random, -0.7F, 0.7F);
                     double e = this.getY();
                     double f = this.getZ() + (double)Mth.randomBetween(random, -0.7F, 0.7F);
-                    this.getCommandSenderWorld().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                    this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
 
         super.tick();
 
-        if (getCommandSenderWorld().isClientSide()) {
+        if (level().isClientSide()) {
             restartAttackClipOnRearm();
         }
 
-        if (!getCommandSenderWorld().isClientSide()) {
+        if (!level().isClientSide()) {
             if (getSpawnTimer() > 0) {
                 setSpawnTimer(getSpawnTimer() - 1);
             }
 
             if (tickCount % PICKUP_INTERVAL == 0 && canPickUpPassingItems()) {
-                for (ItemEntity item : getCommandSenderWorld().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.0D, 0.5D, 1.0D), item -> !item.hasPickUpDelay() && mayTake(item))) {
+                for (ItemEntity item : level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.0D, 0.5D, 1.0D), item -> !item.hasPickUpDelay() && mayTake(item))) {
                     storeInCoffin(item);
                 }
             }
@@ -357,8 +357,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
     public void playSpawnSounds() {
-        getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.GHOULING_SPAWN.get(), SoundSource.HOSTILE, 4.0F, 1.5F);
-        getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.GHOUL_ROAR.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
+        level().playSound(null, this.blockPosition(), TGSounds.GHOULING_SPAWN.get(), SoundSource.HOSTILE, 4.0F, 1.5F);
+        level().playSound(null, this.blockPosition(), TGSounds.GHOUL_ROAR.get(), SoundSource.HOSTILE, 1.0F, -2.0F);
     }
 
     @Override
@@ -394,15 +394,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        boolean client = getCommandSenderWorld().isClientSide();
+        boolean client = level().isClientSide();
 
         if (!isOwner(player)) {
             return InteractionResult.PASS;
         }
 
-        if (itemStack.getItem() instanceof BoneStaffItem staff) {
-            if (getSpawnTimer() > 0 || player.getCooldowns().isOnCooldown(staff)) {
-                return InteractionResult.sidedSuccess(client);
+        if (itemStack.getItem() instanceof BoneStaffItem) {
+            if (getSpawnTimer() > 0 || player.getCooldowns().isOnCooldown(itemStack)) {
+                return InteractionResult.SUCCESS;
             }
 
             if (BoneStaffItem.isUnbound(itemStack)) {
@@ -410,7 +410,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     BoneStaffItem.rebind(itemStack, player, this);
                 }
 
-                return InteractionResult.sidedSuccess(client);
+                return InteractionResult.SUCCESS;
             }
 
             if (player.isShiftKeyDown()) {
@@ -418,7 +418,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                     player.openMenu(this);
                 }
 
-                return InteractionResult.sidedSuccess(client);
+                return InteractionResult.SUCCESS;
             }
 
             if (BoneStaffItem.isBoundTo(itemStack, this) && isAlive() && !isDeadOrDying()) {
@@ -433,7 +433,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 }
             }
 
-            return InteractionResult.sidedSuccess(client);
+            return InteractionResult.SUCCESS;
         }
 
         if (hasCoffin() && player.isShiftKeyDown()) {
@@ -441,7 +441,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 player.openMenu(this);
             }
 
-            return InteractionResult.sidedSuccess(client);
+            return InteractionResult.SUCCESS;
         }
 
         if (!hasCoffin() && itemStack.getItem() instanceof BlockItem blockItem
@@ -462,7 +462,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 }
             }
 
-            return InteractionResult.sidedSuccess(client);
+            return InteractionResult.SUCCESS;
         }
 
         return super.mobInteract(player, hand);
@@ -482,7 +482,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         closeCoffinScreens();
 
         if (isLeashed()) {
-            dropLeash(true, true);
+            dropLeash();
         }
 
         stopRiding();
@@ -506,8 +506,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == DEATH_ANIMATION_DURATION && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte) 60);
+        if (this.deathTime == DEATH_ANIMATION_DURATION && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
 
@@ -541,7 +541,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     public boolean acceptsStaff(ItemStack staff) {
         UUID known = this.bondId;
 
-        if (getCommandSenderWorld().isClientSide()) {
+        if (level().isClientSide()) {
             known = LegacyItemData.bondId(getStaff());
         }
 
@@ -569,15 +569,15 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
     @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel serverLevel) {
+        super.dropEquipment(serverLevel);
 
         if (this.hasCoffin()) {
-            if (!this.getCommandSenderWorld().isClientSide) {
+            if (!this.level().isClientSide) {
                 ItemStack coffin = this.getOffhandItem().copy();
 
                 if (!coffin.isEmpty()) {
-                    this.spawnAtLocation(coffin);
+                    this.spawnAtLocation(serverLevel, coffin);
                 }
 
                 this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
@@ -588,7 +588,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                         ItemStack stack = this.inventory.removeItemNoUpdate(i);
 
                         if (!stack.isEmpty() && !EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
-                            this.spawnAtLocation(stack.copy());
+                            this.spawnAtLocation(serverLevel, stack.copy());
                         }
                     }
                     this.inventory = null;
@@ -631,12 +631,21 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     }
 
     @Override
-    protected float getEquipmentDropChance(EquipmentSlot slot) {
-        return slot == EquipmentSlot.OFFHAND && hasCoffin() ? 0.0F : super.getEquipmentDropChance(slot);
+    protected void dropCustomDeathLoot(ServerLevel serverLevel, DamageSource damageSource, boolean killedByPlayer) {
+        if (!hasCoffin()) {
+            super.dropCustomDeathLoot(serverLevel, damageSource, killedByPlayer);
+            return;
+        }
+
+        // The coffin never drops through the equipment loop. dropEquipment drops it.
+        ItemStack coffin = this.getOffhandItem();
+        this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+        super.dropCustomDeathLoot(serverLevel, damageSource, killedByPlayer);
+        this.setItemSlot(EquipmentSlot.OFFHAND, coffin);
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource damageSource) {
         return getTeleportTimer() <= 0 && super.causeFallDamage(fallDistance, damageMultiplier, damageSource);
     }
 

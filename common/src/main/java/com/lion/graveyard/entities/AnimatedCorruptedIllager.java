@@ -16,12 +16,13 @@ import java.util.function.Supplier;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -139,13 +140,13 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
         SpawnGroupData result = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         this.entityData.set(DECAY, (byte) (this.random.nextInt(DECAY_LEVELS) + 1));
         this.entityData.set(CLAWS, (byte) this.random.nextInt((LEFT_CLAW | RIGHT_CLAW) + 1));
-        boolean unseenSpawn = spawnReason == MobSpawnType.CHUNK_GENERATION || spawnReason == MobSpawnType.STRUCTURE;
+        boolean unseenSpawn = spawnReason == EntitySpawnReason.CHUNK_GENERATION || spawnReason == EntitySpawnReason.STRUCTURE;
 
         if (this.hasSpawnAnimation() && !unseenSpawn) {
             this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
@@ -308,7 +309,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
         float reach = this.getBbWidth() * 2.0F;
 
         if (target.isAlive() && this.distanceToSqr(target) <= reach * reach + target.getBbWidth() + 1.0D) {
-            super.doHurtTarget(target);
+            super.doHurtTarget((ServerLevel) this.level(), target);
         }
     }
 
@@ -325,8 +326,8 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
         boolean navigating = !ChaseTarget.isLive(this) && !this.getNavigation().isDone();
         this.stuckTicks = navigating && this.walkAnimation.speed() <= MOVING_LIMB_SPEED ? this.stuckTicks + 1 : 0;
         this.entityData.set(WANDERING, navigating && this.stuckTicks < WANDER_STUCK_TICKS);
@@ -346,7 +347,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
         if (!this.level().isClientSide()) {
             byte next = this.entityData.get(ATTACK_KIND) == ATTACK_STRIKE ? ATTACK_BITE : ATTACK_STRIKE;
             this.entityData.set(ATTACK_KIND, next);

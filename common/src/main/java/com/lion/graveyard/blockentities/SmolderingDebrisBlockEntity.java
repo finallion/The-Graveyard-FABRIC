@@ -23,7 +23,7 @@ public class SmolderingDebrisBlockEntity extends BlockEntity {
     ) {
         RandomSource random = world.random;
 
-        if (random.nextFloat() < 0.11F && !world.getBlockState(pos.above()).isSolidRender(world, pos.above())) {
+        if (random.nextFloat() < 0.11F && !world.getBlockState(pos.above()).isSolidRender()) {
             boolean tallColumn = Math.floorMod(pos.hashCode(), 3) == 0;
             for (int i = 0; i < random.nextInt(2) + 2; i++) {
                 CampfireBlock.makeParticles(world, pos, tallColumn, false);

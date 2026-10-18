@@ -38,7 +38,7 @@ public class FollowOwnerGoal extends Goal {
             boolean leavesAllowed
     ) {
         this.tameable = tameable;
-        this.world = tameable.getCommandSenderWorld();
+        this.world = tameable.level();
         this.speed = speed;
         this.navigation = tameable.getNavigation();
         this.minDistance = minDistance;
@@ -134,7 +134,7 @@ public class FollowOwnerGoal extends Goal {
         } else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         } else {
-            this.tameable.moveTo((double)x + 0.5D, (double)y, (double)z + 0.5D, this.tameable.getYRot(), this.tameable.getXRot());
+            this.tameable.snapTo((double)x + 0.5D, (double)y, (double)z + 0.5D, this.tameable.getYRot(), this.tameable.getXRot());
             this.navigation.stop();
             return true;
         }

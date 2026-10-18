@@ -3,24 +3,26 @@ package com.lion.graveyard.blocks;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGParticles;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.worldgen.features.CaveFeatures;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.MossBlock;
+import net.minecraft.world.level.block.BonemealableFeaturePlacerBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TGMossBlock extends MossBlock {
+public class TGMossBlock extends BonemealableFeaturePlacerBlock {
     private static final int FOG_SHEET_RARITY = 2;
 
 
-    public TGMossBlock(Properties settings) {
-        super(settings);
+    public TGMossBlock(BlockBehaviour.Properties settings) {
+        super(CaveFeatures.MOSS_PATCH_BONEMEAL, settings);
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
         return new ItemStack(Blocks.MOSS_BLOCK);
     }
 

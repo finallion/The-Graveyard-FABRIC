@@ -124,7 +124,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
     public LivingEntity getOwner() {
         try {
             UUID ownerId = this.getOwnerUuid();
-            return ownerId == null ? null : this.getCommandSenderWorld().getPlayerByUUID(ownerId);
+            return ownerId == null ? null : this.level().getPlayerByUUID(ownerId);
         } catch (IllegalArgumentException exception) {
             return null;
         }
@@ -160,7 +160,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean isAlliedTo(Entity other) {
+    protected boolean considersEntityAsAlly(Entity other) {
         LivingEntity livingEntity = this.getOwner();
 
         if (other == livingEntity) {
@@ -168,10 +168,10 @@ public class GraveyardMinionEntity extends PathfinderMob {
         }
 
         if (livingEntity != null) {
-            return livingEntity.isAlliedTo(other);
+            return livingEntity.isAlliedTo(other.getTeam());
         }
 
-        return super.isAlliedTo(other);
+        return super.considersEntityAsAlly(other);
     }
 
     public boolean canAttackWithOwner(LivingEntity target, LivingEntity owner) {

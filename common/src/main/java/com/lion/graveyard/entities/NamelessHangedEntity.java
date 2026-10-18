@@ -93,8 +93,8 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.getCommandSenderWorld().isClientSide && !this.isRemoved()) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (!this.level().isClientSide && !this.isRemoved()) {
             if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
@@ -131,8 +131,8 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public void aiStep() {
-        if (this.getCommandSenderWorld().isClientSide) {
-            this.getCommandSenderWorld().addParticle(ParticleTypes.ASH, this.getRandomX(0.5D), this.getY() + 1.75D, this.getRandomZ(0.5D), 0, 0, 0);
+        if (this.level().isClientSide) {
+            this.level().addParticle(ParticleTypes.ASH, this.getRandomX(0.5D), this.getY() + 1.75D, this.getRandomZ(0.5D), 0, 0, 0);
         }
 
         super.aiStep();
@@ -140,7 +140,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public void tick() {
-        if (getCommandSenderWorld().isDay() && this.offers != null && !this.isTrading()) {
+        if (level().isBrightOutside() && this.offers != null && !this.isTrading()) {
             this.offers = null;
         }
 
@@ -162,7 +162,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     }
 
     private long currentDay() {
-        return this.getCommandSenderWorld().getDayTime() / 24000L;
+        return this.level().getDayTime() / 24000L;
     }
 
     @Override
@@ -171,21 +171,21 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
             this.offers = null;
         }
 
-        if (getCommandSenderWorld().isDay() && !this.getCommandSenderWorld().isClientSide) {
+        if (level().isBrightOutside() && !this.level().isClientSide) {
             player.displayClientMessage(Component.translatable("entity.graveyard.nameless_hanged.wait"), true);
-            getCommandSenderWorld().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
+            level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
         }
 
-        if (this.isAlive() && !this.isTrading() && getCommandSenderWorld().isNight()) {
+        if (this.isAlive() && !this.isTrading() && level().isDarkOutside()) {
             if (!this.getOffers().isEmpty()) {
-                if (!this.getCommandSenderWorld().isClientSide) {
+                if (!this.level().isClientSide) {
                     this.setTradingPlayer(player);
                     this.openTradingScreen(player, this.getDisplayName(), 1);
-                    getCommandSenderWorld().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
+                    level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
                 }
             }
 
-            return InteractionResult.sidedSuccess(this.getCommandSenderWorld().isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return super.mobInteract(player, hand);
         }
@@ -207,7 +207,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     protected void rewardTradeXp(MerchantOffer offer) {
         if (offer.shouldRewardExp()) {
             int i = 3 + this.random.nextInt(4);
-            this.getCommandSenderWorld().addFreshEntity(new ExperienceOrb(this.getCommandSenderWorld(), this.getX(), this.getY() + 0.5D, this.getZ(), i));
+            this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY() + 0.5D, this.getZ(), i));
         }
 
     }

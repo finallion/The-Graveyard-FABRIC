@@ -101,7 +101,7 @@ public final class Chronicle {
             return false;
         }
 
-        ChronicleState state = ChronicleState.get(player.server);
+        ChronicleState state = ChronicleState.get(player.getServer());
         boolean added = state.add(player.getUUID(), page);
         ChronicleSync.send(player, state.found(player.getUUID()), added ? page : null);
 
@@ -123,7 +123,7 @@ public final class Chronicle {
     }
 
     public static void syncAll(ServerPlayer player) {
-        ChronicleSync.send(player, ChronicleState.get(player.server).found(player.getUUID()), null);
+        ChronicleSync.send(player, ChronicleState.get(player.getServer()).found(player.getUUID()), null);
     }
 
     @Nullable

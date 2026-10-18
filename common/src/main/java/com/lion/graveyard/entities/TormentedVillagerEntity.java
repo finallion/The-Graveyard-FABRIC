@@ -31,7 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -89,11 +89,11 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     public static boolean canSpawn(
             EntityType<TormentedVillagerEntity> type,
             ServerLevelAccessor world,
-            MobSpawnType reason,
+            EntitySpawnReason reason,
             BlockPos pos,
             RandomSource random
     ) {
-        return world.getLevel().isNight() && Mob.checkMobSpawnRules(type, world, reason, pos, random);
+        return world.getLevel().isDarkOutside() && Mob.checkMobSpawnRules(type, world, reason, pos, random);
     }
 
     public static void onBellRung(ServerLevel world, BlockPos bell) {
@@ -127,7 +127,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
         this.setMood(Mood.SPAWNING, Mood.SPAWNING.ticks);
@@ -146,8 +146,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
         int spawnTicksLeft = this.entityData.get(SPAWN_TICKS_LEFT);
 
         if (spawnTicksLeft > 0) {
@@ -160,7 +160,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
         Mood mood = this.getMood();
 
-        if (mood != Mood.REDEEMING && mood != Mood.SPAWNING && this.tickCount > MIN_AGE_TO_FADE && this.level().isDay()) {
+        if (mood != Mood.REDEEMING && mood != Mood.SPAWNING && this.tickCount > MIN_AGE_TO_FADE && this.level().isBrightOutside()) {
             this.vanish(false);
             return;
         }
@@ -212,8 +212,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        return source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        return source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && super.hurtServer(serverLevel, source, amount);
     }
 
     public void redeem() {
@@ -284,7 +284,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     @Override
-    public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
+    public boolean canTeleport(Level oldLevel, Level newLevel) {
         return false;
     }
 

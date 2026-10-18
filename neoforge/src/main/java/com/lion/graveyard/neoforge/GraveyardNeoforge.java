@@ -12,6 +12,7 @@ import com.lion.graveyard.util.ChronicleCommand;
 import com.lion.graveyard.util.SpawnHordeCommand;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.TriState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -26,9 +27,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.common.world.BiomeModifier;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -135,8 +135,8 @@ public class GraveyardNeoforge {
         }
     }
 
-    private static void registerResourceReloader(AddReloadListenerEvent event) {
-        event.addListener(new NamelessHangedTradeOfferResourceListener());
+    private static void registerResourceReloader(AddServerReloadListenersEvent event) {
+        event.addListener(Graveyard.id("nameless_hanged_trades_data_loader"), new NamelessHangedTradeOfferResourceListener());
     }
 
     private static void registerCommands(RegisterCommandsEvent event) {

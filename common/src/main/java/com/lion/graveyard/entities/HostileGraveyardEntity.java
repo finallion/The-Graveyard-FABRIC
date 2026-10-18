@@ -11,7 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -109,7 +109,7 @@ public abstract class HostileGraveyardEntity extends Monster {
     public static boolean canSpawnInDarkness(
             EntityType<? extends Monster> type,
             ServerLevelAccessor world,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             BlockPos pos,
             net.minecraft.util.RandomSource random
     ) {
@@ -123,7 +123,7 @@ public abstract class HostileGraveyardEntity extends Monster {
     public static boolean canSpawnInLight(
             EntityType<? extends Monster> type,
             ServerLevelAccessor world,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             BlockPos pos,
             net.minecraft.util.RandomSource random
     ) {

@@ -4,6 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.item.DiaryPageItem;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
+import com.lion.graveyard.item.TooltipBlockItem;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.core.registries.Registries;
@@ -41,7 +42,7 @@ public class TGItems {
     public static final Supplier<Item> CHERRY_COFFIN_LID = RegistryHelper.registerItem("cherry_coffin_lid", Item::new, new Item.Properties());
     public static final Supplier<Item> CHERRY_COFFIN_BASE = RegistryHelper.registerItem("cherry_coffin_base", Item::new, new Item.Properties());
 
-    public static final Supplier<Item> OSSUARY = RegistryHelper.registerItem("ossuary", props -> new BlockItem(TGBlocks.OSSUARY.get(), props), new Item.Properties().useBlockDescriptionPrefix());
+    public static final Supplier<Item> OSSUARY = RegistryHelper.registerItem("ossuary", props -> new TooltipBlockItem(TGBlocks.OSSUARY.get(), props), new Item.Properties().useBlockDescriptionPrefix());
     public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", new Item.Properties().stacksTo(1).jukeboxPlayable(INCARNATED_EVIL_SONG));
 
     public static final Supplier<Item> SKELETON_CREEPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("skeleton_creeper_spawn_egg", TGEntities.SKELETON_CREEPER, new Item.Properties());
@@ -233,9 +234,9 @@ public class TGItems {
     public static final Supplier<Item> ALTAR_SIDE = RegistryHelper.registerItem("altar_side", props -> new BlockItem(TGBlocks.ALTAR_SIDE.get(), props), new Item.Properties().useBlockDescriptionPrefix());
     public static final Supplier<Item> ALTAR_CORNER = RegistryHelper.registerItem("altar_corner", props -> new BlockItem(TGBlocks.ALTAR_CORNER.get(), props), new Item.Properties().useBlockDescriptionPrefix());
     public static final Supplier<Item> ALTAR_CENTER = RegistryHelper.registerItem("altar_center", props -> new BlockItem(TGBlocks.ALTAR_CENTER.get(), props), new Item.Properties().useBlockDescriptionPrefix());
-    public static final Supplier<Item> UPPER_BONE_STAFF = RegistryHelper.registerItem("upper_bone_staff", props -> new BlockItem(TGBlocks.UPPER_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
-    public static final Supplier<Item> MIDDLE_BONE_STAFF = RegistryHelper.registerItem("middle_bone_staff", props -> new BlockItem(TGBlocks.MIDDLE_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
-    public static final Supplier<Item> LOWER_BONE_STAFF = RegistryHelper.registerItem("lower_bone_staff", props -> new BlockItem(TGBlocks.LOWER_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
+    public static final Supplier<Item> UPPER_BONE_STAFF = RegistryHelper.registerItem("upper_bone_staff", props -> new TooltipBlockItem(TGBlocks.UPPER_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
+    public static final Supplier<Item> MIDDLE_BONE_STAFF = RegistryHelper.registerItem("middle_bone_staff", props -> new TooltipBlockItem(TGBlocks.MIDDLE_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
+    public static final Supplier<Item> LOWER_BONE_STAFF = RegistryHelper.registerItem("lower_bone_staff", props -> new TooltipBlockItem(TGBlocks.LOWER_BONE_STAFF.get(), props), new Item.Properties().stacksTo(1).useBlockDescriptionPrefix());
 
 
     public static void init() {}

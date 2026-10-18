@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -13,8 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -120,14 +120,8 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public void move(MoverType movementType, Vec3 movement) {
-        super.move(movementType, movement);
-        this.checkInsideBlocks();
-    }
-
-    @Override
     public void tick() {
-        if (!this.getCommandSenderWorld().isClientSide()) {
+        if (!this.level().isClientSide()) {
             tickDown(SPAWN_TIMER);
             tickDown(ATTACK_TIMER);
         }
@@ -143,7 +137,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
         this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
@@ -163,20 +157,20 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public boolean doHurtTarget(Entity target) {
-        if (!this.getCommandSenderWorld().isClientSide()) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity target) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(ATTACK_TIMER, ATTACK_TICKS);
         }
 
-        return super.doHurtTarget(target);
+        return super.doHurtTarget(serverLevel, target);
     }
 
     @Override
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == DEATH_TICKS && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte) 60);
+        if (this.deathTime == DEATH_TICKS && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -335,7 +329,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             LivingEntity livingEntity = ReaperEntity.this.getTarget();
 
             if (ReaperEntity.this.getBoundingBox().intersects(livingEntity.getBoundingBox())) {
-                ReaperEntity.this.doHurtTarget(livingEntity);
+                ReaperEntity.this.doHurtTarget((ServerLevel) ReaperEntity.this.level(), livingEntity);
                 ReaperEntity.this.setCharging(false);
             } else {
                 double d = ReaperEntity.this.distanceToSqr(livingEntity);
@@ -375,7 +369,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
             for(int i = 0; i < 3; ++i) {
                 BlockPos blockPos2 = blockPos.offset(ReaperEntity.this.random.nextInt(15) - 7, ReaperEntity.this.random.nextInt(11) - 5, ReaperEntity.this.random.nextInt(15) - 7);
 
-                if (ReaperEntity.this.getCommandSenderWorld().isEmptyBlock(blockPos2)) {
+                if (ReaperEntity.this.level().isEmptyBlock(blockPos2)) {
                     ReaperEntity.this.moveControl.setWantedPosition((double)blockPos2.getX() + 0.5D, (double)blockPos2.getY() + 0.5D, (double)blockPos2.getZ() + 0.5D, 0.25D);
 
                     if (ReaperEntity.this.getTarget() == null) {

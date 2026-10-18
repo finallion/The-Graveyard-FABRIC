@@ -11,16 +11,18 @@ import com.lion.graveyard.init.TGEntities;
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -28,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -46,7 +47,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -65,7 +65,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     public static final BooleanProperty OPEN;
     public static final BooleanProperty PLAYER_PLACED;
     public static final BooleanProperty IS_COFFIN = BooleanProperty.create("is_coffin");
-    public static final DirectionProperty FACING;
+    public static final EnumProperty<Direction> FACING;
     protected static final VoxelShape DOUBLE_NORTH_SHAPE;
     protected static final VoxelShape DOUBLE_SOUTH_SHAPE;
     protected static final VoxelShape DOUBLE_WEST_SHAPE;
@@ -106,16 +106,18 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     @Override
     public BlockState updateShape(
             BlockState state,
-            Direction direction,
-            BlockState neighborState,
-            LevelAccessor world,
+            LevelReader world,
+            ScheduledTickAccess tickAccess,
             BlockPos pos,
-            BlockPos neighborPos
+            Direction direction,
+            BlockPos neighborPos,
+            BlockState neighborState,
+            RandomSource random
     ) {
         if (direction == getDirectionTowardsOtherPart(state.getValue(PART), state.getValue(FACING))) {
             return neighborState.is(this) && neighborState.getValue(PART) != state.getValue(PART) ? state : Blocks.AIR.defaultBlockState();
         } else {
-            return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+            return super.updateShape(state, world, tickAccess, pos, direction, neighborPos, neighborState, random);
         }
     }
 
@@ -171,7 +173,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     public static void spawnGhost(BlockState state, Level world, BlockPos pos, Player player, Random random) {
         if (!state.getValue(PLAYER_PLACED) && random.nextInt(4) == 0 && pos.getY() < 62) {
-            boolean allowed = !MobSpawnGate.blocks(TGEntities.WRAITH.get(), MobSpawnType.STRUCTURE);
+            boolean allowed = !MobSpawnGate.blocks(TGEntities.WRAITH.get(), EntitySpawnReason.STRUCTURE);
             WraithEntity ghost = null;
 
             if (allowed) {
@@ -183,10 +185,10 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
                         break;
                     }
                 }
-                ghost = TGEntities.WRAITH.get().create(world);
+                ghost = TGEntities.WRAITH.get().create(world, EntitySpawnReason.TRIGGERED);
 
                 if (ghost != null) {
-                    ghost.moveTo(entityPos, 0.0F, 0.0F);
+                    ghost.snapTo(entityPos, 0.0F, 0.0F);
                     ghost.startSpawnAnimation();
                     world.addFreshEntity(ghost);
                 }
@@ -219,7 +221,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
             BlockPos blockPos = pos.relative(state.getValue(FACING));
             world.setBlockAndUpdate(pos, state.setValue(PLAYER_PLACED, true));
             world.setBlock(blockPos, state.setValue(PART, SarcophagusPart.HEAD).setValue(PLAYER_PLACED, true), 3);
-            world.blockUpdated(pos, Blocks.AIR);
+            world.updateNeighborsAt(pos, Blocks.AIR, null);
             state.updateNeighbourShapes(world, pos, 3);
         }
 
@@ -267,17 +269,8 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-
-            if (blockEntity instanceof Container) {
-                Containers.dropContents(world, pos, (Container) blockEntity);
-                world.updateNeighbourForOutputSignal(pos, this);
-            }
-
-            super.onRemove(state, world, pos, newState, moved);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean moved) {
+        Containers.updateNeighboursAfterDestroy(state, world, pos);
     }
 
 
@@ -298,7 +291,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override

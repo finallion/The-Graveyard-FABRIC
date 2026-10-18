@@ -15,9 +15,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -33,26 +30,21 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
+public class OssuaryBlock extends BaseEntityBlock implements EntityBlock, BlockItemTooltip {
 
     @Override
-    public void appendHoverText(
-            ItemStack stack,
-            Item.TooltipContext context,
-            List<Component> tooltip,
-            TooltipFlag options
-    ) {
-        tooltip.add(Component.translatable("block.graveyard.ossuary.tooltip").withStyle(ChatFormatting.GRAY));
+    public void appendItemTooltip(Consumer<Component> tooltip) {
+        tooltip.accept(Component.translatable("block.graveyard.ossuary.tooltip").withStyle(ChatFormatting.GRAY));
     }
     private static final Component TITLE = Component.translatable("container.ossuary");
-    public static final DirectionProperty FACING;
+    public static final EnumProperty<Direction> FACING;
     public static final BooleanProperty OPEN;
 
     public static final MapCodec<OssuaryBlock> CODEC = simpleCodec(OssuaryBlock::new);
@@ -146,7 +138,7 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     static {

@@ -20,7 +20,7 @@ public class SitGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (this.tameable.isInWaterOrBubble()) {
+        if (this.tameable.isInWater()) {
             return false;
         } else if (!this.tameable.onGround()) {
             return false;

@@ -72,7 +72,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
 
     // mobTick discards the mob, because a kill shows the red overlay.
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource damageSource) {
         if (!impacted && impactTicks < 0) {
             impactTicks = IMPACT_DELAY;
         }
@@ -81,7 +81,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
         if (source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
         }
@@ -131,9 +131,9 @@ public class FallingCorpse extends Monster implements GeoEntity {
         if (this.getInBlockState().isAir()) {
             for (int i = 0; i < 10; i++) {
                 BlockPos pos = this.blockPosition().offset(0, -i, 0);
-                BlockState state = this.getCommandSenderWorld().getBlockState(pos);
+                BlockState state = this.level().getBlockState(pos);
 
-                if (!state.isAir() && state.isRedstoneConductor(getCommandSenderWorld(), pos)) {
+                if (!state.isAir() && state.isRedstoneConductor(level(), pos)) {
                     MathUtil.createParticleDisk(this.level(), pos.getX() + random.nextDouble(), pos.getY() + 1.3D, pos.getZ() + random.nextDouble(), 0.0D, 0.0D, 0.0D,1, DustParticleOptions.REDSTONE, this.getRandom());
                     break;
                 }
@@ -144,7 +144,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (levitationCounter > 0) {
             levitationCounter--;
             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.04D, 0.0D));
@@ -168,7 +168,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
             this.discard();
         }
 
-        if (!getCommandSenderWorld().getBlockState(this.blockPosition().below()).isAir()) {
+        if (!level().getBlockState(this.blockPosition().below()).isAir()) {
             setIsFalling(false);
         }
 
@@ -176,17 +176,17 @@ public class FallingCorpse extends Monster implements GeoEntity {
             setIsFalling(true);
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     private void impact() {
         impactTicks = -1;
         impacted = true;
-        getCommandSenderWorld().playSound(null, blockPosition(), SoundEvents.HOSTILE_BIG_FALL, SoundSource.HOSTILE, 2.0F, 0.8F);
-        getCommandSenderWorld().playSound(null, blockPosition(), SoundEvents.BONE_BLOCK_BREAK, SoundSource.HOSTILE, 1.2F, 0.6F);
-        BlockState ground = getCommandSenderWorld().getBlockState(blockPosition().below());
+        level().playSound(null, blockPosition(), SoundEvents.HOSTILE_BIG_FALL, SoundSource.HOSTILE, 2.0F, 0.8F);
+        level().playSound(null, blockPosition(), SoundEvents.BONE_BLOCK_BREAK, SoundSource.HOSTILE, 1.2F, 0.6F);
+        BlockState ground = level().getBlockState(blockPosition().below());
 
-        if (getCommandSenderWorld() instanceof ServerLevel world && !ground.isAir()) {
+        if (level() instanceof ServerLevel world && !ground.isAir()) {
             world.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, ground), getX(), getY() + 0.1D, getZ(), 30, 0.6D, 0.05D, 0.6D, 0.15D);
         }
     }

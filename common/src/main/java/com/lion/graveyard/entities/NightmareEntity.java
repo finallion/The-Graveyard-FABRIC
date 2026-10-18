@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +55,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity, NeutralMob {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
@@ -119,7 +119,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public void tick() {
         super.tick();
 
-        if (this.getCommandSenderWorld().isClientSide()) {
+        if (this.level().isClientSide()) {
             restartAttackClipOnRearm();
         }
     }
@@ -140,7 +140,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (this.getAttackAnimTimer() == ATTACK_ANIM_SYNC_TICKS) {
             setAnimation(ANIMATION_ATTACK);
         }
@@ -150,16 +150,16 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             this.setAttackAnimTimer(animTimer);
         }
 
-        if (this.getCommandSenderWorld().isDay() && this.tickCount >= this.ageWhenTargetSet + 600) {
+        if (this.level().isBrightOutside() && this.tickCount >= this.ageWhenTargetSet + 600) {
             float f = this.getLightLevelDependentMagicValue();
 
-            if (f > 0.5F && this.getCommandSenderWorld().canSeeSky(this.blockPosition()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+            if (f > 0.5F && this.level().canSeeSky(this.blockPosition()) && this.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
                 this.setTarget((LivingEntity)null);
                 this.teleportRandomly();
             }
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
 
@@ -167,14 +167,14 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public void aiStep() {
         this.jumping = false;
 
-        if (!this.getCommandSenderWorld().isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.getTarget() != null) {
                 if (this.getTarget().distanceToSqr(this) >= 1024.0D) {
                     stopBeingAngry();
                 }
             }
 
-            this.updatePersistentAnger((ServerLevel)this.getCommandSenderWorld(), true);
+            this.updatePersistentAnger((ServerLevel)this.level(), true);
         }
 
         super.aiStep();
@@ -207,20 +207,20 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == 31 && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte)60);
+        if (this.deathTime == 31 && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(serverLevel, source)) {
             return false;
         } else if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             return false;
         } else {
-            return super.hurt(source, amount);
+            return super.hurtServer(serverLevel, source, amount);
         }
     }
 
@@ -281,7 +281,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     boolean isPlayerStaring(Player player) {
-        ItemStack itemStack = (ItemStack)player.getInventory().armor.get(3);
+        ItemStack itemStack = player.getItemBySlot(EquipmentSlot.HEAD);
 
         if (itemStack.is(Blocks.CARVED_PUMPKIN.asItem())) {
             return false;
@@ -312,11 +312,11 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     private boolean teleportToPosition(double x, double y, double z) {
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, y, z);
 
-        while(mutable.getY() > this.getCommandSenderWorld().getMinBuildHeight() && !this.getCommandSenderWorld().getBlockState(mutable).blocksMotion()) {
+        while(mutable.getY() > this.level().getMinY() && !this.level().getBlockState(mutable).blocksMotion()) {
             mutable.move(Direction.DOWN);
         }
 
-        BlockState blockState = this.getCommandSenderWorld().getBlockState(mutable);
+        BlockState blockState = this.level().getBlockState(mutable);
         boolean solid = blockState.blocksMotion();
         boolean inWater = blockState.getFluidState().is(FluidTags.WATER);
 
@@ -334,7 +334,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     protected boolean teleportRandomly() {
-        if (!this.getCommandSenderWorld().isClientSide() && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
             double d = this.getX() + (this.random.nextDouble() - 0.5D) * 64.0D;
             double e = this.getY() + (double)(this.random.nextInt(64) - 32);
             double f = this.getZ() + (this.random.nextDouble() - 0.5D) * 64.0D;
@@ -456,17 +456,17 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         private final TargetingConditions staringPlayerPredicate;
         private final TargetingConditions validTargetPredicate = TargetingConditions.forCombat().ignoreLineOfSight();
 
-        public TeleportTowardsPlayerGoal(NightmareEntity nightmare, @Nullable Predicate<LivingEntity> targetPredicate) {
+        public TeleportTowardsPlayerGoal(NightmareEntity nightmare, @Nullable TargetingConditions.Selector targetPredicate) {
             super(nightmare, Player.class, 10, false, false, targetPredicate);
             this.nightmare = nightmare;
-            this.staringPlayerPredicate = TargetingConditions.forCombat().range(this.getFollowDistance()).selector((playerEntity) -> {
+            this.staringPlayerPredicate = TargetingConditions.forCombat().range(this.getFollowDistance()).selector((playerEntity, level) -> {
                 return nightmare.isPlayerStaring((Player)playerEntity);
             });
         }
 
         @Override
         public boolean canUse() {
-            this.targetPlayer = this.nightmare.getCommandSenderWorld().getNearestPlayer(this.staringPlayerPredicate, this.nightmare);
+            this.targetPlayer = getServerLevel(this.nightmare).getNearestPlayer(this.staringPlayerPredicate, this.nightmare);
             return this.targetPlayer != null;
         }
 
@@ -493,7 +493,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                     return true;
                 }
             } else {
-                return this.target != null && this.validTargetPredicate.test(this.nightmare, this.target) ? true : super.canContinueToUse();
+                return this.target != null && this.validTargetPredicate.test(getServerLevel(this.nightmare), this.nightmare, this.target) ? true : super.canContinueToUse();
             }
         }
 

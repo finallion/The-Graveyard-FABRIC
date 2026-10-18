@@ -1,10 +1,9 @@
 package com.lion.graveyard.entities;
 
-import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.init.TGAdvancements;
+import com.lion.graveyard.init.TGItems;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.item.DaggerItem;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -24,7 +23,7 @@ public class AcolyteEntity extends CorruptedIllager {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance localDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BuiltInRegistries.ITEM.get(Graveyard.id("bone_dagger"))));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(TGItems.BONE_DAGGER.get()));
     }
 
     @Override

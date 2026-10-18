@@ -36,8 +36,8 @@ public final class Scarecrows {
         int maxX = center.getX() + radius;
         int minZ = center.getZ() - radius;
         int maxZ = center.getZ() + radius;
-        int minY = Math.max(world.getMinBuildHeight(), center.getY() - radius);
-        int maxY = Math.min(world.getMaxBuildHeight() - 1, center.getY() + radius);
+        int minY = Math.max(world.getMinY(), center.getY() - radius);
+        int maxY = Math.min(world.getMaxY(), center.getY() + radius);
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {

@@ -28,13 +28,13 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +42,8 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
@@ -63,9 +64,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /// The stack NBT and GhoulingBindings both store the bond.
@@ -73,8 +74,7 @@ public class BoneStaffItem extends Item {
     private static final double FETCH_DISTANCE_SQ = 24 * 24;
     private static final int USE_COOLDOWN_TICKS = 10;
 
-    private static final TicketType<UUID> FETCH_TICKET =
-            TicketType.create("graveyard_ghouling_fetch", UUID::compareTo, 60);
+    private static final TicketType FETCH_TICKET = new TicketType(60L, false, TicketType.TicketUse.LOADING_AND_SIMULATION);
 
     private static final int MAX_FETCH_MISSES = 5;
     private static final int MAX_LANDING_DROP = 8;
@@ -133,7 +133,7 @@ public class BoneStaffItem extends Item {
 
             if (LegacyItemData.isStored(stack)) {
                 release(serverWorld, player, stack, spawnPos);
-                player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
+                player.getCooldowns().addCooldown(stack, USE_COOLDOWN_TICKS);
                 return InteractionResult.SUCCESS;
             }
 
@@ -146,8 +146,8 @@ public class BoneStaffItem extends Item {
                 }
             }
 
-            GhoulingEntity ghouling = TGEntities.GHOULING.get().create(world);
-            ghouling.moveTo(spawnPos, 0.0F, 0.0F);
+            GhoulingEntity ghouling = TGEntities.GHOULING.get().create(world, EntitySpawnReason.TRIGGERED);
+            ghouling.snapTo(spawnPos, 0.0F, 0.0F);
             ghouling.setOwner(player);
             ghouling.setVariant(ghoulVariant);
 
@@ -174,7 +174,7 @@ public class BoneStaffItem extends Item {
             world.addFreshEntity(ghouling);
             ghouling.playSpawnSounds();
             GhoulingBindings.get(serverWorld).update(ghouling);
-            player.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
+            player.getCooldowns().addCooldown(stack, USE_COOLDOWN_TICKS);
             return InteractionResult.SUCCESS;
         }
 
@@ -201,7 +201,7 @@ public class BoneStaffItem extends Item {
     }
 
     private static void stopDrawSound(ServerLevel world, Entity source) {
-        ClientboundStopSoundPacket packet = new ClientboundStopSoundPacket(TGSounds.GHOULING_SOUL_DRAW.get().getLocation(), SoundSource.PLAYERS);
+        ClientboundStopSoundPacket packet = new ClientboundStopSoundPacket(TGSounds.GHOULING_SOUL_DRAW.get().location(), SoundSource.PLAYERS);
         for (ServerPlayer listener : world.getPlayers(p -> p.distanceToSqr(source) < 32 * 32)) {
             listener.connection.send(packet);
         }
@@ -231,7 +231,7 @@ public class BoneStaffItem extends Item {
         ValueInput savedInput = TagValueInput.create(ProblemReporter.DISCARDING, world.registryAccess(), saved);
 
         if (EntityType.create(savedInput, world, EntitySpawnReason.SPAWN_ITEM_USE).orElse(null) instanceof GhoulingEntity ghouling) {
-            ghouling.moveTo(spawnPos, 0.0F, 0.0F);
+            ghouling.snapTo(spawnPos, 0.0F, 0.0F);
             ghouling.setSitting(false);
             ItemStack staff = stack.copy();
             LegacyItemData.clearStored(staff);
@@ -259,7 +259,7 @@ public class BoneStaffItem extends Item {
 
         world.playSound(null, ghouling.blockPosition(), STORE_DONE_SOUND, SoundSource.PLAYERS, 2.0F, 1.0F);
         LegacyItemData.store(stack, ghouling.removeForStorage());
-        player.getCooldowns().addCooldown(stack.getItem(), 20);
+        player.getCooldowns().addCooldown(stack, 20);
         player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.stored"), true);
     }
 
@@ -285,8 +285,8 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.SPEAR;
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.SPEAR;
     }
 
     @Override
@@ -325,9 +325,9 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
+    public boolean releaseUsing(ItemStack stack, Level world, LivingEntity user, int remainingUseTicks) {
         if (!(world instanceof ServerLevel serverWorld) || !(user instanceof Player player)) {
-            return;
+            return false;
         }
 
         UUID drawn = DRAWING.remove(player.getUUID());
@@ -341,6 +341,8 @@ public class BoneStaffItem extends Item {
                 && !rejectsStaff(ghouling, stack, player)) {
             ghouling.toggleSitting(player);
         }
+
+        return false;
     }
 
     @Override
@@ -352,7 +354,8 @@ public class BoneStaffItem extends Item {
     public void appendHoverText(
             ItemStack stack,
             Item.TooltipContext tooltipContext,
-            List<Component> tooltip,
+            TooltipDisplay display,
+            Consumer<Component> tooltip,
             TooltipFlag context
     ) {
         if (LegacyItemData.isStored(stack)) {
@@ -364,10 +367,10 @@ public class BoneStaffItem extends Item {
                 name = TGEntities.GHOULING.get().getDescription();
             }
 
-            tooltip.add(Component.translatable("item.graveyard.bone_staff.stored", name));
+            tooltip.accept(Component.translatable("item.graveyard.bone_staff.stored", name));
         }
 
-        super.appendHoverText(stack, tooltipContext, tooltip, context);
+        super.appendHoverText(stack, tooltipContext, display, tooltip, context);
     }
 
     private static Entity findLoaded(ServerLevel world, UUID id) {
@@ -440,8 +443,8 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        if (!(world instanceof ServerLevel serverWorld) || !(entity instanceof Player player)) {
+    public void inventoryTick(ItemStack stack, ServerLevel serverWorld, Entity entity, EquipmentSlot slot) {
+        if (!(entity instanceof Player player)) {
             return;
         }
 
@@ -458,13 +461,13 @@ public class BoneStaffItem extends Item {
         long callDeadline = nbt.getLongOr(LegacyItemData.FETCH_CALL, 0L);
         boolean calling = callDeadline > 0L;
 
-        if (calling && world.getGameTime() > callDeadline) {
+        if (calling && serverWorld.getGameTime() > callDeadline) {
             LegacyItemData.clearFetchCall(stack);
             player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.lost"), true);
             calling = false;
         }
 
-        if (!calling && (world.getGameTime() + player.getId()) % GhoulingEntity.BINDING_INTERVAL != 0) {
+        if (!calling && (serverWorld.getGameTime() + player.getId()) % GhoulingEntity.BINDING_INTERVAL != 0) {
             return;
         }
 
@@ -494,7 +497,7 @@ public class BoneStaffItem extends Item {
 
             if (binding.pos() != null && player.getUUID().equals(binding.owner()) && (calling || !ownerAirborne(player))
                     && (calling || misses < MAX_FETCH_MISSES)) {
-                home.getChunkSource().addRegionTicket(FETCH_TICKET, new ChunkPos(binding.pos()), 2, ghoulingId);
+                home.getChunkSource().addTicketWithRadius(FETCH_TICKET, new ChunkPos(binding.pos()), 2);
 
                 if (!calling) {
                     LegacyItemData.edit(stack, data -> data.putInt(LegacyItemData.FETCH_MISSES, misses + 1));
@@ -561,7 +564,7 @@ public class BoneStaffItem extends Item {
             return;
         }
 
-        home.getChunkSource().addRegionTicket(FETCH_TICKET, new ChunkPos(binding.pos()), 2, ghoulingId);
+        home.getChunkSource().addTicketWithRadius(FETCH_TICKET, new ChunkPos(binding.pos()), 2);
         long callDeadline = world.getGameTime() + CALL_TIMEOUT;
         LegacyItemData.clearFetchMisses(stack);
         LegacyItemData.edit(stack, data -> data.putLong(LegacyItemData.FETCH_CALL, callDeadline));
@@ -611,9 +614,10 @@ public class BoneStaffItem extends Item {
                 landing.x,
                 landing.y,
                 landing.z,
-                EnumSet.noneOf(RelativeMovement.class),
+                EnumSet.noneOf(Relative.class),
                 ghouling.getYRot(),
-                ghouling.getXRot()
+                ghouling.getXRot(),
+                false
         );
         // A dimension change creates a new entity. Move the timer to the live instance.
         GhoulingEntity arrived = world.getEntity(ghouling.getUUID()) instanceof GhoulingEntity found ? found : ghouling;
@@ -670,11 +674,11 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack stack = user.getItemInHand(hand);
 
         if (!world.isClientSide) {
-            user.getCooldowns().addCooldown(this, USE_COOLDOWN_TICKS);
+            user.getCooldowns().addCooldown(stack, USE_COOLDOWN_TICKS);
         }
 
         UUID ownerId = LegacyItemData.ownerUuid(stack);
@@ -685,20 +689,20 @@ public class BoneStaffItem extends Item {
                 user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
             }
 
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
 
         if (owned && startFarDraw(world, user, hand, stack)) {
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
 
         if (world.isClientSide) {
-            return owned ? InteractionResultHolder.sidedSuccess(stack, true) : super.use(world, user, hand);
+            return owned ? InteractionResult.SUCCESS : super.use(world, user, hand);
         }
 
         if (LegacyItemData.isStored(stack)) {
             user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.resting"), true);
-            return InteractionResultHolder.sidedSuccess(stack, false);
+            return InteractionResult.SUCCESS;
         }
 
         UUID ghoulingUUID = LegacyItemData.ghoulingUuid(stack);
@@ -768,7 +772,7 @@ public class BoneStaffItem extends Item {
             }
         }
 
-        return owned ? InteractionResultHolder.sidedSuccess(stack, false) : super.use(world, user, hand);
+        return owned ? InteractionResult.SUCCESS : super.use(world, user, hand);
     }
 
 }

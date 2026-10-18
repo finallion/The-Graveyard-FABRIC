@@ -7,11 +7,11 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 
 public class AltarDirectionBlock extends AltarParticleBlock {
-    public static final DirectionProperty FACING;
+    public static final EnumProperty<Direction> FACING;
 
     public AltarDirectionBlock(Properties settings) {
         super(settings);

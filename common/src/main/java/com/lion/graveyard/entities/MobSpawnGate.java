@@ -11,7 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -36,27 +36,27 @@ public final class MobSpawnGate {
             "nameless_hanged"
     );
 
-    private static final Set<MobSpawnType> AUTOMATIC = EnumSet.of(
-            MobSpawnType.NATURAL,
-            MobSpawnType.CHUNK_GENERATION,
-            MobSpawnType.STRUCTURE,
-            MobSpawnType.SPAWNER,
-            MobSpawnType.PATROL,
-            MobSpawnType.EVENT,
-            MobSpawnType.REINFORCEMENT
+    private static final Set<EntitySpawnReason> AUTOMATIC = EnumSet.of(
+            EntitySpawnReason.NATURAL,
+            EntitySpawnReason.CHUNK_GENERATION,
+            EntitySpawnReason.STRUCTURE,
+            EntitySpawnReason.SPAWNER,
+            EntitySpawnReason.PATROL,
+            EntitySpawnReason.EVENT,
+            EntitySpawnReason.REINFORCEMENT
     );
 
     private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.create(Registries.BIOME, Graveyard.id("no_mob_spawns"));
 
     private MobSpawnGate() {}
 
-    public static boolean inForbiddenBiome(LevelAccessor world, BlockPos pos, EntityType<?> type, MobSpawnType reason) {
-        return (reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION)
+    public static boolean inForbiddenBiome(LevelAccessor world, BlockPos pos, EntityType<?> type, EntitySpawnReason reason) {
+        return (reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.CHUNK_GENERATION)
                 && Graveyard.MOD_ID.equals(BuiltInRegistries.ENTITY_TYPE.getKey(type).getNamespace())
                 && world.getBiome(pos).is(NO_MOB_SPAWNS);
     }
 
-    public static boolean blocks(EntityType<?> type, MobSpawnType reason) {
+    public static boolean blocks(EntityType<?> type, EntitySpawnReason reason) {
         return AUTOMATIC.contains(reason) && isSwitchedOff(type);
     }
 

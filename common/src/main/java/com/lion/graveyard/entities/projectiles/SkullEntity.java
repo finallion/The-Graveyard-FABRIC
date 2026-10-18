@@ -69,14 +69,14 @@ public class SkullEntity extends AbstractHurtingProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
 
-        if (!this.getCommandSenderWorld().isClientSide) {
+        if (!this.level().isClientSide) {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean damaged;
 
             if (entity2 instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity)entity2;
-                damaged = entity.hurt(this.damageSources().indirectMagic(this, livingEntity), 10.0F);
+                damaged = entity.hurtServer((ServerLevel) this.level(), this.damageSources().indirectMagic(this, livingEntity), 10.0F);
 
                 if (damaged) {
                     if (entity.isAlive() && this.level() instanceof ServerLevel serverLevel) {
@@ -100,12 +100,12 @@ public class SkullEntity extends AbstractHurtingProjectile {
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
 
-        if (!this.getCommandSenderWorld().isClientSide) {
+        if (!this.level().isClientSide) {
             Explosion.BlockInteraction destructionType = Explosion.BlockInteraction.KEEP;
             var champion = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion");
             Level.ExplosionInteraction sourceType = champion != null && champion.skullsDestroyBlocks() ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE;
             float radius = champion != null ? champion.skullExplosionRadius() : 2.0F;
-            this.getCommandSenderWorld().explode(this, this.getX(), this.getY(), this.getZ(), radius, false, sourceType);
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), radius, false, sourceType);
             this.discard();
         }
 
@@ -117,7 +117,7 @@ public class SkullEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
         return false;
     }
 

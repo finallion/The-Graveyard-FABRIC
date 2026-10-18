@@ -18,7 +18,7 @@ public class TGDeepslateBlock extends RotatedPillarBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
         return new ItemStack(clickedBlock.get());
     }
 }

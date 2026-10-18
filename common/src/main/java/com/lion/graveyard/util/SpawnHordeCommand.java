@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -58,16 +58,16 @@ public class SpawnHordeCommand {
 
         if (!illagerSpawn) {
             if (random.nextBoolean()) {
-                hordeEntity = TGEntities.GHOUL.get().create(world);
+                hordeEntity = TGEntities.GHOUL.get().create(world, EntitySpawnReason.PATROL);
             } else {
-                hordeEntity = TGEntities.REVENANT.get().create(world);
+                hordeEntity = TGEntities.REVENANT.get().create(world, EntitySpawnReason.PATROL);
             }
         } else {
             int rand = random.nextInt(5);
             switch (rand) {
-                case 0, 1 -> hordeEntity = TGEntities.CORRUPTED_PILLAGER.get().create(world);
-                case 2, 3 -> hordeEntity = TGEntities.CORRUPTED_VINDICATOR.get().create(world);
-                default -> hordeEntity = TGEntities.ACOLYTE.get().create(world);
+                case 0, 1 -> hordeEntity = TGEntities.CORRUPTED_PILLAGER.get().create(world, EntitySpawnReason.PATROL);
+                case 2, 3 -> hordeEntity = TGEntities.CORRUPTED_VINDICATOR.get().create(world, EntitySpawnReason.PATROL);
+                default -> hordeEntity = TGEntities.ACOLYTE.get().create(world, EntitySpawnReason.PATROL);
             }
         }
 
@@ -79,7 +79,7 @@ public class SpawnHordeCommand {
             }
 
             hordeEntity.setPos((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
-            hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, (SpawnGroupData) null);
+            hordeEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(pos), EntitySpawnReason.PATROL, (SpawnGroupData) null);
             hordeEntity.getNavigation().stop();
             world.addFreshEntityWithPassengers(hordeEntity);
             return true;

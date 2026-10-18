@@ -20,6 +20,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class MagpieEntity extends CorvidEntity {
 
@@ -73,16 +74,16 @@ public class MagpieEntity extends CorvidEntity {
     }
 
     @Override
-    public boolean wantsToPickUp(ItemStack stack) {
+    public boolean wantsToPickUp(ServerLevel serverLevel, ItemStack stack) {
         return Graveyard.getConfig().flag("corvidsStealItems", true)
                 && stack.is(TGTags.MAGPIE_TREASURES) && this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty();
     }
 
     @Override
-    protected void pickUpItem(ItemEntity item) {
+    protected void pickUpItem(ServerLevel serverLevel, ItemEntity item) {
         ItemStack stack = item.getItem();
 
-        if (this.wantsToPickUp(stack)) {
+        if (this.wantsToPickUp(serverLevel, stack)) {
             ItemStack taken = stack.split(1);
             this.setItemSlot(EquipmentSlot.MAINHAND, taken);
             this.setGuaranteedDrop(EquipmentSlot.MAINHAND);
@@ -100,15 +101,15 @@ public class MagpieEntity extends CorvidEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        boolean hurt = super.hurt(source, amount);
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        boolean hurt = super.hurtServer(serverLevel, source, amount);
 
         if (hurt && !this.level().isClientSide() && !this.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) {
             if (source.getEntity() instanceof ServerPlayer player) {
                 TGAdvancements.MAGPIE_LOOT.trigger(player);
             }
 
-            this.spawnAtLocation(this.getItemBySlot(EquipmentSlot.MAINHAND));
+            this.spawnAtLocation(serverLevel, this.getItemBySlot(EquipmentSlot.MAINHAND));
             this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
 

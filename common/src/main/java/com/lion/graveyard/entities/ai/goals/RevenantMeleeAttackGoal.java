@@ -25,7 +25,7 @@ public class RevenantMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Revenant
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.doHurtTarget(target);
+            this.mob.doHurtTarget(getServerLevel(this.mob), target);
             canFinishAttack = false;
         }
     }

@@ -1,19 +1,26 @@
 package com.lion.graveyard.platform.neoforge;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.lion.graveyard.trades.NamelessHangedTrades;
+import com.lion.graveyard.util.LenientJsonFiles;
 import java.util.Map;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-public class NamelessHangedTradeOfferResourceListener extends SimpleJsonResourceReloadListener implements PreparableReloadListener {
+public class NamelessHangedTradeOfferResourceListener extends SimpleJsonResourceReloadListener<JsonElement> implements PreparableReloadListener {
 
     public NamelessHangedTradeOfferResourceListener() {
-        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().setLenient().create(), "nameless_hanged_trades");
+        super(ExtraCodecs.JSON, FileToIdConverter.json("nameless_hanged_trades"));
+    }
+
+    @Override
+    protected Map<ResourceLocation, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return LenientJsonFiles.read(manager, "nameless_hanged_trades");
     }
 
     @Override

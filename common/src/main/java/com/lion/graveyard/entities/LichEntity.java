@@ -49,6 +49,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
@@ -72,13 +73,12 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class LichEntity extends Monster implements GeoEntity {
     private final ServerBossEvent bossBar;
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     protected static final TargetingConditions HEAD_TARGET_PREDICATE;
-    private static final Predicate<LivingEntity> CAN_ATTACK_PREDICATE;
+    private static final TargetingConditions.Selector CAN_ATTACK_PREDICATE;
     private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
     private static final ResourceLocation ATTACKING_DMG_BOOST_ID = Graveyard.id("attacking_dmg_boost_id");
     private static final ResourceLocation CRAWL_SPEED_BOOST_ID = Graveyard.id("crawl_speed_boost_id");
@@ -280,17 +280,17 @@ public class LichEntity extends Monster implements GeoEntity {
 
     @Override
     public void tick() {
-        if (!getCommandSenderWorld().isClientSide && getBossMusic() != null && AnimationPreview.forcedAnimation(this) == null) {
+        if (!level().isClientSide && getBossMusic() != null && AnimationPreview.forcedAnimation(this) == null) {
             if (canPlayMusic() && deathTime == 0) {
-                this.getCommandSenderWorld().broadcastEntityEvent(this, MUSIC_PLAY_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_PLAY_ID);
             } else {
-                this.getCommandSenderWorld().broadcastEntityEvent(this, MUSIC_STOP_ID);
+                this.level().broadcastEntityEvent(this, MUSIC_STOP_ID);
             }
         }
 
         super.tick();
 
-        if (getCommandSenderWorld().isClientSide()) {
+        if (level().isClientSide()) {
             restartAttackClipOnRearm();
         }
     }
@@ -398,7 +398,7 @@ public class LichEntity extends Monster implements GeoEntity {
         }
 
         if (!canHuntStart() && random.nextInt(5) == 0) {
-            getCommandSenderWorld().playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 4.0F, -10.0F);
+            level().playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE, 4.0F, -10.0F);
         }
 
         if (getMusicDelay() < 78) {
@@ -515,7 +515,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (homePos == null) {
             homePos = BlockPos.containing(this.getBlockX() + 0.5D, this.getY(), this.getBlockZ() + 0.5D);
         }
@@ -574,7 +574,7 @@ public class LichEntity extends Monster implements GeoEntity {
                         for (int i = 0; i <= 5; i++) {
                             BlockPos targetPos = BlockPos.containing(this.getX() + Mth.nextInt(random, -10, 10), this.getY(), this.getZ() + Mth.nextInt(random, -10, 10));
 
-                            if (getCommandSenderWorld().getBlockState(targetPos).isAir() && getCommandSenderWorld().getBlockState(targetPos.above()).isAir() && getCommandSenderWorld().getBlockState(targetPos.below()).isRedstoneConductor(getCommandSenderWorld(), targetPos.below())) {
+                            if (level().getBlockState(targetPos).isAir() && level().getBlockState(targetPos.above()).isAir() && level().getBlockState(targetPos.below()).isRedstoneConductor(level(), targetPos.below())) {
                                 player.teleportTo(targetPos.getX(), targetPos.getY(), targetPos.getZ());
                                 break;
                             }
@@ -709,8 +709,8 @@ public class LichEntity extends Monster implements GeoEntity {
                     player.teleportTo(this.getX(), this.getY() + Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").playerTeleportYOffset, this.getZ());
                 }
 
-                if (!player.hasEffect(MobEffects.DIG_SLOWDOWN) && !player.isCreative()) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 1));
+                if (!player.hasEffect(MobEffects.MINING_FATIGUE) && !player.isCreative()) {
+                    player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1));
                     player.addEffect(new MobEffectInstance(MobEffects.WITHER, 50, 1));
                 }
             }
@@ -753,7 +753,7 @@ public class LichEntity extends Monster implements GeoEntity {
                 this.setAttackAnimTimer(animTimer);
             }
 
-            super.customServerAiStep();
+            super.customServerAiStep(serverLevel);
 
             this.bossBar.setProgress(this.getHealth() / this.getMaxHealthPerPhase());
         }
@@ -844,7 +844,7 @@ public class LichEntity extends Monster implements GeoEntity {
             double reach = getBbWidth() * 3.0D + 1.0D;
 
             if (distanceToSqr(target) <= reach * reach) {
-                doHurtTarget(target);
+                doHurtTarget((ServerLevel) level(), target);
             }
         }
 
@@ -875,7 +875,7 @@ public class LichEntity extends Monster implements GeoEntity {
             double reach = getBbWidth() * 2.0D + 1.0D;
 
             if (target != null && target.isAlive() && distanceToSqr(target) <= reach * reach) {
-                doHurtTarget(target);
+                doHurtTarget((ServerLevel) level(), target);
             }
         }
 
@@ -908,7 +908,7 @@ public class LichEntity extends Monster implements GeoEntity {
             double reach = getBbWidth() * 3.0D + 1.0D;
 
             if (target != null && target.isAlive() && distanceToSqr(target) <= reach * reach) {
-                doHurtTarget(target);
+                doHurtTarget((ServerLevel) level(), target);
             }
         }
 
@@ -975,7 +975,7 @@ public class LichEntity extends Monster implements GeoEntity {
             pounceAirborne = false;
 
             if (target != null && target.isAlive() && getBoundingBox().inflate(1.0D).intersects(target.getBoundingBox())) {
-                doHurtTarget(target);
+                doHurtTarget((ServerLevel) level(), target);
             }
         }
 
@@ -1065,8 +1065,8 @@ public class LichEntity extends Monster implements GeoEntity {
             playDeathSound();
         }
 
-        if (this.deathTime == DEATH_REMOVAL_TICKS && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte) 60);
+        if (this.deathTime == DEATH_REMOVAL_TICKS && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -1081,7 +1081,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
@@ -1096,7 +1096,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean canChangeDimensions(Level oldLevel, Level newLevel) {
+    public boolean canTeleport(Level oldLevel, Level newLevel) {
         return false;
     }
 
@@ -1116,8 +1116,8 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isInvulnerableTo(serverLevel, source)) {
             return false;
         } else {
             if ((this.getInvulnerableTimer() > 0 || this.getPhaseInvulnerableTimer() > 0) && !source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
@@ -1135,7 +1135,7 @@ public class LichEntity extends Monster implements GeoEntity {
                     setHealTimer(0);
                 }
 
-                return super.hurt(source, amount);
+                return super.hurtServer(serverLevel, source, amount);
             }
         }
     }
@@ -1174,7 +1174,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
     public List<Player> getPlayersInRange(double range) {
         AABB box = (new AABB(this.blockPosition())).inflate(range);
-        return getCommandSenderWorld().getEntitiesOfClass(Player.class, box);
+        return level().getEntitiesOfClass(Player.class, box);
     }
 
     public boolean canMeeleAttack() {
@@ -1205,7 +1205,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     private boolean isSummonCell(BlockPos pos) {
-        Level world = getCommandSenderWorld();
+        Level world = level();
         return world.getBlockState(pos).isAir() && world.getBlockState(pos.above()).isAir() && world.getBlockState(pos.above().above()).isAir() && !world.getBlockState(pos.below()).isAir();
     }
 
@@ -1231,20 +1231,20 @@ public class LichEntity extends Monster implements GeoEntity {
                 if (isSummonCell(pos)) {
                     if (!hard) {
                         for (int ii = 0; ii < amount; ++ii) {
-                            RevenantEntity revenant = TGEntities.REVENANT.get().create(getCommandSenderWorld());
+                            RevenantEntity revenant = TGEntities.REVENANT.get().create(level(), EntitySpawnReason.TRIGGERED);
                             BlockPos cell = summonCell(pos, ii);
                             revenant.setPos(cell.getX() + 0.5D, cell.getY(), cell.getZ() + 0.5D);
                             revenant.setCanBurnInSunlight(false);
-                            getCommandSenderWorld().addFreshEntity(revenant);
+                            level().addFreshEntity(revenant);
                         }
                     } else {
                         for (int ii = 0; ii < amount - 1; ++ii) {
-                            GhoulEntity ghoul = TGEntities.GHOUL.get().create(getCommandSenderWorld());
+                            GhoulEntity ghoul = TGEntities.GHOUL.get().create(level(), EntitySpawnReason.TRIGGERED);
                             ghoul.setVariant((byte) 9);
                             BlockPos cell = summonCell(pos, ii);
                             ghoul.setPos(cell.getX() + 0.5D, cell.getY(), cell.getZ() + 0.5D);
                             ghoul.setCanBurnInSunlight(false);
-                            getCommandSenderWorld().addFreshEntity(ghoul);
+                            level().addFreshEntity(ghoul);
                         }
                     }
 
@@ -1427,7 +1427,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     private void awakenBurst() {
-        if (this.getCommandSenderWorld() instanceof ServerLevel world) {
+        if (this.level() instanceof ServerLevel world) {
             world.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, this.getX(), this.getY() + 1.5D, this.getZ(), 160, 1.4D, 1.6D, 1.4D, 0.12D);
             world.sendParticles(ParticleTypes.SOUL, this.getX(), this.getY() + 1.0D, this.getZ(), 60, 1.0D, 1.2D, 1.0D, 0.05D);
             world.playSound(null, this.blockPosition(), TGSounds.LICH_SCARE.get(), SoundSource.HOSTILE, 6.0F, 0.8F);
@@ -1435,56 +1435,57 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     private void playSpawnSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_SPAWN.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_SPAWN.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
     }
 
+    @Override
     public void playAttackSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_MELEE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_MELEE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playHealSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_TELEPORT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_TELEPORT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playCorpseSpellSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_CORPSE_SPELL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CORPSE_SPELL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseTwoSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_02.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_02.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playStartPhaseThreeAttackSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundSource.HOSTILE, 7.0F, 0.85F + random.nextFloat() * 0.2F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_PHASE_03_ATTACK.get(), SoundSource.HOSTILE, 7.0F, 0.85F + random.nextFloat() * 0.2F);
     }
 
     private void playDeathSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_DEATH.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_DEATH.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     public void playScareSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_SCARE.get(), SoundSource.HOSTILE, 10.0F, 0.9F + random.nextFloat() * 0.15F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_SCARE.get(), SoundSource.HOSTILE, 10.0F, 0.9F + random.nextFloat() * 0.15F);
     }
 
     private void playHuntSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_HUNT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_HUNT.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playShootSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_SKULL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_SKULL.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     private void playLevitationSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_LEVITATION.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_CAST_LEVITATION.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
     @Override
     public void playAmbientSound() {
-        this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_IDLE.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
+        this.level().playSound(null, this.blockPosition(), TGSounds.LICH_IDLE.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
     }
 
     @Override
@@ -1635,7 +1636,7 @@ public class LichEntity extends Monster implements GeoEntity {
         CAN_HUNT_START = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.BOOLEAN);
         CAN_MOVE = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.BOOLEAN);
         MUSIC_DELAY = SynchedEntityData.defineId(LichEntity.class, EntityDataSerializers.INT);
-        CAN_ATTACK_PREDICATE = Entity::isAlwaysTicking;
+        CAN_ATTACK_PREDICATE = (entity, level) -> entity.isAlwaysTicking();
         HEAD_TARGET_PREDICATE = TargetingConditions.forCombat().range(20.0D).selector(CAN_ATTACK_PREDICATE);
         CRAWL_DIMENSIONS = EntityDimensions.fixed(1.8F, 2.0F).withEyeHeight(2.0F);
         CRAWL_SPEED_BOOST = new AttributeModifier(CRAWL_SPEED_BOOST_ID, 0.18D, AttributeModifier.Operation.ADD_VALUE);
@@ -1689,7 +1690,7 @@ public class LichEntity extends Monster implements GeoEntity {
             list = getPlayersInRange(35.0D);
             positions.clear();
 
-            Level world = getCommandSenderWorld();
+            Level world = level();
             BlockPos.MutableBlockPos cell = new BlockPos.MutableBlockPos();
             for (int i = -SQUARE_SIZE; i <= SQUARE_SIZE; i++) {
                 for (int ii = -SQUARE_SIZE; ii <= SQUARE_SIZE; ii++) {
@@ -1756,14 +1757,14 @@ public class LichEntity extends Monster implements GeoEntity {
                 return;
             }
 
-            ServerLevel serverWorld = (ServerLevel) LichEntity.this.getCommandSenderWorld();
-            FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld);
+            ServerLevel serverWorld = (ServerLevel) LichEntity.this.level();
+            FallingCorpse corpse = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld, EntitySpawnReason.TRIGGERED);
             BlockPos blockPos = positions.get(random.nextInt(positions.size()));
             corpse.setPos((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.55D, (double) blockPos.getZ() + 0.5D);
             serverWorld.addFreshEntity(corpse);
 
             if (random.nextInt(CORPSE_SPAWN_RARITY_PLAYER) == 0 && list.size() > 0) {
-                FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld);
+                FallingCorpse corpse2 = (FallingCorpse) TGEntities.FALLING_CORPSE.get().create(serverWorld, EntitySpawnReason.TRIGGERED);
                 Player target = list.get(random.nextInt(list.size()));
 
                 if (target != null && !target.isCreative()) {
@@ -1813,7 +1814,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
             if (livingEntity != null) {
                 if (livingEntity.distanceToSqr(this.mob) < 8000.0D && livingEntity.distanceToSqr(this.mob) > 16.0D) {
-                    Level world = this.mob.getCommandSenderWorld();
+                    Level world = this.mob.level();
                     ++this.cooldown;
 
                     if (this.cooldown == 10) {
@@ -2086,12 +2087,12 @@ public class LichEntity extends Monster implements GeoEntity {
 
             do {
                 BlockPos blockPos2 = blockPos.below();
-                BlockState blockState = this.mob.getCommandSenderWorld().getBlockState(blockPos2);
+                BlockState blockState = this.mob.level().getBlockState(blockPos2);
 
-                if (blockState.isFaceSturdy(this.mob.getCommandSenderWorld(), blockPos2, Direction.UP)) {
-                    if (!this.mob.getCommandSenderWorld().isEmptyBlock(blockPos)) {
-                        BlockState blockState2 = this.mob.getCommandSenderWorld().getBlockState(blockPos);
-                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.getCommandSenderWorld(), blockPos);
+                if (blockState.isFaceSturdy(this.mob.level(), blockPos2, Direction.UP)) {
+                    if (!this.mob.level().isEmptyBlock(blockPos)) {
+                        BlockState blockState2 = this.mob.level().getBlockState(blockPos);
+                        VoxelShape voxelShape = blockState2.getCollisionShape(this.mob.level(), blockPos);
 
                         if (!voxelShape.isEmpty()) {
                             d = voxelShape.max(Direction.Axis.Y);
@@ -2106,7 +2107,7 @@ public class LichEntity extends Monster implements GeoEntity {
             } while (blockPos.getY() >= Mth.floor(maxY) - 1);
 
             if (foundGround) {
-                this.mob.getCommandSenderWorld().addFreshEntity(new EvokerFangs(this.mob.getCommandSenderWorld(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
+                this.mob.level().addFreshEntity(new EvokerFangs(this.mob.level(), x, (double) blockPos.getY() + d, z, yaw, warmup, this.mob));
             }
         }
     }

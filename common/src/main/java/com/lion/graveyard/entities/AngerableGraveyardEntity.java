@@ -38,8 +38,8 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
 
     @Override
     public void aiStep() {
-        if (!this.getCommandSenderWorld().isClientSide()) {
-            this.updatePersistentAnger((ServerLevel)this.getCommandSenderWorld(), true);
+        if (!this.level().isClientSide()) {
+            this.updatePersistentAnger((ServerLevel)this.level(), true);
         }
 
         super.aiStep();

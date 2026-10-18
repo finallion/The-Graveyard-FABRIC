@@ -6,8 +6,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class VialOfBlood extends Item {
     public VialOfBlood(Properties properties) {
@@ -37,20 +38,21 @@ public class VialOfBlood extends Item {
     public void appendHoverText(
             ItemStack stack,
             Item.TooltipContext tooltipContext,
-            List<Component> tooltip,
+            TooltipDisplay display,
+            Consumer<Component> tooltip,
             TooltipFlag context
     ) {
         float blood = LegacyItemData.view(stack).getFloatOr(LegacyItemData.BLOOD, 0.0F);
 
         if (blood > 0.8F && blood < 0.9F) {
-            tooltip.add(Component.translatable("item.graveyard.vial_of_blood.level_full").withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.graveyard.vial_of_blood.level_full").withStyle(ChatFormatting.GRAY));
         } else {
             int level = Math.max(1, (int) (blood * 10));
-            tooltip.add(Component.translatable("item.graveyard.vial_of_blood.level", level).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.graveyard.vial_of_blood.level", level).withStyle(ChatFormatting.GRAY));
         }
 
-        tooltip.add(Component.translatable("item.graveyard.vial_of_blood.lore").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
-        tooltip.add(Component.translatable("item.graveyard.vial_of_blood.hint").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.accept(Component.translatable("item.graveyard.vial_of_blood.lore").withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+        tooltip.accept(Component.translatable("item.graveyard.vial_of_blood.hint").withStyle(ChatFormatting.DARK_GRAY));
 
     }
 }

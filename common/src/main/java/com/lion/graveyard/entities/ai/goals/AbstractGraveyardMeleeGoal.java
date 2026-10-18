@@ -37,7 +37,7 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathfinderMob> extend
 
     @Override
     public boolean canUse() {
-        long now = this.mob.getCommandSenderWorld().getGameTime();
+        long now = this.mob.level().getGameTime();
         LivingEntity target = this.mob.getTarget();
 
         if (target != null && (this.isNewOrFarMoved(target) || this.isInReach(target))) {
@@ -97,7 +97,7 @@ public abstract class AbstractGraveyardMeleeGoal<E extends PathfinderMob> extend
             return false;
         } else if (!this.pauseWhenMobIdle) {
             return !this.mob.getNavigation().isDone();
-        } else if (!this.mob.isWithinRestriction(livingEntity.blockPosition())) {
+        } else if (!this.mob.isWithinHome(livingEntity.blockPosition())) {
             return false;
         } else {
             return !(livingEntity instanceof Player) || !livingEntity.isSpectator() && !((Player) livingEntity).isCreative();

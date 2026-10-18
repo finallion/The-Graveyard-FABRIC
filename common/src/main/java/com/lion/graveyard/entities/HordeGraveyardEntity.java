@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -86,14 +86,14 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
-        if (spawnReason != MobSpawnType.PATROL && spawnReason != MobSpawnType.EVENT && spawnReason != MobSpawnType.STRUCTURE && this.random.nextFloat() < 0.06F && this.canLead()) {
+        if (spawnReason != EntitySpawnReason.PATROL && spawnReason != EntitySpawnReason.EVENT && spawnReason != EntitySpawnReason.STRUCTURE && this.random.nextFloat() < 0.06F && this.canLead()) {
             this.patrolLeader = true;
         }
 
-        if (spawnReason == MobSpawnType.PATROL) {
+        if (spawnReason == EntitySpawnReason.PATROL) {
             this.patrolling = true;
         }
 
@@ -183,7 +183,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
 
         @Override
         public boolean canUse() {
-            boolean searchCoolingDown = this.entity.getCommandSenderWorld().getGameTime() < this.nextPatrolSearchTime;
+            boolean searchCoolingDown = this.entity.level().getGameTime() < this.nextPatrolSearchTime;
             return this.entity.isRaidCenterSet() && this.entity.getTarget() == null && !this.entity.isVehicle() && this.entity.hasPatrolTarget() && !searchCoolingDown;
         }
 
@@ -214,11 +214,11 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
                     vec3d = vec3d3.yRot(90.0F).scale(0.4D).add(vec3d);
                     Vec3 vec3d4 = vec3d.subtract(vec3d2).normalize().scale(10.0D).add(vec3d2);
                     BlockPos blockPos = BlockPos.containing(vec3d4);
-                    blockPos = this.entity.getCommandSenderWorld().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos);
+                    blockPos = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos);
 
                     if (!entityNavigation.moveTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), isLeader ? this.followSpeed : this.leaderSpeed)) {
                         this.wander();
-                        this.nextPatrolSearchTime = this.entity.getCommandSenderWorld().getGameTime() + 200L;
+                        this.nextPatrolSearchTime = this.entity.level().getGameTime() + 200L;
                     } else if (isLeader) {
                         for (HordeGraveyardEntity patrolEntity : list) {
                             patrolEntity.setPatrolTarget(blockPos);
@@ -230,14 +230,14 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         }
 
         private List<HordeGraveyardEntity> findPatrolTargets() {
-            return this.entity.getCommandSenderWorld().getEntitiesOfClass(HordeGraveyardEntity.class, this.entity.getBoundingBox().inflate(16.0D), (patrolEntity) -> {
+            return this.entity.level().getEntitiesOfClass(HordeGraveyardEntity.class, this.entity.getBoundingBox().inflate(16.0D), (patrolEntity) -> {
                 return patrolEntity.hasNoRaid() && !patrolEntity.is(this.entity);
             });
         }
 
         private boolean wander() {
             Random random = new Random();
-            BlockPos blockPos = this.entity.getCommandSenderWorld().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, this.entity.blockPosition().offset(-8 + random.nextInt(16), 0, -8 + random.nextInt(16)));
+            BlockPos blockPos = this.entity.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, this.entity.blockPosition().offset(-8 + random.nextInt(16), 0, -8 + random.nextInt(16)));
             return this.entity.getNavigation().moveTo((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), this.leaderSpeed);
         }
     }
@@ -263,7 +263,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
         public void start() {
             super.start();
             this.hordeEntity.getNavigation().stop();
-            List<HordeGraveyardEntity> list = this.hordeEntity.getCommandSenderWorld().getNearbyEntities(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().inflate(8.0D, 8.0D, 8.0D));
+            List<HordeGraveyardEntity> list = getServerLevel(this.hordeEntity).getNearbyEntities(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().inflate(8.0D, 8.0D, 8.0D));
 
             for (HordeGraveyardEntity hordeEntityEntity : list) {
                 hordeEntityEntity.setTarget(this.hordeEntity.getTarget());
@@ -277,7 +277,7 @@ public abstract class HordeGraveyardEntity extends HostileGraveyardEntity {
             LivingEntity livingEntity = this.hordeEntity.getTarget();
 
             if (livingEntity != null) {
-                List<HordeGraveyardEntity> list = this.hordeEntity.getCommandSenderWorld().getNearbyEntities(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().inflate(8.0D, 8.0D, 8.0D));
+                List<HordeGraveyardEntity> list = getServerLevel(this.hordeEntity).getNearbyEntities(HordeGraveyardEntity.class, this.closeRaiderPredicate, this.hordeEntity, this.hordeEntity.getBoundingBox().inflate(8.0D, 8.0D, 8.0D));
 
                 for (HordeGraveyardEntity hordeEntityEntity : list) {
                     hordeEntityEntity.setTarget(livingEntity);

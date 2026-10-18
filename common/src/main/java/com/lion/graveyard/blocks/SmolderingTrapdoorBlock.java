@@ -3,7 +3,7 @@ package com.lion.graveyard.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,7 @@ public class SmolderingTrapdoorBlock extends TrapDoorBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
+    protected InteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level world,
@@ -39,8 +39,8 @@ public class SmolderingTrapdoorBlock extends TrapDoorBlock {
             InteractionHand hand,
             BlockHitResult hit
     ) {
-        ItemInteractionResult result = SmolderingWood.use(stack, state, world, pos, player, hand);
-        return result == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION ? super.useItemOn(stack, state, world, pos, player, hand, hit) : result;
+        InteractionResult result = SmolderingWood.use(stack, state, world, pos, player, hand);
+        return result == InteractionResult.TRY_WITH_EMPTY_HAND ? super.useItemOn(stack, state, world, pos, player, hand, hit) : result;
     }
 
     @Override

@@ -25,7 +25,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -195,7 +195,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
 
     /// A move packet without rotation halts the client yaw lerp halfway. On the ground the body follows the client motion.
     @Override
-    protected float tickHeadTurn(float bodyRotation, float headRotation) {
+    protected void tickHeadTurn(float bodyRotation) {
         FlightState state = this.getFlightState();
 
         if (this.level().isClientSide() && this.isAlive() && (state == FlightState.HOP || state == FlightState.WALK)) {
@@ -204,11 +204,11 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
 
             if (dx * dx + dz * dz > GROUND_TURN_MIN_SPEED_SQ) {
                 this.yBodyRot = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90.0F;
-                return headRotation;
+                return;
             }
         }
 
-        return super.tickHeadTurn(bodyRotation, headRotation);
+        super.tickHeadTurn(bodyRotation);
     }
 
     public FlightState getFlightState() {
@@ -225,10 +225,10 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
-        if (spawnReason != MobSpawnType.SPAWN_EGG && spawnReason != MobSpawnType.COMMAND && spawnReason != MobSpawnType.BUCKET) {
+        if (spawnReason != EntitySpawnReason.SPAWN_ITEM_USE && spawnReason != EntitySpawnReason.COMMAND && spawnReason != EntitySpawnReason.BUCKET) {
             this.home = this.blockPosition();
         }
 
@@ -304,7 +304,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
         FlyingPathNavigation navigation = new FlyingPathNavigation(this, world);
         navigation.setCanOpenDoors(false);
         navigation.setCanFloat(false);
-        navigation.setCanPassDoors(true);
+        navigation.getNodeEvaluator().setCanPassDoors(true);
         return navigation;
     }
 
@@ -712,7 +712,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     public static boolean canSpawn(
             EntityType<? extends CorvidEntity> type,
             LevelAccessor world,
-            MobSpawnType reason,
+            EntitySpawnReason reason,
             BlockPos pos,
             RandomSource random
     ) {
@@ -722,7 +722,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public boolean checkSpawnRules(LevelAccessor world, MobSpawnType spawnReason) {
+    public boolean checkSpawnRules(LevelAccessor world, EntitySpawnReason spawnReason) {
         return !MobSpawnGate.blocks(this.getType(), spawnReason) && !MobSpawnGate.inForbiddenBiome(world, this.blockPosition(), this.getType(), spawnReason);
     }
 
@@ -732,7 +732,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+    public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 

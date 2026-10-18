@@ -3,7 +3,10 @@ package com.lion.graveyard.blocks;
 import com.lion.graveyard.blockentities.BrazierBlockEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -11,7 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -56,7 +59,7 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
+    protected InteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level world,
@@ -67,9 +70,9 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     ) {
         if (player.getAbilities().mayBuild && stack.isEmpty() && state.getValue(LIT)) {
             extinguish(player, state, world, pos);
-            return ItemInteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
     }
 
@@ -93,17 +96,19 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     @Override
     public BlockState updateShape(
             BlockState state,
-            Direction direction,
-            BlockState neighborState,
-            LevelAccessor world,
+            LevelReader world,
+            ScheduledTickAccess tickAccess,
             BlockPos pos,
-            BlockPos neighborPos
+            Direction direction,
+            BlockPos neighborPos,
+            BlockState neighborState,
+            RandomSource random
     ) {
         if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
 
-        return direction == Direction.DOWN ? state: super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return direction == Direction.DOWN ? state: super.updateShape(state, world, tickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
@@ -152,7 +157,7 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     public void onProjectileHit(Level world, BlockState state, BlockHitResult hit, Projectile projectile) {
         BlockPos blockPos = hit.getBlockPos();
 
-        if (!world.isClientSide && projectile.isOnFire() && projectile.mayInteract(world, blockPos) && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
+        if (world instanceof ServerLevel serverLevel && projectile.isOnFire() && projectile.mayInteract(serverLevel, blockPos) && !state.getValue(LIT) && !state.getValue(WATERLOGGED)) {
             world.setBlock(blockPos, state.setValue(BlockStateProperties.LIT, true), 11);
         }
 
@@ -168,7 +173,7 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override

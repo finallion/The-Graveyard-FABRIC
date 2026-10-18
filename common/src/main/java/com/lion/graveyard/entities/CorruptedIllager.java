@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -76,14 +76,14 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (!this.isNoAi() && GoalUtils.hasGroundPathNavigation(this)) {
-            boolean inRaid = ((ServerLevel)this.getCommandSenderWorld()).isRaided(this.blockPosition());
+            boolean inRaid = ((ServerLevel)this.level()).isRaided(this.blockPosition());
             ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(inRaid);
         }
 
         trackChase();
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     /// The vanilla melee goal stops at each path end.
@@ -133,7 +133,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     public SpawnGroupData finalizeSpawn(
             ServerLevelAccessor world,
             DifficultyInstance difficulty,
-            MobSpawnType spawnReason,
+            EntitySpawnReason spawnReason,
             @Nullable SpawnGroupData entityData
     ) {
         SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
@@ -145,8 +145,8 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     }
 
     @Override
-    public boolean isAlliedTo(Entity other) {
-        if (super.isAlliedTo(other)) {
+    protected boolean considersEntityAsAlly(Entity other) {
+        if (super.considersEntityAsAlly(other)) {
             return true;
         } else if (other instanceof LivingEntity && other.getType().is(EntityTypeTags.ILLAGER)) {
             return this.getTeam() == null && other.getTeam() == null;

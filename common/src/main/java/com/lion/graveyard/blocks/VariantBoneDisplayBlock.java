@@ -3,7 +3,7 @@ package com.lion.graveyard.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class VariantBoneDisplayBlock extends BoneDisplayBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
+    protected InteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level world,
@@ -49,7 +49,7 @@ public class VariantBoneDisplayBlock extends BoneDisplayBlock {
             BlockHitResult hit
     ) {
         if (hand != InteractionHand.MAIN_HAND || !stack.isEmpty() || !player.mayBuild()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (!world.isClientSide) {
@@ -57,6 +57,6 @@ public class VariantBoneDisplayBlock extends BoneDisplayBlock {
             world.setBlock(pos, state.setValue(VARIANT, next), Block.UPDATE_ALL);
         }
 
-        return ItemInteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 }

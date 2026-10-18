@@ -227,7 +227,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         trackChase();
         this.entityData.set(NAVIGATING, !this.getNavigation().isDone());
         this.entityData.set(RUNNING, isRunningAtSpeed(this.entityData.get(RUNNING)));
@@ -261,7 +261,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             setIsRaging(false);
         }
 
-        super.customServerAiStep();
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
@@ -278,7 +278,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             }
         }
 
-        if (!this.getCommandSenderWorld().isClientSide()) {
+        if (!this.level().isClientSide()) {
             boolean biped = ChaseTarget.isLive(this) && this.chaseTargetId != null && !this.entityData.get(RUN_CRAWLING);
 
             if (biped != entityAttributeInstance.hasModifier(BIPED_SPEED_ID)) {
@@ -300,7 +300,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (getSpawnTimer() > 0 && getCommandSenderWorld() != null) {
+        if (getSpawnTimer() > 0 && level() != null) {
             RandomSource random = this.getRandom();
             BlockState blockState = this.getBlockStateOn();
 
@@ -309,14 +309,14 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
                     double d = this.getX() + (double) Mth.randomBetween(random, -0.7F, 0.7F);
                     double e = this.getY();
                     double f = this.getZ() + (double)Mth.randomBetween(random, -0.7F, 0.7F);
-                    this.getCommandSenderWorld().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
+                    this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), d, e, f, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
 
         // The AI does not tick while the ghoul is immobile, so the timer cannot run in mobTick.
-        if (!this.getCommandSenderWorld().isClientSide() && getSpawnTimer() > 0) {
-            if (getSpawnTimer() % EMERGE_WITNESS_INTERVAL == 0 && this.getCommandSenderWorld() instanceof ServerLevel world) {
+        if (!this.level().isClientSide() && getSpawnTimer() > 0) {
+            if (getSpawnTimer() % EMERGE_WITNESS_INTERVAL == 0 && this.level() instanceof ServerLevel world) {
                 TGAdvancements.triggerNearby(world, this.position(), EMERGE_WITNESS_RANGE, TGAdvancements.GHOUL_EMERGES);
             }
 
@@ -325,7 +325,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
         super.tick();
 
-        if (this.getCommandSenderWorld().isClientSide()) {
+        if (this.level().isClientSide()) {
             restartAttackClipOnRearm();
         }
     }
@@ -354,8 +354,8 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     protected void tickDeath() {
         ++this.deathTime;
 
-        if (this.deathTime == DEATH_ANIMATION_DURATION && !this.getCommandSenderWorld().isClientSide()) {
-            this.getCommandSenderWorld().broadcastEntityEvent(this, (byte) 60);
+        if (this.deathTime == DEATH_ANIMATION_DURATION && !this.level().isClientSide()) {
+            this.level().broadcastEntityEvent(this, (byte) 60);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -377,7 +377,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     private void aggroMobs() {
         if (getTarget() != null) {
-            List<HordeGraveyardEntity> monster = getCommandSenderWorld().getEntitiesOfClass(HordeGraveyardEntity.class, new AABB(blockPosition()).inflate(45.0D), this::hasLineOfSight);
+            List<HordeGraveyardEntity> monster = level().getEntitiesOfClass(HordeGraveyardEntity.class, new AABB(blockPosition()).inflate(45.0D), this::hasLineOfSight);
             for (HordeGraveyardEntity entity : monster) {
                 entity.setTarget(getTarget());
             }
@@ -407,11 +407,11 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
 
     private boolean isRunningAtSpeed(boolean wasRunning) {
         float swing = this.walkAnimation.speed();
-        return !isInWaterRainOrBubble() && swing > (wasRunning ? RUN_STOP_LIMB_SWING : RUN_START_LIMB_SWING);
+        return !isInWaterOrRain() && swing > (wasRunning ? RUN_STOP_LIMB_SWING : RUN_START_LIMB_SWING);
     }
 
     private boolean isRunning(AnimationState<GhoulEntity> state) {
-        return AnimationTable.isMoving(state) && !isInWaterRainOrBubble() && this.entityData.get(RUNNING);
+        return AnimationTable.isMoving(state) && !isInWaterOrRain() && this.entityData.get(RUNNING);
     }
 
     @Override

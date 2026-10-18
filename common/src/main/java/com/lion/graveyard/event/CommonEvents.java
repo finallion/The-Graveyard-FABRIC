@@ -130,7 +130,7 @@ public final class CommonEvents {
             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
 
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     private static boolean shieldTakesPriority(Player player, InteractionHand hand) {

@@ -4,7 +4,7 @@ import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGSounds;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,9 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,12 +24,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
-public class OminousBoneStaffFragment extends Block {
-    public static final DirectionProperty FACING;
+public class OminousBoneStaffFragment extends Block implements BlockItemTooltip {
+    public static final EnumProperty<Direction> FACING;
     public static final BooleanProperty WATERLOGGED;
 
     public OminousBoneStaffFragment(BlockBehaviour.Properties properties) {
@@ -49,16 +47,11 @@ public class OminousBoneStaffFragment extends Block {
     }
 
     @Override
-    public void appendHoverText(
-            ItemStack stack,
-            Item.TooltipContext context,
-            List<Component> tooltip,
-            TooltipFlag options
-    ) {
+    public void appendItemTooltip(Consumer<Component> tooltip) {
         String key = this == TGBlocks.MIDDLE_BONE_STAFF.get()
                 ? "block.graveyard.bone_staff_fragment.middle.lore"
                 : "block.graveyard.bone_staff_fragment.end.lore";
-        tooltip.add(Component.translatable(key).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+        tooltip.accept(Component.translatable(key).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
     }
 
     @Override
@@ -74,7 +67,7 @@ public class OminousBoneStaffFragment extends Block {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 
