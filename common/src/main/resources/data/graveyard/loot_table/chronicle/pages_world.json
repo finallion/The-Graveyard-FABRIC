@@ -1,0 +1,181 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"on_bells\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_shroud\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_gravedigger\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_red_moon\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"fog\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_quiet\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"plague_rain\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"on_the_scarecrow\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"letter_unsent_1\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"letter_unsent_2\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"letter_unsent_3\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"roberts_diary_last\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"notes_64\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_mycelium_1\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_mycelium_2\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_tree\"}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "graveyard:diary_page",
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{page:\"the_column\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

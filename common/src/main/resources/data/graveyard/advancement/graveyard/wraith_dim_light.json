@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/crypt",
+  "display": {
+    "icon": {
+      "id": "minecraft:soul_lantern"
+    },
+    "title": {
+      "translate": "advancements.graveyard.dim_light.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.dim_light.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dim_light": {
+      "trigger": "graveyard:dim_light"
+    }
+  },
+  "requirements": [
+    [
+      "dim_light"
+    ]
+  ]
+}

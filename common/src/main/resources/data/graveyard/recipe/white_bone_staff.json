@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " U ",
+    "DM ",
+    " L "
+  ],
+  "key": {
+    "U": {
+      "item": "graveyard:upper_bone_staff"
+    },
+    "M": {
+      "item": "graveyard:middle_bone_staff"
+    },
+    "L": {
+      "item": "graveyard:lower_bone_staff"
+    },
+    "D": {
+      "item": "minecraft:white_dye"
+    }
+  },
+  "result": {
+    "id": "graveyard:white_bone_staff"
+  }
+}

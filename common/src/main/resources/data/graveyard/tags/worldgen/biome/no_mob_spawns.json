@@ -4,11 +4,7 @@
     "minecraft:mushroom_fields",
     "minecraft:deep_dark",
     {
-      "id": "#c:mushroom",
-      "required": false
-    },
-    {
-      "id": "#forge:is_mushroom",
+      "id": "#c:is_mushroom",
       "required": false
     }
   ]

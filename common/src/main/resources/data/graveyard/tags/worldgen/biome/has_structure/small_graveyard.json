@@ -1,8 +1,13 @@
 {
   "replace": false,
   "values": [
-    {"id": "#c:plains", "required": false},
-    {"id": "#forge:is_plains", "required": false},
-    {"id": "minecraft:meadow", "required": false}
+    {
+      "id": "#c:is_plains",
+      "required": false
+    },
+    {
+      "id": "minecraft:meadow",
+      "required": false
+    }
   ]
 }

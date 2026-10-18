@@ -33,14 +33,14 @@ public final class ModProject {
     public static final String ANIMATIONS = "animations";
     public static final String PARTICLES = "particles";
 
-    public static final String LOOT_TABLES = "loot_tables";
+    public static final String LOOT_TABLES = "loot_table";
     public static final String BLOCK_LOOT = LOOT_TABLES + "/blocks";
-    public static final String RECIPES = "recipes";
-    public static final String ADVANCEMENTS = "advancements";
-    public static final String STRUCTURES = "structures";
+    public static final String RECIPES = "recipe";
+    public static final String ADVANCEMENTS = "advancement";
+    public static final String STRUCTURES = "structure";
     public static final String TAGS = "tags";
-    public static final String TAGS_BLOCKS = TAGS + "/blocks";
-    public static final String TAGS_ITEMS = TAGS + "/items";
+    public static final String TAGS_BLOCKS = TAGS + "/block";
+    public static final String TAGS_ITEMS = TAGS + "/item";
     public static final String TAGS_BIOMES = TAGS + "/worldgen/biome";
     public static final String WORLDGEN = "worldgen";
     public static final String STRUCTURE_SETS = WORLDGEN + "/structure_set";

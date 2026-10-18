@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/crypt",
+  "display": {
+    "icon": {
+      "id": "minecraft:gold_ingot"
+    },
+    "title": {
+      "translate": "advancements.graveyard.kill_wraith.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.kill_wraith.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "wraith": {
+      "trigger": "graveyard:spawn_wraith"
+    }
+  },
+  "requirements": [
+    [
+      "wraith"
+    ]
+  ]
+}

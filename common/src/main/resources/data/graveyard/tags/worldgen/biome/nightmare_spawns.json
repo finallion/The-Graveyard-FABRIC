@@ -1,20 +1,45 @@
 {
   "replace": false,
   "values": [
-    {"id": "#c:dead", "required": false},
-    {"id": "#c:plains", "required": false},
-    {"id": "#c:snowy", "required": false},
-    {"id": "#c:snowy_plains", "required": false},
-    {"id": "#c:desert", "required": false},
-    {"id": "#c:savanna", "required": false},
-    {"id": "#c:badlands", "required": false},
-    {"id": "#c:swamp", "required": false},
-    {"id": "#forge:is_dead", "required": false},
-    {"id": "#forge:is_plains", "required": false},
-    {"id": "#forge:is_snowy", "required": false},
-    {"id": "#forge:is_desert", "required": false},
-    {"id": "#minecraft:is_savanna", "required": false},
-    {"id": "#minecraft:is_badlands", "required": false},
-    {"id": "#forge:is_swamp", "required": false}
+    {
+      "id": "#c:is_dead",
+      "required": false
+    },
+    {
+      "id": "#c:is_plains",
+      "required": false
+    },
+    {
+      "id": "#c:is_snowy",
+      "required": false
+    },
+    {
+      "id": "#c:is_snowy_plains",
+      "required": false
+    },
+    {
+      "id": "#c:is_desert",
+      "required": false
+    },
+    {
+      "id": "#c:is_savanna",
+      "required": false
+    },
+    {
+      "id": "#c:is_badlands",
+      "required": false
+    },
+    {
+      "id": "#c:is_swamp",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_savanna",
+      "required": false
+    },
+    {
+      "id": "#minecraft:is_badlands",
+      "required": false
+    }
   ]
 }

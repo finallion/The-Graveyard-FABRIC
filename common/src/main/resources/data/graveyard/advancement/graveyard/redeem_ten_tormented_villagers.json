@@ -1,0 +1,82 @@
+{
+  "parent": "graveyard:graveyard/redeem_tormented_villager",
+  "display": {
+    "icon": {
+      "id": "minecraft:candle"
+    },
+    "title": {
+      "translate": "advancements.graveyard.redeem_ten_tormented_villagers.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.redeem_ten_tormented_villagers.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "1": {
+      "trigger": "minecraft:impossible"
+    },
+    "2": {
+      "trigger": "minecraft:impossible"
+    },
+    "3": {
+      "trigger": "minecraft:impossible"
+    },
+    "4": {
+      "trigger": "minecraft:impossible"
+    },
+    "5": {
+      "trigger": "minecraft:impossible"
+    },
+    "6": {
+      "trigger": "minecraft:impossible"
+    },
+    "7": {
+      "trigger": "minecraft:impossible"
+    },
+    "8": {
+      "trigger": "minecraft:impossible"
+    },
+    "9": {
+      "trigger": "minecraft:impossible"
+    },
+    "10": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "1"
+    ],
+    [
+      "2"
+    ],
+    [
+      "3"
+    ],
+    [
+      "4"
+    ],
+    [
+      "5"
+    ],
+    [
+      "6"
+    ],
+    [
+      "7"
+    ],
+    [
+      "8"
+    ],
+    [
+      "9"
+    ],
+    [
+      "10"
+    ]
+  ]
+}

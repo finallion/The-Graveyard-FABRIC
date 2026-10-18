@@ -1,0 +1,109 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "id": "graveyard:charred_log"
+    },
+    "title": {
+      "translate": "advancements.graveyard.overrun_village.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.overrun_village.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "plains": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "graveyard:overrun_plains_village"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "savanna": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "graveyard:overrun_savanna_village"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "taiga": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "graveyard:overrun_taiga_village"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "snowy": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "graveyard:overrun_snowy_village"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "desert": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "graveyard:overrun_desert_village"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "plains",
+      "savanna",
+      "taiga",
+      "snowy",
+      "desert"
+    ]
+  ]
+}

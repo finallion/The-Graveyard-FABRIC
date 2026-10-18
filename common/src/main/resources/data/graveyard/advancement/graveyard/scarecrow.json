@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/scare_crows",
+  "display": {
+    "icon": {
+      "id": "minecraft:carved_pumpkin"
+    },
+    "title": {
+      "translate": "advancements.graveyard.scarecrow.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.scarecrow.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "scarecrow": {
+      "trigger": "graveyard:scarecrow"
+    }
+  },
+  "requirements": [
+    [
+      "scarecrow"
+    ]
+  ]
+}

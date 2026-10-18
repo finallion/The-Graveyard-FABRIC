@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "graveyard:dark_iron_ingot"
+    }
+  },
+  "result": {
+    "id": "graveyard:dark_iron_door",
+    "count": 3
+  }
+}

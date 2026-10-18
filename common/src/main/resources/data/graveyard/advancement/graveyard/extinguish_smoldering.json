@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/ignite_smoldering",
+  "display": {
+    "icon": {
+      "id": "graveyard:smoldering_debris"
+    },
+    "title": {
+      "translate": "advancements.graveyard.extinguish_smoldering.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.extinguish_smoldering.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "extinguish": {
+      "trigger": "graveyard:extinguish_smoldering"
+    }
+  },
+  "requirements": [
+    [
+      "extinguish"
+    ]
+  ]
+}

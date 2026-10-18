@@ -46,9 +46,9 @@ public final class DataRefs {
             case "loot_table", "LootTable" -> ok = index.lootTables.contains(id);
             case "parent" -> ok = index.advancements.contains(id);
             case "recipes" -> ok = index.recipes.contains(id);
-            case "structure" -> ok = index.structureFeatures.contains(id);
+            case "structure", "structures" -> ok = index.structureFeatures.contains(id);
             case "block" -> ok = index.blocks.contains(id);
-            case "name" -> {
+            case "name", "value" -> {
                 String type = owner != null && owner.has("type") ? owner.get("type").getAsString() : "";
                 ok = type.equals("minecraft:loot_table") ? index.lootTables.contains(id) : index.items.contains(id) || index.blocks.contains(id);
             }

@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/first_chronicle_page",
+  "display": {
+    "icon": {
+      "id": "minecraft:writable_book"
+    },
+    "title": {
+      "translate": "advancements.graveyard.chronicle_act_one.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.chronicle_act_one.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "act": {
+      "trigger": "graveyard:chronicle_act_one"
+    }
+  },
+  "requirements": [
+    [
+      "act"
+    ]
+  ]
+}

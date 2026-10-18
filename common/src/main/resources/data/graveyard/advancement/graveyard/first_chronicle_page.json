@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "id": "graveyard:diary_page"
+    },
+    "title": {
+      "translate": "advancements.graveyard.first_chronicle_page.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.first_chronicle_page.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "page": {
+      "trigger": "graveyard:first_chronicle_page"
+    }
+  },
+  "requirements": [
+    [
+      "page"
+    ]
+  ]
+}

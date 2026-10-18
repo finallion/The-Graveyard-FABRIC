@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:gold_nugget"
+    },
+    "title": {
+      "translate": "advancements.graveyard.magpie_loot.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.magpie_loot.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "loot": {
+      "trigger": "graveyard:magpie_loot"
+    }
+  },
+  "requirements": [
+    [
+      "loot"
+    ]
+  ]
+}

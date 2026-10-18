@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/kill_graveyard_mob",
+  "display": {
+    "icon": {
+      "id": "graveyard:skeleton_hand"
+    },
+    "title": {
+      "translate": "advancements.graveyard.ghoul_emerges.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.ghoul_emerges.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "emerge": {
+      "trigger": "graveyard:ghoul_emerges"
+    }
+  },
+  "requirements": [
+    [
+      "emerge"
+    ]
+  ]
+}

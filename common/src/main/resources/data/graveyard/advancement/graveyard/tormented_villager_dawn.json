@@ -1,0 +1,28 @@
+{
+  "parent": "graveyard:graveyard/redeem_tormented_villager",
+  "display": {
+    "icon": {
+      "id": "minecraft:sunflower"
+    },
+    "title": {
+      "translate": "advancements.graveyard.tormented_villager_dawn.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.tormented_villager_dawn.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dawn": {
+      "trigger": "graveyard:tormented_villager_dawn"
+    }
+  },
+  "requirements": [
+    [
+      "dawn"
+    ]
+  ]
+}

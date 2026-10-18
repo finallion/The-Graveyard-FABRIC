@@ -125,7 +125,7 @@ class DataFilesTest {
 
                     JsonElement result = recipe.get("result");
                     String id = result.isJsonObject()
-                            ? (result.getAsJsonObject().has("item") ? result.getAsJsonObject().get("item").getAsString() : null)
+                            ? (result.getAsJsonObject().has("id") ? result.getAsJsonObject().get("id").getAsString() : null)
                             : result.getAsString();
 
                     if (id != null && ModProject.isModId(id)) {

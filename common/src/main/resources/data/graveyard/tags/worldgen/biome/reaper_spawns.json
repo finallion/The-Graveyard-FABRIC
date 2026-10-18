@@ -2,7 +2,9 @@
   "replace": false,
   "values": [
     "minecraft:dark_forest",
-    {"id": "#c:dead", "required": false},
-    {"id": "#forge:is_dead", "required": false}
+    {
+      "id": "#c:is_dead",
+      "required": false
+    }
   ]
 }

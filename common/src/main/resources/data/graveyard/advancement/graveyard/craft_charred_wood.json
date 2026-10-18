@@ -1,0 +1,76 @@
+{
+  "parent": "graveyard:graveyard/overrun_village",
+  "display": {
+    "icon": {
+      "id": "graveyard:charred_planks"
+    },
+    "title": {
+      "translate": "advancements.graveyard.craft_charred_wood.title"
+    },
+    "description": {
+      "translate": "advancements.graveyard.craft_charred_wood.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "charred_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:charred_planks"
+            ]
+          }
+        ]
+      }
+    },
+    "scorched_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:scorched_planks"
+            ]
+          }
+        ]
+      }
+    },
+    "charred_log": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:charred_log"
+            ]
+          }
+        ]
+      }
+    },
+    "scorched_log": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "graveyard:scorched_log"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "charred_planks",
+      "scorched_planks",
+      "charred_log",
+      "scorched_log"
+    ]
+  ]
+}

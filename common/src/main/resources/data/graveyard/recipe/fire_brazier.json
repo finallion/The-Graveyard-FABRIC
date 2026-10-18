@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "#Y#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "graveyard:dark_iron_ingot"
+    },
+    "Y": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "result": {
+    "id": "graveyard:fire_brazier",
+    "count": 1
+  }
+}
