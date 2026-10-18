@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[4,)"
 license = "GPL-3.0-only"
 
 [[mods]]
@@ -16,31 +16,37 @@ Support: https://www.patreon.com/cw/LithiumPlus
 '''
 logoFile = "graveyard_logo.png"
 
+[[mixins]]
+config = "graveyard-common.mixins.json"
+
+[[mixins]]
+config = "graveyard-neoforge.mixins.json"
+
 [[dependencies.graveyard]]
-modId = "forge"
-mandatory = true
-versionRange = "[47.2,48)"
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.graveyard]]
 modId = "minecraft"
-mandatory = true
-versionRange = "[1.20.1,1.20.2)"
+type = "required"
+versionRange = "[1.21.1,1.22)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.graveyard]]
 modId="geckolib"
-mandatory=true
-versionRange="[4.2.2,5)"
+type="required"
+versionRange="[4.9.3,5)"
 ordering="NONE"
 side="BOTH"
 
 # AFTER: the trade parser must have registered its types before our resource listener runs.
 [[dependencies.graveyard]]
 modId = "villagertradingplus"
-mandatory = true
+type = "required"
 versionRange = "[1.0.0,2)"
 ordering = "AFTER"
 side = "BOTH"

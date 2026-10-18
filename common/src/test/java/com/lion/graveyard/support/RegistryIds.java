@@ -20,8 +20,11 @@ public final class RegistryIds {
     public static final String RECIPE_SERIALIZER = "recipeserializer";
     public static final String LOOT_CONDITION = "lootcondition";
     public static final String SCREEN_HANDLER = "screenhandler";
+    public static final String CRITERION = "criterion";
+    public static final String DATA_COMPONENT = "datacomponent";
 
     private static final Pattern HELPER_CALL = Pattern.compile("RegistryHelper\\.register(\\w*)\\(\\s*\"([^\"]+)\"");
+    private static final Pattern TRIGGER_CALL = Pattern.compile("(?<![\w.])trigger\(\s*\"([^\"]+)\"");
     private static final Pattern SOUND_CALL = Pattern.compile("(?<![\\w.])register\\(\\s*\"([^\"]+)\"");
 
     private static final Map<String, String> CATEGORY_BY_CALL = Map.ofEntries(
@@ -38,7 +41,8 @@ public final class RegistryIds {
             Map.entry("RecipeType", RECIPE_TYPE),
             Map.entry("RecipeSerializer", RECIPE_SERIALIZER),
             Map.entry("LootCondition", LOOT_CONDITION),
-            Map.entry("ScreenHandlerType", SCREEN_HANDLER));
+            Map.entry("ScreenHandlerType", SCREEN_HANDLER),
+            Map.entry("DataComponent", DATA_COMPONENT));
 
     private static Set<String> cache;
 
@@ -68,6 +72,11 @@ public final class RegistryIds {
             if (category != null) {
                 ids.add(category + ":" + helper.group(2));
             }
+        }
+
+        Matcher trigger = TRIGGER_CALL.matcher(code);
+        while (trigger.find()) {
+            ids.add(CRITERION + ":" + trigger.group(1));
         }
 
         if (soundFile) {

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ModMetadataTest {
     private static final Path FABRIC_MOD_JSON = ModProject.FABRIC_MAIN.resolve("resources/fabric.mod.json");
-    private static final Path MODS_TOML = ModProject.FORGE_MAIN.resolve("resources/META-INF/mods.toml");
+    private static final Path MODS_TOML = ModProject.NEOFORGE_MAIN.resolve("resources/META-INF/neoforge.mods.toml");
     private static final Pattern PLACEHOLDER = Pattern.compile("\\$\\{(\\w+)}");
     private static final Pattern ACCESS_LINE = Pattern.compile(
             "(accessible|extendable|mutable)\\s+(class\\s+[\\w/$]+|method\\s+[\\w/$]+\\s+[\\w<>$]+\\s+\\S+|field\\s+[\\w/$]+\\s+[\\w$]+\\s+\\S+)");
@@ -90,7 +90,7 @@ class ModMetadataTest {
 
     @Test
     void modsTomlVersionPlaceholderIsExpandedByTheBuild() {
-        String build = ModProject.read(ModProject.ROOT.resolve("forge/build.gradle"));
+        String build = ModProject.read(ModProject.ROOT.resolve("neoforge/build.gradle"));
         List<String> problems = unexpandedPlaceholders(ModProject.read(MODS_TOML), build.contains("expand \"version\"") ? List.of("version") : List.of());
         assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
     }
@@ -116,7 +116,7 @@ class ModMetadataTest {
         String majorMinor = version[0] + "." + version[1];
         assertTrue(Json.parseObject(ModProject.read(FABRIC_MOD_JSON)).getAsJsonObject("depends").get("geckolib").getAsString().contains(majorMinor));
         assertTrue(ModProject.read(MODS_TOML).contains("versionRange=\"[" + properties.getProperty("geckolib_version_fabric") + ","));
-        assertEquals(properties.getProperty("geckolib_version_fabric"), properties.getProperty("geckolib_version_forge"));
+        assertEquals(properties.getProperty("geckolib_version_fabric"), properties.getProperty("geckolib_version_neoforge"));
     }
 
     @TestFactory
@@ -142,8 +142,8 @@ class ModMetadataTest {
     }
 
     @Test
-    void forgeEntrypointClassExists() {
-        assertTrue(Files.isRegularFile(ModProject.FORGE_JAVA.resolve("forge/GraveyardForge.java")));
+    void neoforgeEntrypointClassExists() {
+        assertTrue(Files.isRegularFile(ModProject.NEOFORGE_JAVA.resolve("neoforge/GraveyardNeoforge.java")));
     }
 
     @Test

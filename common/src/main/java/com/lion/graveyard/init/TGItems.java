@@ -1,16 +1,22 @@
 package com.lion.graveyard.init;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.item.DiaryPageItem;
 import com.lion.graveyard.item.BoneStaffItem;
 import com.lion.graveyard.item.DaggerItem;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.platform.RegistryHelper;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.JukeboxSong;
 import java.util.function.Supplier;
 
 public class TGItems {
+    public static final ResourceKey<JukeboxSong> INCARNATED_EVIL_SONG = ResourceKey.create(Registries.JUKEBOX_SONG, Graveyard.id("incarnated_evil"));
+
     public static final Supplier<Item> SARCOPHAGUS_LID = RegistryHelper.registerItem("sarcophagus_lid", () -> new Item(new Item.Properties()));
     public static final Supplier<Item> SARCOPHAGUS_BASE = RegistryHelper.registerItem("sarcophagus_base", () -> new Item(new Item.Properties()));
     public static final Supplier<Item> DARK_OAK_COFFIN_LID = RegistryHelper.registerItem("dark_oak_coffin_lid", () -> new Item(new Item.Properties()));
@@ -37,7 +43,7 @@ public class TGItems {
     public static final Supplier<Item> CHERRY_COFFIN_BASE = RegistryHelper.registerItem("cherry_coffin_base", () -> new Item(new Item.Properties()));
 
     public static final Supplier<Item> OSSUARY = RegistryHelper.registerItem("ossuary", () -> new BlockItem(TGBlocks.OSSUARY.get(), new Item.Properties()));
-    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", 15, TGSounds.LICH_THEME_01, new Item.Properties().stacksTo(1), 270);
+    public static final Supplier<Item> INCARNATED_EVIL_MUSIC_DISC = RegistryHelper.registerMusicDiscItem("incarnated_evil_music_disc", new Item.Properties().stacksTo(1).jukeboxPlayable(INCARNATED_EVIL_SONG));
 
     public static final Supplier<Item> SKELETON_CREEPER_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("skeleton_creeper_spawn_egg", TGEntities.SKELETON_CREEPER, 7960171, 15263976, new Item.Properties());
     public static final Supplier<Item> RAVEN_SPAWN_EGG = RegistryHelper.registerSpawnEggItem("raven_spawn_egg", TGEntities.RAVEN, 1644825, 5132389, new Item.Properties());

@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -16,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -25,12 +25,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.RecordItem;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -83,8 +85,8 @@ public class RegistryHelperImpl {
         return (Supplier<T>) registerItem(name, () -> new SpawnEggItem(type.get(), backgroundColor, highlightColor, props));
     }
 
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
-        return (Supplier<T>) registerItem(name, () -> new RecordItem(compOutput, event.get(), props, length));
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, Item.Properties props) {
+        return (Supplier<T>) registerItem(name, () -> new Item(props));
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
@@ -97,15 +99,24 @@ public class RegistryHelperImpl {
     }
 
     public static void registerParticleType(String name, SimpleParticleType particleType) {
-        Registry.register(BuiltInRegistries.PARTICLE_TYPE, Graveyard.createStringID(name), particleType);
+        Registry.register(BuiltInRegistries.PARTICLE_TYPE, Graveyard.id(name), particleType);
     }
 
     public static void registerStructureProcessor(String name, StructureProcessorType<?> processorType) {
         Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Graveyard.id(name), processorType);
     }
 
-    public static void registerCriterion(CriterionTrigger<?> trigger) {
-        CriteriaTriggers.register(trigger);
+    public static void registerCriterion(String name, CriterionTrigger<?> trigger) {
+        Registry.register(BuiltInRegistries.TRIGGER_TYPES, Graveyard.id(name), trigger);
+    }
+
+    public static <T> Supplier<DataComponentType<T>> registerDataComponent(String name, Supplier<DataComponentType<T>> type) {
+        var registry = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Graveyard.id(name), type.get());
+        return () -> registry;
+    }
+
+    public static <T extends Mob> void registerSpawnPlacement(Supplier<? extends EntityType<T>> type, SpawnPlacementType placement, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> predicate) {
+        SpawnPlacements.register(type.get(), placement, heightmap, predicate);
     }
 
     public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {
@@ -148,7 +159,7 @@ public class RegistryHelperImpl {
     }
 
     public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
-        var registry = RecipeSerializer.register(Graveyard.createStringID(name), serializer);
+        var registry = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Graveyard.id(name), serializer);
         return () -> registry;
     }
 

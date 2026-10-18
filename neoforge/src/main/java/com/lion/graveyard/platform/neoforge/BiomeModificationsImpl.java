@@ -1,4 +1,4 @@
-package com.lion.graveyard.platform.forge;
+package com.lion.graveyard.platform.neoforge;
 
 
 import net.minecraft.resources.ResourceKey;

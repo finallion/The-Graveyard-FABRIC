@@ -20,7 +20,7 @@ class ResourceJsonTest {
 
     static List<Path> allJsonFiles() {
         List<Path> files = new ArrayList<>();
-        for (Path root : List.of(ModProject.RESOURCES, ModProject.FABRIC_MAIN.resolve("resources"), ModProject.FORGE_MAIN.resolve("resources"))) {
+        for (Path root : List.of(ModProject.RESOURCES, ModProject.FABRIC_MAIN.resolve("resources"), ModProject.NEOFORGE_MAIN.resolve("resources"))) {
             files.addAll(ModProject.files(root, ".json"));
             files.addAll(ModProject.files(root, ".mcmeta"));
         }

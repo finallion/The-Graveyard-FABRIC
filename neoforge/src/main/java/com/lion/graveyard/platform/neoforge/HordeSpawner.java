@@ -1,21 +1,20 @@
-package com.lion.graveyard.platform.forge;
+package com.lion.graveyard.platform.neoforge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = Graveyard.MOD_ID)
+@EventBusSubscriber(modid = Graveyard.MOD_ID)
 public class HordeSpawner {
     private static Map<ResourceLocation, GraveyardHordeSpawner> spawners = new HashMap<>();
 
@@ -32,19 +31,15 @@ public class HordeSpawner {
     }
 
     @SubscribeEvent
-    public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) {
+    public static void onWorldTick(LevelTickEvent.Pre event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
 
-        if (event.side != LogicalSide.SERVER) {
-            return;
-        }
-
-        GraveyardHordeSpawner spawner = spawners.get(event.level.dimensionTypeId().location());
+        GraveyardHordeSpawner spawner = spawners.get(level.dimension().location());
 
         if (spawner != null) {
-            ServerLevel overworld = event.level.getServer().overworld();
+            ServerLevel overworld = level.getServer().overworld();
 
             spawner.tick(overworld, GraveyardHordeSpawner.monstersAllowed(overworld), true);
         }

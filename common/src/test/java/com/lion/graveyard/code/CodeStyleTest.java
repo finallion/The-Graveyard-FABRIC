@@ -39,7 +39,7 @@ class CodeStyleTest {
         List<Path> roots = List.of(
                 ModProject.COMMON_MAIN.resolve("java"),
                 ModProject.FABRIC_MAIN.resolve("java"),
-                ModProject.FORGE_MAIN.resolve("java"),
+                ModProject.NEOFORGE_MAIN.resolve("java"),
                 ModProject.ROOT.resolve("common/src/test/java"));
         List<Path> all = new ArrayList<>();
 

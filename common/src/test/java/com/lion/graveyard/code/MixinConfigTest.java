@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MixinConfigTest {
     private static final Path COMMON_CONFIG = ModProject.RESOURCES.resolve("graveyard-common.mixins.json");
     private static final Path FABRIC_CONFIG = ModProject.FABRIC_MAIN.resolve("resources/graveyard-fabric.mixins.json");
-    private static final Path FORGE_CONFIG = ModProject.FORGE_MAIN.resolve("resources/graveyard-forge.mixins.json");
+    private static final Path NEOFORGE_CONFIG = ModProject.NEOFORGE_MAIN.resolve("resources/graveyard-neoforge.mixins.json");
 
     static Set<String> listed(String json) {
         JsonObject config = Json.parseObject(json);
@@ -102,10 +102,10 @@ class MixinConfigTest {
 
     @TestFactory
     Stream<DynamicTest> loaderMixinConfigsOnlyListExistingClasses() {
-        return Stream.of(FABRIC_CONFIG, FORGE_CONFIG)
+        return Stream.of(FABRIC_CONFIG, NEOFORGE_CONFIG)
                 .map(config -> DynamicTest.dynamicTest(config.getFileName().toString(), () -> {
                     String json = ModProject.read(config);
-                    Path root = (config == FABRIC_CONFIG ? ModProject.FABRIC_MAIN : ModProject.FORGE_MAIN)
+                    Path root = (config == FABRIC_CONFIG ? ModProject.FABRIC_MAIN : ModProject.NEOFORGE_MAIN)
                             .resolve("java/" + packageOf(json).replace('.', '/'));
                     List<String> problems = missingClasses(json, root);
                     assertTrue(problems.isEmpty(), () -> String.join("\n", problems));

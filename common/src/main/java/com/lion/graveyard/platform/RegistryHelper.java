@@ -9,6 +9,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -16,6 +17,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -27,6 +30,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -75,7 +79,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, Item.Properties props) {
         throw new AssertionError();
     }
 
@@ -95,7 +99,7 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerCriterion(CriterionTrigger<?> trigger) {
+    public static void registerCriterion(String name, CriterionTrigger<?> trigger) {
         throw new AssertionError();
     }
 
@@ -146,6 +150,16 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <T> Supplier<DataComponentType<T>> registerDataComponent(String name, Supplier<DataComponentType<T>> type) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static <T extends Mob> void registerSpawnPlacement(Supplier<? extends EntityType<T>> type, SpawnPlacementType placement, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> predicate) {
         throw new AssertionError();
     }
 

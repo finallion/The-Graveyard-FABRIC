@@ -28,8 +28,8 @@ class WorldFixesTest {
 
     @Test
     void hordeSpawnerGatesOnDifficultyAndGameRule() {
-        for (Path root : new Path[] {ModProject.FABRIC_JAVA, ModProject.FORGE_JAVA}) {
-            String code = code(root, "platform/" + (root == ModProject.FABRIC_JAVA ? "fabric" : "forge") + "/HordeSpawner.java");
+        for (Path root : new Path[] {ModProject.FABRIC_JAVA, ModProject.NEOFORGE_JAVA}) {
+            String code = code(root, "platform/" + (root == ModProject.FABRIC_JAVA ? "fabric" : "neoforge") + "/HordeSpawner.java");
 
             assertTrue(code.contains("monstersAllowed("));
             assertFalse(code.contains(", true, true)"));

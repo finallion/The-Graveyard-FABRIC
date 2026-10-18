@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -50,10 +51,10 @@ public class TGEntities {
 
     public static void init() {
         createMobAttributes();
+        addSpawnRestrictions();
     }
 
     public static void postInit() {
-        addSpawnRestrictions();
         addSpawns();
     }
 
@@ -103,22 +104,22 @@ public class TGEntities {
     }
 
     private static void addSpawnRestrictions() {
-        SpawnPlacements.register(REAPER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(ACOLYTE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
-        SpawnPlacements.register(CORRUPTED_VINDICATOR.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
-        SpawnPlacements.register(CORRUPTED_PILLAGER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
-        SpawnPlacements.register(CORRUPTED_EVOKER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
-        SpawnPlacements.register(SKELETON_CREEPER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(FALLING_CORPSE.get(), SpawnPlacements.Type.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
-        SpawnPlacements.register(GHOUL.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(TORMENTED_VILLAGER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(TormentedVillagerEntity::canSpawn));
-        SpawnPlacements.register(REVENANT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(WRAITH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(NIGHTMARE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(LICH.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
-        SpawnPlacements.register(RAVEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
-        SpawnPlacements.register(MAGPIE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
-        SpawnPlacements.register(CROW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        RegistryHelper.registerSpawnPlacement(REAPER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(ACOLYTE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(CORRUPTED_VINDICATOR, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(CORRUPTED_PILLAGER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(CORRUPTED_EVOKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(SKELETON_CREEPER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(FALLING_CORPSE, SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkAnyLightMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(GHOUL, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(TORMENTED_VILLAGER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(TormentedVillagerEntity::canSpawn));
+        RegistryHelper.registerSpawnPlacement(REVENANT, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(WRAITH, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(NIGHTMARE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(LICH, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, gated(Monster::checkMonsterSpawnRules));
+        RegistryHelper.registerSpawnPlacement(RAVEN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        RegistryHelper.registerSpawnPlacement(MAGPIE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
+        RegistryHelper.registerSpawnPlacement(CROW, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING, CorvidEntity::canSpawn);
     }
 
     private static final List<Attribute> SCALED_ATTRIBUTES = List.of(Attributes.MAX_HEALTH, Attributes.ATTACK_DAMAGE,

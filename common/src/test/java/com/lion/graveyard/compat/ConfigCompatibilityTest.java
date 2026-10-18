@@ -160,7 +160,7 @@ public class ConfigCompatibilityTest {
             assertFalse(Files.exists(CONFIG_DIR.resolve(name)), name + " must not exist");
         }
 
-        List<Path> roots = List.of(ModProject.JAVA, ModProject.FABRIC_JAVA, ModProject.FORGE_JAVA);
+        List<Path> roots = List.of(ModProject.JAVA, ModProject.FABRIC_JAVA, ModProject.NEOFORGE_JAVA);
 
         for (Path root : roots) {
             for (Path file : ModProject.files(root, ".java")) {

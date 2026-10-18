@@ -20,9 +20,9 @@ public final class ModProject {
     public static final Path DATA = RESOURCES.resolve("data/" + MOD_ID);
 
     public static final Path FABRIC_MAIN = ROOT.resolve("fabric/src/main");
-    public static final Path FORGE_MAIN = ROOT.resolve("forge/src/main");
+    public static final Path NEOFORGE_MAIN = ROOT.resolve("neoforge/src/main");
     public static final Path FABRIC_JAVA = FABRIC_MAIN.resolve("java/com/lion/graveyard");
-    public static final Path FORGE_JAVA = FORGE_MAIN.resolve("java/com/lion/graveyard");
+    public static final Path NEOFORGE_JAVA = NEOFORGE_MAIN.resolve("java/com/lion/graveyard");
 
     public static final String BLOCKSTATES = "blockstates";
     public static final String MODELS = "models";

@@ -1,4 +1,4 @@
-package com.lion.graveyard.platform.forge;
+package com.lion.graveyard.platform.neoforge;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;

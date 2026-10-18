@@ -105,7 +105,7 @@ class TranslationKeyUsageTest {
     private static List<Path> sourceFiles() {
         List<Path> files = new ArrayList<>(ModProject.files(ModProject.JAVA, ".java"));
         files.addAll(ModProject.files(ModProject.FABRIC_JAVA, ".java"));
-        files.addAll(ModProject.files(ModProject.FORGE_JAVA, ".java"));
+        files.addAll(ModProject.files(ModProject.NEOFORGE_JAVA, ".java"));
         return files;
     }
 

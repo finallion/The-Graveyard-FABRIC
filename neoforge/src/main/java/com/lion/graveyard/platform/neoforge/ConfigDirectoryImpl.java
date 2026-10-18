@@ -1,6 +1,6 @@
-package com.lion.graveyard.platform.forge;
+package com.lion.graveyard.platform.neoforge;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 

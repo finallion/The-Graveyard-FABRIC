@@ -1,28 +1,28 @@
-package com.lion.graveyard.forge;
+package com.lion.graveyard.neoforge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.GraveyardClient;
-import com.lion.graveyard.client.FragmentSpotHints;
-import com.lion.graveyard.chronicle.client.ChronicleButton;
-import com.lion.graveyard.entities.animation.AnimationPreviewClient;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.client.event.ScreenEvent;
 import com.lion.graveyard.blockentities.renders.BrazierBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.OssuaryBlockEntityRenderer;
 import com.lion.graveyard.blockentities.renders.SarcophagusBlockEntityRenderer;
-import com.lion.graveyard.entities.renders.*;
+import com.lion.graveyard.chronicle.client.ChronicleButton;
+import com.lion.graveyard.client.FragmentSpotHints;
+import com.lion.graveyard.entities.animation.AnimationPreviewClient;
 import com.lion.graveyard.gui.OssuaryScreen;
-import com.lion.graveyard.init.*;
+import com.lion.graveyard.init.TGBlockEntities;
+import com.lion.graveyard.init.TGBlocks;
+import com.lion.graveyard.init.TGItems;
+import com.lion.graveyard.init.TGParticles;
+import com.lion.graveyard.init.TGScreens;
 import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
-import com.lion.graveyard.platform.forge.RegistryHelperImpl;
+import com.lion.graveyard.platform.neoforge.RegistryHelperImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.SonicBoomParticle;
@@ -34,28 +34,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = Graveyard.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class GraveyardClientForge {
+@EventBusSubscriber(modid = Graveyard.MOD_ID, value = Dist.CLIENT)
+public class GraveyardClientNeoforge {
 
     @SubscribeEvent
     public static void clientInit(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             GraveyardClient.postInit();
 
-            MenuScreens.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
-
-            ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), new ResourceLocation("charged"), (stack, world, entity, seed) -> {
+            ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), ResourceLocation.withDefaultNamespace("charged"), (stack, world, entity, seed) -> {
                 if (entity != null && stack.is(TGItems.VIAL_OF_BLOOD.get())) {
                     return VialOfBlood.getBlood(stack);
                 }
@@ -69,20 +70,23 @@ public class GraveyardClientForge {
     }
 
 
-    @Mod.EventBusSubscriber(modid = Graveyard.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-    public static class ForgeBus {
+    @EventBusSubscriber(modid = Graveyard.MOD_ID, value = Dist.CLIENT)
+    public static class GameBus {
         @SubscribeEvent
         public static void onScreenInit(ScreenEvent.Init.Post event) {
             ChronicleButton.addTo(event.getScreen(), event::addListener);
         }
 
         @SubscribeEvent
-        public static void onClientTick(TickEvent.ClientTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) {
-                AnimationPreviewClient.clientTick(Minecraft.getInstance());
-                FragmentSpotHints.clientTick(Minecraft.getInstance());
-            }
+        public static void onClientTick(ClientTickEvent.Post event) {
+            AnimationPreviewClient.clientTick(Minecraft.getInstance());
+            FragmentSpotHints.clientTick(Minecraft.getInstance());
         }
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(TGScreens.OSSUARY_SCREEN_HANDLER, OssuaryScreen::new);
     }
 
     @SubscribeEvent
@@ -93,7 +97,7 @@ public class GraveyardClientForge {
     }
 
     @SubscribeEvent
-    public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(TGBlockEntities.GRAVESTONE_BLOCK_ENTITY.get(), GravestoneBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(TGBlockEntities.BRAZIER_BLOCK_ENTITY.get(), BrazierBlockEntityRenderer::new);
@@ -131,6 +135,3 @@ public class GraveyardClientForge {
     }
 
 }
-
-
-

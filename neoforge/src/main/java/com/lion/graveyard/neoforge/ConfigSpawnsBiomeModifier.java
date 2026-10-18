@@ -1,17 +1,18 @@
-package com.lion.graveyard.forge;
+package com.lion.graveyard.neoforge;
 
 import com.lion.graveyard.init.TGEntities;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 
 public record ConfigSpawnsBiomeModifier(String mob) implements BiomeModifier {
-    public static final Codec<ConfigSpawnsBiomeModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<ConfigSpawnsBiomeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("mob").forGetter(ConfigSpawnsBiomeModifier::mob)
     ).apply(instance, ConfigSpawnsBiomeModifier::new));
 
@@ -35,7 +36,7 @@ public record ConfigSpawnsBiomeModifier(String mob) implements BiomeModifier {
     }
 
     @Override
-    public Codec<? extends BiomeModifier> codec() {
+    public MapCodec<? extends BiomeModifier> codec() {
         return CODEC;
     }
 }

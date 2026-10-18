@@ -104,8 +104,8 @@ class PlatformImplTest {
         List<DynamicTest> tests = new ArrayList<>();
         for (String className : expectedFiles()) {
             for (Signature signature : expected(Sources.code(PLATFORM.resolve(className + ".java")))) {
-                for (String loader : List.of("fabric", "forge")) {
-                    Path impl = (loader.equals("fabric") ? ModProject.FABRIC_JAVA : ModProject.FORGE_JAVA)
+                for (String loader : List.of("fabric", "neoforge")) {
+                    Path impl = (loader.equals("fabric") ? ModProject.FABRIC_JAVA : ModProject.NEOFORGE_JAVA)
                             .resolve("platform/" + loader + "/" + className + "Impl.java");
                     tests.add(DynamicTest.dynamicTest(loader + ": " + className + "." + signature.name(), () -> {
                         assertTrue(Files.isRegularFile(impl), "Missing " + ModProject.display(impl));
@@ -121,14 +121,14 @@ class PlatformImplTest {
     @TestFactory
     Stream<DynamicTest> loaderHelperClassesExistOnBothLoaders() {
         Set<String> fabric = classNames(ModProject.FABRIC_JAVA.resolve("platform/fabric"));
-        Set<String> forge = classNames(ModProject.FORGE_JAVA.resolve("platform/forge"));
+        Set<String> neoforge = classNames(ModProject.NEOFORGE_JAVA.resolve("platform/neoforge"));
         Set<String> all = new TreeSet<>(fabric);
-        all.addAll(forge);
+        all.addAll(neoforge);
         return all.stream()
                 .filter(n -> !LOADER_ONLY.contains(n))
                 .map(name -> DynamicTest.dynamicTest(name, () -> {
                     assertTrue(fabric.contains(name), name + " is missing on Fabric");
-                    assertTrue(forge.contains(name), name + " is missing on Forge");
+                    assertTrue(neoforge.contains(name), name + " is missing on NeoForge");
                 }));
     }
 
