@@ -17,8 +17,7 @@ public final class JavaText {
     private static final Pattern METHOD = Pattern.compile("(\\w+)\\s*\\(([^;{}]*?)\\)\\s*(?:throws\\s+[\\w.,\\s]+)?\\{");
     private static final Pattern INT_CONSTANT = Pattern.compile("(?:(?:public|private|protected)\\s+)?(?:static\\s+)?final\\s+int\\s+(\\w+)\\s*=\\s*([^;]+);");
 
-    private JavaText() {
-    }
+    private JavaText() {}
 
     /// Index of the bracket that closes the one at {@code open}. Strings and chars are skipped.
     public static int closing(String text, int open) {
@@ -250,7 +249,13 @@ public final class JavaText {
         return out.toString();
     }
 
-    private static void collectCalled(String text, Map<String, List<String>> methods, Set<String> visited, int depth, StringBuilder out) {
+    private static void collectCalled(
+            String text,
+            Map<String, List<String>> methods,
+            Set<String> visited,
+            int depth,
+            StringBuilder out
+    ) {
         if (depth <= 0) {
             return;
         }

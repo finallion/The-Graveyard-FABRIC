@@ -146,8 +146,7 @@ public class GraveyardNeoforge {
 
     private static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<AttributeSupplier.Builder>> entry : RegistryHelperImpl.ENTITY_ATTRIBUTES.entrySet()) {
-            event.put(entry.getKey().get(),
-                    entry.getValue().get().build());
+            event.put(entry.getKey().get(), entry.getValue().get().build());
         }
     }
 

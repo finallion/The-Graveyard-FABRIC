@@ -84,9 +84,32 @@ public class HeadChampionEntry {
     }
 
 
-    private HeadChampionEntry(float healthInCastingPhase, float healthInHuntingPhase, double damageCastingPhase, double damageHuntingPhaseAddition, double armor, double armorToughness, double speedInHuntPhase, int durationHuntingPhase, int durationFallingCorpseSpell,
-                                   int durationHealingSpell, int durationLevitationSpell, int maxAmountSkullsInShootSkullSpell, int maxSummonedMobs, int maxGroupSizeSummonedMobs, int ghoulSpawnTimerInFight, List<String> isBloodCollectableEntity, List<String> isBossSummonableItem, boolean isMultiphaseFight, boolean isInvulnerableDuringSpells, boolean summoningNeedsStaffFragments,
-                                   int cooldownCorpseSpell, int cooldownTeleportPlayerAndHeal, int cooldownLevitationSpell, int playerTeleportYOffset) {
+    private HeadChampionEntry(
+            float healthInCastingPhase,
+            float healthInHuntingPhase,
+            double damageCastingPhase,
+            double damageHuntingPhaseAddition,
+            double armor,
+            double armorToughness,
+            double speedInHuntPhase,
+            int durationHuntingPhase,
+            int durationFallingCorpseSpell,
+            int durationHealingSpell,
+            int durationLevitationSpell,
+            int maxAmountSkullsInShootSkullSpell,
+            int maxSummonedMobs,
+            int maxGroupSizeSummonedMobs,
+            int ghoulSpawnTimerInFight,
+            List<String> isBloodCollectableEntity,
+            List<String> isBossSummonableItem,
+            boolean isMultiphaseFight,
+            boolean isInvulnerableDuringSpells,
+            boolean summoningNeedsStaffFragments,
+            int cooldownCorpseSpell,
+            int cooldownTeleportPlayerAndHeal,
+            int cooldownLevitationSpell,
+            int playerTeleportYOffset
+    ) {
         this.healthInCastingPhase = healthInCastingPhase;
         this.healthInHuntingPhase = healthInHuntingPhase;
         this.damageCastingPhase = damageCastingPhase;
@@ -115,16 +138,31 @@ public class HeadChampionEntry {
 
     public HeadChampionEntry sanitized(HeadChampionEntry fallback) {
         HeadChampionEntry result = new HeadChampionEntry(
-                positive(healthInCastingPhase, fallback.healthInCastingPhase), positive(healthInHuntingPhase, fallback.healthInHuntingPhase),
-                nonNegative(damageCastingPhase, fallback.damageCastingPhase), finite(damageHuntingPhaseAddition, fallback.damageHuntingPhaseAddition),
-                nonNegative(armor, fallback.armor), nonNegative(armorToughness, fallback.armorToughness), finite(speedInHuntPhase, fallback.speedInHuntPhase),
-                Math.max(1, durationHuntingPhase), Math.max(1, durationFallingCorpseSpell), Math.max(1, durationHealingSpell), Math.max(1, durationLevitationSpell),
-                clamp(maxAmountSkullsInShootSkullSpell, 1, 64), clamp(maxSummonedMobs, 0, 256), clamp(maxGroupSizeSummonedMobs, 1, 64),
+                positive(healthInCastingPhase, fallback.healthInCastingPhase),
+                positive(healthInHuntingPhase, fallback.healthInHuntingPhase),
+                nonNegative(damageCastingPhase, fallback.damageCastingPhase),
+                finite(damageHuntingPhaseAddition, fallback.damageHuntingPhaseAddition),
+                nonNegative(armor, fallback.armor),
+                nonNegative(armorToughness, fallback.armorToughness),
+                finite(speedInHuntPhase, fallback.speedInHuntPhase),
+                Math.max(1, durationHuntingPhase),
+                Math.max(1, durationFallingCorpseSpell),
+                Math.max(1, durationHealingSpell),
+                Math.max(1, durationLevitationSpell),
+                clamp(maxAmountSkullsInShootSkullSpell, 1, 64),
+                clamp(maxSummonedMobs, 0, 256),
+                clamp(maxGroupSizeSummonedMobs, 1, 64),
                 Math.max(0, ghoulSpawnTimerInFight),
                 isBloodCollectableEntity == null ? fallback.isBloodCollectableEntity : isBloodCollectableEntity,
                 isBossSummonableItem == null ? fallback.isBossSummonableItem : isBossSummonableItem,
-                isMultiphaseFight, isInvulnerableDuringSpells, summoningNeedsStaffFragments,
-                Math.max(0, cooldownCorpseSpell), Math.max(0, cooldownTeleportPlayerAndHeal), Math.max(0, cooldownLevitationSpell), playerTeleportYOffset);
+                isMultiphaseFight,
+                isInvulnerableDuringSpells,
+                summoningNeedsStaffFragments,
+                Math.max(0, cooldownCorpseSpell),
+                Math.max(0, cooldownTeleportPlayerAndHeal),
+                Math.max(0, cooldownLevitationSpell),
+                playerTeleportYOffset
+        );
         result.bossBarDarkenSky = bossBarDarkenSky();
         result.bossBarThickenFog = bossBarThickenFog();
         result.bossMusicVolume = bossMusicVolume();
@@ -155,8 +193,32 @@ public class HeadChampionEntry {
         return Float.isFinite(value) && value > 0.0F ? value : fallback;
     }
 
-    public static HeadChampionEntry of(float healthInCastingPhase, float healthInHuntingPhase, double damageCastingPhase, double damageHuntingPhase, double armor, double armorToughness, double speedInHuntPhase, int durationHuntingPhase, int durationFallingCorpseSpell,
-                                   int durationHealingSpell, int durationLevitationSpell, int amountShootSkullsSpell, int maxSummonedMobs, int chanceSummonedMobs, int ghoulSpawnTimerInFight, List<String> isBloodCollectableEntity, List<String> isBossSummonableItem, boolean isMultiphaseFight, boolean isInvulnerableDuringSpells, boolean summoningNeedsStaffFragments, int cooldownCorpseSpell, int cooldownTeleportPlayerAndHeal, int cooldownLevitationSpell, int playerTeleportYOffset) {
+    public static HeadChampionEntry of(
+            float healthInCastingPhase,
+            float healthInHuntingPhase,
+            double damageCastingPhase,
+            double damageHuntingPhase,
+            double armor,
+            double armorToughness,
+            double speedInHuntPhase,
+            int durationHuntingPhase,
+            int durationFallingCorpseSpell,
+            int durationHealingSpell,
+            int durationLevitationSpell,
+            int amountShootSkullsSpell,
+            int maxSummonedMobs,
+            int chanceSummonedMobs,
+            int ghoulSpawnTimerInFight,
+            List<String> isBloodCollectableEntity,
+            List<String> isBossSummonableItem,
+            boolean isMultiphaseFight,
+            boolean isInvulnerableDuringSpells,
+            boolean summoningNeedsStaffFragments,
+            int cooldownCorpseSpell,
+            int cooldownTeleportPlayerAndHeal,
+            int cooldownLevitationSpell,
+            int playerTeleportYOffset
+    ) {
         return new HeadChampionEntry(healthInCastingPhase, healthInHuntingPhase, damageCastingPhase, damageHuntingPhase, armor, armorToughness, speedInHuntPhase, durationHuntingPhase, durationFallingCorpseSpell, durationHealingSpell, durationLevitationSpell, amountShootSkullsSpell, maxSummonedMobs, chanceSummonedMobs, ghoulSpawnTimerInFight, isBloodCollectableEntity, isBossSummonableItem, isMultiphaseFight, isInvulnerableDuringSpells, summoningNeedsStaffFragments, cooldownCorpseSpell, cooldownTeleportPlayerAndHeal, cooldownLevitationSpell, playerTeleportYOffset);
     }
 }

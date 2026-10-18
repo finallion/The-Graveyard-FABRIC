@@ -223,10 +223,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         super.readAdditionalSaveData(nbt);
 
         if (nbt.contains("BoundX")) {
-            this.homePosition = new BlockPos(
-                    nbt.getInt("BoundX"),
-                    nbt.getInt("BoundY"),
-                    nbt.getInt("BoundZ"));
+            this.homePosition = new BlockPos(nbt.getInt("BoundX"), nbt.getInt("BoundY"), nbt.getInt("BoundZ"));
         }
 
         this.timeSinceExtinguish = nbt.getInt("timeSinceExtinguish");
@@ -258,7 +255,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData
+    ) {
         world.playSound(null, this.blockPosition(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.HOSTILE,2.0F, -5.0F);
         startSpawnAnimation();
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
@@ -414,7 +416,12 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    protected void checkFallDamage(double heightDifference, boolean onGround, BlockState landedState, BlockPos landedPosition) {
+    protected void checkFallDamage(
+            double heightDifference,
+            boolean onGround,
+            BlockState landedState,
+            BlockPos landedPosition
+    ) {
     }
 
     class WraithMeleeGoal extends MeleeAttackGoal {
@@ -494,13 +501,19 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                             WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(blockPos, Blocks.SOUL_TORCH.defaultBlockState());
                             torchAndLantern = true;
                         } else if (blockState.is(Blocks.LANTERN)) {
-                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(blockPos, Blocks.SOUL_LANTERN.defaultBlockState()
-                                    .setValue(BlockStateProperties.HANGING, blockState.getValue(BlockStateProperties.HANGING))
-                                    .setValue(BlockStateProperties.WATERLOGGED, blockState.getValue(BlockStateProperties.WATERLOGGED)));
+                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(
+                                    blockPos,
+                                    Blocks.SOUL_LANTERN.defaultBlockState()
+                                            .setValue(BlockStateProperties.HANGING, blockState.getValue(BlockStateProperties.HANGING))
+                                            .setValue(BlockStateProperties.WATERLOGGED, blockState.getValue(BlockStateProperties.WATERLOGGED))
+                            );
                             torchAndLantern = true;
                         } else if (blockState.is(Blocks.WALL_TORCH)) {
-                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(blockPos, Blocks.SOUL_WALL_TORCH.defaultBlockState()
-                                    .setValue(HorizontalDirectionalBlock.FACING, blockState.getValue(HorizontalDirectionalBlock.FACING)));
+                            WraithEntity.this.getCommandSenderWorld().setBlockAndUpdate(
+                                    blockPos,
+                                    Blocks.SOUL_WALL_TORCH.defaultBlockState()
+                                            .setValue(HorizontalDirectionalBlock.FACING, blockState.getValue(HorizontalDirectionalBlock.FACING))
+                            );
                             torchAndLantern = true;
                         }
 

@@ -23,7 +23,17 @@ public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
     }
 
     @Override
-    public void renderForBone(PoseStack poseStack, CorvidEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void renderForBone(
+            PoseStack poseStack,
+            CorvidEntity animatable,
+            GeoBone bone,
+            RenderType renderType,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            float partialTick,
+            int packedLight,
+            int packedOverlay
+    ) {
         ItemStack stack = animatable.getItemBySlot(EquipmentSlot.MAINHAND);
 
         if (!bone.getName().equals("head") || stack.isEmpty()) {
@@ -37,8 +47,18 @@ public class CorvidHeldItemLayer extends GeoRenderLayer<CorvidEntity> {
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         poseStack.scale(0.6F, 0.6F, 0.6F);
-        Minecraft.getInstance().getItemRenderer().renderStatic(animatable, stack, ItemDisplayContext.GROUND, false,
-                poseStack, bufferSource, animatable.level(), packedLight, packedOverlay, animatable.getId());
+        Minecraft.getInstance().getItemRenderer().renderStatic(
+                animatable,
+                stack,
+                ItemDisplayContext.GROUND,
+                false,
+                poseStack,
+                bufferSource,
+                animatable.level(),
+                packedLight,
+                packedOverlay,
+                animatable.getId()
+        );
         poseStack.popPose();
 
         // GeckoLib needs the bone's buffer again after an item render.

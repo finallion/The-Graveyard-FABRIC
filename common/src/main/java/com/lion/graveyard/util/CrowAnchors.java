@@ -32,8 +32,7 @@ public final class CrowAnchors {
     /// Server thread only. The map is not thread-safe.
     private static final Map<ResourceKey<Level>, Deque<DeathSite>> DEATH_SITES = new HashMap<>();
 
-    private CrowAnchors() {
-    }
+    private CrowAnchors() {}
 
     public static void recordDeath(Level world, BlockPos pos) {
         if (world.isClientSide()) {

@@ -47,9 +47,11 @@ public class PickTreasureGoal extends Goal {
 
     @Nullable
     private ItemEntity findTreasure() {
-        List<ItemEntity> items = this.magpie.level().getEntitiesOfClass(ItemEntity.class,
+        List<ItemEntity> items = this.magpie.level().getEntitiesOfClass(
+                ItemEntity.class,
                 this.magpie.getBoundingBox().inflate(8.0D, 4.0D, 8.0D),
-                item -> !item.hasPickUpDelay() && this.magpie.wantsToPickUp(item.getItem()));
+                item -> !item.hasPickUpDelay() && this.magpie.wantsToPickUp(item.getItem())
+        );
         ItemEntity closest = null;
         double closestDistance = Double.MAX_VALUE;
         for (ItemEntity item : items) {

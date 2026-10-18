@@ -23,13 +23,17 @@ public final class LegacyMigration {
     private static final Gson GSON = new Gson();
 
     private static final Set<String> SWITCH_ONLY_MOBS = Set.of(
-            "acolyte", "wraith", "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker");
+            "acolyte",
+            "wraith",
+            "corrupted_vindicator",
+            "corrupted_pillager",
+            "corrupted_evoker"
+    );
 
     private static final Map<String, String> OLD_PATH_BY_NEW_PATH = oldPathsByNewPath();
     private static final Set<String> KNOWN_PREFIXES = knownPrefixes();
 
-    private LegacyMigration() {
-    }
+    private LegacyMigration() {}
 
     public static ConfigReader.Result migrate(String text) {
         String joined = joinLines(text);

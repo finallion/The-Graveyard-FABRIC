@@ -43,7 +43,12 @@ import java.util.List;
 public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag options) {
+    public void appendHoverText(
+            ItemStack stack,
+            Item.TooltipContext context,
+            List<Component> tooltip,
+            TooltipFlag options
+    ) {
         tooltip.add(Component.translatable("block.graveyard.ossuary.tooltip").withStyle(ChatFormatting.GRAY));
     }
     private static final Component TITLE = Component.translatable("container.ossuary");
@@ -71,12 +76,22 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level world,
+            BlockState state,
+            BlockEntityType<T> type
+    ) {
         return BaseEntityBlock.createTickerHelper(type, TGBlockEntities.OSSUARY_BLOCK_ENTITY.get(), OssuaryBlockEntity::tick);
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            BlockHitResult hit
+    ) {
         if (world.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {

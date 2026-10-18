@@ -19,7 +19,12 @@ public class LichRenderer extends GeoEntityRenderer<LichEntity> {
     }
 
     @Override
-    public RenderType getRenderType(LichEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            LichEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityCutoutNoCull(texture);
     }
 

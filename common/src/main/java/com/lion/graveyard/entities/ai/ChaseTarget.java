@@ -7,8 +7,7 @@ import net.minecraft.world.entity.player.Player;
 
 /// Other mobs can set a target that nothing clears later.
 public final class ChaseTarget {
-    private ChaseTarget() {
-    }
+    private ChaseTarget() {}
 
     public static boolean isLive(Mob mob) {
         LivingEntity target = mob.getTarget();

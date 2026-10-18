@@ -130,7 +130,12 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData
+    ) {
         SpawnGroupData entityData2 = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
         ((GroundPathNavigation)this.getNavigation()).setCanOpenDoors(true);
         RandomSource random = world.getRandom();
@@ -186,8 +191,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
         UNDEAD_ATTACKING,
         NEUTRAL;
 
-        State() {
-        }
+        State() {}
     }
 
 }

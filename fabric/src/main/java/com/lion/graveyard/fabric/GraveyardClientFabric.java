@@ -46,11 +46,15 @@ public class GraveyardClientFabric implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(TGParticles.GRAVEYARD_SOUL_BEAM_PARTICLE, SonicBoomParticle.Provider::new);
 
 
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getAverageGrassColor(world, pos) : GrassColor.get(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get());
+        ColorProviderRegistry.BLOCK.register(
+                (state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getAverageGrassColor(world, pos) : GrassColor.get(0.5D, 1.0D),
+                TGBlocks.TG_GRASS_BLOCK.get()
+        );
 
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> GrassColor.get(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get());
+        ColorProviderRegistry.ITEM.register(
+                (stack, tintIndex) -> GrassColor.get(0.5D, 1.0D),
+                TGBlocks.TG_GRASS_BLOCK.get()
+        );
 
 
         ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.TYPE, (payload, context) -> ClientChronicle.receive(payload.found(), payload.newlyFound()));

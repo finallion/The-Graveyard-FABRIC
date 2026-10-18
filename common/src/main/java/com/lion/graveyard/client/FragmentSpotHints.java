@@ -29,8 +29,7 @@ public final class FragmentSpotHints {
     private static final List<BlockPos> ALTARS = new ArrayList<>();
     private static int ticks;
 
-    private FragmentSpotHints() {
-    }
+    private FragmentSpotHints() {}
 
     public static void clientTick(Minecraft client) {
         ClientLevel world = client.level;
@@ -95,11 +94,15 @@ public final class FragmentSpotHints {
 
             for (BlockPos spot : spots) {
                 if (world.getBlockState(spot).isAir()) {
-                    world.addParticle(ParticleTypes.SOUL,
+                    world.addParticle(
+                            ParticleTypes.SOUL,
                             spot.getX() + 0.2D + world.random.nextDouble() * 0.6D,
                             spot.getY() + 0.1D + world.random.nextDouble() * 0.3D,
                             spot.getZ() + 0.2D + world.random.nextDouble() * 0.6D,
-                            0.0D, 0.03D, 0.0D);
+                            0.0D,
+                            0.03D,
+                            0.0D
+                    );
                 }
             }
         }

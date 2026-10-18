@@ -10,11 +10,30 @@ import java.util.Map;
 
 public final class ConfigSchema {
     public static final List<String> STRUCTURE_IDS = List.of(
-            "altar", "crypt", "dead_tree", "giant_mushroom", "haunted_house", "large_graveyard", "lich_prison",
-            "medium_graveyard", "memorial_tree", "mushroom_grave", "overrun_village", "overrun_desert_village",
-            "overrun_plains_village", "overrun_savanna_village", "overrun_snowy_village", "overrun_taiga_village",
-            "ruins", "small_desert_grave", "small_desert_graveyard", "small_grave", "small_graveyard",
-            "small_mountain_grave", "small_savanna_grave");
+            "altar",
+            "crypt",
+            "dead_tree",
+            "giant_mushroom",
+            "haunted_house",
+            "large_graveyard",
+            "lich_prison",
+            "medium_graveyard",
+            "memorial_tree",
+            "mushroom_grave",
+            "overrun_village",
+            "overrun_desert_village",
+            "overrun_plains_village",
+            "overrun_savanna_village",
+            "overrun_snowy_village",
+            "overrun_taiga_village",
+            "ruins",
+            "small_desert_grave",
+            "small_desert_graveyard",
+            "small_grave",
+            "small_graveyard",
+            "small_mountain_grave",
+            "small_savanna_grave"
+    );
 
     public static final String NAMELESS_HANGED = "nameless_hanged";
 
@@ -35,7 +54,8 @@ public final class ConfigSchema {
             new MobDefaults("revenant", true, 25, 5, 8, true),
             new MobDefaults("skeleton_creeper", true, 25, 1, 4, true),
             new MobDefaults("tormented_villager", true, 0, 1, 1, false),
-            new MobDefaults("wraith", true, 0, 0, 0, true));
+            new MobDefaults("wraith", true, 0, 0, 0, true)
+    );
 
     public static final List<String> FULL_MOB_IDS = MOBS.stream()
             .map(MobDefaults::id)
@@ -337,8 +357,17 @@ public final class ConfigSchema {
         }
 
         void integer(String name, int defaultValue, Integer lower, Integer upper, String comment) {
-            add(new Leaf(name, childPath(name), comment, Kind.INT, defaultValue,
-                    lower == null ? null : lower.doubleValue(), upper == null ? null : upper.doubleValue(), false, false));
+            add(new Leaf(
+                    name,
+                    childPath(name),
+                    comment,
+                    Kind.INT,
+                    defaultValue,
+                    lower == null ? null : lower.doubleValue(),
+                    upper == null ? null : upper.doubleValue(),
+                    false,
+                    false
+            ));
         }
 
         void real(String name, double defaultValue, Double lower, Double upper, String comment) {
@@ -382,8 +411,17 @@ public final class ConfigSchema {
         private final boolean reject;
         private final boolean lowerExclusive;
 
-        Leaf(String name, String path, String comment, Kind kind, Object defaultValue, Double lower, Double upper,
-             boolean reject, boolean lowerExclusive) {
+        Leaf(
+                String name,
+                String path,
+                String comment,
+                Kind kind,
+                Object defaultValue,
+                Double lower,
+                Double upper,
+                boolean reject,
+                boolean lowerExclusive
+        ) {
             super(name, path, comment);
             this.kind = kind;
             this.defaultValue = defaultValue;

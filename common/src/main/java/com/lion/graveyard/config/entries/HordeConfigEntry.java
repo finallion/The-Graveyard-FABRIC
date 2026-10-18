@@ -14,8 +14,16 @@ public class HordeConfigEntry {
         this(true, mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks, 0.2D, 24, 48, true);
     }
 
-    private HordeConfigEntry(boolean enabled, int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks,
-                             Double chancePerCheck, Integer minDistance, Integer maxDistance, Boolean nightOnly) {
+    private HordeConfigEntry(
+            boolean enabled,
+            int mobSpawnAttempts,
+            int ticksUntilNextSpawn,
+            int additionalRandomizedTicks,
+            Double chancePerCheck,
+            Integer minDistance,
+            Integer maxDistance,
+            Boolean nightOnly
+    ) {
         this.enabled = enabled;
         this.mobSpawnAttempts = mobSpawnAttempts;
         this.ticksUntilNextSpawn = ticksUntilNextSpawn;
@@ -42,8 +50,16 @@ public class HordeConfigEntry {
         return nightOnly == null || nightOnly;
     }
 
-    public static HordeConfigEntry of(boolean enabled, int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks,
-                                      double chancePerCheck, int minDistance, int maxDistance, boolean nightOnly) {
+    public static HordeConfigEntry of(
+            boolean enabled,
+            int mobSpawnAttempts,
+            int ticksUntilNextSpawn,
+            int additionalRandomizedTicks,
+            double chancePerCheck,
+            int minDistance,
+            int maxDistance,
+            boolean nightOnly
+    ) {
         return new HordeConfigEntry(enabled, mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks, chancePerCheck, minDistance, maxDistance, nightOnly);
     }
 

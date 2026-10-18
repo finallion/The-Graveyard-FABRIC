@@ -24,8 +24,7 @@ public final class AnimationPreview {
     private static final Map<String, RawAnimation> PLAYS = new HashMap<>();
     private static final Map<AnimationController<?>, Step> STEPS = new WeakHashMap<>();
 
-    private AnimationPreview() {
-    }
+    private AnimationPreview() {}
 
     @Nullable
     public static String forcedAnimation(Entity entity) {

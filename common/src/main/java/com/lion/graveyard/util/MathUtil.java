@@ -7,7 +7,18 @@ import net.minecraft.world.level.Level;
 
 public class MathUtil {
 
-    public static <T extends ParticleOptions> void createParticleDisk(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, RandomSource random) {
+    public static <T extends ParticleOptions> void createParticleDisk(
+            Level world,
+            double x,
+            double y,
+            double z,
+            double velocityX,
+            double velocityY,
+            double velocityZ,
+            float radius,
+            T type,
+            RandomSource random
+    ) {
         int surfaceArea = Mth.ceil(Math.PI * radius * radius);
         for (int j = 0; j < surfaceArea; ++j) {
             float h = random.nextFloat() * 6.2831855F;
@@ -19,7 +30,19 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleOptions> void createParticleCircle(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float radius, T type, RandomSource random, float thickness) {
+    public static <T extends ParticleOptions> void createParticleCircle(
+            Level world,
+            double x,
+            double y,
+            double z,
+            double velocityX,
+            double velocityY,
+            double velocityZ,
+            float radius,
+            T type,
+            RandomSource random,
+            float thickness
+    ) {
         int surfaceArea = Mth.ceil(Math.PI * radius * radius);
         for (int i = 0; i < surfaceArea; ++i) {
             float h = random.nextFloat() * 6.2831855F;
@@ -30,7 +53,18 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleOptions> void createParticleSpiral(Level world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, int length, T type, RandomSource random) {
+    public static <T extends ParticleOptions> void createParticleSpiral(
+            Level world,
+            double x,
+            double y,
+            double z,
+            double velocityX,
+            double velocityY,
+            double velocityZ,
+            int length,
+            T type,
+            RandomSource random
+    ) {
         double yCoord = y + 1.1D;
 
         for (int i = 0; i < length; i++) {
@@ -45,7 +79,17 @@ public class MathUtil {
         }
     }
 
-    public static <T extends ParticleOptions> void createParticleFlare(Level world, double x, double y, double z, int length, T type, T type2, RandomSource random, boolean inverted) {
+    public static <T extends ParticleOptions> void createParticleFlare(
+            Level world,
+            double x,
+            double y,
+            double z,
+            int length,
+            T type,
+            T type2,
+            RandomSource random,
+            boolean inverted
+    ) {
         double yCoord = y + 1.1D;
 
         double yDeviation = !inverted ? random.nextDouble() / 8 + 0.01 : -random.nextDouble() / 8 - 0.01;

@@ -16,8 +16,7 @@ public class TGRecipeTypes {
 
 
     public static class Type implements RecipeType<OssuaryRecipe> {
-        private Type() {
-        }
+        private Type() {}
 
         public static final Type INSTANCE = new Type();
     }

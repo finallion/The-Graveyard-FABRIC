@@ -17,7 +17,14 @@ public class RemoveWaterloggedProcessor extends StructureProcessor {
 
     @Nullable
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader world, BlockPos pos, BlockPos pivot, StructureTemplate.StructureBlockInfo structureBlockInfo, StructureTemplate.StructureBlockInfo structureBlockInfo2, StructurePlaceSettings data) {
+    public StructureTemplate.StructureBlockInfo processBlock(
+            LevelReader world,
+            BlockPos pos,
+            BlockPos pivot,
+            StructureTemplate.StructureBlockInfo structureBlockInfo,
+            StructureTemplate.StructureBlockInfo structureBlockInfo2,
+            StructurePlaceSettings data
+    ) {
         return structureBlockInfo2;
     }
 

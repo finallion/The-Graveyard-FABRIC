@@ -11,8 +11,17 @@ public class MobConfigEntry {
     public final Double damageMultiplier;
     public final Double speedMultiplier;
 
-    private MobConfigEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered,
-                           Double healthMultiplier, Double damageMultiplier, Double speedMultiplier) {
+    private MobConfigEntry(
+            boolean enabled,
+            int weight,
+            int minGroup,
+            int maxGroup,
+            boolean canBurnInSunlight,
+            boolean canBeWithered,
+            Double healthMultiplier,
+            Double damageMultiplier,
+            Double speedMultiplier
+    ) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
@@ -40,8 +49,17 @@ public class MobConfigEntry {
         return value == null || !Double.isFinite(value) || value < 0.0D ? 1.0D : Math.max(0.05D, value);
     }
 
-    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered,
-                                    double healthMultiplier, double damageMultiplier, double speedMultiplier) {
+    public static MobConfigEntry of(
+            boolean enabled,
+            int weight,
+            int minGroup,
+            int maxGroup,
+            boolean canBurnInSunlight,
+            boolean canBeWithered,
+            double healthMultiplier,
+            double damageMultiplier,
+            double speedMultiplier
+    ) {
         return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, healthMultiplier, damageMultiplier, speedMultiplier);
     }
 
@@ -49,7 +67,14 @@ public class MobConfigEntry {
         return of(enabled, 0, 0, 0, canBurnInSunlight, canBeWithered);
     }
 
-    public static MobConfigEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
+    public static MobConfigEntry of(
+            boolean enabled,
+            int weight,
+            int minGroup,
+            int maxGroup,
+            boolean canBurnInSunlight,
+            boolean canBeWithered
+    ) {
         return new MobConfigEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, 1.0D, 1.0D, 1.0D);
     }
 }

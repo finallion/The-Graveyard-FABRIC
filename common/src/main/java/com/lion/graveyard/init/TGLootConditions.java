@@ -9,11 +9,12 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 /// with the rest of the registration and not on world load.
 public final class TGLootConditions {
 
-    private TGLootConditions() {
-    }
+    private TGLootConditions() {}
 
     public static void init() {
-        PagesInLootCondition.TYPE = RegistryHelper.registerLootCondition("pages_in_loot",
-                new LootItemConditionType(MapCodec.unit(PagesInLootCondition.INSTANCE)));
+        PagesInLootCondition.TYPE = RegistryHelper.registerLootCondition(
+                "pages_in_loot",
+                new LootItemConditionType(MapCodec.unit(PagesInLootCondition.INSTANCE))
+        );
     }
 }

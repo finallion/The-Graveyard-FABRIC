@@ -74,7 +74,13 @@ public class LongDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
         BlockPos headPos = pos.relative(state.getValue(FACING));
         boolean waterlogged = world.getFluidState(headPos).getType() == Fluids.WATER;
         world.setBlock(headPos, state.setValue(PART, BedPart.HEAD).setValue(WATERLOGGED, waterlogged), Block.UPDATE_ALL);
@@ -86,7 +92,14 @@ public class LongDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbor, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighbor,
+            LevelAccessor world,
+            BlockPos pos,
+            BlockPos neighborPos
+    ) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }

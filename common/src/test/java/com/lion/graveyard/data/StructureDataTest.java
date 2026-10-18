@@ -238,8 +238,21 @@ class StructureDataTest {
     @Test
     void nbtCheckFindsUnregisteredPaletteBlock() throws IOException {
         Map<String, Object> root = Map.of("palette", List.of(Map.of("Name", "graveyard:ghost_block"), Map.of("Name", "minecraft:stone")));
-        DataIndex index = new DataIndex(Set.of("real"), Set.of(), Set.of(), Set.of(), Set.of(), Set.of(), Set.of(),
-                Set.of(), Set.of(), Set.of(), Set.of(), Set.of(), Set.of());
+        DataIndex index = new DataIndex(
+                Set.of("real"),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
         assertEquals(1, nbtProblems(root, index).size());
     }
 }

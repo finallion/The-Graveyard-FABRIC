@@ -341,7 +341,12 @@ public class BoneStaffItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(
+            ItemStack stack,
+            Item.TooltipContext tooltipContext,
+            List<Component> tooltip,
+            TooltipFlag context
+    ) {
         if (LegacyItemData.isStored(stack)) {
             CompoundTag saved = LegacyItemData.view(stack).getCompound(LegacyItemData.STORED_GHOULING);
             Component name = null;
@@ -599,8 +604,15 @@ public class BoneStaffItem extends Item {
         ghouling.setAggressive(false);
         ghouling.setSitting(false);
         ghouling.getNavigation().stop();
-        ghouling.teleportTo(world, landing.x, landing.y, landing.z,
-                EnumSet.noneOf(RelativeMovement.class), ghouling.getYRot(), ghouling.getXRot());
+        ghouling.teleportTo(
+                world,
+                landing.x,
+                landing.y,
+                landing.z,
+                EnumSet.noneOf(RelativeMovement.class),
+                ghouling.getYRot(),
+                ghouling.getXRot()
+        );
         // A dimension change creates a new entity. Move the timer to the live instance.
         GhoulingEntity arrived = world.getEntity(ghouling.getUUID()) instanceof GhoulingEntity found ? found : ghouling;
         arrived.setTeleportTimer(15);

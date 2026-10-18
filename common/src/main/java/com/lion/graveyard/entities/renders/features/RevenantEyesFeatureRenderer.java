@@ -21,7 +21,17 @@ public class RevenantEyesFeatureRenderer extends GeoRenderLayer<RevenantEntity> 
     }
 
     @Override
-    public void render(PoseStack poseStack, RevenantEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(
+            PoseStack poseStack,
+            RevenantEntity animatable,
+            BakedGeoModel bakedModel,
+            RenderType renderType,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            float partialTick,
+            int packedLight,
+            int packedOverlay
+    ) {
         VertexConsumer vertexConsumer = bufferSource.getBuffer(TEXTURE);
         renderer.actuallyRender(
                 poseStack,

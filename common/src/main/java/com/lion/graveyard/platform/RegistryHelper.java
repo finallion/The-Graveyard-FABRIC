@@ -49,7 +49,12 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
+    public static void registerItemGroup(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Item item
+    ) {
         throw new AssertionError();
     }
 
@@ -59,7 +64,12 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static void registerItemGroupWithIcon(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
+    public static void registerItemGroupWithIcon(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Supplier<ItemStack> icon
+    ) {
         throw new AssertionError();
     }
 
@@ -74,7 +84,13 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(
+            String name,
+            Supplier<? extends EntityType<? extends Mob>> type,
+            int backgroundColor,
+            int highlightColor,
+            Item.Properties props
+    ) {
         throw new AssertionError();
     }
 
@@ -119,12 +135,18 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String name, Supplier<EntityType<T>> entityType) {
+    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
+            String name,
+            Supplier<EntityType<T>> entityType
+    ) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void registerEntityAttribute(
+            Supplier<? extends EntityType<? extends LivingEntity>> type,
+            Supplier<AttributeSupplier.Builder> attribute
+    ) {
         throw new AssertionError();
     }
 
@@ -134,12 +156,18 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(
+            Supplier<EntityType<T>> type,
+            EntityRendererProvider<T> renderProvider
+    ) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(
+            Supplier<BlockEntityType<T>> type,
+            BlockEntityRendererProvider<T> renderProvider
+    ) {
         throw new AssertionError();
     }
 
@@ -149,17 +177,28 @@ public class RegistryHelper {
     }
 
     @ExpectPlatform
-    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
+    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(
+            String name,
+            RecipeSerializer<S> serializer
+    ) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static <T> Supplier<DataComponentType<T>> registerDataComponent(String name, Supplier<DataComponentType<T>> type) {
+    public static <T> Supplier<DataComponentType<T>> registerDataComponent(
+            String name,
+            Supplier<DataComponentType<T>> type
+    ) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static <T extends Mob> void registerSpawnPlacement(Supplier<? extends EntityType<T>> type, SpawnPlacementType placement, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> predicate) {
+    public static <T extends Mob> void registerSpawnPlacement(
+            Supplier<? extends EntityType<T>> type,
+            SpawnPlacementType placement,
+            Heightmap.Types heightmap,
+            SpawnPlacements.SpawnPredicate<T> predicate
+    ) {
         throw new AssertionError();
     }
 

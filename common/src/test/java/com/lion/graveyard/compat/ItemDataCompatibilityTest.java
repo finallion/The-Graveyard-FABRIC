@@ -27,8 +27,11 @@ class ItemDataCompatibilityTest {
         return ModProject.snapshotLines("item-data-keys.txt").stream()
                 .map(line -> {
                     String key = line.substring(line.indexOf(':') + 1);
-                    return DynamicTest.dynamicTest(line, () ->
-                            assertTrue(code.contains("\"" + key + "\""), "Item data key no longer handled: " + line));
+                    return DynamicTest.dynamicTest(
+                            line,
+                            () ->
+                                    assertTrue(code.contains("\"" + key + "\""), "Item data key no longer handled: " + line)
+                    );
                 });
     }
 }

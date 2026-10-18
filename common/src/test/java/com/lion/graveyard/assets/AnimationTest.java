@@ -102,8 +102,11 @@ class AnimationTest {
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
             requested.addAll(Sources.matches(ANIMATION_NAME, Sources.code(file), 1));
         }
-        return requested.stream().map(name -> DynamicTest.dynamicTest(name, () ->
-                assertTrue(known.contains(name), "Animation requested by code but in no animation file: " + name)));
+        return requested.stream().map(name -> DynamicTest.dynamicTest(
+                name,
+                () ->
+                        assertTrue(known.contains(name), "Animation requested by code but in no animation file: " + name)
+        ));
     }
 
     // The brazier model has no animation file.
@@ -117,12 +120,21 @@ class AnimationTest {
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
             paths.addAll(Sources.matches(ASSET_PATH, Sources.code(file), 1));
         }
-        DynamicTest found = DynamicTest.dynamicTest("paths found", () ->
-                assertTrue(paths.size() >= MIN_ASSET_PATHS, "Only " + paths.size() + " paths found"));
-        return Stream.concat(Stream.of(found), paths.stream()
-                .filter(p -> !INTENTIONALLY_MISSING.contains(p))
-                .map(path -> DynamicTest.dynamicTest(path, () ->
-                        assertTrue(AssetLookup.MOD.exists(ModProject.ASSETS.resolve(path)), "Referenced in code but missing: " + path))));
+        DynamicTest found = DynamicTest.dynamicTest(
+                "paths found",
+                () ->
+                        assertTrue(paths.size() >= MIN_ASSET_PATHS, "Only " + paths.size() + " paths found")
+        );
+        return Stream.concat(
+                Stream.of(found),
+                paths.stream()
+                        .filter(p -> !INTENTIONALLY_MISSING.contains(p))
+                        .map(path -> DynamicTest.dynamicTest(
+                                path,
+                                () ->
+                                        assertTrue(AssetLookup.MOD.exists(ModProject.ASSETS.resolve(path)), "Referenced in code but missing: " + path)
+                        ))
+        );
     }
 
     @Test

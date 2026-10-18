@@ -36,7 +36,14 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
     }
 
     @Override
-    public void render(SarcophagusBlockEntity entity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumers, int light, int overlay) {
+    public void render(
+            SarcophagusBlockEntity entity,
+            float tickDelta,
+            PoseStack matrixStack,
+            MultiBufferSource vertexConsumers,
+            int light,
+            int overlay
+    ) {
         BlockState blockState = entity.getBlockState();
         DoubleBlockCombiner.NeighborCombineResult<? extends SarcophagusBlockEntity> propertySource = DoubleBlockCombiner.combineWithNeigbour(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getLevel(), entity.getBlockPos(), (worldx, pos) -> false);
         float g = propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever(entity)).get(tickDelta);
@@ -54,7 +61,16 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
 
 
 
-    private void render(SarcophagusBlockEntity entity, PoseStack matrixStack, MultiBufferSource vertexConsumer, int light, int overlay, float g, BakedModel model, boolean isLid) {
+    private void render(
+            SarcophagusBlockEntity entity,
+            PoseStack matrixStack,
+            MultiBufferSource vertexConsumer,
+            int light,
+            int overlay,
+            float g,
+            BakedModel model,
+            boolean isLid
+    ) {
         matrixStack.pushPose();
 
         Direction direction = entity.getBlockState().getValue(SarcophagusBlock.FACING).getOpposite();

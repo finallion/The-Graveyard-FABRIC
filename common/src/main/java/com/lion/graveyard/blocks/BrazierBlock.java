@@ -56,7 +56,15 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         if (player.getAbilities().mayBuild && stack.isEmpty() && state.getValue(LIT)) {
             extinguish(player, state, world, pos);
             return ItemInteractionResult.sidedSuccess(world.isClientSide);
@@ -83,7 +91,14 @@ public class BrazierBlock extends Block implements EntityBlock, SimpleWaterlogge
 
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighborState,
+            LevelAccessor world,
+            BlockPos pos,
+            BlockPos neighborPos
+    ) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }

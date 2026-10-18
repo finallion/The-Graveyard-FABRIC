@@ -221,8 +221,12 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason,
-            @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData
+    ) {
         if (spawnReason != MobSpawnType.SPAWN_EGG && spawnReason != MobSpawnType.COMMAND && spawnReason != MobSpawnType.BUCKET) {
             this.home = this.blockPosition();
         }
@@ -703,7 +707,13 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
                 || this.state(pos.below()).is(block);
     }
 
-    public static boolean canSpawn(EntityType<? extends CorvidEntity> type, LevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSpawn(
+            EntityType<? extends CorvidEntity> type,
+            LevelAccessor world,
+            MobSpawnType reason,
+            BlockPos pos,
+            RandomSource random
+    ) {
         BlockState below = world.getBlockState(pos.below());
         boolean lit = world.getBrightness(LightLayer.SKY, pos) > 8;
         return lit && (below.is(TGTags.CORVID_PERCHES) || below.canOcclude()) && checkMobSpawnRules(type, world, reason, pos, random);
@@ -725,7 +735,12 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    protected void checkFallDamage(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition) {
+    protected void checkFallDamage(
+            double heightDifference,
+            boolean onGround,
+            BlockState state,
+            BlockPos landedPosition
+    ) {
     }
 
     @Override

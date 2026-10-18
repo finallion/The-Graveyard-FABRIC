@@ -41,7 +41,8 @@ public class TGJigsawStructure extends Structure {
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
                     Codec.INT.fieldOf("terrain_check_size").forGetter(structure -> structure.terrainCheckSize),
                     Codec.INT.fieldOf("max_height_difference").forGetter(structure -> structure.maxHeightDifference),
-                    Codec.STRING.fieldOf("structure_name").forGetter(config -> config.structureName))
+                    Codec.STRING.fieldOf("structure_name").forGetter(config -> config.structureName)
+            )
                     .apply(instance, TGJigsawStructure::new));
 
 
@@ -57,7 +58,19 @@ public class TGJigsawStructure extends Structure {
     public final String structureName;
     protected final StructureSettings config;
 
-    public TGJigsawStructure(StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName, int size, HeightProvider startHeight, Boolean useExpansionHack, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, int terrainCheckSize, int maxHeightDifference, String structureName) {
+    public TGJigsawStructure(
+            StructureSettings config,
+            Holder<StructureTemplatePool> startPool,
+            Optional<ResourceLocation> startJigsawName,
+            int size,
+            HeightProvider startHeight,
+            Boolean useExpansionHack,
+            Optional<Heightmap.Types> projectStartToHeightmap,
+            int maxDistanceFromCenter,
+            int terrainCheckSize,
+            int maxHeightDifference,
+            String structureName
+    ) {
         super(config);
         this.config = config;
         this.startPool = startPool;
@@ -118,21 +131,35 @@ public class TGJigsawStructure extends Structure {
                 context,
                 this.startPool,
                 this.startJigsawName,
-                this.size, blockpos,
+                this.size,
+                blockpos,
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
                 this.maxDistanceFromCenter,
                 PoolAliasLookup.EMPTY,
                 DimensionPadding.ZERO,
-                LiquidSettings.APPLY_WATERLOGGING);
+                LiquidSettings.APPLY_WATERLOGGING
+        );
     }
 
 
-    private static boolean canGenerate(GenerationContext context, int size, String name, BlockPos centerOfChunk, int maxHeightDifference) {
+    private static boolean canGenerate(
+            GenerationContext context,
+            int size,
+            String name,
+            BlockPos centerOfChunk,
+            int maxHeightDifference
+    ) {
         return isTerrainFlat(context, name, centerOfChunk, size, maxHeightDifference);
     }
 
-    protected static boolean isTerrainFlat(GenerationContext context, String name, BlockPos centerChunk, int size, int maxHeightDifference) {
+    protected static boolean isTerrainFlat(
+            GenerationContext context,
+            String name,
+            BlockPos centerChunk,
+            int size,
+            int maxHeightDifference
+    ) {
         ChunkGenerator generator = context.chunkGenerator();
         LevelHeightAccessor heightLimitView = context.heightAccessor();
         int chunkX = centerChunk.getX();

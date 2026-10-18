@@ -126,18 +126,27 @@ class ModMetadataTest {
         for (var group : json.getAsJsonObject("entrypoints").entrySet()) {
             for (JsonElement entry : group.getValue().getAsJsonArray()) {
                 String className = entry.getAsString();
-                tests.add(DynamicTest.dynamicTest("entrypoint " + className, () ->
-                        assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("java/" + className.replace('.', '/') + ".java")))));
+                tests.add(DynamicTest.dynamicTest(
+                        "entrypoint " + className,
+                        () ->
+                                assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("java/" + className.replace('.', '/') + ".java")))
+                ));
             }
         }
         for (JsonElement mixin : json.getAsJsonArray("mixins")) {
             String name = mixin.getAsString();
-            tests.add(DynamicTest.dynamicTest("mixin config " + name, () ->
-                    assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("resources/" + name))
-                            || Files.isRegularFile(ModProject.RESOURCES.resolve(name)))));
+            tests.add(DynamicTest.dynamicTest(
+                    "mixin config " + name,
+                    () ->
+                            assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("resources/" + name))
+                                    || Files.isRegularFile(ModProject.RESOURCES.resolve(name)))
+            ));
         }
-        tests.add(DynamicTest.dynamicTest("icon", () ->
-                assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("resources/" + json.get("icon").getAsString())))));
+        tests.add(DynamicTest.dynamicTest(
+                "icon",
+                () ->
+                        assertTrue(Files.isRegularFile(ModProject.FABRIC_MAIN.resolve("resources/" + json.get("icon").getAsString())))
+        ));
         return tests.stream();
     }
 

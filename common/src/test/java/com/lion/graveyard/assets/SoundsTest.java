@@ -85,15 +85,20 @@ class SoundsTest {
         Path dir = ASSETS.root().resolve(ModProject.SOUNDS);
         return ModProject.files(dir, ".ogg").stream()
                 .map(file -> DynamicTest.dynamicTest(
-                        ModProject.idOf(dir, file, ".ogg"), () -> assertTrue(hasOggHeader(file), "Missing OggS header")));
+                        ModProject.idOf(dir, file, ".ogg"),
+                        () -> assertTrue(hasOggHeader(file), "Missing OggS header")
+                ));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredSoundEventIsDefinedInSoundsJson() {
         Set<String> defined = soundsJson().keySet();
         return RegistryIds.of(RegistryIds.SOUND).stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(defined.contains(id), "Registered sound event not in sounds.json: " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () ->
+                                assertTrue(defined.contains(id), "Registered sound event not in sounds.json: " + id)
+                ));
     }
 
     @TestFactory
@@ -101,8 +106,11 @@ class SoundsTest {
         Set<String> registered = RegistryIds.of(RegistryIds.SOUND);
         return soundsJson().keySet()
                 .stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(registered.contains(id), "Event in sounds.json without a registration: " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () ->
+                                assertTrue(registered.contains(id), "Event in sounds.json without a registration: " + id)
+                ));
     }
 
     @TestFactory

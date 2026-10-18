@@ -107,7 +107,13 @@ public abstract class HostileGraveyardEntity extends Monster {
     }
 
 
-    public static boolean canSpawnInDarkness(EntityType<? extends Monster> type, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, net.minecraft.util.RandomSource random) {
+    public static boolean canSpawnInDarkness(
+            EntityType<? extends Monster> type,
+            ServerLevelAccessor world,
+            MobSpawnType spawnReason,
+            BlockPos pos,
+            net.minecraft.util.RandomSource random
+    ) {
         if (world.getBiome(pos).is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
             return false;
         }
@@ -115,7 +121,13 @@ public abstract class HostileGraveyardEntity extends Monster {
         return Monster.isDarkEnoughToSpawn(world, pos, random);
     }
 
-    public static boolean canSpawnInLight(EntityType<? extends Monster> type, ServerLevelAccessor world, MobSpawnType spawnReason, BlockPos pos, net.minecraft.util.RandomSource random) {
+    public static boolean canSpawnInLight(
+            EntityType<? extends Monster> type,
+            ServerLevelAccessor world,
+            MobSpawnType spawnReason,
+            BlockPos pos,
+            net.minecraft.util.RandomSource random
+    ) {
         return Monster.checkAnyLightMonsterSpawnRules(type, world, spawnReason, pos, random);
     }
 

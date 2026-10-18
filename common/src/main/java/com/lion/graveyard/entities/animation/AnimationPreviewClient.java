@@ -80,8 +80,7 @@ public final class AnimationPreviewClient {
     @Nullable
     private static net.minecraft.client.multiplayer.ClientLevel lastWorld;
 
-    private AnimationPreviewClient() {
-    }
+    private AnimationPreviewClient() {}
 
     public static void clientTick(Minecraft client) {
         AnimationClock.setListener(LISTENER);
@@ -210,11 +209,13 @@ public final class AnimationPreviewClient {
                 return null;
             }
 
-            return new Cue(event,
+            return new Cue(
+                    event,
                     json.has("offsetTicks") ? json.get("offsetTicks").getAsInt() : 0,
                     json.has("repeatTicks") ? json.get("repeatTicks").getAsInt() : 0,
                     json.has("volume") ? json.get("volume").getAsFloat() : 1.0F,
-                    json.has("pitch") ? json.get("pitch").getAsFloat() : 1.0F);
+                    json.has("pitch") ? json.get("pitch").getAsFloat() : 1.0F
+            );
         }
     }
 
@@ -277,8 +278,15 @@ public final class AnimationPreviewClient {
             if (this.particles) {
                 if (ground.getRenderShape() != RenderShape.INVISIBLE) {
                     for (int i = 0; i < 10; i++) {
-                        entity.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, ground),
-                                entity.getX() + random.nextFloat() * 1.4F - 0.7F, entity.getY(), entity.getZ() + random.nextFloat() * 1.4F - 0.7F, 0.0D, 0.0D, 0.0D);
+                        entity.level().addParticle(
+                                new BlockParticleOption(ParticleTypes.BLOCK, ground),
+                                entity.getX() + random.nextFloat() * 1.4F - 0.7F,
+                                entity.getY(),
+                                entity.getZ() + random.nextFloat() * 1.4F - 0.7F,
+                                0.0D,
+                                0.0D,
+                                0.0D
+                        );
                     }
                 }
             }

@@ -112,7 +112,13 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
 
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            BlockHitResult hit
+    ) {
         if (world.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {

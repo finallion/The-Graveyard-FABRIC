@@ -24,7 +24,12 @@ public class TormentedVillagerRenderer extends GeoEntityRenderer<TormentedVillag
     }
 
     @Override
-    public RenderType getRenderType(TormentedVillagerEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            TormentedVillagerEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityTranslucent(texture);
     }
 }

@@ -17,7 +17,12 @@ public class NamelessHangedRenderer extends GeoEntityRenderer<NamelessHangedEnti
     }
 
     @Override
-    public RenderType getRenderType(NamelessHangedEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            NamelessHangedEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityTranslucent(texture);
     }
 

@@ -9,7 +9,10 @@ public class PacketHandler {
 
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         event.registrar(PROTOCOL_VERSION)
-                .playToClient(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC,
-                        (payload, context) -> context.enqueueWork(() -> ClientPayloadHandler.handle(payload)));
+                .playToClient(
+                        ChronicleSync.TYPE,
+                        ChronicleSync.STREAM_CODEC,
+                        (payload, context) -> context.enqueueWork(() -> ClientPayloadHandler.handle(payload))
+                );
     }
 }

@@ -12,7 +12,9 @@ public abstract class LevelStorageMixin {
 
     @ModifyVariable(method = "getLevelDataAndDimensions", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private static Dynamic<?> graveyard$dropPastDimension(Dynamic<?> levelData) {
-        return levelData.update("WorldGenSettings",
-                settings -> settings.update("dimensions", dimensions -> dimensions.remove("graveyard:past")));
+        return levelData.update(
+                "WorldGenSettings",
+                settings -> settings.update("dimensions", dimensions -> dimensions.remove("graveyard:past"))
+        );
     }
 }

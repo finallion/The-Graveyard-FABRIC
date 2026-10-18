@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class NbtReader {
-    private NbtReader() {
-    }
+    private NbtReader() {}
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> readGzipped(byte[] bytes) throws IOException {

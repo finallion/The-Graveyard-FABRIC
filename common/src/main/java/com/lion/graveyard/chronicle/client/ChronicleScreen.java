@@ -167,8 +167,14 @@ public class ChronicleScreen extends Screen {
         int foundCount = (int) this.chapters.stream()
                 .filter(c -> ClientChronicle.isFound(c.id()))
                 .count();
-        context.drawString(font, Component.translatable("chronicle." + Graveyard.MOD_ID + ".progress", foundCount, this.chapters.size()).withStyle(ChatFormatting.DARK_GRAY),
-                this.listX, this.progressY(), 0xFFFFFF, true);
+        context.drawString(
+                font,
+                Component.translatable("chronicle." + Graveyard.MOD_ID + ".progress", foundCount, this.chapters.size()).withStyle(ChatFormatting.DARK_GRAY),
+                this.listX,
+                this.progressY(),
+                0xFFFFFF,
+                true
+        );
     }
 
     private int progressY() {

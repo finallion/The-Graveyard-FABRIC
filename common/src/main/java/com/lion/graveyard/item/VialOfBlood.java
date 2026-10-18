@@ -34,7 +34,12 @@ public class VialOfBlood extends Item {
 
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(
+            ItemStack stack,
+            Item.TooltipContext tooltipContext,
+            List<Component> tooltip,
+            TooltipFlag context
+    ) {
         float blood = LegacyItemData.view(stack).getFloat(LegacyItemData.BLOOD);
 
         if (blood > 0.8F && blood < 0.9F) {

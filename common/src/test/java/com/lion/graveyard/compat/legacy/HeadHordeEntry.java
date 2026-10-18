@@ -14,8 +14,16 @@ public class HeadHordeEntry {
         this(true, mobSpawnAttempts, ticksUntilNextSpawn, additionalRandomizedTicks, 0.2D, 24, 48, true);
     }
 
-    private HeadHordeEntry(boolean enabled, int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks,
-                             Double chancePerCheck, Integer minDistance, Integer maxDistance, Boolean nightOnly) {
+    private HeadHordeEntry(
+            boolean enabled,
+            int mobSpawnAttempts,
+            int ticksUntilNextSpawn,
+            int additionalRandomizedTicks,
+            Double chancePerCheck,
+            Integer minDistance,
+            Integer maxDistance,
+            Boolean nightOnly
+    ) {
         this.enabled = enabled;
         this.mobSpawnAttempts = mobSpawnAttempts;
         this.ticksUntilNextSpawn = ticksUntilNextSpawn;
@@ -43,9 +51,16 @@ public class HeadHordeEntry {
     }
 
     public HeadHordeEntry sanitized() {
-        return new HeadHordeEntry(enabled, Math.max(0, Math.min(mobSpawnAttempts, 256)),
-                Math.max(0, ticksUntilNextSpawn), Math.max(0, additionalRandomizedTicks),
-                chance(), nearDistance(), farDistance(), onlyAtNight());
+        return new HeadHordeEntry(
+                enabled,
+                Math.max(0, Math.min(mobSpawnAttempts, 256)),
+                Math.max(0, ticksUntilNextSpawn),
+                Math.max(0, additionalRandomizedTicks),
+                chance(),
+                nearDistance(),
+                farDistance(),
+                onlyAtNight()
+        );
     }
 
     public static HeadHordeEntry of(int mobSpawnAttempts, int ticksUntilNextSpawn, int additionalRandomizedTicks) {

@@ -7,8 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Sources {
-    private Sources() {
-    }
+    private Sources() {}
 
     public static String stripComments(String source) {
         StringBuilder out = new StringBuilder(source.length());

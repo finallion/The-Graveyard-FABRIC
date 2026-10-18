@@ -119,8 +119,11 @@ class LangTest {
     Stream<DynamicTest> everyRegisteredBlockHasAnEnglishName() {
         Map<String, String> english = english();
         return RegistryIds.of(RegistryIds.BLOCK).stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(english.containsKey("block." + ModProject.MOD_ID + "." + id), "No name for block " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () ->
+                                assertTrue(english.containsKey("block." + ModProject.MOD_ID + "." + id), "No name for block " + id)
+                ));
     }
 
     @TestFactory
@@ -140,8 +143,11 @@ class LangTest {
     Stream<DynamicTest> everyRegisteredEntityHasAnEnglishName() {
         Map<String, String> english = english();
         return RegistryIds.of(RegistryIds.ENTITY).stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(english.containsKey("entity." + ModProject.MOD_ID + "." + id), "No name for entity " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () ->
+                                assertTrue(english.containsKey("entity." + ModProject.MOD_ID + "." + id), "No name for entity " + id)
+                ));
     }
 
     @Test

@@ -25,7 +25,19 @@ public class CorruptedIllagerGeoRenderer<T extends AnimatedCorruptedIllager> ext
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+    public void renderRecursively(
+            PoseStack poseStack,
+            T animatable,
+            GeoBone bone,
+            RenderType renderType,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            boolean isReRender,
+            float partialTick,
+            int packedLight,
+            int packedOverlay,
+            int colour
+    ) {
         // Illagers share one baked model. Set claw visibility for each entity.
         if (bone.getName().equals("left_claw")) {
             bone.setHidden(!animatable.hasLeftClaw());

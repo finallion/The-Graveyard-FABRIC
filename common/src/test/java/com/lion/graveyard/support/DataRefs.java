@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class DataRefs {
-    private DataRefs() {
-    }
+    private DataRefs() {}
 
     public static List<String> problems(JsonElement root, DataIndex index) {
         List<String> problems = new ArrayList<>();
@@ -17,7 +16,13 @@ public final class DataRefs {
         return problems;
     }
 
-    private static void visit(JsonElement element, String key, JsonObject owner, DataIndex index, List<String> problems) {
+    private static void visit(
+            JsonElement element,
+            String key,
+            JsonObject owner,
+            DataIndex index,
+            List<String> problems
+    ) {
         if (element.isJsonObject()) {
             JsonObject object = element.getAsJsonObject();
             for (Map.Entry<String, JsonElement> entry : object.entrySet()) {

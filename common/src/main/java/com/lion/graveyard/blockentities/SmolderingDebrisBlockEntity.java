@@ -15,7 +15,12 @@ public class SmolderingDebrisBlockEntity extends BlockEntity {
         super(TGOverrunVillage.SMOLDERING_DEBRIS_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public static void clientTick(Level world, BlockPos pos, BlockState state, SmolderingDebrisBlockEntity blockEntity) {
+    public static void clientTick(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            SmolderingDebrisBlockEntity blockEntity
+    ) {
         RandomSource random = world.random;
 
         if (random.nextFloat() < 0.11F && !world.getBlockState(pos.above()).isSolidRender(world, pos.above())) {

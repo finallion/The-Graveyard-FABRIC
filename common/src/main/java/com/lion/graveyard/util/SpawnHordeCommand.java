@@ -47,7 +47,13 @@ public class SpawnHordeCommand {
         return 1;
     }
 
-    private static boolean spawnHordeEntity(ServerLevel world, BlockPos pos, RandomSource random, boolean captain, boolean illagerSpawn) {
+    private static boolean spawnHordeEntity(
+            ServerLevel world,
+            BlockPos pos,
+            RandomSource random,
+            boolean captain,
+            boolean illagerSpawn
+    ) {
         HordeGraveyardEntity hordeEntity;
 
         if (!illagerSpawn) {

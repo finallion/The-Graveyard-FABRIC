@@ -12,8 +12,7 @@ import java.util.List;
 public final class HeadOmega {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private HeadOmega() {
-    }
+    private HeadOmega() {}
 
     public record Outcome(HeadConfig config, String rejection) {
         public boolean rejected() {

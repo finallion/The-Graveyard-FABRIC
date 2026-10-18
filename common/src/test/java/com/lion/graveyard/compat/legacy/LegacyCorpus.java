@@ -20,8 +20,7 @@ public final class LegacyCorpus {
     public record Case(String name, String text) {
     }
 
-    private LegacyCorpus() {
-    }
+    private LegacyCorpus() {}
 
     public static String sampleText() {
         return ModProject.snapshot("config-legacy-sample.json5");

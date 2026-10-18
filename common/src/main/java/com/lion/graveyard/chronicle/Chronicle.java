@@ -28,25 +28,59 @@ public final class Chronicle {
             Map.entry("Tome of Rituals", "tome_of_rituals"),
             Map.entry("The Consequence", "the_consequence"),
             Map.entry("Roberts Diary", "roberts_diary"),
-            Map.entry("Notes Nr. 63", "notes_63"));
+            Map.entry("Notes Nr. 63", "notes_63")
+    );
 
     /// Unsigned books have no title. Match their first page text instead.
     private static final Map<String, String> UNSIGNED_BOOKS = Map.of(
             "Day 112:", "day_112",
             "Day 132:", "day_132",
             "Day 140:", "day_140",
-            "It is done.", "the_last_book");
+            "It is done.", "the_last_book"
+    );
 
     /// The server cannot read the chapter assets, so it keeps the ids itself.
     private static final List<String> ACT_ONE = List.of(
-            "on_bells", "the_shroud", "the_gravedigger", "the_red_moon", "fog", "the_quiet", "plague_rain",
-            "on_the_scarecrow", "letter_unsent_1", "letter_unsent_2", "letter_unsent_3", "roberts_diary_last",
-            "notes_64", "the_mycelium_1", "the_mycelium_2", "the_tree", "the_column");
+            "on_bells",
+            "the_shroud",
+            "the_gravedigger",
+            "the_red_moon",
+            "fog",
+            "the_quiet",
+            "plague_rain",
+            "on_the_scarecrow",
+            "letter_unsent_1",
+            "letter_unsent_2",
+            "letter_unsent_3",
+            "roberts_diary_last",
+            "notes_64",
+            "the_mycelium_1",
+            "the_mycelium_2",
+            "the_tree",
+            "the_column"
+    );
 
     private static final List<String> ACT_TWO = List.of(
-            "the_arrival", "the_first_omen", "the_spreading_1", "the_spreading_2", "the_spreading_3", "day_112",
-            "day_115", "day_119", "day_124", "the_bell_ringer", "day_127", "day_132", "tome_of_rituals", "day_136",
-            "day_140", "roberts_diary", "the_consequence", "notes_63", "the_last_book");
+            "the_arrival",
+            "the_first_omen",
+            "the_spreading_1",
+            "the_spreading_2",
+            "the_spreading_3",
+            "day_112",
+            "day_115",
+            "day_119",
+            "day_124",
+            "the_bell_ringer",
+            "day_127",
+            "day_132",
+            "tome_of_rituals",
+            "day_136",
+            "day_140",
+            "roberts_diary",
+            "the_consequence",
+            "notes_63",
+            "the_last_book"
+    );
 
     private static final java.util.regex.Pattern PAGE_ID = java.util.regex.Pattern.compile("[a-z0-9_]{1,64}");
 

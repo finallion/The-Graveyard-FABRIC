@@ -36,8 +36,7 @@ public final class SmolderingWood {
     private static final int ASH_PER_CALL = 3;
     private static final int WHITE_ASH_ONE_IN = 8;
 
-    private SmolderingWood() {
-    }
+    private SmolderingWood() {}
 
     public static int light(BlockState state) {
         return state.getValue(SMOLDERING) ? LIGHT_LEVEL : 0;
@@ -47,7 +46,14 @@ public final class SmolderingWood {
         return state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED);
     }
 
-    public static ItemInteractionResult use(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand) {
+    public static ItemInteractionResult use(
+            ItemStack stack,
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand
+    ) {
 
         if (!player.getAbilities().mayBuild) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

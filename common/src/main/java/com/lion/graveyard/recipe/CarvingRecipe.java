@@ -27,7 +27,13 @@ public abstract class CarvingRecipe implements Recipe<SingleRecipeInput> {
     private final RecipeSerializer<?> serializer;
     protected final String group;
 
-    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, String group, Ingredient input, ItemStack output) {
+    public CarvingRecipe(
+            RecipeType<?> type,
+            RecipeSerializer<?> serializer,
+            String group,
+            Ingredient input,
+            ItemStack output
+    ) {
         this.type = type;
         this.serializer = serializer;
         this.group = group;
@@ -98,7 +104,8 @@ public abstract class CarvingRecipe implements Recipe<SingleRecipeInput> {
                     recipe -> recipe.input,
                     ItemStack.STREAM_CODEC,
                     recipe -> recipe.output,
-                    recipeFactory::create);
+                    recipeFactory::create
+            );
         }
 
         @Override

@@ -104,7 +104,14 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighborState,
+            LevelAccessor world,
+            BlockPos pos,
+            BlockPos neighborPos
+    ) {
         if (direction == getDirectionTowardsOtherPart(state.getValue(PART), state.getValue(FACING))) {
             return neighborState.is(this) && neighborState.getValue(PART) != state.getValue(PART) ? state : Blocks.AIR.defaultBlockState();
         } else {
@@ -132,7 +139,13 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            BlockHitResult hit
+    ) {
         Random random = new Random();
 
         if (world.isClientSide) {
@@ -193,7 +206,13 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
         super.setPlacedBy(world, pos, state, placer, itemStack);
 
         if (!world.isClientSide) {
@@ -304,10 +323,15 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
         return state.getValue(PART) == SarcophagusPart.HEAD ? direction.getOpposite() : direction;
     }
 
-    public static DoubleBlockCombiner.Combiner<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(LidBlockEntity progress) {
+    public static DoubleBlockCombiner.Combiner<SarcophagusBlockEntity, Float2FloatFunction> getAnimationProgressRetriever(
+            LidBlockEntity progress
+    ) {
         return new DoubleBlockCombiner.Combiner<>() {
             @Override
-            public Float2FloatFunction acceptDouble(SarcophagusBlockEntity chestBlockEntity, SarcophagusBlockEntity chestBlockEntity2) {
+            public Float2FloatFunction acceptDouble(
+                    SarcophagusBlockEntity chestBlockEntity,
+                    SarcophagusBlockEntity chestBlockEntity2
+            ) {
                 return (tickDelta) -> Math.max(chestBlockEntity.getOpenNess(tickDelta), chestBlockEntity2.getOpenNess(tickDelta));
             }
 
@@ -327,7 +351,11 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level world,
+            BlockState state,
+            BlockEntityType<T> type
+    ) {
         return world.isClientSide ? createTickerHelper(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
     }
 

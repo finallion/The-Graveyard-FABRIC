@@ -75,8 +75,7 @@ public final class MobAnimations {
         }
     }
 
-    private MobAnimations() {
-    }
+    private MobAnimations() {}
 
     private static int animationTableConstant(String name) {
         String code = Sources.code(ENTITIES.resolve("animation/AnimationTable.java"));
@@ -176,8 +175,10 @@ public final class MobAnimations {
                         break;
                     }
 
-                    String loop = arguments.size() > 1 ? values.getOrDefault(arguments.get(1).trim(),
-                            arguments.get(1).trim()) : null;
+                    String loop = arguments.size() > 1 ? values.getOrDefault(
+                            arguments.get(1).trim(),
+                            arguments.get(1).trim()
+                    ) : null;
                     String explicit = loop == null ? null : loop.substring(loop.lastIndexOf('.') + 1);
                     local.add(new Clip(assignment.group(1), name, loopOf(assignment.group(2), explicit), OptionalInt.empty()));
                 }

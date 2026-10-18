@@ -24,10 +24,21 @@ public final class DataIndex {
     public final Set<String> processorLists;
     public final Set<String> structureFeatures;
 
-    public DataIndex(Set<String> blocks, Set<String> items, Set<String> entities, Set<String> otherTypeIds,
-                     Set<String> lootTables, Set<String> recipes, Set<String> advancements,
-                     Set<String> itemTags, Set<String> blockTags, Set<String> biomeTags,
-                     Set<String> templatePools, Set<String> processorLists, Set<String> structureFeatures) {
+    public DataIndex(
+            Set<String> blocks,
+            Set<String> items,
+            Set<String> entities,
+            Set<String> otherTypeIds,
+            Set<String> lootTables,
+            Set<String> recipes,
+            Set<String> advancements,
+            Set<String> itemTags,
+            Set<String> blockTags,
+            Set<String> biomeTags,
+            Set<String> templatePools,
+            Set<String> processorLists,
+            Set<String> structureFeatures
+    ) {
         this.blocks = blocks;
         this.items = items;
         this.entities = entities;
@@ -57,10 +68,20 @@ public final class DataIndex {
             }
 
             mod = new DataIndex(
-                    RegistryIds.of(RegistryIds.BLOCK), RegistryIds.of(RegistryIds.ITEM), RegistryIds.of(RegistryIds.ENTITY), other,
-                    ids(ModProject.LOOT_TABLES), ids(ModProject.RECIPES), ids(ModProject.ADVANCEMENTS),
-                    ids(ModProject.TAGS_ITEMS), ids(ModProject.TAGS_BLOCKS), ids(ModProject.TAGS_BIOMES),
-                    ids(ModProject.TEMPLATE_POOLS), ids(ModProject.PROCESSOR_LISTS), ids(ModProject.STRUCTURE_FEATURES));
+                    RegistryIds.of(RegistryIds.BLOCK),
+                    RegistryIds.of(RegistryIds.ITEM),
+                    RegistryIds.of(RegistryIds.ENTITY),
+                    other,
+                    ids(ModProject.LOOT_TABLES),
+                    ids(ModProject.RECIPES),
+                    ids(ModProject.ADVANCEMENTS),
+                    ids(ModProject.TAGS_ITEMS),
+                    ids(ModProject.TAGS_BLOCKS),
+                    ids(ModProject.TAGS_BIOMES),
+                    ids(ModProject.TEMPLATE_POOLS),
+                    ids(ModProject.PROCESSOR_LISTS),
+                    ids(ModProject.STRUCTURE_FEATURES)
+            );
         }
 
         return mod;

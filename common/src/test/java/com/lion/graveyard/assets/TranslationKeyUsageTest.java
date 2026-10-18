@@ -30,7 +30,8 @@ class TranslationKeyUsageTest {
     /// Reason per entry. A key built at run time has to start with one of these prefixes, and the file needs at least one key under it.
     private static final Map<String, String> DYNAMIC_PREFIXES = Map.of(
             "chronicle.graveyard.page.", "The page number completes the key.",
-            "chronicle.graveyard.act.", "The act number completes the key.");
+            "chronicle.graveyard.act.", "The act number completes the key."
+    );
 
     record Keys(List<String> exact, List<String> prefixes) {
     }
@@ -123,10 +124,17 @@ class TranslationKeyUsageTest {
     @TestFactory
     Stream<DynamicTest> everyNamedTranslationKeyExistsInEnglish() {
         Map<String, String> english = LangTest.english();
-        return Floors.atLeast(12, "files with translatable calls", sourceFiles().stream()
-                .filter(file -> Sources.code(file).contains("Component.translatable("))
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () ->
-                        assertEquals(List.of(), missingKeys(keysIn(Sources.code(file)), english)))));
+        return Floors.atLeast(
+                12,
+                "files with translatable calls",
+                sourceFiles().stream()
+                        .filter(file -> Sources.code(file).contains("Component.translatable("))
+                        .map(file -> DynamicTest.dynamicTest(
+                                ModProject.display(file),
+                                () ->
+                                        assertEquals(List.of(), missingKeys(keysIn(Sources.code(file)), english))
+                        ))
+        );
     }
 
     @Test
@@ -143,10 +151,17 @@ class TranslationKeyUsageTest {
     @TestFactory
     Stream<DynamicTest> everyKeyLiteralExistsInEnglish() {
         Map<String, String> english = LangTest.english();
-        return Floors.atLeast(5, "files with key literals", sourceFiles().stream()
-                .filter(file -> !modKeyLiterals(Sources.code(file)).exact().isEmpty() || !modKeyLiterals(Sources.code(file)).prefixes().isEmpty())
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () ->
-                        assertEquals(List.of(), missingKeys(modKeyLiterals(Sources.code(file)), english)))));
+        return Floors.atLeast(
+                5,
+                "files with key literals",
+                sourceFiles().stream()
+                        .filter(file -> !modKeyLiterals(Sources.code(file)).exact().isEmpty() || !modKeyLiterals(Sources.code(file)).prefixes().isEmpty())
+                        .map(file -> DynamicTest.dynamicTest(
+                                ModProject.display(file),
+                                () ->
+                                        assertEquals(List.of(), missingKeys(modKeyLiterals(Sources.code(file)), english))
+                        ))
+        );
     }
 
     @Test

@@ -116,8 +116,10 @@ public class GraveyardClientNeoforge {
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
         final BlockColors blockColors = event.getBlockColors();
-        blockColors.register((state, reader, pos, color) -> reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColor.get(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get());
+        blockColors.register(
+                (state, reader, pos, color) -> reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColor.get(0.5D, 1.0D),
+                TGBlocks.TG_GRASS_BLOCK.get()
+        );
 
     }
 

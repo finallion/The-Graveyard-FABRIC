@@ -12,8 +12,7 @@ public final class ConfigWriter {
 
     private static final String INDENT = "  ";
 
-    private ConfigWriter() {
-    }
+    private ConfigWriter() {}
 
     public static String write(ConfigValues values) {
         StringBuilder out = new StringBuilder();
@@ -24,8 +23,14 @@ public final class ConfigWriter {
         return out.toString();
     }
 
-    private static void writeChildren(StringBuilder out, ConfigSchema.Section section, ConfigValues values, int depth,
-                                      Set<String> seen, String relative) {
+    private static void writeChildren(
+            StringBuilder out,
+            ConfigSchema.Section section,
+            ConfigValues values,
+            int depth,
+            Set<String> seen,
+            String relative
+    ) {
         List<ConfigSchema.Node> children = section.children();
 
         for (int i = 0; i < children.size(); i++) {
@@ -43,8 +48,16 @@ public final class ConfigWriter {
         }
     }
 
-    private static void writeSection(StringBuilder out, ConfigSchema.Section nested, ConfigValues values, int depth,
-                                     boolean commented, Set<String> seen, String relative, String comma) {
+    private static void writeSection(
+            StringBuilder out,
+            ConfigSchema.Section nested,
+            ConfigValues values,
+            int depth,
+            boolean commented,
+            Set<String> seen,
+            String relative,
+            String comma
+    ) {
         if (commented && !nested.comment().isEmpty()) {
             line(out, depth, "// " + nested.comment());
         }
@@ -54,8 +67,14 @@ public final class ConfigWriter {
         line(out, depth, "}" + comma);
     }
 
-    private static void writeLeaf(StringBuilder out, ConfigSchema.Leaf leaf, ConfigValues values, int depth,
-                                  boolean commented, String comma) {
+    private static void writeLeaf(
+            StringBuilder out,
+            ConfigSchema.Leaf leaf,
+            ConfigValues values,
+            int depth,
+            boolean commented,
+            String comma
+    ) {
         if (commented) {
             line(out, depth, "// " + leaf.comment());
         }

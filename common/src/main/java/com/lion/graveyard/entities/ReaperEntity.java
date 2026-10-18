@@ -139,7 +139,12 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData
+    ) {
         this.entityData.set(SPAWN_TIMER, SPAWN_TICKS);
         return super.finalizeSpawn(world, difficulty, spawnReason, entityData);
     }

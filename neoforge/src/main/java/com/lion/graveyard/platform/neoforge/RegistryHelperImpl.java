@@ -81,16 +81,32 @@ public class RegistryHelperImpl {
         return TILE_ENTITIES.register(name, blockEntity);
     }
 
-    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
-        CREATIVE_TABS.register(name, () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(() -> new ItemStack(item))
-                .title(Component.literal(literalName)).build());
+    public static void registerItemGroup(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Item item
+    ) {
+        CREATIVE_TABS.register(
+                name,
+                () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                        .icon(() -> new ItemStack(item))
+                        .title(Component.literal(literalName)).build()
+        );
     }
 
-    public static void registerItemGroupWithIcon(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
-        CREATIVE_TABS.register(name, () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-                .icon(icon)
-                .title(Component.literal(literalName)).build());
+    public static void registerItemGroupWithIcon(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Supplier<ItemStack> icon
+    ) {
+        CREATIVE_TABS.register(
+                name,
+                () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                        .icon(icon)
+                        .title(Component.literal(literalName)).build()
+        );
     }
 
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
@@ -111,7 +127,13 @@ public class RegistryHelperImpl {
         STACKS_TO_ADD.computeIfAbsent(itemGroup, key -> new ArrayList<>()).add(stacks);
     }
 
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(
+            String name,
+            Supplier<? extends EntityType<? extends Mob>> type,
+            int backgroundColor,
+            int highlightColor,
+            Item.Properties props
+    ) {
         return (Supplier<T>) registerItem(name, () -> new DeferredSpawnEggItem(type, backgroundColor, highlightColor, props));
     }
 
@@ -135,7 +157,10 @@ public class RegistryHelperImpl {
         TRIGGERS.register(name, () -> trigger);
     }
 
-    public static <T> Supplier<DataComponentType<T>> registerDataComponent(String name, Supplier<DataComponentType<T>> type) {
+    public static <T> Supplier<DataComponentType<T>> registerDataComponent(
+            String name,
+            Supplier<DataComponentType<T>> type
+    ) {
         return DATA_COMPONENTS.register(name, type);
     }
 
@@ -150,7 +175,10 @@ public class RegistryHelperImpl {
         return SOUNDS.register(name, soundEvent);
     }
 
-    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String name, Supplier<EntityType<T>> entityType) {
+    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
+            String name,
+            Supplier<EntityType<T>> entityType
+    ) {
         return ENTITIES.register(name, entityType);
     }
 
@@ -158,18 +186,32 @@ public class RegistryHelperImpl {
         ENTITY_MODEL_LAYERS.put(location, definition);
     }
 
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(
+            Supplier<EntityType<T>> type,
+            EntityRendererProvider<T> renderProvider
+    ) {
         EntityRenderers.register(type.get(), renderProvider);
     }
 
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(
+            Supplier<BlockEntityType<T>> type,
+            BlockEntityRendererProvider<T> renderProvider
+    ) {
     }
 
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void registerEntityAttribute(
+            Supplier<? extends EntityType<? extends LivingEntity>> type,
+            Supplier<AttributeSupplier.Builder> attribute
+    ) {
         ENTITY_ATTRIBUTES.put(type, attribute);
     }
 
-    public static <T extends Mob> void registerSpawnPlacement(Supplier<? extends EntityType<T>> type, SpawnPlacementType placement, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> predicate) {
+    public static <T extends Mob> void registerSpawnPlacement(
+            Supplier<? extends EntityType<T>> type,
+            SpawnPlacementType placement,
+            Heightmap.Types heightmap,
+            SpawnPlacements.SpawnPredicate<T> predicate
+    ) {
         SPAWN_PLACEMENTS.add(event -> event.register(type.get(), placement, heightmap, predicate, RegisterSpawnPlacementsEvent.Operation.REPLACE));
     }
 
@@ -177,7 +219,10 @@ public class RegistryHelperImpl {
         return RECIPE_TYPES.register(name, () -> type);
     }
 
-    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
+    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(
+            String name,
+            RecipeSerializer<S> serializer
+    ) {
         return RECIPE_SERIALIZERS.register(name, () -> serializer);
     }
 

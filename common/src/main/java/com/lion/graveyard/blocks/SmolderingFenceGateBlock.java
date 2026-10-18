@@ -28,7 +28,15 @@ public class SmolderingFenceGateBlock extends FenceGateBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(
+            ItemStack stack,
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         ItemInteractionResult result = SmolderingWood.use(stack, state, world, pos, player, hand);
         return result == ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION ? super.useItemOn(stack, state, world, pos, player, hand, hit) : result;
     }

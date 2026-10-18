@@ -158,7 +158,24 @@ public class RuinProcessor extends StructureProcessor {
     private final Variant variant;
     private final float smolderChance;
 
-    public RuinProcessor(boolean collapse, float minSeverity, float maxSeverity, float burnChance, int maxFloorRemains, int maxLongRemains, TagKey<Block> floorRemains, TagKey<Block> wallRemains, TagKey<Block> longRemains, TagKey<Block> litter, float litterChance, boolean followsTerrain, float remainsChance, boolean onGround, boolean asUnit, Extras extras) {
+    public RuinProcessor(
+            boolean collapse,
+            float minSeverity,
+            float maxSeverity,
+            float burnChance,
+            int maxFloorRemains,
+            int maxLongRemains,
+            TagKey<Block> floorRemains,
+            TagKey<Block> wallRemains,
+            TagKey<Block> longRemains,
+            TagKey<Block> litter,
+            float litterChance,
+            boolean followsTerrain,
+            float remainsChance,
+            boolean onGround,
+            boolean asUnit,
+            Extras extras
+    ) {
         this.collapse = collapse;
         this.minSeverity = minSeverity;
         this.maxSeverity = maxSeverity;
@@ -184,7 +201,14 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     @Override
-    public List<StructureBlockInfo> finalizeProcessing(ServerLevelAccessor world, BlockPos pos, BlockPos pivot, List<StructureBlockInfo> originalBlockInfos, List<StructureBlockInfo> currentBlockInfos, StructurePlaceSettings data) {
+    public List<StructureBlockInfo> finalizeProcessing(
+            ServerLevelAccessor world,
+            BlockPos pos,
+            BlockPos pivot,
+            List<StructureBlockInfo> originalBlockInfos,
+            List<StructureBlockInfo> currentBlockInfos,
+            StructurePlaceSettings data
+    ) {
         if (currentBlockInfos.isEmpty()) {
             return currentBlockInfos;
         }
@@ -234,7 +258,12 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     /// Only water that the template itself holds dries. Water that an earlier rule put in from the world stays.
-    private static List<StructureBlockInfo> dried(List<StructureBlockInfo> originals, List<StructureBlockInfo> infos, BlockPos origin, StructurePlaceSettings data) {
+    private static List<StructureBlockInfo> dried(
+            List<StructureBlockInfo> originals,
+            List<StructureBlockInfo> infos,
+            BlockPos origin,
+            StructurePlaceSettings data
+    ) {
         Set<BlockPos> templateWater = new HashSet<>();
         for (StructureBlockInfo info : originals) {
             if (info.state().is(Blocks.WATER) || (info.state().hasProperty(BlockStateProperties.WATERLOGGED) && info.state().getValue(BlockStateProperties.WATERLOGGED))) {
@@ -287,7 +316,12 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     /// A piece with a block of two parts moves as one unit. All other pieces move column by column.
-    private static List<StructureBlockInfo> dropToGround(ServerLevelAccessor world, List<StructureBlockInfo> infos, StructurePlaceSettings data, boolean asUnit) {
+    private static List<StructureBlockInfo> dropToGround(
+            ServerLevelAccessor world,
+            List<StructureBlockInfo> infos,
+            StructurePlaceSettings data,
+            boolean asUnit
+    ) {
         BoundingBox chunkBox = data.getBoundingBox();
 
         if (chunkBox == null) {
@@ -347,7 +381,13 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     /// Columns shift apart on uneven ground, so a fence or pane follows its neighbors after the shift. Template states are not rotated yet.
-    private static List<StructureBlockInfo> reconnected(List<StructureBlockInfo> placed, Map<BlockPos, BlockPos> origins, List<StructureBlockInfo> template, StructurePlaceSettings data, BoundingBox chunkBox) {
+    private static List<StructureBlockInfo> reconnected(
+            List<StructureBlockInfo> placed,
+            Map<BlockPos, BlockPos> origins,
+            List<StructureBlockInfo> template,
+            StructurePlaceSettings data,
+            BoundingBox chunkBox
+    ) {
         Map<BlockPos, BlockState> states = new HashMap<>();
         for (StructureBlockInfo info : placed) {
             states.put(info.pos(), info.state());
@@ -397,7 +437,11 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     /// The terrain height comes from the heightmap, which no piece changes during placement.
-    private static List<StructureBlockInfo> dropAsUnit(ServerLevelAccessor world, List<StructureBlockInfo> solid, int base) {
+    private static List<StructureBlockInfo> dropAsUnit(
+            ServerLevelAccessor world,
+            List<StructureBlockInfo> solid,
+            int base
+    ) {
         int shift = 0;
         for (StructureBlockInfo anchor : solid) {
             if (anchor.pos().getY() == base) {
@@ -489,7 +533,15 @@ public class RuinProcessor extends StructureProcessor {
     }
 
     /// Material choices of one village type. The default gives the plains village.
-    public record Variant(List<Block> charStone, Block stoneFallback, Block stoneCap, Block looseRubble, boolean scorchTerracotta, boolean woodRubble, boolean rubble) {
+    public record Variant(
+            List<Block> charStone,
+            Block stoneFallback,
+            Block stoneCap,
+            Block looseRubble,
+            boolean scorchTerracotta,
+            boolean woodRubble,
+            boolean rubble
+    ) {
         public static final Variant DEFAULT = new Variant(List.of(Blocks.BLACKSTONE), Blocks.COBBLESTONE, Blocks.COBBLESTONE_SLAB, Blocks.GRAVEL, false, true, true);
 
         public static final Codec<Variant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -533,7 +585,15 @@ public class RuinProcessor extends StructureProcessor {
         private int maxY = Integer.MIN_VALUE;
         private int maxZ = Integer.MIN_VALUE;
 
-        Ruin(ServerLevelAccessor world, List<StructureBlockInfo> infos, StructurePlaceSettings data, RandomSource random, boolean followsTerrain, Variant variant, float smolderChance) {
+        Ruin(
+                ServerLevelAccessor world,
+                List<StructureBlockInfo> infos,
+                StructurePlaceSettings data,
+                RandomSource random,
+                boolean followsTerrain,
+                Variant variant,
+                float smolderChance
+        ) {
             this.world = world;
             this.smolderChance = smolderChance;
             this.variant = variant;

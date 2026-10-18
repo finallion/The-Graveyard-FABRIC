@@ -105,7 +105,15 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(
+            ItemStack itemStack,
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         Item item = itemStack.getItem();
         Item item2 = itemStack.getItem();
         SignApplicator signChangingItem;
@@ -211,13 +219,25 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
         return Arrays.stream(signText.getMessages(player.isTextFilteringEnabled())).allMatch((message) -> message.equals(CommonComponents.EMPTY) || message.getContents() instanceof PlainTextContents);
     }
 
-    public void openEditScreen(Player player, GravestoneBlockEntity blockEntity, Level world, BlockPos pos, BlockState state) {
+    public void openEditScreen(
+            Player player,
+            GravestoneBlockEntity blockEntity,
+            Level world,
+            BlockPos pos,
+            BlockState state
+    ) {
         blockEntity.setEditor(player.getUUID());
         openScreen(world, pos, player);
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
         if (placer instanceof Player player) {
             openScreen(world, pos, player);
         }

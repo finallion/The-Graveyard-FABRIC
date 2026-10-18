@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ConfigReader {
-    private ConfigReader() {
-    }
+    private ConfigReader() {}
 
     public static final class Result {
         private final ConfigValues values;

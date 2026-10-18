@@ -151,8 +151,13 @@ public class FlyOntoPerchGoal extends WaterAvoidingRandomFlyingGoal {
         int ties = 0;
 
         for (BlockPos pos : BlockPos.betweenClosed(
-                Mth.floor(center.x - SEARCH_RADIUS), Mth.floor(center.y - SEARCH_DEPTH), Mth.floor(center.z - SEARCH_RADIUS),
-                Mth.floor(center.x + SEARCH_RADIUS), Mth.floor(center.y + SEARCH_HEIGHT), Mth.floor(center.z + SEARCH_RADIUS))) {
+                Mth.floor(center.x - SEARCH_RADIUS),
+                Mth.floor(center.y - SEARCH_DEPTH),
+                Mth.floor(center.z - SEARCH_RADIUS),
+                Mth.floor(center.x + SEARCH_RADIUS),
+                Mth.floor(center.y + SEARCH_HEIGHT),
+                Mth.floor(center.z + SEARCH_RADIUS)
+        )) {
             if (own.equals(pos)) {
                 continue;
             }

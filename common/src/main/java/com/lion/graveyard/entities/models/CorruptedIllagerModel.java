@@ -51,16 +51,24 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
         PartDefinition modelPartData2 = modelPartData.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 10.0F, 8.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
         modelPartData2.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -10.0F, -4.0F, 8.0F, 12.0F, 8.0F, new CubeDeformation(0.45F)), PartPose.ZERO);
         modelPartData2.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(24, 0).addBox(-1.0F, -1.0F, -6.0F, 2.0F, 4.0F, 2.0F), PartPose.offset(0.0F, -2.0F, 0.0F));
-        modelPartData.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(16, 20)
-                .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F)
-                .texOffs(0, 38)
-                .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition modelPartData3 = modelPartData.addOrReplaceChild("arms", CubeListBuilder.create()
-                .texOffs(44, 22)
-                .addBox(-8.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F)
-                .texOffs(40, 38)
-                .addBox(-4.0F, 2.0F, -2.0F, 8.0F, 4.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 3.0F, -1.0F, -0.75F, 0.0F, 0.0F));
+        modelPartData.addOrReplaceChild(
+                "body",
+                CubeListBuilder.create()
+                        .texOffs(16, 20)
+                        .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 12.0F, 6.0F)
+                        .texOffs(0, 38)
+                        .addBox(-4.0F, 0.0F, -3.0F, 8.0F, 18.0F, 6.0F, new CubeDeformation(0.5F)),
+                PartPose.offset(0.0F, 0.0F, 0.0F)
+        );
+        PartDefinition modelPartData3 = modelPartData.addOrReplaceChild(
+                "arms",
+                CubeListBuilder.create()
+                        .texOffs(44, 22)
+                        .addBox(-8.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F)
+                        .texOffs(40, 38)
+                        .addBox(-4.0F, 2.0F, -2.0F, 8.0F, 4.0F, 4.0F),
+                PartPose.offsetAndRotation(0.0F, 3.0F, -1.0F, -0.75F, 0.0F, 0.0F)
+        );
         modelPartData3.addOrReplaceChild("left_shoulder", CubeListBuilder.create().texOffs(44, 22).mirror().addBox(4.0F, -2.0F, -2.0F, 4.0F, 8.0F, 4.0F), PartPose.ZERO);
         modelPartData.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 22).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(-2.0F, 12.0F, 0.0F));
         modelPartData.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 22).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), PartPose.offset(2.0F, 12.0F, 0.0F));

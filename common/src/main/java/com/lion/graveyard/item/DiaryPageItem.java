@@ -72,7 +72,12 @@ public class DiaryPageItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(
+            ItemStack stack,
+            Item.TooltipContext tooltipContext,
+            List<Component> tooltip,
+            TooltipFlag context
+    ) {
         String page = pageOf(stack);
 
         if (page != null) {

@@ -62,8 +62,12 @@ public class GravestoneScreen extends Screen {
             this.finishEditing();
         }).bounds(this.width / 2 - 100, this.height / 4 + 144, 200, 20).build());
         this.selectionManager = new TextFieldHelper(
-                () -> this.text[this.currentRow], this::setCurrentRowMessage, TextFieldHelper.createClipboardGetter(this.minecraft), TextFieldHelper.createClipboardSetter(this.minecraft),
-                (string) -> this.minecraft.font.width(string) <= this.sign.getMaxTextWidth());
+                () -> this.text[this.currentRow],
+                this::setCurrentRowMessage,
+                TextFieldHelper.createClipboardGetter(this.minecraft),
+                TextFieldHelper.createClipboardSetter(this.minecraft),
+                (string) -> this.minecraft.font.width(string) <= this.sign.getMaxTextWidth()
+        );
 
         this.signType = WoodType.OAK;
         this.model = GravestoneBlockEntityRenderer.createSignModel(this.minecraft.getEntityModels(), this.signType);
