@@ -10,13 +10,14 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.WitherSkullRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
-public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
+public class SkullEntityRenderer extends EntityRenderer<SkullEntity, WitherSkullRenderState> {
     private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png");
     private final SkullModel model;
 
@@ -31,28 +32,31 @@ public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
     }
 
     @Override
-    public void render(
-            SkullEntity skullEntity,
-            float f,
-            float g,
-            PoseStack matrixStack,
-            MultiBufferSource vertexConsumerProvider,
-            int i
-    ) {
-        matrixStack.pushPose();
-        matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        float h = Mth.rotLerp(g, skullEntity.yRotO, skullEntity.getYRot());
-        float j = Mth.lerp(g, skullEntity.xRotO, skullEntity.getXRot());
-        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.renderType(this.getTextureLocation(skullEntity)));
-        this.model.setupAnim(0.0F, h, j);
-        this.model.renderToBuffer(matrixStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, -1);
-        matrixStack.popPose();
-        super.render(skullEntity, f, g, matrixStack, vertexConsumerProvider, i);
+    public WitherSkullRenderState createRenderState() {
+        return new WitherSkullRenderState();
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SkullEntity entity) {
-        return TEXTURE;
+    public void extractRenderState(SkullEntity skullEntity, WitherSkullRenderState renderState, float partialTick) {
+        super.extractRenderState(skullEntity, renderState, partialTick);
+        renderState.yRot = Mth.rotLerp(partialTick, skullEntity.yRotO, skullEntity.getYRot());
+        renderState.xRot = Mth.lerp(partialTick, skullEntity.xRotO, skullEntity.getXRot());
+    }
+
+    @Override
+    public void render(
+            WitherSkullRenderState renderState,
+            PoseStack matrixStack,
+            MultiBufferSource vertexConsumerProvider,
+            int light
+    ) {
+        matrixStack.pushPose();
+        matrixStack.scale(-1.0F, -1.0F, 1.0F);
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.renderType(TEXTURE));
+        this.model.setupAnim(0.0F, renderState.yRot, renderState.xRot);
+        this.model.renderToBuffer(matrixStack, vertexConsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        matrixStack.popPose();
+        super.render(renderState, matrixStack, vertexConsumerProvider, light);
     }
 
 }

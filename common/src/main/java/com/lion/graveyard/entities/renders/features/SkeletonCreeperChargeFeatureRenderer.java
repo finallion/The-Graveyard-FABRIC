@@ -1,21 +1,25 @@
 package com.lion.graveyard.entities.renders.features;
 
 import net.minecraft.client.model.CreeperModel;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
+import net.minecraft.client.renderer.entity.state.CreeperRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.monster.Creeper;
 
-public class SkeletonCreeperChargeFeatureRenderer<T extends Creeper> extends EnergySwirlLayer<T, CreeperModel<T>> {
+public class SkeletonCreeperChargeFeatureRenderer extends EnergySwirlLayer<CreeperRenderState, CreeperModel> {
     private static final ResourceLocation SKIN = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
-    private final CreeperModel<Creeper> model;
+    private final CreeperModel model;
 
-    public SkeletonCreeperChargeFeatureRenderer(RenderLayerParent<T, CreeperModel<T>> context, EntityModelSet loader) {
+    public SkeletonCreeperChargeFeatureRenderer(RenderLayerParent<CreeperRenderState, CreeperModel> context, EntityModelSet loader) {
         super(context);
-        this.model = new CreeperModel<>(loader.bakeLayer(ModelLayers.CREEPER_ARMOR));
+        this.model = new CreeperModel(loader.bakeLayer(ModelLayers.CREEPER_ARMOR));
+    }
+
+    @Override
+    protected boolean isPowered(CreeperRenderState renderState) {
+        return renderState.isPowered;
     }
 
     @Override
@@ -29,8 +33,7 @@ public class SkeletonCreeperChargeFeatureRenderer<T extends Creeper> extends Ene
     }
 
     @Override
-    protected EntityModel<T> model() {
-        return (EntityModel<T>) this.model;
+    protected CreeperModel model() {
+        return this.model;
     }
 }
-

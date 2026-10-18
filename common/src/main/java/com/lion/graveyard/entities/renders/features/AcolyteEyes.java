@@ -1,8 +1,8 @@
 package com.lion.graveyard.entities.renders.features;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.entities.AcolyteEntity;
 import com.lion.graveyard.entities.models.CorruptedIllagerModel;
+import com.lion.graveyard.entities.renders.CorruptedIllagerRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
@@ -14,10 +14,10 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 @Environment(EnvType.CLIENT)
-public class AcolyteEyes extends RenderLayer<AcolyteEntity, CorruptedIllagerModel<AcolyteEntity>> {
+public class AcolyteEyes extends RenderLayer<CorruptedIllagerRenderState, CorruptedIllagerModel> {
 
 
-    public AcolyteEyes(RenderLayerParent<AcolyteEntity, CorruptedIllagerModel<AcolyteEntity>> context) {
+    public AcolyteEyes(RenderLayerParent<CorruptedIllagerRenderState, CorruptedIllagerModel> context) {
         super(context);
     }
 
@@ -26,13 +26,9 @@ public class AcolyteEyes extends RenderLayer<AcolyteEntity, CorruptedIllagerMode
             PoseStack matrices,
             MultiBufferSource vertexConsumers,
             int light,
-            AcolyteEntity entity,
-            float limbAngle,
-            float limbDistance,
-            float tickDelta,
-            float animationProgress,
-            float headYaw,
-            float headPitch
+            CorruptedIllagerRenderState renderState,
+            float yRot,
+            float xRot
     ) {
         VertexConsumer vertex = vertexConsumers.getBuffer(RenderType.eyes(Graveyard.id("textures/entity/acolyte_eyes.png")));
 

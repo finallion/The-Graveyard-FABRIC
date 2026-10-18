@@ -8,21 +8,43 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
+import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.world.item.CrossbowItem;
 
 @Environment(EnvType.CLIENT)
-public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager> extends MobRenderer<T, CorruptedIllagerModel<T>> {
+public abstract class CorruptedIllagerRenderer<T extends CorruptedIllager>
+        extends MobRenderer<T, CorruptedIllagerRenderState, CorruptedIllagerModel> {
     protected CorruptedIllagerRenderer(
             EntityRendererProvider.Context ctx,
-            CorruptedIllagerModel<T> model,
+            CorruptedIllagerModel model,
             float shadowRadius
     ) {
         super(ctx, model, shadowRadius);
-        this.addLayer(new CustomHeadLayer(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));
+        this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));
     }
 
     @Override
-    protected void scale(T illagerEntity, PoseStack matrixStack, float f) {
+    public CorruptedIllagerRenderState createRenderState() {
+        return new CorruptedIllagerRenderState();
+    }
+
+    @Override
+    public void extractRenderState(T illager, CorruptedIllagerRenderState renderState, float partialTick) {
+        super.extractRenderState(illager, renderState, partialTick);
+        ArmedEntityRenderState.extractArmedEntityRenderState(illager, renderState, this.itemModelResolver);
+        renderState.mainArm = illager.getMainArm();
+        renderState.isRiding = illager.isPassenger();
+        renderState.attackAnim = illager.getAttackAnim(partialTick);
+        renderState.ticksUsingItem = illager.getTicksUsingItem();
+        renderState.maxCrossbowChargeDuration = CrossbowItem.getChargeDuration(illager.getUseItem(), illager);
+        renderState.state = illager.getState();
+        renderState.modelDamaged = illager.isModelDamaged();
+        renderState.mainHandEmpty = illager.getMainHandItem().isEmpty();
+        renderState.chasing = illager.isChasing();
+    }
+
+    @Override
+    protected void scale(CorruptedIllagerRenderState renderState, PoseStack matrixStack) {
         matrixStack.scale(0.9375F, 0.9375F, 0.9375F);
     }
 }
-

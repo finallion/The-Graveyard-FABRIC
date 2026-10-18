@@ -12,28 +12,21 @@ import com.lion.graveyard.entities.animation.AnimationPreviewClient;
 import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGBlocks;
-import com.lion.graveyard.init.TGItems;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGScreens;
-import com.lion.graveyard.item.VialOfBlood;
 import com.lion.graveyard.particles.GraveyardFogParticle;
 import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
 import com.lion.graveyard.platform.neoforge.RegistryHelperImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.SonicBoomParticle;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.level.GrassColor;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -56,15 +49,7 @@ public class GraveyardClientNeoforge {
         event.enqueueWork(() -> {
             GraveyardClient.postInit();
 
-            ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), ResourceLocation.withDefaultNamespace("charged"), (stack, world, entity, seed) -> {
-                if (entity != null && stack.is(TGItems.VIAL_OF_BLOOD.get())) {
-                    return VialOfBlood.getBlood(stack);
-                }
-
-                return 0.0F;
-            });
-
-            ItemBlockRenderTypes.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), RenderType.cutoutMipped());
+            ItemBlockRenderTypes.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), ChunkSectionLayer.CUTOUT_MIPPED);
 
         });
     }
@@ -120,19 +105,6 @@ public class GraveyardClientNeoforge {
                 (state, reader, pos, color) -> reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColor.get(0.5D, 1.0D),
                 TGBlocks.TG_GRASS_BLOCK.get()
         );
-
-    }
-
-    @SubscribeEvent
-    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        final BlockColors blockColors = event.getBlockColors();
-        final ItemColors itemColors = event.getItemColors();
-
-        itemColors.register((stack, color) -> {
-            BlockState blockstate = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
-            return blockColors.getColor(blockstate, null, null, color);
-        },
-                TGBlocks.TG_GRASS_BLOCK.get());
 
     }
 

@@ -1,13 +1,14 @@
 package com.lion.graveyard.entities.models;
 
 import com.lion.graveyard.entities.CorruptedIllager;
+import com.lion.graveyard.entities.renders.CorruptedIllagerRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.ArmedModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -19,8 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 
 @Environment(EnvType.CLIENT)
-public class CorruptedIllagerModel<T extends CorruptedIllager> extends HierarchicalModel<T> implements ArmedModel, HeadedModel {
-    private final ModelPart root;
+public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderState> implements ArmedModel, HeadedModel {
     private final ModelPart head;
     private final ModelPart hat;
     private final ModelPart arms;
@@ -32,7 +32,7 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
     private final ModelPart leftArmStomp;
 
     public CorruptedIllagerModel(ModelPart root) {
-        this.root = root;
+        super(root);
         this.head = root.getChild("head");
         this.hat = this.head.getChild("hat");
         this.hat.visible = false;
@@ -80,17 +80,14 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
     }
 
     @Override
-    public ModelPart root() {
-        return this.root;
-    }
+    public void setupAnim(CorruptedIllagerRenderState renderState) {
+        float f = renderState.walkAnimationPos;
+        float g = renderState.walkAnimationSpeed;
+        float h = renderState.ageInTicks;
+        this.head.yRot = renderState.yRot * 0.017453292F;
+        this.head.xRot = renderState.xRot * 0.017453292F;
 
-    @Override
-    public void setupAnim(T illagerEntity, float f, float g, float h, float i, float j) {
-
-        this.head.yRot = i * 0.017453292F;
-        this.head.xRot = j * 0.017453292F;
-
-        if (this.riding) {
+        if (renderState.isRiding) {
             this.rightArm.xRot = -0.62831855F;
             this.rightArm.yRot = 0.0F;
             this.rightArm.zRot = 0.0F;
@@ -122,15 +119,15 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
             this.leftLeg.zRot = 0.0F;
         }
 
-        CorruptedIllager.State state = illagerEntity.getState();
+        CorruptedIllager.State state = renderState.state;
         this.leftArmStomp.visible = false;
         this.shortLeftArm.visible = false;
 
         if (state == CorruptedIllager.State.ATTACKING) {
-            if (illagerEntity.getMainHandItem().isEmpty()) {
-                AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, this.attackTime, h);
+            if (renderState.mainHandEmpty) {
+                AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState.attackAnim, h);
             } else {
-                AnimationUtils.swingWeaponDown(this.rightArm, this.leftArm, illagerEntity, this.attackTime, h);
+                AnimationUtils.swingWeaponDown(this.rightArm, this.leftArm, renderState.mainArm, renderState.attackAnim, h);
             }
         } else if (state == CorruptedIllager.State.SPELLCASTING) {
             this.rightArm.z = 0.0F;
@@ -152,7 +149,13 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
         } else if (state == CorruptedIllager.State.CROSSBOW_HOLD) {
             AnimationUtils.animateCrossbowHold(this.rightArm, this.leftArm, this.head, true);
         } else if (state == CorruptedIllager.State.CROSSBOW_CHARGE) {
-            AnimationUtils.animateCrossbowCharge(this.rightArm, this.leftArm, illagerEntity, true);
+            AnimationUtils.animateCrossbowCharge(
+                    this.rightArm,
+                    this.leftArm,
+                    renderState.maxCrossbowChargeDuration,
+                    renderState.ticksUsingItem,
+                    true
+            );
         } else if (state == CorruptedIllager.State.CELEBRATING) {
             this.rightArm.z = 0.0F;
             this.rightArm.x = -5.0F;
@@ -172,25 +175,25 @@ public class CorruptedIllagerModel<T extends CorruptedIllager> extends Hierarchi
             this.leftArmStomp.xRot = Mth.cos(h * 0.6662F) * 0.05F;
             this.leftArmStomp.zRot = -2.3561945F;
         } else if (state == CorruptedIllager.State.UNDEAD) {
-            if (illagerEntity.isModelDamaged()) {
+            if (renderState.modelDamaged) {
                 this.shortLeftArm.visible = true;
                 this.leftArmStomp.visible = true;
                 this.arms.visible = false;
                 this.leftArm.visible = false;
             }
 
-            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, false, this.attackTime, h);
+            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, false, renderState.attackAnim, h);
         } else if (state == CorruptedIllager.State.UNDEAD_ATTACKING) {
-            if (illagerEntity.isModelDamaged()) {
+            if (renderState.modelDamaged) {
                 this.shortLeftArm.visible = true;
                 this.leftArmStomp.visible = true;
                 this.leftArm.visible = false;
             }
 
-            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, this.attackTime, h);
+            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState.attackAnim, h);
         }
 
-        if (!illagerEntity.isModelDamaged()) {
+        if (!renderState.modelDamaged) {
             boolean crossed = state == CorruptedIllager.State.CROSSED;
             this.arms.visible = crossed;
             this.leftArm.visible = !crossed;

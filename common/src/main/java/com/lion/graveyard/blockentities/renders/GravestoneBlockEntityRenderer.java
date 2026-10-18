@@ -12,8 +12,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -54,7 +54,8 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
             PoseStack matrixStack,
             MultiBufferSource vertexConsumerProvider,
             int i,
-            int j
+            int j,
+            Vec3 cameraPosition
     ) {
         BlockState blockState = signBlockEntity.getBlockState();
         Level world = signBlockEntity.getLevel();
@@ -132,7 +133,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     }
 
     @Override
-    public boolean shouldRenderOffScreen(GravestoneBlockEntity blockEntity) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 
@@ -159,15 +160,15 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
             return -988212;
         } else {
             double d = 0.4D;
-            int j = (int)((double) FastColor.ARGB32.red(i) * d);
-            int k = (int)((double) FastColor.ARGB32.green(i) * d);
-            int l = (int)((double) FastColor.ARGB32.blue(i) * d);
-            return FastColor.ARGB32.color(0, j, k, l);
+            int j = (int)((double) ARGB.red(i) * d);
+            int k = (int)((double) ARGB.green(i) * d);
+            int l = (int)((double) ARGB.blue(i) * d);
+            return ARGB.color(255, j, k, l);
         }
     }
 
-    public static SignRenderer.SignModel createSignModel(EntityModelSet entityModelLoader, WoodType type) {
-        return new SignRenderer.SignModel(entityModelLoader.bakeLayer(ModelLayers.createSignModelName(type)));
+    public static Model createSignModel(EntityModelSet entityModelLoader, WoodType type) {
+        return SignRenderer.createSignModel(entityModelLoader, type, false);
     }
 
     static {

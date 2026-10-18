@@ -1,10 +1,10 @@
 package com.lion.graveyard.init;
 
 import com.lion.graveyard.platform.RegistryHelper;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 public class TGRenderTypes {
-    private static final RenderType CUTOUT_MIPPED = RenderType.cutoutMipped();
+    private static final ChunkSectionLayer CUTOUT_MIPPED = ChunkSectionLayer.CUTOUT_MIPPED;
 
     public static void postInit() {
         RegistryHelper.registerRenderType(CUTOUT_MIPPED, TGOverrunVillage.CHARRED_DOOR.get());

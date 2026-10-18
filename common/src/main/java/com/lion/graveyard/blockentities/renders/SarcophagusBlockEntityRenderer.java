@@ -8,26 +8,29 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<SarcophagusBlockEntity> {
-    private Minecraft client;
+    private final ItemModelResolver itemModelResolver;
+    private final ItemStackRenderState baseState = new ItemStackRenderState();
+    private final ItemStackRenderState lidState = new ItemStackRenderState();
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.client = Minecraft.getInstance();
+        this.itemModelResolver = ctx.getItemModelResolver();
     }
 
     @Override
@@ -42,7 +45,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
             PoseStack matrixStack,
             MultiBufferSource vertexConsumers,
             int light,
-            int overlay
+            int overlay,
+            Vec3 cameraPosition
     ) {
         BlockState blockState = entity.getBlockState();
         DoubleBlockCombiner.NeighborCombineResult<? extends SarcophagusBlockEntity> propertySource = DoubleBlockCombiner.combineWithNeigbour(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getLevel(), entity.getBlockPos(), (worldx, pos) -> false);
@@ -50,8 +54,8 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
         g = 1.0F - g;
         g = 1.0F - g * g * g;
 
-        BakedModel base = getModel(((SarcophagusBlock)blockState.getBlock()).getBase().get());
-        BakedModel lid = getModel(((SarcophagusBlock)blockState.getBlock()).getLid().get());
+        ItemStackRenderState base = getModel(this.baseState, ((SarcophagusBlock)blockState.getBlock()).getBase().get(), entity);
+        ItemStackRenderState lid = getModel(this.lidState, ((SarcophagusBlock)blockState.getBlock()).getLid().get(), entity);
 
         if (entity.getLevel() != null && entity.getBlockState().getValue(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
             render(entity, matrixStack, vertexConsumers, light, overlay, g, lid, true);
@@ -68,7 +72,7 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
             int light,
             int overlay,
             float g,
-            BakedModel model,
+            ItemStackRenderState model,
             boolean isLid
     ) {
         matrixStack.pushPose();
@@ -88,13 +92,17 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
             matrixStack.translate(g * 0.3, g * 0.3, 0.0F);
         }
 
-        client.getBlockRenderer().getModelRenderer().renderModel(matrixStack.last(), vertexConsumer.getBuffer(ItemBlockRenderTypes.getRenderType(entity.getBlockState(), false)), entity.getBlockState(), model, 1.0F, 1.0F, 1.0F, light, overlay);
+        // Cancels the -0.5 offset that ItemTransform.apply adds.
+        matrixStack.translate(0.5F, 0.5F, 0.5F);
+        model.render(matrixStack, vertexConsumer, light, overlay);
 
         matrixStack.popPose();
     }
 
-    public BakedModel getModel(Item item) {
-        return client.getItemRenderer().getModel(item.getDefaultInstance(), null, null, 0);
+    private ItemStackRenderState getModel(ItemStackRenderState state, Item item, SarcophagusBlockEntity entity) {
+        state.clear();
+        this.itemModelResolver.updateForTopItem(state, item.getDefaultInstance(), ItemDisplayContext.NONE, entity.getLevel(), null, 0);
+        return state;
     }
 }
 

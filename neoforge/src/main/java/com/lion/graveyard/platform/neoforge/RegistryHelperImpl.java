@@ -4,7 +4,7 @@ import com.lion.graveyard.Graveyard;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -182,7 +182,7 @@ public class RegistryHelperImpl {
         MENUS.register(name, () -> screenHandlerType);
     }
 
-    public static void registerRenderType(RenderType type, Block... blocks) {
+    public static void registerRenderType(ChunkSectionLayer type, Block... blocks) {
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {

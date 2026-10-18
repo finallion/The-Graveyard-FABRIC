@@ -1,7 +1,6 @@
 package com.lion.graveyard.entities.renders.features;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.entities.SkeletonCreeper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
@@ -11,12 +10,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.CreeperRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 @Environment(EnvType.CLIENT)
-public class SkeletonCreeperEyes extends RenderLayer<SkeletonCreeper, CreeperModel<SkeletonCreeper>> {
+public class SkeletonCreeperEyes extends RenderLayer<CreeperRenderState, CreeperModel> {
 
-    public SkeletonCreeperEyes(RenderLayerParent<SkeletonCreeper, CreeperModel<SkeletonCreeper>> context) {
+    public SkeletonCreeperEyes(RenderLayerParent<CreeperRenderState, CreeperModel> context) {
         super(context);
     }
 
@@ -25,13 +25,9 @@ public class SkeletonCreeperEyes extends RenderLayer<SkeletonCreeper, CreeperMod
             PoseStack matrices,
             MultiBufferSource vertexConsumers,
             int light,
-            SkeletonCreeper entity,
-            float limbAngle,
-            float limbDistance,
-            float tickDelta,
-            float animationProgress,
-            float headYaw,
-            float headPitch
+            CreeperRenderState renderState,
+            float yRot,
+            float xRot
     ) {
         VertexConsumer vertex = vertexConsumers.getBuffer(RenderType.eyes(Graveyard.id("textures/entity/skeleton_creeper_eyes.png")));
 
