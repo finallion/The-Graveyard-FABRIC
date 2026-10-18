@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:red_sandstone"
-    }
+    "#": "minecraft:red_sandstone"
   },
   "result": {
     "id": "graveyard:red_sandstone_gravestone"

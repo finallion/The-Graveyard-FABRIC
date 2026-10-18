@@ -6,15 +6,9 @@
     "XYX"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:bone"
-    },
-    "Y": {
-      "item": "graveyard:corruption"
-    },
-    "X": {
-      "item": "graveyard:dark_iron_ingot"
-    }
+    "#": "minecraft:bone",
+    "Y": "graveyard:corruption",
+    "X": "graveyard:dark_iron_ingot"
   },
   "result": {
     "id": "graveyard:ossuary"

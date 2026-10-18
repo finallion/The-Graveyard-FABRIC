@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:deepslate"
-    }
+    "#": "minecraft:deepslate"
   },
   "result": {
     "id": "graveyard:deepslate_gravestone"

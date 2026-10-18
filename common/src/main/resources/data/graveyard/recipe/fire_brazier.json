@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:dark_iron_ingot"
-    },
-    "Y": {
-      "tag": "minecraft:logs"
-    }
+    "#": "graveyard:dark_iron_ingot",
+    "Y": "#minecraft:logs"
   },
   "result": {
     "id": "graveyard:fire_brazier",

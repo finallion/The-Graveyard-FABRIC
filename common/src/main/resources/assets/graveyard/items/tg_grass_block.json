@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "graveyard:item/tg_grass_block",
+    "tints": [
+      {
+        "type": "minecraft:grass",
+        "temperature": 0.5,
+        "downfall": 1
+      }
+    ]
+  }
+}

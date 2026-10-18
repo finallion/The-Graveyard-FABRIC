@@ -11,12 +11,12 @@ public final class StaffRecipeLock {
     private StaffRecipeLock() {}
 
     public static boolean isStaffRecipe(RecipeHolder<?> recipe) {
-        ResourceLocation id = recipe.id();
+        ResourceLocation id = recipe.id().location();
         return id.getNamespace().equals("graveyard") && id.getPath().endsWith("_bone_staff");
     }
 
     public static boolean isLocked(ServerPlayer player, RecipeHolder<?> recipe) {
-        return isStaffRecipe(recipe) && !player.getRecipeBook().contains(recipe);
+        return isStaffRecipe(recipe) && !player.getRecipeBook().contains(recipe.id());
     }
 
     public static boolean blocksTake(Player player, Container resultInventory) {

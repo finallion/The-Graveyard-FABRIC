@@ -5,9 +5,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:dark_iron_ingot"
-    }
+    "#": "graveyard:dark_iron_ingot"
   },
   "result": {
     "id": "graveyard:dark_iron_bars",

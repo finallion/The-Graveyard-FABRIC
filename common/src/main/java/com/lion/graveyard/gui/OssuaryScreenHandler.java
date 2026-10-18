@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGScreens;
 import com.lion.graveyard.recipe.OssuaryRecipe;
-import com.lion.graveyard.init.TGRecipeTypes;
+import com.lion.graveyard.platform.OssuaryRecipesSync;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -23,13 +25,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+import java.util.Comparator;
 import java.util.List;
 
 public class OssuaryScreenHandler extends AbstractContainerMenu {
     private final ContainerLevelAccess context;
     private final DataSlot selectedRecipe;
     private final Level world;
+    private final Player player;
     private List<RecipeHolder<OssuaryRecipe>> availableRecipes;
+    private List<ItemStack> availableResults;
     private ItemStack inputStack;
     long lastTakeTime;
     final Slot inputSlot;
@@ -46,6 +51,8 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         super(TGScreens.OSSUARY_SCREEN_HANDLER, syncId);
         this.selectedRecipe = DataSlot.standalone();
         this.availableRecipes = Lists.newArrayList();
+        this.availableResults = Lists.newArrayList();
+        this.player = playerInventory.player;
         this.inputStack = ItemStack.EMPTY;
         this.contentsChangedListener = () -> {
         };
@@ -69,7 +76,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
-                stack.onCraftedBy(player.level(), player, stack.getCount());
+                stack.onCraftedBy(player, stack.getCount());
                 OssuaryScreenHandler.this.output.awardUsedRecipes(player, this.getInputStacks());
                 ItemStack itemStack = OssuaryScreenHandler.this.inputSlot.remove(1);
 
@@ -112,16 +119,21 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
         return this.selectedRecipe.get();
     }
 
-    public List<RecipeHolder<OssuaryRecipe>> getAvailableRecipes() {
-        return this.availableRecipes;
+    public List<ItemStack> getAvailableResults() {
+        return this.availableResults;
     }
 
     public int getAvailableRecipeCount() {
-        return this.availableRecipes.size();
+        return this.availableResults.size();
+    }
+
+    public void setAvailableResults(List<ItemStack> results) {
+        this.availableResults = results;
+        this.contentsChangedListener.run();
     }
 
     public boolean canCraft() {
-        return this.inputSlot.hasItem() && !this.availableRecipes.isEmpty();
+        return this.inputSlot.hasItem() && !this.availableResults.isEmpty();
     }
 
     @Override
@@ -140,7 +152,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
     }
 
     private boolean isInBounds(int id) {
-        return id >= 0 && id < this.availableRecipes.size();
+        return id >= 0 && id < this.availableResults.size();
     }
 
     @Override
@@ -155,17 +167,41 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
     }
 
     private void updateInput(Container input, ItemStack stack) {
-        this.availableRecipes.clear();
-        this.selectedRecipe.set(-1);
-        this.outputSlot.setByPlayer(ItemStack.EMPTY);
-
-        if (!stack.isEmpty()) {
-            this.availableRecipes = this.world.getRecipeManager().getRecipesFor(TGRecipeTypes.OSSUARY_CARVING.get(), new SingleRecipeInput(stack), this.world);
+        if (!(this.world instanceof ServerLevel serverLevel)) {
+            return;
         }
 
+        this.selectedRecipe.set(-1);
+        this.outputSlot.setByPlayer(ItemStack.EMPTY);
+        this.availableRecipes = stack.isEmpty() ? Lists.newArrayList() : findRecipes(serverLevel, stack);
+        this.availableResults = this.availableRecipes.stream()
+                .map(recipe -> recipe.value().getOutput().copy())
+                .toList();
+
+        if (this.player instanceof ServerPlayer serverPlayer) {
+            OssuaryRecipesSync.send(serverPlayer, this.containerId, this.availableResults);
+        }
+    }
+
+    private static List<RecipeHolder<OssuaryRecipe>> findRecipes(ServerLevel level, ItemStack stack) {
+        SingleRecipeInput recipeInput = new SingleRecipeInput(stack);
+        List<RecipeHolder<OssuaryRecipe>> found = Lists.newArrayList();
+
+        for (RecipeHolder<?> holder : level.recipeAccess().getRecipes()) {
+            if (holder.value() instanceof OssuaryRecipe recipe && recipe.matches(recipeInput, level)) {
+                found.add(new RecipeHolder<>(holder.id(), recipe));
+            }
+        }
+
+        found.sort(Comparator.comparing(holder -> holder.value().getOutput().getItem().getDescriptionId()));
+        return found;
     }
 
     void populateResult() {
+        if (!(this.world instanceof ServerLevel)) {
+            return;
+        }
+
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             RecipeHolder<OssuaryRecipe> carvingRecipe = this.availableRecipes.get(this.selectedRecipe.get());
             ItemStack itemStack = carvingRecipe.value().assemble(new SingleRecipeInput(this.input.getItem(0)), this.world.registryAccess());
@@ -208,7 +244,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
             itemStack = itemStack2.copy();
 
             if (slot == 1) {
-                item.onCraftedBy(itemStack2, player.level(), player);
+                item.onCraftedBy(itemStack2, player);
 
                 if (!this.moveItemStackTo(itemStack2, 2, 38, true)) {
                     return ItemStack.EMPTY;
@@ -219,7 +255,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(itemStack2, 2, 38, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (this.world.getRecipeManager().getRecipeFor(TGRecipeTypes.OSSUARY_CARVING.get(), new SingleRecipeInput(itemStack2), this.world).isPresent()) {
+            } else if (this.world instanceof ServerLevel serverLevel && !findRecipes(serverLevel, itemStack2).isEmpty()) {
                 if (!this.moveItemStackTo(itemStack2, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }

@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:cobbled_deepslate"
-    },
-    "Z": {
-      "item": "graveyard:dark_iron_ingot"
-    }
+    "#": "minecraft:cobbled_deepslate",
+    "Z": "graveyard:dark_iron_ingot"
   },
   "result": {
     "id": "graveyard:sarcophagus"

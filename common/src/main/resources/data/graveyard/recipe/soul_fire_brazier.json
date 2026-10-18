@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:dark_iron_ingot"
-    },
-    "Y": {
-      "item": "minecraft:soul_soil"
-    }
+    "#": "graveyard:dark_iron_ingot",
+    "Y": "minecraft:soul_soil"
   },
   "result": {
     "id": "graveyard:soul_fire_brazier",

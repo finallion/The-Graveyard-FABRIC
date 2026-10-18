@@ -198,6 +198,35 @@ class ModelReferencesTest {
     }
 
     @TestFactory
+    Stream<DynamicTest> everyRegisteredItemHasAnItemDefinition() {
+        Path dir = ASSETS.root().resolve("items");
+        return RegistryIds.of(RegistryIds.ITEM).stream()
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () -> {
+                            Path file = dir.resolve(id + ".json");
+                            assertTrue(file.toFile().isFile(), "No item definition for item " + id);
+
+                            for (Json.KeyedString entry : Json.strings(Json.parseStrict(ModProject.read(file)))) {
+                                if (entry.key().equals("model") && !AssetLookup.isForeign(entry.value())) {
+                                    assertTrue(ASSETS.exists(ASSETS.model(entry.value())), "Item definition " + id + " names a missing model " + entry.value());
+                                }
+                            }
+                        }
+                ));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> everySpawnEggHasItsOwnTexture() {
+        return RegistryIds.of(RegistryIds.ITEM).stream()
+                .filter(id -> id.endsWith("_spawn_egg"))
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () -> assertTrue(ASSETS.exists(ASSETS.texture("item/" + id)), "No texture for spawn egg " + id)
+                ));
+    }
+
+    @TestFactory
     Stream<DynamicTest> everyBlockstateBelongsToARegisteredBlock() {
         Path dir = ASSETS.root().resolve(ModProject.BLOCKSTATES);
         Set<String> blocks = RegistryIds.of(RegistryIds.BLOCK);

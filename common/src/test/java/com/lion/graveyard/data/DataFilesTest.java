@@ -135,6 +135,36 @@ class DataFilesTest {
     }
 
     @TestFactory
+    Stream<DynamicTest> everyRecipeIngredientUsesTheStringForm() {
+        Path dir = ModProject.DATA.resolve(ModProject.RECIPES);
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    JsonObject recipe = Json.parseObject(ModProject.read(file));
+                    List<JsonElement> ingredients = new ArrayList<>();
+
+                    if (recipe.has("key")) {
+                        recipe.getAsJsonObject("key").entrySet().forEach(entry -> ingredients.add(entry.getValue()));
+                    }
+
+                    if (recipe.has("ingredients")) {
+                        recipe.getAsJsonArray("ingredients").forEach(ingredients::add);
+                    }
+
+                    if (recipe.has("ingredient")) {
+                        ingredients.add(recipe.get("ingredient"));
+                    }
+
+                    for (JsonElement ingredient : ingredients) {
+                        if (ingredient.isJsonArray()) {
+                            ingredient.getAsJsonArray().forEach(part -> assertTrue(part.isJsonPrimitive(), "Ingredient list holds a non-string entry"));
+                        } else {
+                            assertTrue(ingredient.isJsonPrimitive(), "Ingredient is not a string: " + ingredient);
+                        }
+                    }
+                }));
+    }
+
+    @TestFactory
     Stream<DynamicTest> everyAdvancementTitleAndDescriptionHasAnEnglishText() {
         Path dir = ModProject.DATA.resolve(ModProject.ADVANCEMENTS);
         Map<String, String> english = Json.stringMap(ModProject.read(ModProject.ASSETS.resolve("lang/en_us.json")));

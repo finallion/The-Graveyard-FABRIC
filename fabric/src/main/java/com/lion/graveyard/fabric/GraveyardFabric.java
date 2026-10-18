@@ -2,6 +2,7 @@ package com.lion.graveyard.fabric;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.platform.ChronicleSync;
+import com.lion.graveyard.platform.OssuaryRecipesSync;
 import com.lion.graveyard.platform.fabric.HordeSpawner;
 import com.lion.graveyard.platform.fabric.NamelessHangedTradeOfferResourceListener;
 import com.lion.graveyard.platform.fabric.ServerEvents;
@@ -33,6 +34,7 @@ public class GraveyardFabric implements ModInitializer {
         Graveyard.postInit();
 
         PayloadTypeRegistry.playS2C().register(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(OssuaryRecipesSync.TYPE, OssuaryRecipesSync.STREAM_CODEC);
 
         registerServerEvents();
         registerCommands();

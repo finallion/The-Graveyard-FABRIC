@@ -6,9 +6,7 @@
     "##"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:scorched_log"
-    }
+    "#": "graveyard:scorched_log"
   },
   "result": {
     "id": "graveyard:scorched_wood",

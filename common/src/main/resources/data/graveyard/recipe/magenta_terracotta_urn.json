@@ -5,9 +5,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:small_magenta_urn"
-    }
+    "#": "graveyard:small_magenta_urn"
   },
   "result": {
     "id": "graveyard:magenta_terracotta_urn"

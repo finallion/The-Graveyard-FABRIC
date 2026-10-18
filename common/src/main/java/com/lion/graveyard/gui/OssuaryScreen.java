@@ -1,7 +1,6 @@
 package com.lion.graveyard.gui;
 
-import com.lion.graveyard.recipe.OssuaryRecipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import com.lion.graveyard.platform.OssuaryRecipesSync;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -33,6 +32,12 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         super(handler, inventory, title);
         handler.setContentsChangedListener(this::onInventoryChange);
         --this.titleLabelY;
+    }
+
+    public static void receive(OssuaryRecipesSync payload) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.containerMenu instanceof OssuaryScreenHandler handler && handler.containerId == payload.containerId()) {
+            handler.setAvailableResults(payload.results());
+        }
     }
 
     @Override
@@ -76,7 +81,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
             int i = this.leftPos + 52;
             int j = this.topPos + 14;
             int k = this.scrollOffset + 12;
-            List<RecipeHolder<OssuaryRecipe>> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
+            List<ItemStack> list = ((OssuaryScreenHandler)this.menu).getAvailableResults();
 
             for(int l = this.scrollOffset; l < k && l < ((OssuaryScreenHandler)this.menu).getAvailableRecipeCount(); ++l) {
                 int m = l - this.scrollOffset;
@@ -84,7 +89,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
                 int o = j + m / 4 * 18 + 2;
 
                 if (x >= n && x < n + 16 && y >= o && y < o + 18) {
-                    context.renderTooltip(this.font, list.get(l).value().getResultItem(this.minecraft.level.registryAccess()), x, y);
+                    context.setTooltipForNextFrame(this.font, list.get(l), x, y);
                 }
             }
         }
@@ -110,14 +115,14 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
     }
 
     private void renderRecipeIcons(GuiGraphics context, int x, int y, int scrollOffset) {
-        List<RecipeHolder<OssuaryRecipe>> list = ((OssuaryScreenHandler)this.menu).getAvailableRecipes();
+        List<ItemStack> list = ((OssuaryScreenHandler)this.menu).getAvailableResults();
 
         for(int i = this.scrollOffset; i < scrollOffset && i < ((OssuaryScreenHandler)this.menu).getAvailableRecipeCount(); ++i) {
             int j = i - this.scrollOffset;
             int k = x + j % 4 * 16;
             int l = j / 4;
             int m = y + l * 18 + 2;
-            context.renderItem(list.get(i).value().getResultItem(this.minecraft.level.registryAccess()), k, m);
+            context.renderItem(list.get(i), k, m);
         }
 
     }

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,25 +21,24 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 
 @Mixin(CraftingMenu.class)
 public abstract class CraftingScreenHandlerMixin {
     @Inject(method = "slotChangedCraftingGrid", at = @At("HEAD"), cancellable = true)
     private static void graveyard$requireKnownStaffRecipe(
             AbstractContainerMenu handler,
-            Level world,
+            ServerLevel world,
             Player player,
             CraftingContainer craftingInventory,
             ResultContainer resultInventory,
             @Nullable RecipeHolder<CraftingRecipe> lastRecipe,
             CallbackInfo info
     ) {
-        if (world.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
-        Optional<RecipeHolder<CraftingRecipe>> match = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), world, lastRecipe);
+        Optional<RecipeHolder<CraftingRecipe>> match = world.recipeAccess().getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), world, lastRecipe);
 
         if (match.isEmpty() || !StaffRecipeLock.isLocked(serverPlayer, match.get())) {
             return;

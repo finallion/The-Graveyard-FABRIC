@@ -12,7 +12,9 @@ import com.lion.graveyard.entities.animation.AnimationPreviewClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import com.lion.graveyard.gui.OssuaryScreen;
 import com.lion.graveyard.platform.ChronicleSync;
+import com.lion.graveyard.platform.OssuaryRecipesSync;
 import com.lion.graveyard.chronicle.client.ClientChronicle;
 import com.lion.graveyard.chronicle.client.ChronicleButton;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -58,6 +60,7 @@ public class GraveyardClientFabric implements ClientModInitializer {
 
 
         ClientPlayNetworking.registerGlobalReceiver(ChronicleSync.TYPE, (payload, context) -> ClientChronicle.receive(payload.found(), payload.newlyFound()));
+        ClientPlayNetworking.registerGlobalReceiver(OssuaryRecipesSync.TYPE, (payload, context) -> OssuaryScreen.receive(payload));
 
 
         ItemProperties.register(TGItems.VIAL_OF_BLOOD.get(), ResourceLocation.withDefaultNamespace("charged"), (stack, world, entity, seed) -> {

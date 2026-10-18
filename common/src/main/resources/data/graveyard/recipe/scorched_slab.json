@@ -3,9 +3,7 @@
   "category": "building",
   "group": "wooden_slab",
   "key": {
-    "#": {
-      "item": "graveyard:scorched_planks"
-    }
+    "#": "graveyard:scorched_planks"
   },
   "pattern": [
     "###"

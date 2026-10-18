@@ -6,12 +6,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:warped_planks"
-    },
-    "Z": {
-      "item": "graveyard:dark_iron_ingot"
-    }
+    "#": "minecraft:warped_planks",
+    "Z": "graveyard:dark_iron_ingot"
   },
   "result": {
     "id": "graveyard:warped_coffin"

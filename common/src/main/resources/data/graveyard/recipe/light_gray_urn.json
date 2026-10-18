@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:light_gray_glazed_terracotta"
-    }
+    "#": "minecraft:light_gray_glazed_terracotta"
   },
   "result": {
     "id": "graveyard:light_gray_urn"

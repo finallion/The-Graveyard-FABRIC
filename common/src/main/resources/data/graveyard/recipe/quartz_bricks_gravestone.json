@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:quartz_bricks"
-    }
+    "#": "minecraft:quartz_bricks"
   },
   "result": {
     "id": "graveyard:quartz_bricks_gravestone"

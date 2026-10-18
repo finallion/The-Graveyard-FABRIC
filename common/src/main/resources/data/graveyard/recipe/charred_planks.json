@@ -7,12 +7,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:scorched_planks"
-    },
-    "C": {
-      "item": "minecraft:charcoal"
-    }
+    "#": "graveyard:scorched_planks",
+    "C": "minecraft:charcoal"
   },
   "result": {
     "id": "graveyard:charred_planks",

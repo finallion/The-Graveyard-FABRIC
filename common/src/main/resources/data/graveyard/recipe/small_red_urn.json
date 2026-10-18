@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:red_terracotta"
-    }
+    "#": "minecraft:red_terracotta"
   },
   "result": {
     "id": "graveyard:small_red_urn"

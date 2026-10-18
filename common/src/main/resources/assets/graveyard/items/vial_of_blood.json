@@ -1,0 +1,69 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "graveyard:charged",
+    "scale": 1,
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "graveyard:item/vial_of_blood"
+    },
+    "entries": [
+      {
+        "threshold": 0.1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_01"
+        }
+      },
+      {
+        "threshold": 0.2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_02"
+        }
+      },
+      {
+        "threshold": 0.3,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_03"
+        }
+      },
+      {
+        "threshold": 0.4,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_04"
+        }
+      },
+      {
+        "threshold": 0.5,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_05"
+        }
+      },
+      {
+        "threshold": 0.6,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_06"
+        }
+      },
+      {
+        "threshold": 0.7,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_07"
+        }
+      },
+      {
+        "threshold": 0.8,
+        "model": {
+          "type": "minecraft:model",
+          "model": "graveyard:item/vial_of_blood_08"
+        }
+      }
+    ]
+  }
+}

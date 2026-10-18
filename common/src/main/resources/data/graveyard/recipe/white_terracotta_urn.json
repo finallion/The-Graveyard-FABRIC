@@ -5,9 +5,7 @@
     "#"
   ],
   "key": {
-    "#": {
-      "item": "graveyard:small_white_urn"
-    }
+    "#": "graveyard:small_white_urn"
   },
   "result": {
     "id": "graveyard:white_terracotta_urn"

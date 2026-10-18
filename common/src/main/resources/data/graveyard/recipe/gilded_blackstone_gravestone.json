@@ -6,9 +6,7 @@
     "###"
   ],
   "key": {
-    "#": {
-      "item": "minecraft:gilded_blackstone"
-    }
+    "#": "minecraft:gilded_blackstone"
   },
   "result": {
     "id": "graveyard:gilded_blackstone_gravestone"

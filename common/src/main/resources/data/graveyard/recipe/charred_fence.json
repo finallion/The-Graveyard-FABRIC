@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "wooden_fence",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "graveyard:charred_planks"
-    }
+    "#": "minecraft:stick",
+    "W": "graveyard:charred_planks"
   },
   "pattern": [
     "W#W",

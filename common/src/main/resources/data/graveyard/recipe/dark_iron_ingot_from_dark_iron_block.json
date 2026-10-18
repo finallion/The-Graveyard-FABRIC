@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "graveyard:dark_iron_block"
-    }
+    "graveyard:dark_iron_block"
   ],
   "result": {
     "count": 9,

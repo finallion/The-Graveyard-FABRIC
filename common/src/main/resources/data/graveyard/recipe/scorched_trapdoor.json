@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "wooden_trapdoor",
   "key": {
-    "#": {
-      "item": "graveyard:scorched_planks"
-    }
+    "#": "graveyard:scorched_planks"
   },
   "pattern": [
     "###",

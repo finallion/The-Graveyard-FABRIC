@@ -7,12 +7,8 @@
     "###"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:logs_that_burn"
-    },
-    "C": {
-      "item": "minecraft:charcoal"
-    }
+    "#": "#minecraft:logs_that_burn",
+    "C": "minecraft:charcoal"
   },
   "result": {
     "id": "graveyard:scorched_log",

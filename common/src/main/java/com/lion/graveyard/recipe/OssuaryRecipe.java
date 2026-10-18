@@ -1,6 +1,5 @@
 package com.lion.graveyard.recipe;
 
-import com.lion.graveyard.init.TGBlocks;
 import com.lion.graveyard.init.TGRecipeTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -16,11 +15,6 @@ public class OssuaryRecipe extends CarvingRecipe {
     @Override
     public boolean matches(SingleRecipeInput inventory, Level world) {
         return this.input.test(inventory.item());
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return new ItemStack(TGBlocks.LEANING_SKELETON.get());
     }
 
     @Override
