@@ -24,7 +24,7 @@ public class SkeletonCreeperEyes extends RenderLayer<SkeletonCreeper, CreeperMod
     public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, SkeletonCreeper entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         VertexConsumer vertex = vertexConsumers.getBuffer(RenderType.eyes(Graveyard.id("textures/entity/skeleton_creeper_eyes.png")));
 
-        this.getParentModel().renderToBuffer(matrices, vertex, 15728640, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        this.getParentModel().renderToBuffer(matrices, vertex, 15728640, OverlayTexture.NO_OVERLAY, -1);
     }
 }
 

@@ -126,11 +126,10 @@ public class ChronicleScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        this.renderTransparentBackground(context);
         this.renderList(context, mouseX, mouseY);
         this.renderBook(context);
-        super.render(context, mouseX, mouseY, delta);
     }
 
     private void renderList(GuiGraphics context, int mouseX, int mouseY) {
@@ -240,7 +239,7 @@ public class ChronicleScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double amount) {
         if (mouseX < this.bookX) {
             int rows = this.chapters.size() + (int) this.chapters.stream()
                     .mapToInt(ChronicleChapters.Chapter::act)

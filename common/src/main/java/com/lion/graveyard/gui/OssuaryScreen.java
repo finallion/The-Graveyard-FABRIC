@@ -43,7 +43,6 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
 
     @Override
     protected void renderBg(GuiGraphics context, float delta, int mouseX, int mouseY) {
-        this.renderBackground(context);
         int i = this.leftPos;
         int j = this.topPos;
         context.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
@@ -170,7 +169,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double amount) {
         if (this.shouldScroll()) {
             int i = this.getMaxScroll();
             float f = (float)amount / (float)i;

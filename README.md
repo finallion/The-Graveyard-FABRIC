@@ -11,10 +11,10 @@ Adds new bosses, structures, mobs and blocks themed around the graveyard.
 
 | Minecraft | Loader | Required dependencies |
 | --- | --- | --- |
-| 1.20.1 | Fabric (Loader 0.14.21 or newer) | Fabric API 0.85.0 or newer, GeckoLib 4 (4.2.2 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
-| 1.20.1 | Forge 47 (47.2 or newer) | GeckoLib 4 (4.2.2 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
+| 1.21.1 | Fabric (Loader 0.16.0 or newer) | Fabric API 0.116.0 or newer, GeckoLib 4 (4.9.3 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
+| 1.21.1 | NeoForge 21.1 | GeckoLib 4 (4.9.3 or newer), VillagerTradingPlus 1.x (1.0.0 or newer) |
 
-The current version is 4.0.0. It needs Java 17.
+The current version is 4.0.0. It needs Java 21.
 
 ## What's in it
 
@@ -51,7 +51,7 @@ Blocks:
 
 ## Configuration
 
-The config file is `the-graveyard-3.0-config.json5` in the `graveyard` folder of the loader's config directory. It has switches for each structure, most mobs and each overrun village variant, plus spawn weights, hordes, fog and the Champion's stats. The option `structuresOnly` stops all natural mob spawns, spawners and hordes, while spawn eggs and commands still work. On Forge, spawn weights and group sizes are set in the `.json` files under `data/graveyard/forge/biome_modifier`.
+The config file is `the-graveyard-3.0-config.json5` in the `graveyard` folder of the loader's config directory. It has switches for each structure, most mobs and each overrun village variant, plus spawn weights, hordes, fog and the Champion's stats. The option `structuresOnly` stops all natural mob spawns, spawners and hordes, while spawn eggs and commands still work. On NeoForge, spawn weights and group sizes are set in the `.json` files under `data/graveyard/neoforge/biome_modifier`.
 
 ## Building from source
 
@@ -59,7 +59,7 @@ The config file is `the-graveyard-3.0-config.json5` in the `graveyard` folder of
 gradlew build
 ```
 
-The jars are written to `fabric/build/libs` and `forge/build/libs`.
+The jars are written to `fabric/build/libs` and `neoforge/build/libs`.
 
 ## Issues
 

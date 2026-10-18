@@ -18,9 +18,9 @@ public class FallingCorpseRenderer extends GeoEntityRenderer<FallingCorpse> {
     }
 
     @Override
-    protected void applyRotations(FallingCorpse entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+    protected void applyRotations(FallingCorpse entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float nativeScale) {
         rotationYaw = entityLiving.getRotation();
-        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, nativeScale);
     }
 
     @Override

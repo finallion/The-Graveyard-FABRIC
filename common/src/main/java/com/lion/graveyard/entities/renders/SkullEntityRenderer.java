@@ -38,7 +38,7 @@ public class SkullEntityRenderer extends EntityRenderer<SkullEntity> {
         float j = Mth.lerp(g, skullEntity.xRotO, skullEntity.getXRot());
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.renderType(this.getTextureLocation(skullEntity)));
         this.model.setupAnim(0.0F, h, j);
-        this.model.renderToBuffer(matrixStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(matrixStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, -1);
         matrixStack.popPose();
         super.render(skullEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }

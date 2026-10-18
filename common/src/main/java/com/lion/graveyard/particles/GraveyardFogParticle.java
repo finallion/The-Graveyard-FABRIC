@@ -126,7 +126,10 @@ public class GraveyardFogParticle extends TextureSheetParticle {
     }
 
     private void emit(VertexConsumer consumer, Vector3f p, float u, float v, float opacity, int light) {
-        consumer.vertex(p.x(), p.y(), p.z()).uv(u, v).color(this.rCol, this.gCol, this.bCol, opacity).uv2(light).endVertex();
+        consumer.addVertex(p.x(), p.y(), p.z())
+                .setUv(u, v)
+                .setColor(this.rCol, this.gCol, this.bCol, opacity)
+                .setLight(light);
     }
 
     @Environment(EnvType.CLIENT)

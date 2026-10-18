@@ -6,19 +6,26 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 
-public class ChronicleButton extends ImageButton {
+public class ChronicleButton extends Button {
 
     private final HandledScreenAccessor inventory;
 
     private ChronicleButton(InventoryScreen inventory) {
-        super(0, 0, 20, 20, 0, 0, 20, ChronicleScreen.BUTTON_TEXTURE, 20, 40,
-                button -> Minecraft.getInstance().setScreen(new ChronicleScreen(inventory)));
+        super(
+                0,
+                0,
+                20,
+                20,
+                Component.empty(),
+                button -> Minecraft.getInstance().setScreen(new ChronicleScreen(inventory)),
+                DEFAULT_NARRATION
+        );
         this.inventory = (HandledScreenAccessor) inventory;
         this.setTooltip(Tooltip.create(Component.translatable("chronicle.graveyard.open")));
         this.followInventory();
@@ -31,9 +38,9 @@ public class ChronicleButton extends ImageButton {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.followInventory();
-        super.render(context, mouseX, mouseY, delta);
+        context.blit(ChronicleScreen.BUTTON_TEXTURE, this.getX(), this.getY(), 0, this.isHoveredOrFocused() ? 20 : 0, 20, 20, 20, 40);
     }
 
     private void followInventory() {

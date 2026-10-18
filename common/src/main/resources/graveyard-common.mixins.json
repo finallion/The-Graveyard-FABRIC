@@ -15,7 +15,8 @@
     "InventoryChangedCriterionMixin",
     "PotionEntityMixin",
     "CraftingScreenHandlerMixin",
-    "CraftingResultSlotMixin"
+    "CraftingResultSlotMixin",
+    "CrafterBlockMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",

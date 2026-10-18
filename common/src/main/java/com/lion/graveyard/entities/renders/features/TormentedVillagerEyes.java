@@ -24,6 +24,6 @@ public class TormentedVillagerEyes extends GeoRenderLayer<TormentedVillagerEntit
 
     @Override
     public void render(PoseStack matrices, TormentedVillagerEntity entity, BakedGeoModel model, RenderType renderType, MultiBufferSource vertexConsumers, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        this.renderer.actuallyRender(matrices, entity, model, renderType, vertexConsumers, vertexConsumers.getBuffer(EYES), true, partialTick, FULL_LIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.renderer.actuallyRender(matrices, entity, model, renderType, vertexConsumers, vertexConsumers.getBuffer(EYES), true, partialTick, FULL_LIGHT, OverlayTexture.NO_OVERLAY, -1);
     }
 }

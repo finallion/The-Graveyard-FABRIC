@@ -131,7 +131,7 @@ class LegacyOracleTest {
         return switch (part[0]) {
             case "booleanEntries" -> config.booleanEntries.get(part[1]);
             case "numberEntries" -> numberKey(part[1], config.numberEntries);
-            case "particleConfigEntries" -> reflect(config.getParticle(new ResourceLocation("graveyard", part[1])), part[2]);
+            case "particleConfigEntries" -> reflect(config.getParticle(ResourceLocation.fromNamespaceAndPath("graveyard", part[1])), part[2]);
             default -> reflect(entryOf(config, part[0], part[1]), part[2]);
         };
     }

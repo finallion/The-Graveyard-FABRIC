@@ -127,11 +127,11 @@ public class GravestoneScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
         PoseStack matrices = context.pose();
 
         Lighting.setupForFlatItems();
-        this.renderBackground(context);
+        this.renderTransparentBackground(context);
         context.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
         matrices.pushPose();
         matrices.translate((double) (this.width / 2), 0.0D, 50.0D);
@@ -223,6 +223,5 @@ public class GravestoneScreen extends Screen {
 
         matrices.popPose();
         Lighting.setupFor3DItems();
-        super.render(context, mouseX, mouseY, delta);
     }
 }
