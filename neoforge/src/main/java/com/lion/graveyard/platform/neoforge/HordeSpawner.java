@@ -2,7 +2,7 @@ package com.lion.graveyard.platform.neoforge;
 
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,12 +16,12 @@ import java.util.Map;
 
 @EventBusSubscriber(modid = Graveyard.MOD_ID)
 public class HordeSpawner {
-    private static Map<ResourceLocation, GraveyardHordeSpawner> spawners = new HashMap<>();
+    private static Map<Identifier, GraveyardHordeSpawner> spawners = new HashMap<>();
 
 
     @SubscribeEvent
     public static void onServerStart(ServerStartingEvent event) {
-        spawners.put(Level.OVERWORLD.location(), new GraveyardHordeSpawner());
+        spawners.put(Level.OVERWORLD.identifier(), new GraveyardHordeSpawner());
     }
 
 
@@ -36,7 +36,7 @@ public class HordeSpawner {
             return;
         }
 
-        GraveyardHordeSpawner spawner = spawners.get(level.dimension().location());
+        GraveyardHordeSpawner spawner = spawners.get(level.dimension().identifier());
 
         if (spawner != null) {
             ServerLevel overworld = level.getServer().overworld();

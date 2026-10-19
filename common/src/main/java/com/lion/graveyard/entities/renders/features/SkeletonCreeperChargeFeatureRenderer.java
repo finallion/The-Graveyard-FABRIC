@@ -1,15 +1,15 @@
 package com.lion.graveyard.entities.renders.features;
 
-import net.minecraft.client.model.CreeperModel;
+import net.minecraft.client.model.monster.creeper.CreeperModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EnergySwirlLayer;
 import net.minecraft.client.renderer.entity.state.CreeperRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SkeletonCreeperChargeFeatureRenderer extends EnergySwirlLayer<CreeperRenderState, CreeperModel> {
-    private static final ResourceLocation SKIN = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
+    private static final Identifier SKIN = Identifier.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
     private final CreeperModel model;
 
     public SkeletonCreeperChargeFeatureRenderer(
@@ -31,7 +31,7 @@ public class SkeletonCreeperChargeFeatureRenderer extends EnergySwirlLayer<Creep
     }
 
     @Override
-    protected ResourceLocation getTextureLocation() {
+    protected Identifier getTextureLocation() {
         return SKIN;
     }
 

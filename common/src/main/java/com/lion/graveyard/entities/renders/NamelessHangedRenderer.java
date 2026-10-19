@@ -2,10 +2,11 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.NamelessHangedEntity;
 import com.lion.graveyard.entities.models.NamelessHangedModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
@@ -17,8 +18,8 @@ public class NamelessHangedRenderer<R extends LivingEntityRenderState & GeoRende
     }
 
     @Override
-    public RenderType getRenderType(R renderState, ResourceLocation texture) {
-        return RenderType.entityTranslucent(texture);
+    public RenderType getRenderType(R renderState, Identifier texture) {
+        return RenderTypes.entityTranslucent(texture);
     }
 
 }

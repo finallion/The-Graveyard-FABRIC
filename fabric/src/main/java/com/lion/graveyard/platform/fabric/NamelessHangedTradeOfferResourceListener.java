@@ -6,7 +6,7 @@ import com.lion.graveyard.trades.NamelessHangedTrades;
 import com.lion.graveyard.util.LenientJsonFiles;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
@@ -20,17 +20,17 @@ public class NamelessHangedTradeOfferResourceListener extends SimpleJsonResource
     }
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return Graveyard.id("nameless_hanged_trades_data_loader");
     }
 
     @Override
-    protected Map<ResourceLocation, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
+    protected Map<Identifier, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
         return LenientJsonFiles.read(manager, "nameless_hanged_trades");
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> loader, ResourceManager manager, ProfilerFiller profiler) {
+    protected void apply(Map<Identifier, JsonElement> loader, ResourceManager manager, ProfilerFiller profiler) {
         NamelessHangedTrades.clear();
 
         loader.forEach((identifier, jsonElement) -> {

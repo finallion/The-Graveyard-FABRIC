@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.Function;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
@@ -18,19 +18,19 @@ import software.bernie.geckolib.renderer.layer.TextureLayerGeoLayer;
 public class GraveyardEyesLayer<T extends GeoAnimatable, R extends GeoRenderState> extends TextureLayerGeoLayer<T, Void, R> {
     private static final int FULL_LIGHT = 15728640;
 
-    private final Function<R, ResourceLocation> eyesTexture;
+    private final Function<R, Identifier> eyesTexture;
 
-    public GraveyardEyesLayer(GeoRenderer<T, Void, R> renderer, ResourceLocation eyesTexture) {
+    public GraveyardEyesLayer(GeoRenderer<T, Void, R> renderer, Identifier eyesTexture) {
         this(renderer, state -> eyesTexture);
     }
 
-    public GraveyardEyesLayer(GeoRenderer<T, Void, R> renderer, Function<R, ResourceLocation> eyesTexture) {
+    public GraveyardEyesLayer(GeoRenderer<T, Void, R> renderer, Function<R, Identifier> eyesTexture) {
         super(renderer, MissingTextureAtlasSprite.getLocation(), RenderType::eyes);
         this.eyesTexture = eyesTexture;
     }
 
     @Override
-    protected ResourceLocation getTextureResource(R renderState) {
+    protected Identifier getTextureResource(R renderState) {
         return this.eyesTexture.apply(renderState);
     }
 

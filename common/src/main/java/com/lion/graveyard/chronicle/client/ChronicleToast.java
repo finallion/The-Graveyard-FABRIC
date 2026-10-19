@@ -10,13 +10,13 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 /// The small "page found" notice, drawn on the vanilla advancement-toast frame.
 @Environment(EnvType.CLIENT)
 public class ChronicleToast implements Toast {
-    private static final ResourceLocation BACKGROUND = ResourceLocation.withDefaultNamespace("toast/advancement");
+    private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 5000L;
 
     private final Component title;

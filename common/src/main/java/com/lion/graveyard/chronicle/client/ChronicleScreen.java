@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +24,8 @@ import java.util.List;
 /// so the player sees how much of the story is still out there.
 @Environment(EnvType.CLIENT)
 public class ChronicleScreen extends Screen {
-    public static final ResourceLocation BUTTON_TEXTURE = Graveyard.id("textures/gui/chronicle_button.png");
-    private static final ResourceLocation BOOK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/book.png");
+    public static final Identifier BUTTON_TEXTURE = Graveyard.id("textures/gui/chronicle_button.png");
+    private static final Identifier BOOK_TEXTURE = Identifier.withDefaultNamespace("textures/gui/book.png");
 
     private static final int BOOK_WIDTH = 192;
     private static final int BOOK_HEIGHT = 192;

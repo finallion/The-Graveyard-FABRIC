@@ -16,11 +16,12 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -172,20 +173,20 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     }
 
     static {
-        defaultLayer = RenderType.entitySolid(ResourceLocation.withDefaultNamespace("textures/entity/signs/oak.png"));
-        LAYERS.put(TGBlocks.GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.COBBLESTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.DEEPSLATE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.DEEPSLATE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.BLACKSTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.BLACKSTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.CRACKED_BLACKSTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.STONE_BRICKS_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.STONE_BRICKS_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.MOSSY_STONE_BRICKS_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.BRICKS_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.BRICKS_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.RED_SANDSTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.RED_SANDSTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.SANDSTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.SANDSTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.GILDED_BLACKSTONE_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.GILDED_BLACKSTONE_GRAVESTONE_TEXTURE));
-        LAYERS.put(TGBlocks.QUARTZ_BRICKS_GRAVESTONE.get(), RenderType.entitySolid(GravestoneIdentifier.QUARTZ_BRICKS_GRAVESTONE_TEXTURE));
+        defaultLayer = RenderTypes.entitySolid(Identifier.withDefaultNamespace("textures/entity/signs/oak.png"));
+        LAYERS.put(TGBlocks.GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.POLISHED_BASALT_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.COBBLESTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.COBBLESTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.MOSSY_COBBLESTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.MOSSY_COBBLESTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.DEEPSLATE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.DEEPSLATE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.BLACKSTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.BLACKSTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.CRACKED_BLACKSTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.CRACKED_BLACKSTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.STONE_BRICKS_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.STONE_BRICKS_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.MOSSY_STONE_BRICKS_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.MOSSY_STONE_BRICKS_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.BRICKS_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.BRICKS_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.RED_SANDSTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.RED_SANDSTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.SANDSTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.SANDSTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.GILDED_BLACKSTONE_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.GILDED_BLACKSTONE_GRAVESTONE_TEXTURE));
+        LAYERS.put(TGBlocks.QUARTZ_BRICKS_GRAVESTONE.get(), RenderTypes.entitySolid(GravestoneIdentifier.QUARTZ_BRICKS_GRAVESTONE_TEXTURE));
     }
 
     public static VertexConsumer getConsumer(MultiBufferSource provider, Block block) {

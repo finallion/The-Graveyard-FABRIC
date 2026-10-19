@@ -140,7 +140,7 @@ public class AltarBlock extends Block {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
-        if (!world.isClientSide && state.is(TGBlocks.ALTAR.get()) && state.getValue(BLOODY) && !hasLivingLich(world, pos)) {
+        if (!world.isClientSide() && state.is(TGBlocks.ALTAR.get()) && state.getValue(BLOODY) && !hasLivingLich(world, pos)) {
             state = state.setValue(BLOODY, false);
             world.setBlock(pos, state, Block.UPDATE_ALL);
         }
@@ -151,7 +151,7 @@ public class AltarBlock extends Block {
             blood = VialOfBlood.getBlood(stack);
         }
 
-        if (!world.isClientSide && stack.is(TGItems.VIAL_OF_BLOOD.get()) && state.is(TGBlocks.ALTAR.get()) && !state.getValue(BLOODY)) {
+        if (!world.isClientSide() && stack.is(TGItems.VIAL_OF_BLOOD.get()) && state.is(TGBlocks.ALTAR.get()) && !state.getValue(BLOODY)) {
             String failure = findSummonFailure(world, pos, blood);
 
             if (failure != null) {
@@ -163,7 +163,7 @@ public class AltarBlock extends Block {
             BlockPattern.BlockPatternMatch result = AltarBlock.getCompletedFramePattern().find(world, pos);
 
             if (!state.getValue(AltarBlock.BLOODY) && (result != null || !Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").summoningNeedsStaffFragments)) {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     world.playSound(null, player.blockPosition(), TGSounds.VIAL_SPLASH.get(), SoundSource.BLOCKS, 5.0F, 1.0F);
                 }
 

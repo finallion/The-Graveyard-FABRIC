@@ -9,7 +9,7 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -17,12 +17,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 public final class LenientJsonFiles {
     private LenientJsonFiles() {}
 
-    public static Map<ResourceLocation, JsonElement> read(ResourceManager manager, String directory) {
+    public static Map<Identifier, JsonElement> read(ResourceManager manager, String directory) {
         FileToIdConverter lister = FileToIdConverter.json(directory);
-        Map<ResourceLocation, JsonElement> result = new HashMap<>();
+        Map<Identifier, JsonElement> result = new HashMap<>();
 
-        for (Map.Entry<ResourceLocation, Resource> entry : lister.listMatchingResources(manager).entrySet()) {
-            ResourceLocation id = lister.fileToId(entry.getKey());
+        for (Map.Entry<Identifier, Resource> entry : lister.listMatchingResources(manager).entrySet()) {
+            Identifier id = lister.fileToId(entry.getKey());
 
             try (Reader reader = entry.getValue().openAsReader()) {
                 result.put(id, JsonParser.parseReader(reader));

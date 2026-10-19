@@ -6,12 +6,12 @@ import com.lion.graveyard.entities.models.RevenantModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class RevenantRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<RevenantEntity, R> {
-    private static final ResourceLocation EYES = Graveyard.id("textures/entity/revenant_eyes.png");
+    private static final Identifier EYES = Graveyard.id("textures/entity/revenant_eyes.png");
 
     public RevenantRenderer(EntityRendererProvider.Context context) {
         super(context, new RevenantModel());

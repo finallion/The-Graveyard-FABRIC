@@ -27,7 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -202,7 +202,7 @@ public final class AnimationPreviewClient {
 
     private record Cue(SoundEvent event, int offsetTicks, int repeatTicks, float volume, float pitch) {
         static Cue parse(JsonObject json) {
-            ResourceLocation id = ResourceLocation.tryParse(json.get("event").getAsString());
+            Identifier id = Identifier.tryParse(json.get("event").getAsString());
             SoundEvent event = id == null ? null : BuiltInRegistries.SOUND_EVENT.getValue(id);
 
             if (event == null) {

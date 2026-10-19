@@ -6,7 +6,7 @@ import com.lion.graveyard.config.ConfigValues;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.LegacyKeys;
 import com.lion.graveyard.config.LegacyMigration;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
@@ -132,7 +132,7 @@ class LegacyOracleTest {
         return switch (part[0]) {
             case "booleanEntries" -> config.booleanEntries.get(part[1]);
             case "numberEntries" -> numberKey(part[1], config.numberEntries);
-            case "particleConfigEntries" -> reflect(config.getParticle(ResourceLocation.fromNamespaceAndPath("graveyard", part[1])), part[2]);
+            case "particleConfigEntries" -> reflect(config.getParticle(Identifier.fromNamespaceAndPath("graveyard", part[1])), part[2]);
             default -> reflect(entryOf(config, part[0], part[1]), part[2]);
         };
     }

@@ -8,7 +8,7 @@ import com.lion.graveyard.Graveyard;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import java.io.InputStreamReader;
@@ -33,7 +33,7 @@ public final class ChronicleChapters {
 
     public static List<Chapter> load() {
         List<Chapter> chapters = new ArrayList<>();
-        Map<ResourceLocation, Resource> resources = Minecraft.getInstance().getResourceManager()
+        Map<Identifier, Resource> resources = Minecraft.getInstance().getResourceManager()
                 .listResources(DIRECTORY, id -> id.getPath().endsWith(".json"));
         resources.forEach((id, resource) -> {
             try (Reader reader = new InputStreamReader(resource.open(), StandardCharsets.UTF_8)) {

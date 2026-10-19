@@ -22,7 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -650,18 +650,18 @@ public class RuinProcessor extends StructureProcessor {
                 return Blocks.OAK_PLANKS;
             }
 
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(log);
+            Identifier id = BuiltInRegistries.BLOCK.getKey(log);
             String stem = id.getPath()
                     .replaceFirst("^stripped_", "")
                     .replaceFirst("_(log|wood)$", "");
-            return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), stem + "_planks")).orElse(Blocks.OAK_PLANKS);
+            return BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), stem + "_planks")).orElse(Blocks.OAK_PLANKS);
         }
 
         private static Block slabOf(Block block, Block fallback) {
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+            Identifier id = BuiltInRegistries.BLOCK.getKey(block);
             String path = id.getPath();
             String stem = path.endsWith("_planks") ? path.substring(0, path.length() - 7) : (path.endsWith("_bricks") ? path.substring(0, path.length() - 1) : path);
-            return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), stem + "_slab")).orElse(fallback);
+            return BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), stem + "_slab")).orElse(fallback);
         }
 
         boolean isSmall() {
@@ -949,7 +949,7 @@ public class RuinProcessor extends StructureProcessor {
 
         /// Log, wood, stripped log and stripped wood share one tag. Their targets sit behind the base set in the list.
         private static int logKind(int part, BlockState state) {
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+            Identifier id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 
             if (part != LOG_PART || id.getNamespace().equals(Graveyard.MOD_ID)) {
                 return part;

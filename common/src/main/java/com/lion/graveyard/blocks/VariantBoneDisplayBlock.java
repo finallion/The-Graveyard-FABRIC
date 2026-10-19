@@ -52,7 +52,7 @@ public class VariantBoneDisplayBlock extends BoneDisplayBlock {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             int next = (state.getValue(VARIANT) + 1) % 4;
             world.setBlock(pos, state.setValue(VARIANT, next), Block.UPDATE_ALL);
         }

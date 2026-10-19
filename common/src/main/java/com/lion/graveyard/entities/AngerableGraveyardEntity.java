@@ -4,7 +4,7 @@ import com.lion.graveyard.Graveyard;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity implements NeutralMob {
-    private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
+    private static final Identifier ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
     private static final AttributeModifier ATTACKING_SPEED_BOOST;
     private static final EntityDataAccessor<Boolean> ANGRY;
     private static final EntityDataAccessor<Boolean> PROVOKED;

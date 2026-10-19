@@ -1,7 +1,7 @@
 package com.lion.graveyard.client;
 
 import com.lion.graveyard.entities.CorvidEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.constant.dataticket.DataTicket;
 
@@ -10,7 +10,7 @@ public final class GraveyardDataTickets {
     public static final DataTicket<Byte> GHOULING_VARIANT = DataTicket.create("graveyard_ghouling_variant", Byte.class);
     public static final DataTicket<Boolean> GHOULING_HAS_COFFIN = DataTicket.create("graveyard_ghouling_has_coffin", Boolean.class);
     public static final DataTicket<ItemStack> GHOULING_OFFHAND = DataTicket.create("graveyard_ghouling_offhand", ItemStack.class);
-    public static final DataTicket<ResourceLocation> ILLAGER_TEXTURE = DataTicket.create("graveyard_illager_texture", ResourceLocation.class);
+    public static final DataTicket<Identifier> ILLAGER_TEXTURE = DataTicket.create("graveyard_illager_texture", Identifier.class);
     public static final DataTicket<Boolean> ILLAGER_LEFT_CLAW = DataTicket.create("graveyard_illager_left_claw", Boolean.class);
     public static final DataTicket<Boolean> ILLAGER_RIGHT_CLAW = DataTicket.create("graveyard_illager_right_claw", Boolean.class);
     public static final DataTicket<CorvidEntity.Species> CORVID_SPECIES = DataTicket.create("graveyard_corvid_species", CorvidEntity.Species.class);

@@ -7,18 +7,18 @@ import com.lion.graveyard.entities.renders.features.SkeletonCreeperEyes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.CreeperModel;
+import net.minecraft.client.model.monster.creeper.CreeperModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.CreeperRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
 public class SkeletonCreeperRender extends MobRenderer<SkeletonCreeper, CreeperRenderState, CreeperModel> {
 
-    private static final ResourceLocation TEXTURE = Graveyard.id("textures/entity/skeleton_creeper.png");
+    private static final Identifier TEXTURE = Graveyard.id("textures/entity/skeleton_creeper.png");
 
     public SkeletonCreeperRender(EntityRendererProvider.Context context) {
         super(context, new CreeperModel(context.bakeLayer(ModelLayers.CREEPER)), 0.5F);
@@ -57,7 +57,7 @@ public class SkeletonCreeperRender extends MobRenderer<SkeletonCreeper, CreeperR
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CreeperRenderState renderState) {
+    public Identifier getTextureLocation(CreeperRenderState renderState) {
         return TEXTURE;
     }
 }

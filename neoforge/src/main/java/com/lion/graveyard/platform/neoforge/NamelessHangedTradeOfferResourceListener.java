@@ -5,7 +5,7 @@ import com.lion.graveyard.trades.NamelessHangedTrades;
 import com.lion.graveyard.util.LenientJsonFiles;
 import java.util.Map;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -19,12 +19,12 @@ public class NamelessHangedTradeOfferResourceListener extends SimpleJsonResource
     }
 
     @Override
-    protected Map<ResourceLocation, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
+    protected Map<Identifier, JsonElement> prepare(ResourceManager manager, ProfilerFiller profiler) {
         return LenientJsonFiles.read(manager, "nameless_hanged_trades");
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> loader, ResourceManager manager, ProfilerFiller profiler) {
+    protected void apply(Map<Identifier, JsonElement> loader, ResourceManager manager, ProfilerFiller profiler) {
         NamelessHangedTrades.clear();
 
         loader.forEach((identifier, jsonElement) -> {

@@ -107,7 +107,7 @@ public class BoneStaffItem extends Item {
         Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
 
-        if (player != null && world.isClientSide) {
+        if (player != null && world.isClientSide()) {
             UUID owner = LegacyItemData.ownerUuid(stack);
 
             if (owner != null && !owner.equals(player.getUUID())) {
@@ -663,7 +663,7 @@ public class BoneStaffItem extends Item {
                     && ghouling.getBoundingBox().inflate(ghouling.getPickRadius()).clip(start, end).isPresent()) {
                 user.startUsingItem(hand);
 
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     startDrawing(user, ghouling);
                 }
 
@@ -677,7 +677,7 @@ public class BoneStaffItem extends Item {
     public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack stack = user.getItemInHand(hand);
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             user.getCooldowns().addCooldown(stack, USE_COOLDOWN_TICKS);
         }
 
@@ -685,7 +685,7 @@ public class BoneStaffItem extends Item {
         boolean owned = ownerId != null;
 
         if (owned && !ownerId.equals(user.getUUID())) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
             }
 
@@ -696,7 +696,7 @@ public class BoneStaffItem extends Item {
             return InteractionResult.CONSUME;
         }
 
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return owned ? InteractionResult.SUCCESS : super.use(world, user, hand);
         }
 

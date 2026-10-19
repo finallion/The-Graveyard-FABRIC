@@ -4,15 +4,16 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.LichEntity;
 import com.lion.graveyard.entities.models.LichModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class LichRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<LichEntity, R> {
-    private static final ResourceLocation EYES = Graveyard.id("textures/entity/lich_eye_texture.png");
+    private static final Identifier EYES = Graveyard.id("textures/entity/lich_eye_texture.png");
 
     public LichRenderer(EntityRendererProvider.Context context) {
         super(context, new LichModel());
@@ -27,8 +28,8 @@ public class LichRenderer<R extends LivingEntityRenderState & GeoRenderState> ex
     }
 
     @Override
-    public RenderType getRenderType(R renderState, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
+    public RenderType getRenderType(R renderState, Identifier texture) {
+        return RenderTypes.entityCutoutNoCull(texture);
     }
 
 }

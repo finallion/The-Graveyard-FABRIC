@@ -3,9 +3,10 @@ package com.lion.graveyard.blockentities.renders;
 
 import com.lion.graveyard.blockentities.BrazierBlockEntity;
 import com.lion.graveyard.blockentities.models.BrazierModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
@@ -21,7 +22,7 @@ public class BrazierBlockEntityRenderer extends GeoBlockRenderer<BrazierBlockEnt
     }
 
     @Override
-    public RenderType getRenderType(GeoRenderState renderState, ResourceLocation texture) {
-        return RenderType.entityCutout(texture);
+    public RenderType getRenderType(GeoRenderState renderState, Identifier texture) {
+        return RenderTypes.entityCutout(texture);
     }
 }

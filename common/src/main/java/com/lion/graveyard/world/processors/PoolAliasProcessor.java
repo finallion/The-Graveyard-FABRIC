@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -17,19 +17,19 @@ public class PoolAliasProcessor extends StructureProcessor {
 
     private static final String POOL_KEY = "pool";
 
-    public static final MapCodec<PoolAliasProcessor> CODEC = Codec.unboundedMap(ResourceLocation.CODEC, ResourceLocation.CODEC)
+    public static final MapCodec<PoolAliasProcessor> CODEC = Codec.unboundedMap(Identifier.CODEC, Identifier.CODEC)
             .fieldOf("aliases").xmap(PoolAliasProcessor::new, processor -> processor.aliases);
 
-    private final Map<ResourceLocation, ResourceLocation> aliases;
+    private final Map<Identifier, Identifier> aliases;
 
-    public PoolAliasProcessor(Map<ResourceLocation, ResourceLocation> aliases) {
+    public PoolAliasProcessor(Map<Identifier, Identifier> aliases) {
         this.aliases = aliases;
     }
 
     public List<StructureBlockInfo> apply(List<StructureBlockInfo> jigsaws) {
         List<StructureBlockInfo> result = new ArrayList<>(jigsaws.size());
         for (StructureBlockInfo jigsaw : jigsaws) {
-            ResourceLocation alias = jigsaw.nbt() == null ? null : this.aliases.get(ResourceLocation.tryParse(jigsaw.nbt().getStringOr(POOL_KEY, "")));
+            Identifier alias = jigsaw.nbt() == null ? null : this.aliases.get(Identifier.tryParse(jigsaw.nbt().getStringOr(POOL_KEY, "")));
 
             if (alias == null) {
                 result.add(jigsaw);

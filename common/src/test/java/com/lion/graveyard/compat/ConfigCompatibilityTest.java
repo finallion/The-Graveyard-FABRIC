@@ -182,7 +182,7 @@ public class ConfigCompatibilityTest {
                 "corruptedChampionConfigEntries",
                 "booleanEntries",
                 "numberEntries",
-                "boolean enabled(ResourceLocation",
+                "boolean enabled(Identifier",
                 "double structureChance(",
                 "boolean flag(",
                 "boolean structuresOnly(",

@@ -150,7 +150,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     ) {
         Random random = new Random();
 
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             BlockPos original = pos;
@@ -217,7 +217,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
     ) {
         super.setPlacedBy(world, pos, state, placer, itemStack);
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             BlockPos blockPos = pos.relative(state.getValue(FACING));
             world.setBlockAndUpdate(pos, state.setValue(PLAYER_PLACED, true));
             world.setBlock(blockPos, state.setValue(PART, SarcophagusPart.HEAD).setValue(PLAYER_PLACED, true), 3);
@@ -250,7 +250,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-        if (!world.isClientSide && player.isCreative()) {
+        if (!world.isClientSide() && player.isCreative()) {
             SarcophagusPart part = state.getValue(PART);
 
             if (part == SarcophagusPart.FOOT) {
@@ -349,7 +349,7 @@ public class SarcophagusBlock extends BaseEntityBlock implements SimpleWaterlogg
             BlockState state,
             BlockEntityType<T> type
     ) {
-        return world.isClientSide ? createTickerHelper(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
+        return world.isClientSide() ? createTickerHelper(type, TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlockEntity::clientTick) : null;
     }
 
     public Supplier<Item> getLid() {

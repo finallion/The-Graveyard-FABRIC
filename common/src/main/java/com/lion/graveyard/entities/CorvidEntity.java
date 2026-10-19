@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -134,8 +134,8 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
         MAGPIE("magpie", "crow"),
         CROW("crow", "crow");
 
-        private final ResourceLocation texture;
-        private final ResourceLocation model;
+        private final Identifier texture;
+        private final Identifier model;
         private final RawAnimation walkAnimation;
         private final RawAnimation peckAnimation;
         private final RawAnimation deathAnimation;
@@ -149,7 +149,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
             this.deathAnimation = RawAnimation.begin().thenPlayAndHold("animation." + bodyClips + ".death");
         }
 
-        public ResourceLocation getTexture() {
+        public Identifier getTexture() {
             return this.texture;
         }
 
@@ -165,7 +165,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
             return this.deathAnimation;
         }
 
-        public ResourceLocation getModel() {
+        public Identifier getModel() {
             return this.model;
         }
     }

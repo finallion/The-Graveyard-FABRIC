@@ -66,7 +66,7 @@ public final class SmolderingWood {
             SoundEvent sound = charge ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE;
             world.playSound(player, pos, sound, SoundSource.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.4F + 0.8F);
 
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 setLit(world, pos, state, true);
 
                 if (player instanceof ServerPlayer serverPlayer) {
@@ -88,7 +88,7 @@ public final class SmolderingWood {
         if (lit && (stack.getItem() instanceof ShovelItem || stack.is(Items.WATER_BUCKET))) {
             world.playSound(player, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 for (int i = 0; i < 6; i++) {
                     world.addParticle(ParticleTypes.SMOKE, pos.getX() + world.random.nextDouble(), pos.getY() + 1.0D, pos.getZ() + world.random.nextDouble(), 0.0D, 0.05D, 0.0D);
                 }

@@ -4,7 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.entities.ai.goals.GhoulMeleeAttackGoal;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -27,9 +27,9 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
@@ -58,7 +58,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final int EMERGE_WITNESS_INTERVAL = 10;
     private static final double EMERGE_WITNESS_RANGE = 4.0D;
-    private static final ResourceLocation SLOWNESS_ID = Graveyard.id("slowness_id");
+    private static final Identifier SLOWNESS_ID = Graveyard.id("slowness_id");
     private static final AttributeModifier SLOWNESS_EFFECT;
 
     private static final EntityDataAccessor<Byte> VARIANT;
@@ -101,7 +101,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     private static final int SPAWN_ANIMATION_DURATION = 92;
     private static final int CHASE_SOUND_COOLDOWN_TICKS = 200;
     private static final int CHASE_END_TICKS = 20;
-    private static final ResourceLocation BIPED_SPEED_ID = Graveyard.id("biped_speed_id");
+    private static final Identifier BIPED_SPEED_ID = Graveyard.id("biped_speed_id");
     private static final AttributeModifier BIPED_SPEED_BOOST = new AttributeModifier(BIPED_SPEED_ID, 0.05D, AttributeModifier.Operation.ADD_VALUE);
     private static final float WALK_STEP_DISTANCE = 1.0F;
     private static final float CHASE_STEP_DISTANCE = 0.55F;

@@ -3,18 +3,18 @@ package com.lion.graveyard.entities.models;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.GhoulingEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class GhoulingModel extends GeoModel<GhoulingEntity> {
     @Override
-    public ResourceLocation getModelResource(GeoRenderState renderState) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return Graveyard.id("ghouling");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GeoRenderState renderState) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
         return Graveyard.id("textures/entity/" + textureVariant(renderState.getGeckolibData(GraveyardDataTickets.GHOULING_VARIANT)) + "_ghouling.png");
     }
 
@@ -28,7 +28,7 @@ public class GhoulingModel extends GeoModel<GhoulingEntity> {
     }
 
     @Override
-    public ResourceLocation getAnimationResource(GhoulingEntity animatable) {
+    public Identifier getAnimationResource(GhoulingEntity animatable) {
         return Graveyard.id("ghouling/ghouling");
     }
 }

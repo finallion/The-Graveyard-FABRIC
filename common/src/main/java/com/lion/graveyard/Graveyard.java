@@ -5,7 +5,7 @@ import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.config.Slf4jConfigLog;
 import com.lion.graveyard.init.*;
 import com.lion.graveyard.platform.ConfigDirectory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +15,8 @@ public class Graveyard {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final GraveyardConfig CONFIG = new GraveyardConfig(ConfigFiles.load(ConfigDirectory.getConfigDirectory().resolve("graveyard"), new Slf4jConfigLog(LOGGER)));
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static GraveyardConfig getConfig() {

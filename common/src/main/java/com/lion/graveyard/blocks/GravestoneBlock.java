@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -67,9 +67,9 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     public static final BooleanProperty FLOOR = BlockStateProperties.BOTTOM;
     private static final VoxelShape SHAPE_FACING_EW = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 16.0D, 16.0D);
     private static final VoxelShape SHAPE_FACING_NS = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 16.0D, 12.0D);
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public GravestoneBlock(BlockBehaviour.Properties properties, ResourceLocation texture) {
+    public GravestoneBlock(BlockBehaviour.Properties properties, Identifier texture) {
         super(WoodType.OAK, properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
@@ -130,7 +130,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
         if (foundEntity instanceof GravestoneBlockEntity) {
             GravestoneBlockEntity signBlockEntity = (GravestoneBlockEntity)foundEntity;
 
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 SignText signText = signBlockEntity.getText();
                 boolean ranCommand = signBlockEntity.runCommandClickEvent(player, world, pos);
 
@@ -245,7 +245,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     private void openScreen(Level world, BlockPos pos, Player placer) {
         GravestoneBlockEntity sign = (GravestoneBlockEntity) world.getBlockEntity(pos);
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             sign.setEditor(placer.getUUID());
             ((ServerPlayer) placer).connection.send(new ClientboundOpenSignEditorPacket(pos, true));
         }
@@ -273,7 +273,7 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
     }
 
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

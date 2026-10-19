@@ -4,7 +4,7 @@ import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HordeSpawner {
-    private static Map<ResourceLocation, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
+    private static Map<Identifier, ArrayList<GraveyardHordeSpawner>> spawners = new HashMap<>();
     private static boolean loaded = false;
 
     public HordeSpawner(){}
@@ -27,7 +27,7 @@ public class HordeSpawner {
                 return;
             }
 
-            addToSpawners(Level.OVERWORLD.location(), new GraveyardHordeSpawner());
+            addToSpawners(Level.OVERWORLD.identifier(), new GraveyardHordeSpawner());
             loaded = true;
         }
     }
@@ -49,7 +49,7 @@ public class HordeSpawner {
                 return;
             }
 
-            ArrayList<GraveyardHordeSpawner> spawnerList = spawners.get(world.dimension().location());
+            ArrayList<GraveyardHordeSpawner> spawnerList = spawners.get(world.dimension().identifier());
 
             if (spawnerList != null) {
                 for (var spawner : spawnerList) {
@@ -61,11 +61,11 @@ public class HordeSpawner {
         }
     }
 
-    public static Map<ResourceLocation, ArrayList<GraveyardHordeSpawner>> getSpawners() {
+    public static Map<Identifier, ArrayList<GraveyardHordeSpawner>> getSpawners() {
         return spawners;
     }
 
-    public static void addToSpawners(ResourceLocation world, GraveyardHordeSpawner spawner) {
+    public static void addToSpawners(Identifier world, GraveyardHordeSpawner spawner) {
         if (!spawners.containsKey(world)) {
             spawners.put(world, new ArrayList<>());
         }

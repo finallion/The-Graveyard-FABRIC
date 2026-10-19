@@ -3,7 +3,7 @@ package com.lion.graveyard.entities.models;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.CorvidEntity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
@@ -14,22 +14,22 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class CorvidModel extends GeoModel<CorvidEntity> {
-    private static final ResourceLocation ANIMATION = Graveyard.id("corvid/corvid");
+    private static final Identifier ANIMATION = Graveyard.id("corvid/corvid");
     private static final float MAX_HEAD_PITCH = 40.0F;
     private static final float MAX_HEAD_YAW = 75.0F;
 
     @Override
-    public ResourceLocation getModelResource(GeoRenderState renderState) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return renderState.getGeckolibData(GraveyardDataTickets.CORVID_SPECIES).getModel();
     }
 
     @Override
-    public ResourceLocation getTextureResource(GeoRenderState renderState) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
         return renderState.getGeckolibData(GraveyardDataTickets.CORVID_SPECIES).getTexture();
     }
 
     @Override
-    public ResourceLocation getAnimationResource(CorvidEntity entity) {
+    public Identifier getAnimationResource(CorvidEntity entity) {
         return ANIMATION;
     }
 

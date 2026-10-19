@@ -7,7 +7,7 @@ import com.lion.villagertradingplus.tradeoffers.TradeOfferManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 /// Trade pool of the Nameless Hanged, read from `data/graveyard/nameless_hanged_trades/`.
 ///

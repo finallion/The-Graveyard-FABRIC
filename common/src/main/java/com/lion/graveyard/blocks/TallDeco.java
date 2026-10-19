@@ -108,7 +108,7 @@ public final class TallDeco {
     }
 
     public static void onBreak(Level world, BlockPos pos, BlockState state, Player player) {
-        if (world.isClientSide || !player.isCreative() || state.getValue(HALF) != DoubleBlockHalf.UPPER) {
+        if (world.isClientSide() || !player.isCreative() || state.getValue(HALF) != DoubleBlockHalf.UPPER) {
             return;
         }
 

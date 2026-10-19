@@ -84,7 +84,7 @@ public class OssuaryBlock extends BaseEntityBlock implements EntityBlock, BlockI
             Player player,
             BlockHitResult hit
     ) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             player.openMenu(state.getMenuProvider(world, pos));

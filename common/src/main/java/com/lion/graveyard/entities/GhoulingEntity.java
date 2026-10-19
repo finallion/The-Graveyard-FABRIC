@@ -573,7 +573,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         super.dropEquipment(serverLevel);
 
         if (this.hasCoffin()) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 ItemStack coffin = this.getOffhandItem().copy();
 
                 if (!coffin.isEmpty()) {

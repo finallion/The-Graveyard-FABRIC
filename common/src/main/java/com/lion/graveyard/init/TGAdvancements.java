@@ -4,7 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.advancements.TGAdvancementTrigger;
 import com.lion.graveyard.platform.RegistryHelper;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -33,7 +33,7 @@ public class TGAdvancements {
     public static TGAdvancementTrigger BONE_COLLECTOR = trigger("bone_collector");
     public static TGAdvancementTrigger GHOUL_EMERGES = trigger("ghoul_emerges");
 
-    public static final ResourceLocation REDEEM_TEN_ADVANCEMENT = Graveyard.id("graveyard/redeem_ten_tormented_villagers");
+    public static final Identifier REDEEM_TEN_ADVANCEMENT = Graveyard.id("graveyard/redeem_ten_tormented_villagers");
     public static final int REDEEM_TEN_STEPS = 10;
 
     public static void init() {}
@@ -53,7 +53,7 @@ public class TGAdvancements {
         }
     }
 
-    public static void grantNextStep(ServerPlayer player, ResourceLocation advancementId, int steps) {
+    public static void grantNextStep(ServerPlayer player, Identifier advancementId, int steps) {
         AdvancementHolder advancement = player.getServer().getAdvancements().get(advancementId);
 
         if (advancement == null) {

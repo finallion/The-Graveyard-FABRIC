@@ -6,12 +6,12 @@ import com.lion.graveyard.entities.models.ReaperModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class ReaperRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<ReaperEntity, R> {
-    private static final ResourceLocation EYES = Graveyard.id("textures/entity/reaper_eyes.png");
+    private static final Identifier EYES = Graveyard.id("textures/entity/reaper_eyes.png");
 
     public ReaperRenderer(EntityRendererProvider.Context context) {
         super(context, new ReaperModel());

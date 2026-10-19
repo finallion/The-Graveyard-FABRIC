@@ -9,10 +9,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
-    private static final ResourceLocation TEXTURE = Graveyard.id("textures/entity/acolyte.png");
+    private static final Identifier TEXTURE = Graveyard.id("textures/entity/acolyte.png");
 
     public AcolyteRender(EntityRendererProvider.Context ctx) {
         super(ctx, new CorruptedIllagerModel(ctx.bakeLayer(TGEntityModelLayers.CORRUPTED_ILLAGER_MODEL_LAYER)), 0.5F);
@@ -37,7 +37,7 @@ public class AcolyteRender extends CorruptedIllagerRenderer<AcolyteEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CorruptedIllagerRenderState renderState) {
+    public Identifier getTextureLocation(CorruptedIllagerRenderState renderState) {
         return TEXTURE;
     }
 

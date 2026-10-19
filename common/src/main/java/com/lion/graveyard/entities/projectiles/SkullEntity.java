@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.entity.projectile.hurtingprojectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -69,7 +69,7 @@ public class SkullEntity extends AbstractHurtingProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             boolean damaged;
@@ -100,7 +100,7 @@ public class SkullEntity extends AbstractHurtingProjectile {
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Explosion.BlockInteraction destructionType = Explosion.BlockInteraction.KEEP;
             var champion = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion");
             Level.ExplosionInteraction sourceType = champion != null && champion.skullsDestroyBlocks() ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE;

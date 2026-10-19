@@ -167,7 +167,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public void aiStep() {
         this.jumping = false;
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (this.getTarget() != null) {
                 if (this.getTarget().distanceToSqr(this) >= 1024.0D) {
                     stopBeingAngry();

@@ -69,7 +69,7 @@ public class SkeletonCreeper extends Creeper {
     }
 
     public void explode() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             GraveyardConfig config = Graveyard.getConfig();
             Level.ExplosionInteraction destructionType = config.flag("skeletonCreeperDestroysBlocks", false) ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE;
             float f = this.isPowered() ? 2.0F : 1.0F;

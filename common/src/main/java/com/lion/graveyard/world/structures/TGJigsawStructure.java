@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
@@ -33,7 +33,7 @@ public class TGJigsawStructure extends Structure {
             instance.group(
                     StructureSettings.CODEC.forGetter(feature -> feature.config),
                     StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(config -> config.startPool),
-                    ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(config -> config.startJigsawName),
+                    Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(config -> config.startJigsawName),
                     Codec.intRange(0, 7).fieldOf("size").forGetter(config -> config.size),
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(config -> config.startHeight),
                     Codec.BOOL.fieldOf("use_expansion_hack").forGetter(config -> config.useExpansionHack),
@@ -47,7 +47,7 @@ public class TGJigsawStructure extends Structure {
 
 
     public final Holder<StructureTemplatePool> startPool;
-    public final Optional<ResourceLocation> startJigsawName;
+    public final Optional<Identifier> startJigsawName;
     public final int size;
     public final HeightProvider startHeight;
     public final boolean useExpansionHack;
@@ -61,7 +61,7 @@ public class TGJigsawStructure extends Structure {
     public TGJigsawStructure(
             StructureSettings config,
             Holder<StructureTemplatePool> startPool,
-            Optional<ResourceLocation> startJigsawName,
+            Optional<Identifier> startJigsawName,
             int size,
             HeightProvider startHeight,
             Boolean useExpansionHack,

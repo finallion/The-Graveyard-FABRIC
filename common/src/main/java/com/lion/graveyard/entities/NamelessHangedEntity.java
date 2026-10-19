@@ -24,8 +24,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.InteractGoal;
 import net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -94,7 +94,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
-        if (!this.level().isClientSide && !this.isRemoved()) {
+        if (!this.level().isClientSide() && !this.isRemoved()) {
             if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
                 this.remove(RemovalReason.DISCARDED);
                 return true;
@@ -131,7 +131,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     public void aiStep() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             this.level().addParticle(ParticleTypes.ASH, this.getRandomX(0.5D), this.getY() + 1.75D, this.getRandomZ(0.5D), 0, 0, 0);
         }
 
@@ -171,14 +171,14 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
             this.offers = null;
         }
 
-        if (level().isBrightOutside() && !this.level().isClientSide) {
+        if (level().isBrightOutside() && !this.level().isClientSide()) {
             player.displayClientMessage(Component.translatable("entity.graveyard.nameless_hanged.wait"), true);
             level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
         }
 
         if (this.isAlive() && !this.isTrading() && level().isDarkOutside()) {
             if (!this.getOffers().isEmpty()) {
-                if (!this.level().isClientSide) {
+                if (!this.level().isClientSide()) {
                     this.setTradingPlayer(player);
                     this.openTradingScreen(player, this.getDisplayName(), 1);
                     level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);

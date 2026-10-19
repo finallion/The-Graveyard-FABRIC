@@ -5,7 +5,7 @@ import com.lion.graveyard.entities.ai.ChaseTarget;
 import com.lion.graveyard.blocks.BrazierBlock;
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.init.TGSounds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -45,7 +45,7 @@ import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.HoverRandomPos;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -72,7 +72,7 @@ import java.util.EnumSet;
 
 public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
+    private static final Identifier ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
     private static final AttributeModifier ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, 0.2D, AttributeModifier.Operation.ADD_VALUE);
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
@@ -447,7 +447,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         @Override
         public boolean canUse() {
             if (!(WraithEntity.this.level() instanceof ServerLevel serverLevel)
-                    || !serverLevel.getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_MOBGRIEFING)
+                    || !serverLevel.getGameRules().getBoolean(net.minecraft.world.level.gamerules.GameRules.RULE_MOBGRIEFING)
                     || !com.lion.graveyard.Graveyard.getConfig().flag("wraithGriefing", true)) {
                 return false;
             }

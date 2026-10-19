@@ -7,7 +7,7 @@ import com.lion.graveyard.entities.models.BaseGhoulModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
@@ -25,7 +25,7 @@ public class GhoulRenderer<R extends LivingEntityRenderState & GeoRenderState> e
         return 0.0F;
     }
 
-    private static ResourceLocation eyesTexture(GeoRenderState renderState) {
+    private static Identifier eyesTexture(GeoRenderState renderState) {
         return Graveyard.id("textures/entity/ghoul_eyes_skin" + renderState.getGeckolibData(GraveyardDataTickets.GHOUL_VARIANT) + ".png");
     }
 

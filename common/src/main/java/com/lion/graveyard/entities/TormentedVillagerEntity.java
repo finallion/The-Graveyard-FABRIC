@@ -247,7 +247,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     private void releaseLegacyLight() {
-        if (this.legacyLightPos == null || this.level().isClientSide) {
+        if (this.legacyLightPos == null || this.level().isClientSide()) {
             return;
         }
 
@@ -266,7 +266,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Override
     public void remove(RemovalReason reason) {
-        if (!this.level().isClientSide && reason.shouldDestroy()) {
+        if (!this.level().isClientSide() && reason.shouldDestroy()) {
             this.releaseLegacyLight();
         }
 
@@ -275,7 +275,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Override
     public void restoreFrom(Entity original) {
-        if (original instanceof TormentedVillagerEntity villager && !villager.level().isClientSide) {
+        if (original instanceof TormentedVillagerEntity villager && !villager.level().isClientSide()) {
             villager.releaseLegacyLight();
         }
 

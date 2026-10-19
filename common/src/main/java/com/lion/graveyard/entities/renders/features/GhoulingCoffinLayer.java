@@ -8,7 +8,8 @@ import com.mojang.math.Axis;
 import java.util.function.BiConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +63,7 @@ public class GhoulingCoffinLayer<R extends GeoRenderState> extends GeoRenderLaye
 
         renderOffhandItem(renderState, poseStack, bufferSource, packedLight, packedOverlay);
 
-        RenderType translucent = RenderType.entityTranslucent(this.renderer.getTextureLocation(renderState));
+        RenderType translucent = RenderTypes.entityTranslucent(this.renderer.getTextureLocation(renderState));
         VertexConsumer buffer = bufferSource.getBuffer(translucent);
 
         for (GeoCube cube : torso.getCubes()) {

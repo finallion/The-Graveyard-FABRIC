@@ -1,6 +1,6 @@
 package com.lion.graveyard.util;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +11,7 @@ public final class StaffRecipeLock {
     private StaffRecipeLock() {}
 
     public static boolean isStaffRecipe(RecipeHolder<?> recipe) {
-        ResourceLocation id = recipe.id().location();
+        Identifier id = recipe.id().identifier();
         return id.getNamespace().equals("graveyard") && id.getPath().endsWith("_bone_staff");
     }
 

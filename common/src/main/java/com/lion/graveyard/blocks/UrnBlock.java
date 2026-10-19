@@ -116,7 +116,7 @@ public class UrnBlock extends BaseEntityBlock implements SimpleWaterloggedBlock,
             Player player,
             BlockHitResult hit
     ) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             BlockEntity blockEntity = world.getBlockEntity(pos);

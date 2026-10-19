@@ -4,18 +4,18 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.AnimatedCorruptedIllager;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class CorruptedIllagerGeoModel<T extends AnimatedCorruptedIllager> extends GeoModel<T> {
     @Override
-    public ResourceLocation getModelResource(GeoRenderState renderState) {
+    public Identifier getModelResource(GeoRenderState renderState) {
         return Graveyard.id("corrupted_illager");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GeoRenderState renderState) {
+    public Identifier getTextureResource(GeoRenderState renderState) {
         return renderState.getGeckolibData(GraveyardDataTickets.ILLAGER_TEXTURE);
     }
 
@@ -26,7 +26,7 @@ public class CorruptedIllagerGeoModel<T extends AnimatedCorruptedIllager> extend
     }
 
     @Override
-    public ResourceLocation getAnimationResource(T entity) {
+    public Identifier getAnimationResource(T entity) {
         return Graveyard.id("corrupted_illager/corrupted_illager");
     }
 }

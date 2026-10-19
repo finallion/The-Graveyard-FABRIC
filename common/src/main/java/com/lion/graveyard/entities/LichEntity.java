@@ -11,7 +11,7 @@ import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.sounds.BossMusicPlayer;
 import com.lion.graveyard.util.MathUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -79,9 +79,9 @@ public class LichEntity extends Monster implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     protected static final TargetingConditions HEAD_TARGET_PREDICATE;
     private static final TargetingConditions.Selector CAN_ATTACK_PREDICATE;
-    private static final ResourceLocation ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
-    private static final ResourceLocation ATTACKING_DMG_BOOST_ID = Graveyard.id("attacking_dmg_boost_id");
-    private static final ResourceLocation CRAWL_SPEED_BOOST_ID = Graveyard.id("crawl_speed_boost_id");
+    private static final Identifier ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
+    private static final Identifier ATTACKING_DMG_BOOST_ID = Graveyard.id("attacking_dmg_boost_id");
+    private static final Identifier CRAWL_SPEED_BOOST_ID = Graveyard.id("crawl_speed_boost_id");
     private static final AttributeModifier ATTACKING_SPEED_BOOST;
     private static final AttributeModifier CRAWL_SPEED_BOOST;
     private static final AttributeModifier DMG_BOOST;
@@ -280,7 +280,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
     @Override
     public void tick() {
-        if (!level().isClientSide && getBossMusic() != null && AnimationPreview.forcedAnimation(this) == null) {
+        if (!level().isClientSide() && getBossMusic() != null && AnimationPreview.forcedAnimation(this) == null) {
             if (canPlayMusic() && deathTime == 0) {
                 this.level().broadcastEntityEvent(this, MUSIC_PLAY_ID);
             } else {
@@ -1014,7 +1014,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     private void releaseAltar() {
-        if (this.homePos == null || this.level().isClientSide) {
+        if (this.homePos == null || this.level().isClientSide()) {
             return;
         }
 

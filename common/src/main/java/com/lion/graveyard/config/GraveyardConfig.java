@@ -2,7 +2,7 @@ package com.lion.graveyard.config;
 
 import com.lion.graveyard.config.entries.*;
 import java.util.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GraveyardConfig {
     private static final String CHAMPION_ID = "corrupted_champion";
@@ -68,7 +68,7 @@ public class GraveyardConfig {
         numberEntries.put("namelessHangedMaxOffers", (double) values.integer("behaviour.namelessHangedOffers.max"));
     }
 
-    public boolean enabled(ResourceLocation id) {
+    public boolean enabled(Identifier id) {
         String path = id.getPath();
 
         if (!structureSwitch(path)) {
@@ -87,9 +87,9 @@ public class GraveyardConfig {
         return entry == null || entry.enabled;
     }
 
-    public double structureChance(ResourceLocation id) {
+    public double structureChance(Identifier id) {
         double chance = getStructure(id).spawnChance();
-        return isOverrunVariant(id.getPath()) ? chance * getStructure(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "overrun_village")).spawnChance() : chance;
+        return isOverrunVariant(id.getPath()) ? chance * getStructure(Identifier.fromNamespaceAndPath(id.getNamespace(), "overrun_village")).spawnChance() : chance;
     }
 
     public boolean flag(String key, boolean fallback) {
@@ -116,21 +116,21 @@ public class GraveyardConfig {
         return entry == null ? MobConfigEntry.of(true, 0, 0, 0, false, false) : entry;
     }
 
-    public boolean fogSpawn(ResourceLocation id) {
+    public boolean fogSpawn(Identifier id) {
         return getParticle(id).canGenerate;
     }
 
-    public StructureConfigEntry getStructure(ResourceLocation id) {
+    public StructureConfigEntry getStructure(Identifier id) {
         StructureConfigEntry entry = structureConfigEntries.get(id.getPath());
         return entry == null ? StructureConfigEntry.of() : entry;
     }
 
-    public ParticleConfigEntry getParticle(ResourceLocation id) {
+    public ParticleConfigEntry getParticle(Identifier id) {
         ParticleConfigEntry entry = particleEntries.get(id.getPath());
         return entry == null ? ParticleConfigEntry.of(50) : entry;
     }
 
-    public HordeConfigEntry getHorde(ResourceLocation id) {
+    public HordeConfigEntry getHorde(Identifier id) {
         HordeConfigEntry entry = hordeConfigEntries.get(id.getPath());
         return entry == null ? HordeConfigEntry.of(40, 24000, 1200) : entry;
     }

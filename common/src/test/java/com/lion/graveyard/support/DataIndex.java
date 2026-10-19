@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 public final class DataIndex {
-    private static final Pattern TRIGGER = Pattern.compile("(?:new ResourceLocation\\(\\s*\"graveyard:|Graveyard\\.id\\(\\s*\"|\\btrigger\\(\\s*\")([a-z0-9_/]+)\"");
+    private static final Pattern TRIGGER = Pattern.compile("(?:new Identifier\\(\\s*\"graveyard:|Graveyard\\.id\\(\\s*\"|\\btrigger\\(\\s*\")([a-z0-9_/]+)\"");
     private static DataIndex mod;
 
     public final Set<String> blocks;

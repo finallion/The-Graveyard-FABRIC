@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -85,7 +85,7 @@ public final class GhoulingBindings extends SavedData {
             CompoundTag entry = new CompoundTag();
             entry.store("ghouling", UUIDUtil.CODEC, ghouling);
             entry.store("owner", UUIDUtil.CODEC, binding.owner());
-            entry.putString("dimension", binding.dimension().location().toString());
+            entry.putString("dimension", binding.dimension().identifier().toString());
 
             if (binding.pos() != null) {
                 entry.putInt("x", binding.pos().getX());
@@ -112,7 +112,7 @@ public final class GhoulingBindings extends SavedData {
                 continue;
             }
 
-            ResourceLocation dimension = ResourceLocation.tryParse(entry.getStringOr("dimension", ""));
+            Identifier dimension = Identifier.tryParse(entry.getStringOr("dimension", ""));
 
             if (dimension == null) {
                 continue;
