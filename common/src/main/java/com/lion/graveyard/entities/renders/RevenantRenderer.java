@@ -15,7 +15,7 @@ public class RevenantRenderer<R extends LivingEntityRenderState & GeoRenderState
 
     public RevenantRenderer(EntityRendererProvider.Context context) {
         super(context, new RevenantModel());
-        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
+        this.withRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.4F;
     }
 

@@ -64,13 +64,14 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -93,12 +94,12 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     private static final EntityDataAccessor<Boolean> COFFIN;
     private static final EntityDataAccessor<Byte> VARIANT;
 
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
-    private final RawAnimation RUN_ANIMATION = RawAnimation.begin().then("run", Animation.LoopType.LOOP);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", LoopType.LOOP);
+    private final RawAnimation RUN_ANIMATION = RawAnimation.begin().then("run", LoopType.LOOP);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", LoopType.HOLD_ON_LAST_FRAME);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -251,7 +252,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
 
             if (controller != null) {
-                controller.forceAnimationReset();
+                AnimationClock.restart(controller);
             }
         }
 
@@ -377,12 +378,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 .when(state -> isAggressive() && AnimationTable.isMoving(state), RUN_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller"));
-    }
-
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
+                .build("controller"));
     }
 
     @Override

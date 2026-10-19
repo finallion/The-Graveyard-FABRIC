@@ -16,7 +16,7 @@ public class GhoulRenderer<R extends LivingEntityRenderState & GeoRenderState> e
     public GhoulRenderer(EntityRendererProvider.Context context) {
         super(context, new BaseGhoulModel());
         this.shadowRadius = 0.7F;
-        this.addRenderLayer(new GraveyardEyesLayer<>(this, GhoulRenderer::eyesTexture));
+        this.withRenderLayer(new GraveyardEyesLayer<>(this, GhoulRenderer::eyesTexture));
     }
 
     // stops the vanilla death animation

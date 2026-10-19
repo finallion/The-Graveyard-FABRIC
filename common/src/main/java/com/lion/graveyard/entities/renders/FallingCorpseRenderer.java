@@ -19,7 +19,7 @@ public class FallingCorpseRenderer<R extends LivingEntityRenderState & GeoRender
     }
 
     @Override
-    public void addRenderData(FallingCorpse animatable, Void relatedObject, R renderState) {
+    public void addRenderData(FallingCorpse animatable, Void relatedObject, R renderState, float partialTick) {
         renderState.addGeckolibData(DataTickets.ENTITY_BODY_YAW, animatable.getRotation());
     }
 

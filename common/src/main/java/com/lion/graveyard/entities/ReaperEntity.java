@@ -41,7 +41,7 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -50,10 +50,10 @@ import java.util.EnumSet;
 public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", LoopType.LOOP);
     private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("spawn");
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", LoopType.LOOP);
     protected final byte ANIMATION_IDLE = 0;
     protected final byte ANIMATION_WALK = 1;
     protected final byte ANIMATION_SPAWN = 2;
@@ -175,11 +175,6 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
-
     @Nullable
     public BlockPos getBounds() {
         return this.bounds;
@@ -234,7 +229,7 @@ public class ReaperEntity extends HostileGraveyardEntity implements GeoEntity {
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
                 .startAt(SPAWN_ANIMATION, reaper -> reaper.isSpawning() && AnimationPreview.forcedAnimation(reaper) == null ? Math.max(0, SPAWN_TICKS - reaper.entityData.get(SPAWN_TIMER)) : 0)
-                .build(this, "controller"));
+                .build("controller"));
     }
 
     @Override

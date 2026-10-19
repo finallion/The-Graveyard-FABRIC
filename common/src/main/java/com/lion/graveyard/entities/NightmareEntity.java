@@ -45,12 +45,13 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -59,8 +60,8 @@ import java.util.EnumSet;
 public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity, NeutralMob {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", LoopType.LOOP);
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("attack");
     protected static final byte ANIMATION_IDLE = 0;
     protected static final byte ANIMATION_WALK = 1;
@@ -132,7 +133,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
 
             if (controller != null) {
-                controller.forceAnimationReset();
+                AnimationClock.restart(controller);
             }
         }
 
@@ -254,14 +255,9 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
                 .when(() -> getAttackAnimTimer() > 0, ATTACK_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller"));
+                .build("controller"));
     }
 
-
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

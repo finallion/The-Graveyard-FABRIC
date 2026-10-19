@@ -15,7 +15,7 @@ public class ReaperRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public ReaperRenderer(EntityRendererProvider.Context context) {
         super(context, new ReaperModel());
-        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
+        this.withRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.4F;
     }
 

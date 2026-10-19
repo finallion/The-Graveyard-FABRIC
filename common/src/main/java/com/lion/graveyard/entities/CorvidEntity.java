@@ -801,11 +801,6 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
-
-    @Override
     protected void tickDeath() {
         this.deathTime++;
 
@@ -858,7 +853,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
                 .when(() -> this.getFlightState() == FlightState.FLY, FLY)
                 .when(() -> this.getFlightState() == FlightState.WATCH, WATCH)
                 .otherwise(IDLE)
-                .build(this, "controller")
+                .build("controller")
                 .triggerableAnim("peck", this.getSpecies().getPeckAnimation())
                 .triggerableAnim("takeoff", TAKEOFF));
     }

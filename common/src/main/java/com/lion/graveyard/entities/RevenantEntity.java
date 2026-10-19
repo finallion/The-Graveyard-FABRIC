@@ -31,13 +31,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animatable.processing.AnimationTest;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -55,10 +56,10 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
 
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
     private final RawAnimation FAKE_DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("fake_death");
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", Animation.LoopType.LOOP);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
+    private final RawAnimation WALK_ANIMATION = RawAnimation.begin().then("walk", LoopType.LOOP);
     private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().thenPlayAndHold("attack");
-    private final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().then("running", Animation.LoopType.LOOP);
+    private final RawAnimation RUNNING_ANIMATION = RawAnimation.begin().then("running", LoopType.LOOP);
     private final RawAnimation REANIMATE_ANIMATION = RawAnimation.begin().thenPlayAndHold("reanimate");
 
     protected static final int ANIMATION_IDLE = 0;
@@ -132,7 +133,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
 
             if (controller != null) {
-                controller.forceAnimationReset();
+                AnimationClock.restart(controller);
             }
         }
 
@@ -176,11 +177,6 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
         } else if (this.entityData.get(CHASING) && ++this.ticksWithoutTarget > CHASE_END_TICKS) {
             this.entityData.set(CHASING, false);
         }
-    }
-
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
     }
 
     @Override
@@ -260,7 +256,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
                 .when(this::isRunning, RUNNING_ANIMATION)
                 .when(AnimationTable::isMoving, WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller"));
+                .build("controller"));
     }
 
     private boolean isRunning(AnimationTest<RevenantEntity> state) {

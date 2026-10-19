@@ -64,7 +64,7 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -75,10 +75,10 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     private static final Identifier ATTACKING_SPEED_BOOST_ID = Graveyard.id("attacking_speed_boost_id");
     private static final AttributeModifier ATTACKING_SPEED_BOOST = new AttributeModifier(ATTACKING_SPEED_BOOST_ID, 0.2D, AttributeModifier.Operation.ADD_VALUE);
     private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().thenPlayAndHold("death");
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
     private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().thenPlayAndHold("spawn");
-    private final RawAnimation MOVE_ANIMATION = RawAnimation.begin().then("moving", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attacking", Animation.LoopType.LOOP);
+    private final RawAnimation MOVE_ANIMATION = RawAnimation.begin().then("moving", LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attacking", LoopType.LOOP);
     protected final byte ANIMATION_SPAWN = 0;
     protected final byte ANIMATION_IDLE = 1;
     protected final byte ANIMATION_DEATH = 2;
@@ -326,11 +326,6 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         }
     }
 
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
-
     public byte getAnimation() {
         return entityData.get(ANIMATION);
     }
@@ -349,7 +344,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
                 .when(AnimationTable::isMoving, MOVE_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
                 .startAt(SPAWN_ANIMATION, wraith -> wraith.isSpawning() && AnimationPreview.forcedAnimation(wraith) == null ? Math.max(0, SPAWN_TICKS - wraith.entityData.get(SPAWN_TIMER)) : 0)
-                .build(this, "controller", isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS));
+                .build("controller", isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS));
     }
 
     private boolean isSpawning() {

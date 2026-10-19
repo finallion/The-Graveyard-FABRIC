@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -346,7 +346,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(AnimationClock.controller(this, "controller", this.getMood() == Mood.SPAWNING ? 0 : MOOD_TRANSITION_TICKS, state -> {
+        controllers.add(AnimationClock.<TormentedVillagerEntity>controller("controller", this.getMood() == Mood.SPAWNING ? 0 : MOOD_TRANSITION_TICKS, state -> {
             RawAnimation preview = AnimationPreview.frame(state, Mood::animationNames);
 
             if (preview != null) {
@@ -355,8 +355,8 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
             Mood mood = this.getMood();
             // A blend from the bind pose shows a pose the mob never has.
-            boolean cut = mood == Mood.SPAWNING || state.controller().getCurrentAnimation() == null;
-            state.controller().transitionLength(cut ? 0 : MOOD_TRANSITION_TICKS);
+            boolean cut = mood == Mood.SPAWNING || state.controller().getCurrentAnimationPoint() == null;
+            state.controller().setTransitionTicks(cut ? 0 : MOOD_TRANSITION_TICKS);
 
             if (mood == Mood.WANDERING) {
                 return state.setAndContinue(this.isWalking() ? Mood.WALK : mood.animation);
@@ -377,15 +377,15 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     }
 
     public enum Mood {
-        WANDERING("idle", Animation.LoopType.LOOP, 0),
-        SPAWNING("spawn", Animation.LoopType.HOLD_ON_LAST_FRAME, 160),
-        CRYING("crying", Animation.LoopType.LOOP, 80),
-        GLITCHING("glitch", Animation.LoopType.HOLD_ON_LAST_FRAME, 48 + MOOD_TRANSITION_TICKS),
-        RAGING("rage", Animation.LoopType.HOLD_ON_LAST_FRAME, 104 + MOOD_TRANSITION_TICKS),
-        BREAKING_DOWN("breakdown", Animation.LoopType.HOLD_ON_LAST_FRAME, 160 + MOOD_TRANSITION_TICKS),
-        REDEEMING("redemption", Animation.LoopType.HOLD_ON_LAST_FRAME, 150 + MOOD_TRANSITION_TICKS);
+        WANDERING("idle", LoopType.LOOP, 0),
+        SPAWNING("spawn", LoopType.HOLD_ON_LAST_FRAME, 160),
+        CRYING("crying", LoopType.LOOP, 80),
+        GLITCHING("glitch", LoopType.HOLD_ON_LAST_FRAME, 48 + MOOD_TRANSITION_TICKS),
+        RAGING("rage", LoopType.HOLD_ON_LAST_FRAME, 104 + MOOD_TRANSITION_TICKS),
+        BREAKING_DOWN("breakdown", LoopType.HOLD_ON_LAST_FRAME, 160 + MOOD_TRANSITION_TICKS),
+        REDEEMING("redemption", LoopType.HOLD_ON_LAST_FRAME, 150 + MOOD_TRANSITION_TICKS);
 
-        private static final RawAnimation WALK = RawAnimation.begin().then("animation.tormented_villager.lost", Animation.LoopType.LOOP);
+        private static final RawAnimation WALK = RawAnimation.begin().then("animation.tormented_villager.lost", LoopType.LOOP);
 
         private final RawAnimation animation;
         private final int ticks;
@@ -398,7 +398,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
             return names;
         }
 
-        Mood(String name, Animation.LoopType loop, int ticks) {
+        Mood(String name, LoopType loop, int ticks) {
             this.animation = RawAnimation.begin().then("animation.tormented_villager." + name, loop);
             this.ticks = ticks;
         }

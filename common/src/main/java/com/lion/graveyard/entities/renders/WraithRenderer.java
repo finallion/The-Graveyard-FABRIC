@@ -17,7 +17,7 @@ public class WraithRenderer<R extends LivingEntityRenderState & GeoRenderState> 
 
     public WraithRenderer(EntityRendererProvider.Context context) {
         super(context, new WraithModel());
-        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
+        this.withRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.3F;
     }
 

@@ -26,15 +26,15 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class FallingCorpse extends Monster implements GeoEntity {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private final RawAnimation FALLING_ANIMATION = RawAnimation.begin().then("falling", Animation.LoopType.LOOP);
-    private final RawAnimation LANDING_ANIMATION = RawAnimation.begin().then("landing", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation DESPAWN_ANIMATION = RawAnimation.begin().then("despawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation FALLING_ANIMATION = RawAnimation.begin().then("falling", LoopType.LOOP);
+    private final RawAnimation LANDING_ANIMATION = RawAnimation.begin().then("landing", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation DESPAWN_ANIMATION = RawAnimation.begin().then("despawn", LoopType.HOLD_ON_LAST_FRAME);
     private static final EntityDataAccessor<Boolean> IS_FALLING;
     private static final EntityDataAccessor<Boolean> HAS_COLLIDED;
     private static final EntityDataAccessor<Boolean> SINKING;
@@ -111,7 +111,7 @@ public class FallingCorpse extends Monster implements GeoEntity {
                 .when(this::isFalling, FALLING_ANIMATION)
                 .when(this::isSinking, DESPAWN_ANIMATION)
                 .otherwise(LANDING_ANIMATION)
-                .build(this, "controller"));
+                .build("controller"));
     }
 
     @Override

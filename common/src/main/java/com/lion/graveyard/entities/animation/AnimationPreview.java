@@ -2,11 +2,11 @@ package com.lion.graveyard.entities.animation;
 
 import com.lion.graveyard.platform.DevEnvironment;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animatable.processing.AnimationProcessor;
-import software.bernie.geckolib.animatable.processing.AnimationTest;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.state.AnimationPoint;
+import software.bernie.geckolib.animation.state.AnimationTest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ public final class AnimationPreview {
         }
 
         AnimationController<?> controller = state.controller();
-        controller.transitionLength(AnimationTable.TRANSITION_TICKS);
+        controller.setTransitionTicks(AnimationTable.TRANSITION_TICKS);
 
         if (!ALL.equals(forced)) {
             return LOOPS.computeIfAbsent(forced, key -> RawAnimation.begin().thenLoop(key));
@@ -70,7 +70,7 @@ public final class AnimationPreview {
 
         double clock = state.renderState() instanceof EntityRenderState render ? render.ageInTicks : entity.tickCount;
         String name = names.get(nextIndex(controller, names, clock));
-        return PLAYS.computeIfAbsent(name, key -> RawAnimation.begin().then(key, Animation.LoopType.PLAY_ONCE));
+        return PLAYS.computeIfAbsent(name, key -> RawAnimation.begin().then(key, LoopType.PLAY_ONCE));
     }
 
     private static int nextIndex(AnimationController<?> controller, List<String> names, double clock) {
@@ -85,14 +85,14 @@ public final class AnimationPreview {
         } else if (controller.hasAnimationFinished() || isStalled(controller, names.get(step.index), clock - step.started)) {
             step.index = (step.index + 1) % names.size();
             step.started = clock;
-            controller.forceAnimationReset();
+            controller.reset();
         }
 
         return step.index;
     }
 
     private static boolean isStalled(AnimationController<?> controller, String name, double elapsed) {
-        AnimationProcessor.QueuedAnimation current = controller.getCurrentAnimation();
+        AnimationPoint current = controller.getCurrentAnimationPoint();
         boolean known = current != null && current.animation().name().equals(name);
         return !known && elapsed >= UNKNOWN_STEP_TICKS;
     }

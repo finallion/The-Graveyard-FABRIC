@@ -17,7 +17,7 @@ public class TormentedVillagerRenderer<R extends LivingEntityRenderState & GeoRe
 
     public TormentedVillagerRenderer(EntityRendererProvider.Context context) {
         super(context, new TormentedVillagerModel());
-        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
+        this.withRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.4F;
     }
 

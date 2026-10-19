@@ -8,15 +8,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 
-public class OssuaryBlockEntityRenderer extends GeoBlockRenderer<OssuaryBlockEntity> {
+public class OssuaryBlockEntityRenderer<R extends BlockEntityRenderState & GeoRenderState> extends GeoBlockRenderer<OssuaryBlockEntity, R> {
 
     public OssuaryBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(new OssuaryModel());
     }
 
     @Override
-    public RenderType getRenderType(GeoRenderState renderState, Identifier texture) {
+    public RenderType getRenderType(R renderState, Identifier texture) {
         return RenderTypes.entityCutout(texture);
     }
 

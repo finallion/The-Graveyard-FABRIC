@@ -1,10 +1,10 @@
 package com.lion.graveyard.entities.animation;
 
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animatable.processing.AnimationTest;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +35,8 @@ public final class AnimationTable<T extends GeoAnimatable> {
     private String offsetAnimation;
     @Nullable
     private ToDoubleFunction<T> startOffset;
+    @Nullable
+    private ToDoubleFunction<T> speed;
 
     private AnimationTable() {}
 
@@ -67,17 +69,22 @@ public final class AnimationTable<T extends GeoAnimatable> {
         return this;
     }
 
+    public AnimationTable<T> speed(ToDoubleFunction<T> value) {
+        this.speed = value;
+        return this;
+    }
+
     public AnimationTable<T> transitionTicks(IntSupplier ticks) {
         this.transitionTicks = ticks;
         return this;
     }
 
-    public AnimationController<T> build(T animatable, String name) {
-        return build(animatable, name, TRANSITION_TICKS);
+    public AnimationController<T> build(String name) {
+        return build(name, TRANSITION_TICKS);
     }
 
-    public AnimationController<T> build(T animatable, String name, int transitionTicks) {
-        return AnimationClock.controller(animatable, name, transitionTicks, state -> {
+    public AnimationController<T> build(String name, int transitionTicks) {
+        return AnimationClock.controller(name, transitionTicks, state -> {
             RawAnimation preview = AnimationPreview.frame(state, this::animationNames);
 
             if (preview != null) {
@@ -85,8 +92,12 @@ public final class AnimationTable<T extends GeoAnimatable> {
                 return PlayState.CONTINUE;
             }
 
+            if (this.speed != null) {
+                state.controller().setAnimationSpeed(this.speed.applyAsDouble(state.animatable()));
+            }
+
             int blend = this.transitionTicks != null ? this.transitionTicks.getAsInt() : transitionTicks;
-            state.controller().transitionLength(state.controller().getCurrentAnimation() == null ? 0 : blend);
+            state.controller().setTransitionTicks(state.controller().getCurrentAnimationPoint() == null ? 0 : blend);
             for (Entry<T> entry : this.entries) {
                 if (entry.condition.test(state)) {
                     if (entry.animation == null) {

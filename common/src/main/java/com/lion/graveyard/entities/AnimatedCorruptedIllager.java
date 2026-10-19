@@ -388,7 +388,7 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
                 .when(state -> AnimationTable.isMoving(state) || this.entityData.get(WANDERING), WANDER)
                 .otherwise(IDLE)
                 .startAt(SPAWN, illager -> illager.getSpawnTimer() > 0 && AnimationPreview.forcedAnimation(illager) == null ? Math.max(0, SPAWN_TICKS - illager.getSpawnTimer()) : 0)
-                .build(this, "controller", AnimationTable.TRANSITION_TICKS));
+                .build("controller", AnimationTable.TRANSITION_TICKS));
     }
 
     @Override

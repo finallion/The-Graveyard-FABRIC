@@ -4,6 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.GhoulingEntity;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
@@ -19,7 +20,11 @@ public class GhoulingModel extends GeoModel<GhoulingEntity> {
     }
 
     @Override
-    public void addAdditionalStateData(GhoulingEntity animatable, GeoRenderState renderState) {
+    public void addAdditionalStateData(
+            GhoulingEntity animatable,
+            @Nullable Object relatedObject,
+            GeoRenderState renderState
+    ) {
         renderState.addGeckolibData(GraveyardDataTickets.GHOULING_VARIANT, animatable.getVariant());
     }
 

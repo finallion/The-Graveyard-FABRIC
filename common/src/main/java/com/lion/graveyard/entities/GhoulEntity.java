@@ -41,11 +41,12 @@ import com.lion.graveyard.init.TGAdvancements;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
+import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.entities.animation.AnimationTable;
 import com.mojang.serialization.Codec;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animatable.processing.AnimationTest;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -294,11 +295,6 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
     }
 
     @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
-
-    @Override
     public void tick() {
         if (getSpawnTimer() > 0 && level() != null) {
             RandomSource random = this.getRandom();
@@ -338,7 +334,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
             AnimationController<?> controller = this.getAnimatableInstanceCache().getManagerForId(this.getId()).getAnimationControllers().get("controller");
 
             if (controller != null) {
-                controller.forceAnimationReset();
+                AnimationClock.restart(controller);
             }
         }
 
@@ -398,7 +394,7 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
                 .when(this::isRunning, RUN_BIPED_ANIMATION)
                 .when(state -> AnimationTable.isMoving(state) || this.entityData.get(NAVIGATING), WALK_ANIMATION)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller", getSpawnTimer() > 0 ? 0 : AnimationTable.TRANSITION_TICKS));
+                .build("controller", getSpawnTimer() > 0 ? 0 : AnimationTable.TRANSITION_TICKS));
     }
 
     private boolean isDying() {

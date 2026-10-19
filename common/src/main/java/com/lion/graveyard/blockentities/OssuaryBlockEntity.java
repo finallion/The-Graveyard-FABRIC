@@ -15,17 +15,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animatable.processing.AnimationController;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
-    private final RawAnimation OPEN = RawAnimation.begin().then("open", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation CLOSE = RawAnimation.begin().then("close", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation IDLE = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation OPEN = RawAnimation.begin().then("open", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation CLOSE = RawAnimation.begin().then("close", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation IDLE = RawAnimation.begin().then("idle", LoopType.LOOP);
     private boolean playedSound = false;
 
     public OssuaryBlockEntity(BlockPos pos, BlockState state) {
@@ -35,10 +35,11 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar data) {
         data.add(new AnimationController<>("controller", 0, event -> {
-            AnimationController.State state = event.controller().getAnimationState();
+            boolean idle = event.controller().getCurrentAnimationPoint() == null;
+            boolean settled = idle || event.controller().hasAnimationFinished();
 
             if (this.getBlockState().getValue(OssuaryBlock.OPEN)) {
-                if (state == AnimationController.State.STOPPED || state == AnimationController.State.PAUSED)  {
+                if (settled) {
                     if (level != null && !playedSound) {
                         Player playerEntity = level.getNearestPlayer((double)worldPosition.getX() + 0.5D, (double)worldPosition.getY() + 0.5D, (double)worldPosition.getZ() + 0.5D, 4.0D, false);
 
@@ -52,7 +53,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
                 }
 
                 return PlayState.CONTINUE;
-            } else if (!this.getBlockState().getValue(OssuaryBlock.OPEN) && state == AnimationController.State.PAUSED) {
+            } else if (event.controller().hasAnimationFinished()) {
                 event.controller().setAnimation(CLOSE);
 
                 if (playedSound) {

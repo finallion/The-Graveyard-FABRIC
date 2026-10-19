@@ -8,6 +8,7 @@ import com.lion.graveyard.entities.projectiles.SkullEntity;
 import com.lion.graveyard.init.TGEntities;
 import com.lion.graveyard.init.TGParticles;
 import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.entities.animation.AnimationClock;
 import com.lion.graveyard.entities.animation.AnimationPreview;
 import com.lion.graveyard.sounds.BossMusicPlayer;
 import com.lion.graveyard.util.MathUtil;
@@ -67,8 +68,8 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animatable.processing.AnimationController;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -85,24 +86,24 @@ public class LichEntity extends Monster implements GeoEntity {
     private static final AttributeModifier ATTACKING_SPEED_BOOST;
     private static final AttributeModifier CRAWL_SPEED_BOOST;
     private static final AttributeModifier DMG_BOOST;
-    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
-    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
-    private final RawAnimation CORPSE_SPELL_ANIMATION = RawAnimation.begin().then("corpse_spell", Animation.LoopType.LOOP);
-    private final RawAnimation START_PHASE_2_ANIMATION = RawAnimation.begin().then("phase_two", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation PHASE_2_IDLE_ANIMATION = RawAnimation.begin().then("phase_two_idle", Animation.LoopType.LOOP);
-    private final RawAnimation PHASE_2_ATTACK_ANIMATION = RawAnimation.begin().then("phase_two_attack", Animation.LoopType.LOOP);
-    private final RawAnimation START_PHASE_3_ANIMATION = RawAnimation.begin().then("phase_three", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation PHASE_3_ATTACK_ANIMATION = RawAnimation.begin().then("crawl", Animation.LoopType.LOOP);
-    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation SHOOT_SKULL_ANIMATION = RawAnimation.begin().then("attack", Animation.LoopType.LOOP);
-    private final RawAnimation SUMMON_ANIMATION = RawAnimation.begin().then("summon", Animation.LoopType.LOOP);
-    private final RawAnimation CONJURE_FANG_ANIMATION = RawAnimation.begin().then("corpse_spell", Animation.LoopType.LOOP);
-    private final RawAnimation STUNNED_ANIMATION = RawAnimation.begin().then("stunned", Animation.LoopType.LOOP);
-    private final RawAnimation CRAWL_IDLE_ANIMATION = RawAnimation.begin().then("crawl_idle", Animation.LoopType.LOOP);
-    private final RawAnimation PHASE_2_CHARGE_ANIMATION = RawAnimation.begin().then("phase_two_charge", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation CRAWL_ATTACK_ANIMATION = RawAnimation.begin().then("crawl_attack", Animation.LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation CRAWL_POUNCE_ANIMATION = RawAnimation.begin().then("crawl_pounce", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation SPAWN_ANIMATION = RawAnimation.begin().then("spawn", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
+    private final RawAnimation ATTACK_ANIMATION = RawAnimation.begin().then("attack", LoopType.LOOP);
+    private final RawAnimation CORPSE_SPELL_ANIMATION = RawAnimation.begin().then("corpse_spell", LoopType.LOOP);
+    private final RawAnimation START_PHASE_2_ANIMATION = RawAnimation.begin().then("phase_two", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation PHASE_2_IDLE_ANIMATION = RawAnimation.begin().then("phase_two_idle", LoopType.LOOP);
+    private final RawAnimation PHASE_2_ATTACK_ANIMATION = RawAnimation.begin().then("phase_two_attack", LoopType.LOOP);
+    private final RawAnimation START_PHASE_3_ANIMATION = RawAnimation.begin().then("phase_three", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation PHASE_3_ATTACK_ANIMATION = RawAnimation.begin().then("crawl", LoopType.LOOP);
+    private final RawAnimation DEATH_ANIMATION = RawAnimation.begin().then("death", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation SHOOT_SKULL_ANIMATION = RawAnimation.begin().then("attack", LoopType.LOOP);
+    private final RawAnimation SUMMON_ANIMATION = RawAnimation.begin().then("summon", LoopType.LOOP);
+    private final RawAnimation CONJURE_FANG_ANIMATION = RawAnimation.begin().then("corpse_spell", LoopType.LOOP);
+    private final RawAnimation STUNNED_ANIMATION = RawAnimation.begin().then("stunned", LoopType.LOOP);
+    private final RawAnimation CRAWL_IDLE_ANIMATION = RawAnimation.begin().then("crawl_idle", LoopType.LOOP);
+    private final RawAnimation PHASE_2_CHARGE_ANIMATION = RawAnimation.begin().then("phase_two_charge", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation CRAWL_ATTACK_ANIMATION = RawAnimation.begin().then("crawl_attack", LoopType.HOLD_ON_LAST_FRAME);
+    private final RawAnimation CRAWL_POUNCE_ANIMATION = RawAnimation.begin().then("crawl_pounce", LoopType.HOLD_ON_LAST_FRAME);
     protected static final int ANIMATION_SPAWN = 0;
     protected static final int ANIMATION_IDLE = 1;
     protected static final int ANIMATION_MELEE = 2;
@@ -198,7 +199,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
-        AnimationController<LichEntity> controller = AnimationTable.<LichEntity>create()
+        animationData.add(AnimationTable.<LichEntity>create()
                 .transitionTicks(this::blendTicks)
                 // Set from the respawn method: drops every animation of the phase before.
                 .stopWhen(() -> getAnimationState() == ANIMATION_STOP)
@@ -230,15 +231,14 @@ public class LichEntity extends Monster implements GeoEntity {
                 .when(state -> getPhase() == 5 && AnimationTable.isMoving(state), PHASE_3_ATTACK_ANIMATION)
                 .when(() -> getPhase() == 5, CRAWL_IDLE_ANIMATION)
 
+                .speed(lich -> lich.isSpawning() && lich.getPhase() == 1 ? (double) SPAWN_CLIP_TICKS / Math.max(1, lich.getSpawnDuration()) : 1.0D)
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller", isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS);
-        controller.setAnimationSpeedHandler(lich -> lich.isSpawning() && lich.getPhase() == 1 ? (double) SPAWN_CLIP_TICKS / Math.max(1, lich.getSpawnDuration()) : 1.0D);
-        animationData.add(controller);
+                .build("controller", isSpawning() ? 0 : AnimationTable.TRANSITION_TICKS));
     }
 
     private int blendTicks() {
         AnimationController<?> controller = getAnimatableInstanceCache().getManagerForId(getId()).getAnimationControllers().get("controller");
-        String current = controller == null || controller.getCurrentAnimation() == null ? null : controller.getCurrentAnimation().animation().name();
+        String current = controller == null || controller.getCurrentAnimationPoint() == null ? null : controller.getCurrentAnimationPoint().animation().name();
         boolean hardCut = isSpawning() || "spawn".equals(current) || "phase_three".equals(current);
         return hardCut ? 0 : AnimationTable.TRANSITION_TICKS;
     }
@@ -295,11 +295,6 @@ public class LichEntity extends Monster implements GeoEntity {
         }
     }
 
-    @Override
-    public double getBoneResetTime() {
-        return AnimationTable.TRANSITION_TICKS;
-    }
-
     private void restartAttackClipOnRearm() {
         int timer = getAttackAnimTimer();
 
@@ -307,7 +302,7 @@ public class LichEntity extends Monster implements GeoEntity {
             AnimationController<?> controller = getAnimatableInstanceCache().getManagerForId(getId()).getAnimationControllers().get("controller");
 
             if (controller != null) {
-                controller.forceAnimationReset();
+                AnimationClock.restart(controller);
             }
         }
 

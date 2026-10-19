@@ -38,7 +38,7 @@ import com.lion.graveyard.entities.animation.AnimationTable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -48,7 +48,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final String OFFERS_DAY_KEY = "OffersDay";
     private long offersDay = -1L;
-    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", Animation.LoopType.LOOP);
+    private final RawAnimation IDLE_ANIMATION = RawAnimation.begin().then("idle", LoopType.LOOP);
 
     public NamelessHangedEntity(EntityType<? extends NamelessHangedEntity> entityType, Level world) {
         super(entityType, world);
@@ -70,7 +70,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     public void registerControllers(AnimatableManager.ControllerRegistrar animationData) {
         animationData.add(AnimationTable.<NamelessHangedEntity>create()
                 .otherwise(IDLE_ANIMATION)
-                .build(this, "controller"));
+                .build("controller"));
     }
 
     @Override
@@ -177,12 +177,10 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         }
 
         if (this.isAlive() && !this.isTrading() && level().isDarkOutside()) {
-            if (!this.getOffers().isEmpty()) {
-                if (!this.level().isClientSide()) {
-                    this.setTradingPlayer(player);
-                    this.openTradingScreen(player, this.getDisplayName(), 1);
-                    level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
-                }
+            if (!this.level().isClientSide() && !this.getOffers().isEmpty()) {
+                this.setTradingPlayer(player);
+                this.openTradingScreen(player, this.getDisplayName(), 1);
+                level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
             }
 
             return InteractionResult.SUCCESS;
