@@ -4,10 +4,15 @@ import com.lion.graveyard.blockentities.animation.SarcophagusLidAnimator;
 import com.lion.graveyard.blocks.SarcophagusBlock;
 import com.lion.graveyard.init.TGBlockEntities;
 import com.lion.graveyard.init.TGSounds;
+import com.lion.graveyard.util.LegacyContainerName;
 import com.lion.graveyard.util.LegacyItemStacks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.CompoundContainer;
@@ -30,6 +35,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
     private NonNullList<ItemStack> inventory;
     private final ContainerOpenersCounter stateManager;
+    private Component legacyName;
     private final SarcophagusLidAnimator lidAnimator;
 
     public SarcophagusBlockEntity(BlockPos pos, BlockState state) {
@@ -81,6 +87,7 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        this.legacyName = LegacyContainerName.read(input).orElse(null);
         this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 
         if (!this.tryLoadLootTable(input)) {
@@ -92,9 +99,37 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
 
+        if (this.legacyName != null) {
+            output.store(LegacyContainerName.CUSTOM_NAME_KEY, ComponentSerialization.CODEC, this.legacyName);
+        }
+
+        LegacyItemStacks.writeDataVersion(output);
+
         if (!this.trySaveLootTable(output)) {
             LegacyItemStacks.saveSlots(output, this.inventory);
         }
+    }
+
+    @Override
+    public Component getName() {
+        return this.legacyName != null ? this.legacyName : super.getName();
+    }
+
+    @Override
+    public Component getCustomName() {
+        return this.legacyName != null ? this.legacyName : super.getCustomName();
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentGetter components) {
+        super.applyImplicitComponents(components);
+        this.legacyName = null;
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(DataComponents.CUSTOM_NAME, this.getCustomName());
     }
 
     @Override
