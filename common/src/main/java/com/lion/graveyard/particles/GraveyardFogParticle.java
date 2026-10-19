@@ -1,29 +1,30 @@
 package com.lion.graveyard.particles;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 @Environment(EnvType.CLIENT)
-public class GraveyardFogParticle extends TextureSheetParticle {
+public class GraveyardFogParticle extends SingleQuadParticle {
     private static final float PEAK_ALPHA_MIN = 0.35F;
     private static final float PEAK_ALPHA_RANGE = 0.15F;
     private static final float FADE_IN_END = 0.25F;
     private static final float FADE_OUT_START = 0.65F;
     private static final float GROWTH = 0.4F;
     private static final float MAX_TILT = (float) Math.toRadians(3.0D);
+    private static final float FLAT_ROTATION = (float) (-Math.PI / 2.0D);
 
     private final float baseSize;
     private final float peakAlpha;
@@ -33,8 +34,8 @@ public class GraveyardFogParticle extends TextureSheetParticle {
     private float spin;
     private float prevSpin;
 
-    GraveyardFogParticle(ClientLevel clientWorld, double x, double y, double z) {
-        super(clientWorld, x, y, z, 0.0D, 0.0D, 0.0D);
+    GraveyardFogParticle(ClientLevel clientWorld, double x, double y, double z, TextureAtlasSprite sprite) {
+        super(clientWorld, x, y, z, 0.0D, 0.0D, 0.0D, sprite);
         this.hasPhysics = false;
         this.lifetime = 80 + random.nextInt(61);
         this.baseSize = 1.8F + random.nextFloat() * 1.4F;
@@ -54,8 +55,8 @@ public class GraveyardFogParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class GraveyardFogParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer consumer, Camera camera, float tickDelta) {
+    public void extract(QuadParticleRenderState state, Camera camera, float tickDelta) {
         float progress = Math.min(1.0F, (this.age + tickDelta) / this.lifetime);
         float fade;
 
@@ -90,46 +91,19 @@ public class GraveyardFogParticle extends TextureSheetParticle {
             fade = 1.0F;
         }
 
-        float opacity = this.peakAlpha * fade;
-        float half = this.baseSize * (1.0F + GROWTH * progress) * 0.5F;
+        this.alpha = this.peakAlpha * fade;
+        this.quadSize = this.baseSize * (1.0F + GROWTH * progress) * 0.5F;
 
-        Vec3 cam = camera.getPosition();
+        Vec3 cam = camera.position();
         float px = (float) (Mth.lerp(tickDelta, this.xo, this.x) - cam.x());
         float py = (float) (Mth.lerp(tickDelta, this.yo, this.y) - cam.y());
         float pz = (float) (Mth.lerp(tickDelta, this.zo, this.z) - cam.z());
 
-        Quaternionf rotation = new Quaternionf().rotationYXZ(Mth.lerp(tickDelta, this.prevSpin, this.spin), this.tiltX, this.tiltZ);
-        Vector3f[] corners = {
-                new Vector3f(-half, 0.0F, -half),
-                new Vector3f(-half, 0.0F, half),
-                new Vector3f(half, 0.0F, half),
-                new Vector3f(half, 0.0F, -half)
-        };
-        for (Vector3f corner : corners) {
-            corner.rotate(rotation).add(px, py, pz);
-        }
-
-        float minU = this.getU0();
-        float maxU = this.getU1();
-        float minV = this.getV0();
-        float maxV = this.getV1();
-        float[] us = {minU, minU, maxU, maxU};
-        float[] vs = {minV, maxV, maxV, minV};
-        int light = this.getLightColor(tickDelta);
-
-        for (int i = 0; i < 4; i++) {
-            emit(consumer, corners[i], us[i], vs[i], opacity, light);
-        }
-        for (int i = 3; i >= 0; i--) {
-            emit(consumer, corners[i], us[i], vs[i], opacity, light);
-        }
-    }
-
-    private void emit(VertexConsumer consumer, Vector3f p, float u, float v, float opacity, int light) {
-        consumer.addVertex(p.x(), p.y(), p.z())
-                .setUv(u, v)
-                .setColor(this.rCol, this.gCol, this.bCol, opacity)
-                .setLight(light);
+        Quaternionf rotation = new Quaternionf()
+                .rotationYXZ(Mth.lerp(tickDelta, this.prevSpin, this.spin), this.tiltX, this.tiltZ)
+                .rotateX(FLAT_ROTATION);
+        this.extractRotatedQuad(state, rotation, px, py, pz, tickDelta);
+        this.extractRotatedQuad(state, rotation.rotateY((float) Math.PI), px, py, pz, tickDelta);
     }
 
     @Environment(EnvType.CLIENT)
@@ -149,11 +123,10 @@ public class GraveyardFogParticle extends TextureSheetParticle {
                 double f,
                 double g,
                 double h,
-                double i
+                double i,
+                RandomSource random
         ) {
-            GraveyardFogParticle fog = new GraveyardFogParticle(clientWorld, d, e, f);
-            fog.pickSprite(this.spriteProvider);
-            return fog;
+            return new GraveyardFogParticle(clientWorld, d, e, f, this.spriteProvider.get(random));
         }
     }
 }

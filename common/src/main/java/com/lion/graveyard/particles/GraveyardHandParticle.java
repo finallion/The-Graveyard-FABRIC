@@ -6,10 +6,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.RisingParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 
 @Environment(EnvType.CLIENT)
 public class GraveyardHandParticle extends RisingParticle {
@@ -26,7 +27,7 @@ public class GraveyardHandParticle extends RisingParticle {
             double velocityZ,
             SpriteSet spriteProvider
     ) {
-        super(world, x, y, z, velocityX, velocityY, velocityZ);
+        super(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.first());
         this.lifetime = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 100;
         this.yd = this.yd * 0.005999999776482582D + velocityY;
         this.y = 1.0F;
@@ -41,8 +42,8 @@ public class GraveyardHandParticle extends RisingParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -69,7 +70,8 @@ public class GraveyardHandParticle extends RisingParticle {
                 double f,
                 double g,
                 double h,
-                double i
+                double i,
+                RandomSource random
         ) {
             GraveyardHandParticle soulParticle = new GraveyardHandParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);

@@ -2,15 +2,15 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.projectiles.SkullEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.object.skull.SkullModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.object.skull.SkullModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.WitherSkullRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -39,25 +39,32 @@ public class SkullEntityRenderer extends EntityRenderer<SkullEntity, WitherSkull
     @Override
     public void extractRenderState(SkullEntity skullEntity, WitherSkullRenderState renderState, float partialTick) {
         super.extractRenderState(skullEntity, renderState, partialTick);
-        renderState.yRot = Mth.rotLerp(partialTick, skullEntity.yRotO, skullEntity.getYRot());
-        renderState.xRot = Mth.lerp(partialTick, skullEntity.xRotO, skullEntity.getXRot());
+        renderState.modelState.animationPos = 0.0F;
+        renderState.modelState.yRot = Mth.rotLerp(partialTick, skullEntity.yRotO, skullEntity.getYRot());
+        renderState.modelState.xRot = Mth.lerp(partialTick, skullEntity.xRotO, skullEntity.getXRot());
     }
 
     @Override
-    public void render(
+    public void submit(
             WitherSkullRenderState renderState,
             PoseStack matrixStack,
-            MultiBufferSource vertexConsumerProvider,
-            int light
+            SubmitNodeCollector collector,
+            CameraRenderState cameraState
     ) {
         matrixStack.pushPose();
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(this.model.renderType(TEXTURE));
-        this.model.setupAnim(0.0F, renderState.yRot, renderState.xRot);
-        this.model.renderToBuffer(matrixStack, vertexConsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        collector.submitModel(
+                this.model,
+                renderState.modelState,
+                matrixStack,
+                this.model.renderType(TEXTURE),
+                renderState.lightCoords,
+                OverlayTexture.NO_OVERLAY,
+                renderState.outlineColor,
+                null
+        );
         matrixStack.popPose();
-        super.render(renderState, matrixStack, vertexConsumerProvider, light);
+        super.submit(renderState, matrixStack, collector, cameraState);
     }
 
 }
-

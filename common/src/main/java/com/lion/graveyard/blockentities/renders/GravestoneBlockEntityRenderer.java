@@ -20,6 +20,13 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -29,108 +36,115 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<GravestoneBlockEntity> {
+public class GravestoneBlockEntityRenderer
+        implements BlockEntityRenderer<GravestoneBlockEntity, GravestoneBlockEntityRenderer.State> {
     private static final int RENDER_DISTANCE = Mth.square(16);
     private final Font textRenderer;
+    private final ItemModelResolver itemModelResolver;
     private static final HashMap<Block, RenderType> LAYERS = Maps.newHashMap();
     private static RenderType defaultLayer;
 
     public GravestoneBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.textRenderer = ctx.getFont();
+        this.textRenderer = ctx.font();
+        this.itemModelResolver = ctx.itemModelResolver();
+    }
+
+    public static class State extends BlockEntityRenderState {
+        public FormattedCharSequence[] lines = new FormattedCharSequence[0];
+        public int textColor;
+        public int outlineColor;
+        public int textLight;
+        public final ItemStackRenderState stone = new ItemStackRenderState();
     }
 
     @Override
-    public void render(
-            GravestoneBlockEntity signBlockEntity,
-            float f,
-            PoseStack matrixStack,
-            MultiBufferSource vertexConsumerProvider,
-            int i,
-            int j,
-            Vec3 cameraPosition
-    ) {
-        BlockState blockState = signBlockEntity.getBlockState();
-        Level world = signBlockEntity.getLevel();
-        matrixStack.pushPose();
-
-        matrixStack.translate(0.5D, 0.25D, 0.5D);
-
-        float rotation = -blockState.getValue(GravestoneBlock.FACING).toYRot();
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        matrixStack.pushPose();
-
-        matrixStack.scale(0.6666667F, -0.6666667F, -0.6666667F);
-        matrixStack.popPose();
-        matrixStack.translate(0.0D, 0.3333333432674408D, 0.23D);
-
-        matrixStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
-
-        int m = getColor(signBlockEntity);
-
-        FormattedCharSequence[] orderedTexts = signBlockEntity.getText().getRenderMessages(Minecraft.getInstance().isTextFilteringEnabled(), (text) -> {
-            List<FormattedCharSequence> list = this.textRenderer.split(text, signBlockEntity.getMaxTextWidth());
-            return list.isEmpty() ? FormattedCharSequence.EMPTY : (FormattedCharSequence)list.get(0);
-        });
-
-        int q;
-        boolean outlined;
-        int r;
-
-        if (signBlockEntity.getText().hasGlowingText()) {
-            q = signBlockEntity.getText().getColor().getTextColor();
-            outlined = shouldRender(signBlockEntity, q);
-            r = 15728880;
-        } else {
-            q = m;
-            outlined = false;
-            r = i;
-        }
-
-        for(int s = 0; s < 4; ++s) {
-            FormattedCharSequence orderedText = orderedTexts[s];
-            float t = (float)(-this.textRenderer.width(orderedText) / 2);
-
-            if (outlined) {
-                this.textRenderer.drawInBatch8xOutline(orderedText, t, (float)(s * 10 - 20), q, m, matrixStack.last().pose(), vertexConsumerProvider, r);
-            } else {
-                this.textRenderer.drawInBatch(orderedText, t, (float)(s * 10 - 20), q, false, matrixStack.last().pose(), vertexConsumerProvider, Font.DisplayMode.NORMAL, 0, r);
-            }
-
-        }
-
-        matrixStack.popPose();
-
-        renderGrave(blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
+    public State createRenderState() {
+        return new State();
     }
 
-    public void renderGrave(
-            BlockState state,
-            float f,
-            PoseStack matrixStack,
-            MultiBufferSource vertexConsumerProvider,
-            int i,
-            int j,
-            Level world
+    @Override
+    public void extractRenderState(
+            GravestoneBlockEntity gravestone,
+            State state,
+            float partialTick,
+            Vec3 cameraPosition,
+            ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
-        matrixStack.pushPose();
-        matrixStack.translate(0.5, 0.43, 0.5);
-        matrixStack.scale(2.28F, 2.15F, 2.28F);
-        float rotation = state.getValue(GravestoneBlock.FACING).toYRot();
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        BlockEntityRenderer.super.extractRenderState(gravestone, state, partialTick, cameraPosition, crumblingOverlay);
+        int darkColor = getColor(gravestone);
 
-        ItemStack stack = new ItemStack(state.getBlock().asItem(), 1);
-        Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, i, j, matrixStack, vertexConsumerProvider, world, 2);
+        state.lines = gravestone.getText().getRenderMessages(Minecraft.getInstance().isTextFilteringEnabled(), (text) -> {
+            List<FormattedCharSequence> list = this.textRenderer.split(text, gravestone.getMaxTextWidth());
+            return list.isEmpty() ? FormattedCharSequence.EMPTY : list.get(0);
+        });
 
-        matrixStack.popPose();
+        if (gravestone.getText().hasGlowingText()) {
+            state.textColor = gravestone.getText().getColor().getTextColor();
+            state.outlineColor = shouldRender(gravestone, state.textColor) ? darkColor : 0;
+            state.textLight = 15728880;
+        } else {
+            state.textColor = darkColor;
+            state.outlineColor = 0;
+            state.textLight = state.lightCoords;
+        }
+
+        state.stone.clear();
+        ItemStack stack = new ItemStack(state.blockState.getBlock().asItem(), 1);
+        this.itemModelResolver.updateForTopItem(state.stone, stack, ItemDisplayContext.GROUND, gravestone.getLevel(), null, 2);
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+        poseStack.pushPose();
+
+        poseStack.translate(0.5D, 0.25D, 0.5D);
+
+        float rotation = -state.blockState.getValue(GravestoneBlock.FACING).toYRot();
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        poseStack.translate(0.0D, 0.3333333432674408D, 0.23D);
+
+        poseStack.scale(0.010416667F, -0.010416667F, 0.010416667F);
+
+        for (int line = 0; line < 4; ++line) {
+            FormattedCharSequence text = state.lines[line];
+            float x = (float) (-this.textRenderer.width(text) / 2);
+
+            collector.submitText(
+                    poseStack,
+                    x,
+                    (float) (line * 10 - 20),
+                    text,
+                    false,
+                    Font.DisplayMode.NORMAL,
+                    state.textLight,
+                    state.textColor,
+                    0,
+                    state.outlineColor
+            );
+        }
+
+        poseStack.popPose();
+
+        submitGrave(state, poseStack, collector);
+    }
+
+    private void submitGrave(State state, PoseStack poseStack, SubmitNodeCollector collector) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.43, 0.5);
+        poseStack.scale(2.28F, 2.15F, 2.28F);
+        float rotation = state.blockState.getValue(GravestoneBlock.FACING).toYRot();
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+
+        state.stone.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+
+        poseStack.popPose();
     }
 
     @Override
@@ -168,7 +182,7 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         }
     }
 
-    public static Model createSignModel(EntityModelSet entityModelLoader, WoodType type) {
+    public static Model.Simple createSignModel(EntityModelSet entityModelLoader, WoodType type) {
         return SignRenderer.createSignModel(entityModelLoader, type, false);
     }
 

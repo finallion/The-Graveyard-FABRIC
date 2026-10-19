@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 
 @Environment(EnvType.CLIENT)
 public record GravestoneSignRenderState(
-        Model model,
+        Model.Simple model,
         Block block,
         int x0,
         int y0,
@@ -21,7 +21,7 @@ public record GravestoneSignRenderState(
 ) implements PictureInPictureRenderState {
 
     public GravestoneSignRenderState(
-            Model model,
+            Model.Simple model,
             Block block,
             int x0,
             int y0,

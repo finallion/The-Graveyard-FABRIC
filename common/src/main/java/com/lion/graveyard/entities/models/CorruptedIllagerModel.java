@@ -20,7 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 
 @Environment(EnvType.CLIENT)
-public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderState> implements ArmedModel, HeadedModel {
+public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderState> implements ArmedModel<CorruptedIllagerRenderState>, HeadedModel {
     private final ModelPart head;
     private final ModelPart hat;
     private final ModelPart arms;
@@ -125,7 +125,7 @@ public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderSta
 
         if (state == CorruptedIllager.State.ATTACKING) {
             if (renderState.mainHandEmpty) {
-                AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState.attackAnim, h);
+                AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState);
             } else {
                 AnimationUtils.swingWeaponDown(this.rightArm, this.leftArm, renderState.mainArm, renderState.attackAnim, h);
             }
@@ -182,7 +182,7 @@ public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderSta
                 this.leftArm.visible = false;
             }
 
-            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, false, renderState.attackAnim, h);
+            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, false, renderState);
         } else if (state == CorruptedIllager.State.UNDEAD_ATTACKING) {
             if (renderState.modelDamaged) {
                 this.shortLeftArm.visible = true;
@@ -190,7 +190,7 @@ public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderSta
                 this.leftArm.visible = false;
             }
 
-            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState.attackAnim, h);
+            AnimationUtils.animateZombieArms(this.leftArm, this.rightArm, true, renderState);
         }
 
         if (!renderState.modelDamaged) {
@@ -216,7 +216,7 @@ public class CorruptedIllagerModel extends EntityModel<CorruptedIllagerRenderSta
     }
 
     @Override
-    public void translateToHand(HumanoidArm arm, PoseStack matrices) {
+    public void translateToHand(CorruptedIllagerRenderState renderState, HumanoidArm arm, PoseStack matrices) {
         this.getAttackingArm(arm).translateAndRotate(matrices);
     }
 }

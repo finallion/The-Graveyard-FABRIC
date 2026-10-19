@@ -8,11 +8,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -24,13 +28,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
-public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<SarcophagusBlockEntity> {
+public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEntity>
+        implements BlockEntityRenderer<SarcophagusBlockEntity, SarcophagusBlockEntityRenderer.State> {
     private final ItemModelResolver itemModelResolver;
-    private final ItemStackRenderState baseState = new ItemStackRenderState();
-    private final ItemStackRenderState lidState = new ItemStackRenderState();
 
     public SarcophagusBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.itemModelResolver = ctx.getItemModelResolver();
+        this.itemModelResolver = ctx.itemModelResolver();
+    }
+
+    public static class State extends BlockEntityRenderState {
+        public boolean headPart;
+        public float openProgress;
+        public Direction direction = Direction.NORTH;
+        public final ItemStackRenderState base = new ItemStackRenderState();
+        public final ItemStackRenderState lid = new ItemStackRenderState();
+    }
+
+    @Override
+    public State createRenderState() {
+        return new State();
     }
 
     @Override
@@ -39,71 +55,74 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
     }
 
     @Override
-    public void render(
+    public void extractRenderState(
             SarcophagusBlockEntity entity,
-            float tickDelta,
-            PoseStack matrixStack,
-            MultiBufferSource vertexConsumers,
-            int light,
-            int overlay,
-            Vec3 cameraPosition
+            State state,
+            float partialTick,
+            Vec3 cameraPosition,
+            ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
     ) {
+        BlockEntityRenderer.super.extractRenderState(entity, state, partialTick, cameraPosition, crumblingOverlay);
         BlockState blockState = entity.getBlockState();
+        state.headPart = entity.getLevel() != null && blockState.getValue(SarcophagusBlock.PART) == SarcophagusPart.HEAD;
+
+        if (!state.headPart) {
+            return;
+        }
+
         DoubleBlockCombiner.NeighborCombineResult<? extends SarcophagusBlockEntity> propertySource = DoubleBlockCombiner.combineWithNeigbour(TGBlockEntities.SARCOPHAGUS_BLOCK_ENTITY.get(), SarcophagusBlock::getSarcophagusPart, SarcophagusBlock::getOppositePartDirection, ChestBlock.FACING, blockState, entity.getLevel(), entity.getBlockPos(), (worldx, pos) -> false);
-        float g = propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever(entity)).get(tickDelta);
+        float g = propertySource.apply(SarcophagusBlock.getAnimationProgressRetriever(entity)).get(partialTick);
         g = 1.0F - g;
-        g = 1.0F - g * g * g;
+        state.openProgress = 1.0F - g * g * g;
+        state.direction = blockState.getValue(SarcophagusBlock.FACING).getOpposite();
 
-        ItemStackRenderState base = getModel(this.baseState, ((SarcophagusBlock)blockState.getBlock()).getBase().get(), entity);
-        ItemStackRenderState lid = getModel(this.lidState, ((SarcophagusBlock)blockState.getBlock()).getLid().get(), entity);
+        SarcophagusBlock block = (SarcophagusBlock) blockState.getBlock();
+        updateModel(state.base, block.getBase().get(), entity);
+        updateModel(state.lid, block.getLid().get(), entity);
+    }
 
-        if (entity.getLevel() != null && entity.getBlockState().getValue(SarcophagusBlock.PART) == SarcophagusPart.HEAD) {
-            render(entity, matrixStack, vertexConsumers, light, overlay, g, lid, true);
-            render(entity, matrixStack, vertexConsumers, light, overlay, g, base, false);
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
+        if (state.headPart) {
+            submitPart(state, poseStack, collector, state.lid, true);
+            submitPart(state, poseStack, collector, state.base, false);
         }
     }
 
-
-
-    private void render(
-            SarcophagusBlockEntity entity,
-            PoseStack matrixStack,
-            MultiBufferSource vertexConsumer,
-            int light,
-            int overlay,
-            float g,
+    private void submitPart(
+            State state,
+            PoseStack poseStack,
+            SubmitNodeCollector collector,
             ItemStackRenderState model,
             boolean isLid
     ) {
-        matrixStack.pushPose();
+        poseStack.pushPose();
 
-        Direction direction = entity.getBlockState().getValue(SarcophagusBlock.FACING).getOpposite();
+        Direction direction = state.direction;
         float f = direction.toYRot();
-        matrixStack.mulPose(Axis.YP.rotationDegrees(-f));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-f));
 
         switch (direction) {
-            case EAST -> matrixStack.translate(-1.0F, 0F, 1.0F);
-            case SOUTH -> matrixStack.translate(0, 0F, 1.0F);
-            case NORTH -> matrixStack.translate(-1.0F, 0F, 0F);
+            case EAST -> poseStack.translate(-1.0F, 0F, 1.0F);
+            case SOUTH -> poseStack.translate(0, 0F, 1.0F);
+            case NORTH -> poseStack.translate(-1.0F, 0F, 0F);
         }
 
         if (isLid) {
-            matrixStack.mulPose(Axis.ZN.rotationDegrees(g * 45));
-            matrixStack.translate(g * 0.3, g * 0.3, 0.0F);
+            float g = state.openProgress;
+            poseStack.mulPose(Axis.ZN.rotationDegrees(g * 45));
+            poseStack.translate(g * 0.3, g * 0.3, 0.0F);
         }
 
         // Cancels the -0.5 offset that ItemTransform.apply adds.
-        matrixStack.translate(0.5F, 0.5F, 0.5F);
-        model.render(matrixStack, vertexConsumer, light, overlay);
+        poseStack.translate(0.5F, 0.5F, 0.5F);
+        model.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
-        matrixStack.popPose();
+        poseStack.popPose();
     }
 
-    private ItemStackRenderState getModel(ItemStackRenderState state, Item item, SarcophagusBlockEntity entity) {
+    private void updateModel(ItemStackRenderState state, Item item, SarcophagusBlockEntity entity) {
         state.clear();
         this.itemModelResolver.updateForTopItem(state, item.getDefaultInstance(), ItemDisplayContext.NONE, entity.getLevel(), null, 0);
-        return state;
     }
 }
-
-

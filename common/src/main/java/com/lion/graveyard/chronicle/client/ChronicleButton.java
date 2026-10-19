@@ -39,7 +39,7 @@ public class ChronicleButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
         this.followInventory();
         context.blit(RenderPipelines.GUI_TEXTURED, ChronicleScreen.BUTTON_TEXTURE, this.getX(), this.getY(), 0.0F, this.isHoveredOrFocused() ? 20.0F : 0.0F, 20, 20, 20, 40);
     }

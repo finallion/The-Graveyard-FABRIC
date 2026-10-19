@@ -4,10 +4,11 @@ package com.lion.graveyard.particles;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.RisingParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -26,7 +27,7 @@ public class GraveyardSoulParticle extends RisingParticle {
             double velocityZ,
             SpriteSet spriteProvider
     ) {
-        super(world, x, y, z, velocityX, velocityY, velocityZ);
+        super(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.first());
         this.spriteProvider = spriteProvider;
         this.scale(world.getRandom().nextFloat() + 1.25F);
         this.setSpriteFromAge(spriteProvider);
@@ -38,8 +39,8 @@ public class GraveyardSoulParticle extends RisingParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -65,7 +66,8 @@ public class GraveyardSoulParticle extends RisingParticle {
                 double f,
                 double g,
                 double h,
-                double i
+                double i,
+                RandomSource random
         ) {
             GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);
@@ -91,7 +93,8 @@ public class GraveyardSoulParticle extends RisingParticle {
                 double f,
                 double g,
                 double h,
-                double i
+                double i,
+                RandomSource random
         ) {
             GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);

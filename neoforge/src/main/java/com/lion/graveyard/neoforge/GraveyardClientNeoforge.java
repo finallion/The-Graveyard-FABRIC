@@ -52,7 +52,7 @@ public class GraveyardClientNeoforge {
         event.enqueueWork(() -> {
             GraveyardClient.postInit();
 
-            ItemBlockRenderTypes.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), ChunkSectionLayer.CUTOUT_MIPPED);
+            ItemBlockRenderTypes.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), ChunkSectionLayer.CUTOUT);
 
         });
     }

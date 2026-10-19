@@ -9,6 +9,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.CommonComponents;
@@ -31,7 +33,7 @@ public class GravestoneScreen extends Screen {
     private int currentRow;
     private TextFieldHelper selectionManager;
     private WoodType signType;
-    private Model model;
+    private Model.Simple model;
     private String[] text;
     private SignText signText;
 
@@ -96,8 +98,8 @@ public class GravestoneScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        this.selectionManager.charTyped(chr);
+    public boolean charTyped(CharacterEvent event) {
+        this.selectionManager.charTyped(event);
         return true;
     }
 
@@ -107,13 +109,15 @@ public class GravestoneScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
+
         if (keyCode == 265) {
             this.currentRow = this.currentRow - 1 & 3;
             this.selectionManager.setCursorToEnd();
             return true;
         } else if (keyCode != 264 && keyCode != 257 && keyCode != 335) {
-            return this.selectionManager.keyPressed(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
+            return this.selectionManager.keyPressed(event) || super.keyPressed(event);
         } else {
             this.currentRow = this.currentRow + 1 & 3;
             this.selectionManager.setCursorToEnd();
@@ -197,7 +201,7 @@ public class GravestoneScreen extends Screen {
         if (selection != cursor) {
             int fromX = this.font.width(current.substring(0, Math.min(cursor, selection))) - halfWidth;
             int toX = this.font.width(current.substring(0, Math.max(cursor, selection))) - halfWidth;
-            context.textHighlight(Math.min(fromX, toX), caretY, Math.max(fromX, toX), caretY + lineHeight);
+            context.textHighlight(Math.min(fromX, toX), caretY, Math.max(fromX, toX), caretY + lineHeight, true);
         }
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.component.DataComponentType;
@@ -142,7 +143,7 @@ public class RegistryHelperImpl {
             Supplier<? extends EntityType<? extends Mob>> type,
             Item.Properties props
     ) {
-        return (Supplier<T>) registerItem(name, itemProperties -> new SpawnEggItem(type.get(), itemProperties), props);
+        return (Supplier<T>) registerItem(name, itemProperties -> new SpawnEggItem(itemProperties.spawnEgg(type.get())), props);
     }
 
     public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, Item.Properties props) {
@@ -201,9 +202,9 @@ public class RegistryHelperImpl {
         EntityRenderers.register(type.get(), renderProvider);
     }
 
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(
+    public static <T extends BlockEntity, S extends BlockEntityRenderState> void registerBlockEntityRenderer(
             Supplier<BlockEntityType<T>> type,
-            BlockEntityRendererProvider<T> renderProvider
+            BlockEntityRendererProvider<T, S> renderProvider
     ) {
     }
 
