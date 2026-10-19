@@ -25,7 +25,7 @@ public abstract class MobEntitySpawnMixin {
         }
     }
 
-    // Structure entities and spawners with custom rules never call canSpawn.
+    // Structure entities and spawners with custom rules never call checkSpawnRules.
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
     private void graveyard$discardGatedStructureMob(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData, CallbackInfoReturnable<SpawnGroupData> callback) {
         Mob mob = (Mob) (Object) this;

@@ -26,7 +26,10 @@ public class GravestoneSignRenderer extends PictureInPictureRenderer<GravestoneS
 
     @Override
     protected void renderToTexture(GravestoneSignRenderState state, PoseStack poseStack) {
-        Minecraft.getInstance().gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_FLAT);
+        Minecraft.getInstance()
+            .gameRenderer
+            .getLighting()
+            .setupFor(Lighting.Entry.ITEMS_FLAT);
         poseStack.translate(0.0F, -0.75F, 0.0F);
         VertexConsumer consumer = GravestoneBlockEntityRenderer.getConsumer(this.bufferSource, state.block());
         state.model().renderToBuffer(poseStack, consumer, 15728880, OverlayTexture.NO_OVERLAY);
