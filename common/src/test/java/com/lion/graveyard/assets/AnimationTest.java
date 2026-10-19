@@ -2,6 +2,7 @@ package com.lion.graveyard.assets;
 
 import com.google.gson.JsonObject;
 import com.lion.graveyard.support.AssetLookup;
+import com.lion.graveyard.support.JavaText;
 import com.lion.graveyard.support.Json;
 import com.lion.graveyard.support.ModProject;
 import com.lion.graveyard.support.Sources;
@@ -24,7 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AnimationTest {
     private static final Path DIR = ModProject.ASSETS.resolve(ModProject.ANIMATIONS);
     private static final Pattern ANIMATION_NAME = Pattern.compile("\"(animation\\.[a-z0-9_]+(?:\\.[a-z0-9_]+)+)\"");
-    private static final Pattern ASSET_PATH = Pattern.compile("(?:MOD_ID\\s*,\\s*|Graveyard\\.id\\(\\s*)\"((?:geo|animations)/[A-Za-z0-9_/.\\-]+\\.json|textures/[A-Za-z0-9_/.\\-]+\\.png)\"");
+    private static final Pattern ASSET_PATH = Pattern.compile("(?:MOD_ID\\s*,\\s*|Graveyard\\.id\\(\\s*)\"(textures/[A-Za-z0-9_/.\\-]+\\.png)\"");
+    private static final Pattern RESOURCE_ID = Pattern.compile("Graveyard\\.id\\(\\s*\"([a-z0-9_/]+)\"");
+    private static final Pattern ANIMATION_CONSTANT = Pattern.compile("ANIMATION\\s*=\\s*Graveyard\\.id\\(\\s*\"([a-z0-9_/]+)\"");
+    private static final Pattern SPECIES_NAME = Pattern.compile("\\b[A-Z]+\\(\"([a-z]+)\",\\s*\"[a-z]+\"\\)");
 
     static boolean isNumeric(String key) {
         try {
@@ -110,15 +114,36 @@ class AnimationTest {
     }
 
     // The brazier model has no animation file.
-    private static final Set<String> INTENTIONALLY_MISSING = Set.of("animations/brazier.animation.json");
+    private static final Set<String> INTENTIONALLY_MISSING = Set.of("geckolib/animations/brazier.animation.json");
     private static final int MIN_ASSET_PATHS = 70;
 
+
+    private static void addResourceIds(Set<String> paths, String code, String method, String directory, String suffix) {
+        String body = JavaText.joinedBodies(JavaText.methods(code), method);
+
+        for (String id : Sources.matches(RESOURCE_ID, body, 1)) {
+            paths.add(directory + id + suffix);
+        }
+    }
 
     @TestFactory
     Stream<DynamicTest> everyGeoTextureAndAnimationPathNamedInCodeExists() {
         Set<String> paths = new TreeSet<>();
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
-            paths.addAll(Sources.matches(ASSET_PATH, Sources.code(file), 1));
+            String code = Sources.code(file);
+            paths.addAll(Sources.matches(ASSET_PATH, code, 1));
+            addResourceIds(paths, code, "getModelResource", "geckolib/models/", ".geo.json");
+            addResourceIds(paths, code, "getAnimationResource", "geckolib/animations/", ".animation.json");
+
+            for (String id : Sources.matches(ANIMATION_CONSTANT, code, 1)) {
+                paths.add("geckolib/animations/" + id + ".animation.json");
+            }
+
+            if (file.getFileName().toString().equals("CorvidEntity.java")) {
+                for (String name : Sources.matches(SPECIES_NAME, code, 1)) {
+                    paths.add("geckolib/models/" + name + ".geo.json");
+                }
+            }
         }
         DynamicTest found = DynamicTest.dynamicTest(
                 "paths found",

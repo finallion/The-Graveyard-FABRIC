@@ -120,69 +120,45 @@ public class TGBlocks {
 
     public static final Supplier<Block> LYING_FULL_SKELETON = RegistryHelper.registerBlock(
             "lying_full_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> LYING_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "lying_full_wither_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> BACKSTABBED_FULL_SKELETON = RegistryHelper.registerBlock(
             "backstabbed_full_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> BACKSTABBED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "backstabbed_full_wither_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> SHOT_FULL_SKELETON = RegistryHelper.registerBlock(
             "shot_full_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> SHOT_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "shot_full_wither_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> SIDEWAYS_FULL_SKELETON = RegistryHelper.registerBlock(
             "sideways_full_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> SIDEWAYS_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "sideways_full_wither_skeleton",
-            props -> new LongDecoBlock(
-                    props,
-                    Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)
-            ),
+            props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
             BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
     );
 

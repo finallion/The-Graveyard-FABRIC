@@ -39,6 +39,10 @@ public class CorvidHeldItemLayer<R extends GeoRenderState> extends GeoRenderLaye
             return;
         }
 
+        if (renderState.getOrDefaultGeckolibData(DataTickets.INVISIBLE_TO_PLAYER, false)) {
+            return;
+        }
+
         if (this.renderer.getRenderType(renderState, this.renderer.getTextureLocation(renderState)) == null) {
             return;
         }

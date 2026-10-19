@@ -113,10 +113,7 @@ public class TGBlockEntities {
             "brazier_block_entity",
             () -> new BlockEntityType<>(
                     BrazierBlockEntity::new,
-                    Set.of(
-                            TGBlocks.SOUL_FIRE_BRAZIER.get(),
-                            TGBlocks.FIRE_BRAZIER.get()
-                    )
+                    Set.of(TGBlocks.SOUL_FIRE_BRAZIER.get(), TGBlocks.FIRE_BRAZIER.get())
             )
     );
 

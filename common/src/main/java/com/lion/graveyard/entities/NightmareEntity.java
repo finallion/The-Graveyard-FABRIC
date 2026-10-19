@@ -456,7 +456,10 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         private final TargetingConditions staringPlayerPredicate;
         private final TargetingConditions validTargetPredicate = TargetingConditions.forCombat().ignoreLineOfSight();
 
-        public TeleportTowardsPlayerGoal(NightmareEntity nightmare, @Nullable TargetingConditions.Selector targetPredicate) {
+        public TeleportTowardsPlayerGoal(
+                NightmareEntity nightmare,
+                @Nullable TargetingConditions.Selector targetPredicate
+        ) {
             super(nightmare, Player.class, 10, false, false, targetPredicate);
             this.nightmare = nightmare;
             this.staringPlayerPredicate = TargetingConditions.forCombat().range(this.getFollowDistance()).selector((playerEntity, level) -> {

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /// A goal does not survive a world reload, but a timer in NBT does.
 /// A goal that runs while such a timer is active must restart from that timer.
 class SavedGoalTimerTest {
-    private static final Pattern SAVED_GETTER = Pattern.compile("nbt\\s*\\.\\s*put\\w+\\(\\s*\"[^\"]+\"\\s*,\\s*(?:this\\.)?(get\\w+)\\(\\s*\\)\\s*\\)");
+    private static final Pattern SAVED_GETTER = Pattern.compile("(?:nbt|output)\\s*\\.\\s*put\\w+\\(\\s*\"[^\"]+\"\\s*,\\s*(?:this\\.)?(get\\w+)\\(\\s*\\)\\s*\\)");
     private static final Pattern GOAL_CLASS = Pattern.compile("class\\s+(\\w+)\\s+extends\\s+\\w*Goal\\b[^{]*\\{");
 
     record GoalBody(String name, String code) {

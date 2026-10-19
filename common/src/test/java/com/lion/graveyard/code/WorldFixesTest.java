@@ -23,7 +23,7 @@ class WorldFixesTest {
     void namelessHangedKeepsOffersWhileTrading() {
         String tick = body("entities/NamelessHangedEntity.java", "tick");
 
-        assertTrue(tick.contains("isDay() && this.offers != null && !this.isTrading()"));
+        assertTrue(tick.contains("isBrightOutside() && this.offers != null && !this.isTrading()"));
     }
 
     @Test

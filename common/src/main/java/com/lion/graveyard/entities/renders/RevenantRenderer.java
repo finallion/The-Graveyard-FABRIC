@@ -4,7 +4,6 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.RevenantEntity;
 import com.lion.graveyard.entities.models.RevenantModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +23,6 @@ public class RevenantRenderer<R extends LivingEntityRenderState & GeoRenderState
     @Override
     protected float getDeathMaxRotation(GeoRenderState renderState) {
         return 0.0F;
-    }
-
-    @Override
-    public RenderType getRenderType(R renderState, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
     }
 
 }

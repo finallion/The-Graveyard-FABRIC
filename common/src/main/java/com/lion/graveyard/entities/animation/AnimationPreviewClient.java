@@ -203,7 +203,7 @@ public final class AnimationPreviewClient {
     private record Cue(SoundEvent event, int offsetTicks, int repeatTicks, float volume, float pitch) {
         static Cue parse(JsonObject json) {
             ResourceLocation id = ResourceLocation.tryParse(json.get("event").getAsString());
-            SoundEvent event = id == null ? null : BuiltInRegistries.SOUND_EVENT.get(id);
+            SoundEvent event = id == null ? null : BuiltInRegistries.SOUND_EVENT.getValue(id);
 
             if (event == null) {
                 return null;

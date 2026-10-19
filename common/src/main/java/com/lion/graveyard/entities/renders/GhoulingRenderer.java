@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
@@ -62,11 +61,6 @@ public class GhoulingRenderer<R extends LivingEntityRenderState & GeoRenderState
         }
 
         super.renderRecursively(renderState, poseStack, bone, renderType, bufferSource, buffer, isReRender, packedLight, packedOverlay, renderColor);
-    }
-
-    @Override
-    public RenderType getRenderType(R renderState, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
     }
 
 }

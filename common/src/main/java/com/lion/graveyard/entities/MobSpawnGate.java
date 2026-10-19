@@ -50,7 +50,12 @@ public final class MobSpawnGate {
 
     private MobSpawnGate() {}
 
-    public static boolean inForbiddenBiome(LevelAccessor world, BlockPos pos, EntityType<?> type, EntitySpawnReason reason) {
+    public static boolean inForbiddenBiome(
+            LevelAccessor world,
+            BlockPos pos,
+            EntityType<?> type,
+            EntitySpawnReason reason
+    ) {
         return (reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.CHUNK_GENERATION)
                 && Graveyard.MOD_ID.equals(BuiltInRegistries.ENTITY_TYPE.getKey(type).getNamespace())
                 && world.getBiome(pos).is(NO_MOB_SPAWNS);

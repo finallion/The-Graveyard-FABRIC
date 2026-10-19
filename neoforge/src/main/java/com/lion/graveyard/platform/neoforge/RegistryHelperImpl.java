@@ -80,10 +80,7 @@ public class RegistryHelperImpl {
             Function<BlockBehaviour.Properties, T> factory,
             BlockBehaviour.Properties properties
     ) {
-        return BLOCKS.register(
-                name,
-                id -> factory.apply(properties.setId(ResourceKey.create(Registries.BLOCK, id)))
-        );
+        return BLOCKS.register(name, id -> factory.apply(properties.setId(ResourceKey.create(Registries.BLOCK, id))));
     }
 
     public static <T extends BlockEntityType<?>> Supplier<T> registerBlockEntity(String name, Supplier<T> blockEntity) {
@@ -123,10 +120,7 @@ public class RegistryHelperImpl {
             Function<Item.Properties, T> factory,
             Item.Properties properties
     ) {
-        return ITEMS.register(
-                name,
-                id -> factory.apply(properties.setId(ResourceKey.create(Registries.ITEM, id)))
-        );
+        return ITEMS.register(name, id -> factory.apply(properties.setId(ResourceKey.create(Registries.ITEM, id))));
     }
 
     public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
@@ -193,10 +187,7 @@ public class RegistryHelperImpl {
             String name,
             EntityType.Builder<T> builder
     ) {
-        return ENTITIES.register(
-                name,
-                id -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, id))
-        );
+        return ENTITIES.register(name, id -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, id)));
     }
 
     public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {

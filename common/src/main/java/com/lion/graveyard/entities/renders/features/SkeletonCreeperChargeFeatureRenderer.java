@@ -12,7 +12,10 @@ public class SkeletonCreeperChargeFeatureRenderer extends EnergySwirlLayer<Creep
     private static final ResourceLocation SKIN = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
     private final CreeperModel model;
 
-    public SkeletonCreeperChargeFeatureRenderer(RenderLayerParent<CreeperRenderState, CreeperModel> context, EntityModelSet loader) {
+    public SkeletonCreeperChargeFeatureRenderer(
+            RenderLayerParent<CreeperRenderState, CreeperModel> context,
+            EntityModelSet loader
+    ) {
         super(context);
         this.model = new CreeperModel(loader.bakeLayer(ModelLayers.CREEPER_ARMOR));
     }

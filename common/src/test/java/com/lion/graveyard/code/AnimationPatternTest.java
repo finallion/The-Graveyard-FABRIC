@@ -175,7 +175,7 @@ class AnimationPatternTest {
             }
 
             for (String args : JavaText.callArguments(code, "new AnimationController<>(")) {
-                assertEquals("0", JavaText.splitTopLevel(args, ',').get(2).trim(), ModProject.display(file));
+                assertEquals("0", JavaText.splitTopLevel(args, ',').get(1).trim(), ModProject.display(file));
             }
         }
     }

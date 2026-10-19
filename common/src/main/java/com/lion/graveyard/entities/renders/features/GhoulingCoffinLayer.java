@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
+import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 import software.bernie.geckolib.renderer.base.GeoRenderer;
 import software.bernie.geckolib.renderer.base.PerBoneRender;
@@ -33,15 +34,16 @@ public class GhoulingCoffinLayer<R extends GeoRenderState> extends GeoRenderLaye
             return;
         }
 
-        if (isMainPassSkipped(renderState)) {
+        if (isHiddenFromPlayer(renderState)) {
             return;
         }
 
         model.getBone("torso").ifPresent(torso -> consumer.accept(torso, this::renderTorso));
     }
 
-    private boolean isMainPassSkipped(R renderState) {
-        return this.renderer.getRenderType(renderState, this.renderer.getTextureLocation(renderState)) == null;
+    private boolean isHiddenFromPlayer(R renderState) {
+        return renderState.getOrDefaultGeckolibData(DataTickets.INVISIBLE_TO_PLAYER, false)
+                || this.renderer.getRenderType(renderState, this.renderer.getTextureLocation(renderState)) == null;
     }
 
     private void renderTorso(

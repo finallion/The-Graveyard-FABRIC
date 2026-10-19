@@ -35,7 +35,7 @@ public final class FragmentSpotHints {
         ClientLevel world = client.level;
         LocalPlayer player = client.player;
 
-        if (world == null || player == null || !holdsFragment(player) || !(world.isNight() || world.dimensionType().hasFixedTime())) {
+        if (world == null || player == null || !holdsFragment(player) || !(world.isDarkOutside() || world.dimensionType().hasFixedTime())) {
             ALTARS.clear();
             ticks = 0;
             return;
