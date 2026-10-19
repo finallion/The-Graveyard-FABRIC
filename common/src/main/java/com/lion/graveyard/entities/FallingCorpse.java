@@ -183,7 +183,6 @@ public class FallingCorpse extends Monster implements GeoEntity {
         impactTicks = -1;
         impacted = true;
         level().playSound(null, blockPosition(), SoundEvents.HOSTILE_BIG_FALL, SoundSource.HOSTILE, 2.0F, 0.8F);
-        level().playSound(null, blockPosition(), SoundEvents.BONE_BLOCK_BREAK, SoundSource.HOSTILE, 1.2F, 0.6F);
         BlockState ground = level().getBlockState(blockPosition().below());
 
         if (level() instanceof ServerLevel world && !ground.isAir()) {
