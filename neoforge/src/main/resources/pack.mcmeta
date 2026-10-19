@@ -1,7 +1,0 @@
-{
-  "pack": {
-    "description": "The Graveyard",
-    "pack_format": 64,
-    "supported_formats": { "min_inclusive": 64, "max_inclusive": 81 }
-  }
-}

@@ -32,7 +32,7 @@ subprojects {
 		minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
 		mappings loom.layered {
 			officialMojangMappings()
-			parchment("org.parchmentmc.data:parchment-1.21.8:2025.09.14@zip")
+			parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
 		}
 	}
 }
@@ -55,6 +55,7 @@ allprojects {
 	tasks.withType(JavaCompile) {
 		options.encoding = "UTF-8"
 		options.release = 21
+		options.compilerArgs << "-Xmaxerrs" << "10000"
 	}
 
 	java {
