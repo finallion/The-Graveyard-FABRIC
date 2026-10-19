@@ -1,18 +1,17 @@
 package com.lion.graveyard.entities.models;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.LichEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.animatable.processing.AnimationState;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class LichModel extends GeoModel<LichEntity> {
     private static final float MAX_HEAD_YAW = 50.0F;
-    private static final DataTicket<Integer> PHASE = DataTicket.create("graveyard_lich_phase", Integer.class);
     private ResourceLocation texture = Graveyard.id("textures/entity/lich_texture.png");
 
     @Override
@@ -32,12 +31,12 @@ public class LichModel extends GeoModel<LichEntity> {
 
     @Override
     public void addAdditionalStateData(LichEntity animatable, GeoRenderState renderState) {
-        renderState.addGeckolibData(PHASE, animatable.getPhase());
+        renderState.addGeckolibData(GraveyardDataTickets.LICH_PHASE, animatable.getPhase());
     }
 
     @Override
     public void setCustomAnimations(AnimationState<LichEntity> animationState) {
-        if (animationState.getDataOrDefault(PHASE, 0) != 5) {
+        if (animationState.getDataOrDefault(GraveyardDataTickets.LICH_PHASE, 0) != 5) {
             return;
         }
 

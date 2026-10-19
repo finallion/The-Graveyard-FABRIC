@@ -1,80 +1,72 @@
 package com.lion.graveyard.entities.renders;
 
+import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.GhoulingEntity;
 import com.lion.graveyard.entities.models.GhoulingModel;
+import com.lion.graveyard.entities.renders.features.GhoulingCoffinLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemDisplayContext;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtil;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
-public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
-    private GhoulingEntity ghouling;
+public class GhoulingRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<GhoulingEntity, R> {
 
     public GhoulingRenderer(EntityRendererProvider.Context context) {
         super(context, new GhoulingModel());
         this.shadowRadius = 0.6F;
-    }
-
-    @Override
-    public RenderType getRenderType(
-            GhoulingEntity animatable,
-            ResourceLocation texture,
-            @Nullable MultiBufferSource bufferSource,
-            float partialTick
-    ) {
-        ghouling = animatable;
-        return RenderType.entityCutoutNoCull(texture);
+        this.addRenderLayer(new GhoulingCoffinLayer<>(this));
     }
 
     // stops the vanilla death animation
     @Override
-    protected float getDeathMaxRotation(GhoulingEntity entityLivingBaseIn) {
+    protected float getDeathMaxRotation(GeoRenderState renderState) {
         return 0.0F;
     }
 
     @Override
+    public void addRenderData(GhoulingEntity animatable, Void relatedObject, R renderState) {
+        renderState.addGeckolibData(GraveyardDataTickets.GHOULING_HAS_COFFIN, animatable.hasCoffin());
+        renderState.addGeckolibData(GraveyardDataTickets.GHOULING_OFFHAND, animatable.getItemBySlot(EquipmentSlot.OFFHAND).copy());
+    }
+
+    @Override
     public void renderRecursively(
+            R renderState,
             PoseStack poseStack,
-            GhoulingEntity animatable,
             GeoBone bone,
             RenderType renderType,
             MultiBufferSource bufferSource,
             VertexConsumer buffer,
             boolean isReRender,
-            float partialTick,
             int packedLight,
             int packedOverlay,
-            int colour
+            int renderColor
     ) {
-        if (bone.getName().equals("chain") && ghouling != null) {
-            bone.setHidden(!ghouling.hasCoffin());
+        boolean hasCoffin = renderState.getGeckolibData(GraveyardDataTickets.GHOULING_HAS_COFFIN);
+
+        if (bone.getName().equals("chain")) {
+            bone.setHidden(!hasCoffin);
         }
 
-        if (bone.getName().equals("torso") && ghouling != null && ghouling.hasCoffin()) {
-            poseStack.pushPose();
-            RenderUtil.prepMatrixForBone(poseStack, bone);
-            poseStack.mulPose(Axis.XP.rotationDegrees(90));
-            poseStack.mulPose(Axis.YP.rotationDegrees(90));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(-25));
-            poseStack.translate(1.3D, 0.86D, 0.0D);
-            poseStack.scale(2.0F, 2.0F, 2.0F);
-            Minecraft.getInstance().getItemRenderer().renderStatic(ghouling.getItemBySlot(EquipmentSlot.OFFHAND), ItemDisplayContext.THIRD_PERSON_LEFT_HAND, packedLight, packedOverlay, poseStack, bufferSource, animatable.getCommandSenderWorld(), 0);
-            poseStack.popPose();
-            buffer = bufferSource.getBuffer(RenderType.entityTranslucent(getTextureLocation(animatable)));
+        // The coffin layer draws the torso and its children translucent.
+        if (bone.getName().equals("torso") && !isReRender) {
+            bone.setHidden(hasCoffin);
+            bone.setChildrenHidden(hasCoffin);
         }
 
-        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.renderRecursively(renderState, poseStack, bone, renderType, bufferSource, buffer, isReRender, packedLight, packedOverlay, renderColor);
     }
 
+    @Override
+    public RenderType getRenderType(R renderState, ResourceLocation texture) {
+        return RenderType.entityCutoutNoCull(texture);
+    }
 
 }

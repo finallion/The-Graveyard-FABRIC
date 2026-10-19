@@ -2,15 +2,15 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.entities.FallingCorpse;
 import com.lion.graveyard.entities.models.FallingCorpseModel;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
-public class FallingCorpseRenderer extends GeoEntityRenderer<FallingCorpse> {
+public class FallingCorpseRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<FallingCorpse, R> {
 
     public FallingCorpseRenderer(EntityRendererProvider.Context context) {
         super(context, new FallingCorpseModel());
@@ -18,27 +18,13 @@ public class FallingCorpseRenderer extends GeoEntityRenderer<FallingCorpse> {
     }
 
     @Override
-    protected void applyRotations(
-            FallingCorpse entityLiving,
-            PoseStack matrixStackIn,
-            float ageInTicks,
-            float rotationYaw,
-            float partialTicks,
-            float nativeScale
-    ) {
-        rotationYaw = entityLiving.getRotation();
-        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, nativeScale);
+    public void addRenderData(FallingCorpse animatable, Void relatedObject, R renderState) {
+        renderState.addGeckolibData(DataTickets.ENTITY_BODY_YAW, animatable.getRotation());
     }
 
     @Override
-    public RenderType getRenderType(
-            FallingCorpse animatable,
-            ResourceLocation texture,
-            @Nullable MultiBufferSource bufferSource,
-            float partialTick
-    ) {
+    public RenderType getRenderType(R renderState, ResourceLocation texture) {
         return RenderType.entityCutoutNoCull(texture);
     }
-
 
 }

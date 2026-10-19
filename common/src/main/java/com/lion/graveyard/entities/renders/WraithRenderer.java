@@ -1,36 +1,33 @@
 package com.lion.graveyard.entities.renders;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.WraithEntity;
 import com.lion.graveyard.entities.models.WraithModel;
-import com.lion.graveyard.entities.renders.features.WraithEyesFeatureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
-public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
+public class WraithRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<WraithEntity, R> {
+    private static final ResourceLocation EYES = Graveyard.id("textures/entity/wraith_eyes.png");
 
     public WraithRenderer(EntityRendererProvider.Context context) {
         super(context, new WraithModel());
-        this.addRenderLayer(new WraithEyesFeatureRenderer(this));
+        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.3F;
     }
 
     // stops the vanilla death animation
     @Override
-    protected float getDeathMaxRotation(WraithEntity entityLivingBaseIn) {
+    protected float getDeathMaxRotation(GeoRenderState renderState) {
         return 0.0F;
     }
 
     @Override
-    public RenderType getRenderType(
-            WraithEntity animatable,
-            ResourceLocation texture,
-            @Nullable MultiBufferSource bufferSource,
-            float partialTick
-    ) {
+    public RenderType getRenderType(R renderState, ResourceLocation texture) {
         return RenderType.entityTranslucent(texture);
     }
 

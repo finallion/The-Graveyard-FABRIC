@@ -1,39 +1,34 @@
 package com.lion.graveyard.entities.renders;
 
+import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.entities.RevenantEntity;
 import com.lion.graveyard.entities.models.RevenantModel;
-import com.lion.graveyard.entities.renders.features.RevenantEyesFeatureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
-
-public class RevenantRenderer extends GeoEntityRenderer<RevenantEntity> {
+public class RevenantRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<RevenantEntity, R> {
+    private static final ResourceLocation EYES = Graveyard.id("textures/entity/revenant_eyes.png");
 
     public RevenantRenderer(EntityRendererProvider.Context context) {
         super(context, new RevenantModel());
-        this.addRenderLayer(new RevenantEyesFeatureRenderer(this));
+        this.addRenderLayer(new GraveyardEyesLayer<>(this, EYES));
         this.shadowRadius = 0.4F;
     }
 
     // stops the vanilla death animation
     @Override
-    protected float getDeathMaxRotation(RevenantEntity entityLivingBaseIn) {
+    protected float getDeathMaxRotation(GeoRenderState renderState) {
         return 0.0F;
     }
 
     @Override
-    public RenderType getRenderType(
-            RevenantEntity animatable,
-            ResourceLocation texture,
-            @Nullable MultiBufferSource bufferSource,
-            float partialTick
-    ) {
+    public RenderType getRenderType(R renderState, ResourceLocation texture) {
         return RenderType.entityCutoutNoCull(texture);
     }
-
 
 }

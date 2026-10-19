@@ -3,12 +3,11 @@ package com.lion.graveyard.blockentities.renders;
 
 import com.lion.graveyard.blockentities.BrazierBlockEntity;
 import com.lion.graveyard.blockentities.models.BrazierModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
+import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class BrazierBlockEntityRenderer extends GeoBlockRenderer<BrazierBlockEntity> {
 
@@ -22,12 +21,7 @@ public class BrazierBlockEntityRenderer extends GeoBlockRenderer<BrazierBlockEnt
     }
 
     @Override
-    public RenderType getRenderType(
-            BrazierBlockEntity animatable,
-            ResourceLocation texture,
-            @Nullable MultiBufferSource bufferSource,
-            float partialTick
-    ) {
-        return RenderType.entityCutout(getTextureLocation(animatable));
+    public RenderType getRenderType(GeoRenderState renderState, ResourceLocation texture) {
+        return RenderType.entityCutout(texture);
     }
 }

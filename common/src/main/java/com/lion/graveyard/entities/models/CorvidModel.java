@@ -1,6 +1,7 @@
 package com.lion.graveyard.entities.models;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.CorvidEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -9,25 +10,22 @@ import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animatable.processing.AnimationController;
 import software.bernie.geckolib.animatable.processing.AnimationProcessor;
 import software.bernie.geckolib.animatable.processing.AnimationState;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
 public class CorvidModel extends GeoModel<CorvidEntity> {
     private static final ResourceLocation ANIMATION = Graveyard.id("corvid/corvid");
-    private static final DataTicket<CorvidEntity.Species> SPECIES = DataTicket.create("graveyard_corvid_species", CorvidEntity.Species.class);
-    private static final DataTicket<Float> LOOK_WEIGHT = DataTicket.create("graveyard_corvid_look_weight", Float.class);
     private static final float MAX_HEAD_PITCH = 40.0F;
     private static final float MAX_HEAD_YAW = 75.0F;
 
     @Override
     public ResourceLocation getModelResource(GeoRenderState renderState) {
-        return renderState.getGeckolibData(SPECIES).getModel();
+        return renderState.getGeckolibData(GraveyardDataTickets.CORVID_SPECIES).getModel();
     }
 
     @Override
     public ResourceLocation getTextureResource(GeoRenderState renderState) {
-        return renderState.getGeckolibData(SPECIES).getTexture();
+        return renderState.getGeckolibData(GraveyardDataTickets.CORVID_SPECIES).getTexture();
     }
 
     @Override
@@ -40,13 +38,13 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
         // The additive look rotation fights the head motion of the peck animation.
         float partialTick = renderState.getGeckolibData(DataTickets.PARTIAL_TICK);
         boolean peck = this.isPlayingPeck(renderState.getGeckolibData(DataTickets.ANIMATABLE_MANAGER));
-        renderState.addGeckolibData(SPECIES, animatable.getSpecies());
-        renderState.addGeckolibData(LOOK_WEIGHT, animatable.stepLookWeight(peck, partialTick));
+        renderState.addGeckolibData(GraveyardDataTickets.CORVID_SPECIES, animatable.getSpecies());
+        renderState.addGeckolibData(GraveyardDataTickets.CORVID_LOOK_WEIGHT, animatable.stepLookWeight(peck, partialTick));
     }
 
     @Override
     public void setCustomAnimations(AnimationState<CorvidEntity> animationState) {
-        float weight = animationState.getDataOrDefault(LOOK_WEIGHT, 0.0F);
+        float weight = animationState.getDataOrDefault(GraveyardDataTickets.CORVID_LOOK_WEIGHT, 0.0F);
 
         if (weight <= 0.0F) {
             return;
