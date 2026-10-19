@@ -71,7 +71,7 @@
           "predicate": {
             "type": "#minecraft:skeletons"
           },
-          "entity": "killer"
+          "entity": "attacker"
         }
       ]
     }
