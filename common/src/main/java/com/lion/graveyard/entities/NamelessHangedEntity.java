@@ -177,12 +177,10 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         }
 
         if (this.isAlive() && !this.isTrading() && level().isDarkOutside()) {
-            if (!this.getOffers().isEmpty()) {
-                if (!this.level().isClientSide) {
-                    this.setTradingPlayer(player);
-                    this.openTradingScreen(player, this.getDisplayName(), 1);
-                    level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
-                }
+            if (!this.level().isClientSide && !this.getOffers().isEmpty()) {
+                this.setTradingPlayer(player);
+                this.openTradingScreen(player, this.getDisplayName(), 1);
+                level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 0.8F);
             }
 
             return InteractionResult.SUCCESS;
