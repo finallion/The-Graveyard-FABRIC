@@ -14,20 +14,30 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
@@ -37,10 +47,16 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3fc;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class GravestoneBlockEntityRenderer
@@ -142,7 +158,13 @@ public class GravestoneBlockEntityRenderer
         float rotation = state.blockState.getValue(GravestoneBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
 
-        state.stone.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        state.stone.submit(
+                poseStack,
+                CrumblingItemCollector.wrap(collector, state.breakProgress),
+                state.lightCoords,
+                OverlayTexture.NO_OVERLAY,
+                0
+        );
 
         poseStack.popPose();
     }
@@ -206,5 +228,266 @@ public class GravestoneBlockEntityRenderer
     public static VertexConsumer getConsumer(MultiBufferSource provider, Block block) {
         return provider.getBuffer(LAYERS.getOrDefault(block, defaultLayer));
     }
-}
 
+    /// Sends item quads through submitModel, which draws the crumbling overlay.
+    public static final class CrumblingItemCollector implements SubmitNodeCollector {
+        private final SubmitNodeCollector delegate;
+        private final ModelFeatureRenderer.CrumblingOverlay crumblingOverlay;
+
+        private CrumblingItemCollector(
+                SubmitNodeCollector delegate,
+                ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
+        ) {
+            this.delegate = delegate;
+            this.crumblingOverlay = crumblingOverlay;
+        }
+
+        public static SubmitNodeCollector wrap(
+                SubmitNodeCollector collector,
+                ModelFeatureRenderer.CrumblingOverlay crumblingOverlay
+        ) {
+            return crumblingOverlay == null ? collector : new CrumblingItemCollector(collector, crumblingOverlay);
+        }
+
+        @Override
+        public void submitItem(
+                PoseStack poseStack,
+                ItemDisplayContext displayContext,
+                int light,
+                int overlay,
+                int outlineColor,
+                int[] tintLayers,
+                List<BakedQuad> quads,
+                RenderType renderType,
+                ItemStackRenderState.FoilType foilType
+        ) {
+            this.delegate.submitModel(
+                    new QuadModel(quads, renderType),
+                    quads,
+                    poseStack,
+                    renderType,
+                    light,
+                    overlay,
+                    -1,
+                    null,
+                    outlineColor,
+                    this.crumblingOverlay
+            );
+        }
+
+        @Override
+        public OrderedSubmitNodeCollector order(int order) {
+            return this.delegate.order(order);
+        }
+
+        @Override
+        public void submitShadow(PoseStack poseStack, float radius, List<EntityRenderState.ShadowPiece> pieces) {
+            this.delegate.submitShadow(poseStack, radius, pieces);
+        }
+
+        @Override
+        public void submitNameTag(
+                PoseStack poseStack,
+                Vec3 position,
+                int offset,
+                Component name,
+                boolean seeThrough,
+                int light,
+                double distanceSq,
+                CameraRenderState cameraState
+        ) {
+            this.delegate.submitNameTag(poseStack, position, offset, name, seeThrough, light, distanceSq, cameraState);
+        }
+
+        @Override
+        public void submitText(
+                PoseStack poseStack,
+                float x,
+                float y,
+                FormattedCharSequence text,
+                boolean dropShadow,
+                Font.DisplayMode displayMode,
+                int light,
+                int color,
+                int backgroundColor,
+                int outlineColor
+        ) {
+            this.delegate.submitText(
+                    poseStack,
+                    x,
+                    y,
+                    text,
+                    dropShadow,
+                    displayMode,
+                    light,
+                    color,
+                    backgroundColor,
+                    outlineColor
+            );
+        }
+
+        @Override
+        public void submitFlame(PoseStack poseStack, EntityRenderState state, Quaternionf rotation) {
+            this.delegate.submitFlame(poseStack, state, rotation);
+        }
+
+        @Override
+        public void submitLeash(PoseStack poseStack, EntityRenderState.LeashState leashState) {
+            this.delegate.submitLeash(poseStack, leashState);
+        }
+
+        @Override
+        public <S> void submitModel(
+                Model<? super S> model,
+                S state,
+                PoseStack poseStack,
+                RenderType renderType,
+                int light,
+                int overlay,
+                int color,
+                TextureAtlasSprite sprite,
+                int outlineColor,
+                ModelFeatureRenderer.CrumblingOverlay crumbling
+        ) {
+            this.delegate.submitModel(
+                    model,
+                    state,
+                    poseStack,
+                    renderType,
+                    light,
+                    overlay,
+                    color,
+                    sprite,
+                    outlineColor,
+                    crumbling
+            );
+        }
+
+        @Override
+        public void submitModelPart(
+                ModelPart part,
+                PoseStack poseStack,
+                RenderType renderType,
+                int light,
+                int overlay,
+                TextureAtlasSprite sprite,
+                boolean sheeted,
+                boolean hasFoil,
+                int color,
+                ModelFeatureRenderer.CrumblingOverlay crumbling,
+                int outlineColor
+        ) {
+            this.delegate.submitModelPart(
+                    part,
+                    poseStack,
+                    renderType,
+                    light,
+                    overlay,
+                    sprite,
+                    sheeted,
+                    hasFoil,
+                    color,
+                    crumbling,
+                    outlineColor
+            );
+        }
+
+        @Override
+        public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor) {
+            this.delegate.submitBlock(poseStack, state, light, overlay, outlineColor);
+        }
+
+        @Override
+        public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState movingBlock) {
+            this.delegate.submitMovingBlock(poseStack, movingBlock);
+        }
+
+        @Override
+        public void submitBlockModel(
+                PoseStack poseStack,
+                RenderType renderType,
+                BlockStateModel model,
+                float red,
+                float green,
+                float blue,
+                int light,
+                int overlay,
+                int outlineColor
+        ) {
+            this.delegate.submitBlockModel(
+                    poseStack,
+                    renderType,
+                    model,
+                    red,
+                    green,
+                    blue,
+                    light,
+                    overlay,
+                    outlineColor
+            );
+        }
+
+        @Override
+        public void submitCustomGeometry(
+                PoseStack poseStack,
+                RenderType renderType,
+                SubmitNodeCollector.CustomGeometryRenderer renderer
+        ) {
+            this.delegate.submitCustomGeometry(poseStack, renderType, renderer);
+        }
+
+        @Override
+        public void submitParticleGroup(SubmitNodeCollector.ParticleGroupRenderer renderer) {
+            this.delegate.submitParticleGroup(renderer);
+        }
+    }
+
+    /// Model that holds baked item quads as polygons, in pixel units, with atlas UVs.
+    private static final class QuadModel extends Model<List<BakedQuad>> {
+        private QuadModel(List<BakedQuad> quads, RenderType renderType) {
+            super(createRoot(quads), id -> renderType);
+        }
+
+        private static ModelPart createRoot(List<BakedQuad> quads) {
+            List<ModelPart.Cube> cubes = new ArrayList<>();
+
+            for (BakedQuad quad : quads) {
+                ModelPart.Vertex[] vertices = new ModelPart.Vertex[BakedQuad.VERTEX_COUNT];
+
+                for (int i = 0; i < vertices.length; i++) {
+                    Vector3fc position = quad.position(i);
+                    long uv = quad.packedUV(i);
+                    vertices[i] = new ModelPart.Vertex(
+                            position.x() * 16.0F,
+                            position.y() * 16.0F,
+                            position.z() * 16.0F,
+                            UVPair.unpackU(uv),
+                            UVPair.unpackV(uv)
+                    );
+                }
+
+                ModelPart.Cube cube = new ModelPart.Cube(
+                        0,
+                        0,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        false,
+                        1.0F,
+                        1.0F,
+                        EnumSet.of(Direction.UP)
+                );
+                cube.polygons[0] = new ModelPart.Polygon(vertices, quad.direction().getUnitVec3f());
+                cubes.add(cube);
+            }
+
+            return new ModelPart(cubes, Map.of());
+        }
+    }
+}

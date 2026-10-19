@@ -116,7 +116,13 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
 
         // Cancels the -0.5 offset that ItemTransform.apply adds.
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        model.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        model.submit(
+                poseStack,
+                GravestoneBlockEntityRenderer.CrumblingItemCollector.wrap(collector, state.breakProgress),
+                state.lightCoords,
+                OverlayTexture.NO_OVERLAY,
+                0
+        );
 
         poseStack.popPose();
     }
