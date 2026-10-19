@@ -13,7 +13,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -78,7 +77,7 @@ public final class SmolderingWood {
                         stack.shrink(1);
                     }
                 } else {
-                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                    stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 }
             }
 
@@ -100,7 +99,7 @@ public final class SmolderingWood {
                 }
 
                 if (!stack.is(Items.WATER_BUCKET)) {
-                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                    stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 }
             }
 

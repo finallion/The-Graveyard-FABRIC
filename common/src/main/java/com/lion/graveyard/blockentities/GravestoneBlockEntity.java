@@ -25,6 +25,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.FilteredText;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 
@@ -250,7 +251,7 @@ public class GravestoneBlockEntity extends BlockEntity {
             Style style = text.getStyle();
 
             if (style.getClickEvent() instanceof ClickEvent.RunCommand runCommand) {
-                player.getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), runCommand.command());
+                player.level().getServer().getCommands().performPrefixedCommand(createCommandSource(player, world, pos), runCommand.command());
                 ranCommand = true;
             }
         }
@@ -261,7 +262,7 @@ public class GravestoneBlockEntity extends BlockEntity {
     private static CommandSourceStack createCommandSource(@Nullable Player player, Level world, BlockPos pos) {
         String string = player == null ? "Sign" : player.getName().getString();
         Component text = player == null ? Component.literal("Sign") : player.getDisplayName();
-        return new CommandSourceStack(CommandSource.NULL, Vec3.atCenterOf(pos), Vec2.ZERO, (ServerLevel)world, 2, string, (Component)text, world.getServer(), player);
+        return new CommandSourceStack(CommandSource.NULL, Vec3.atCenterOf(pos), Vec2.ZERO, (ServerLevel)world, LevelBasedPermissionSet.GAMEMASTER, string, (Component)text, world.getServer(), player);
     }
 
     @Override

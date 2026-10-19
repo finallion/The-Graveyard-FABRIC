@@ -6,6 +6,7 @@ import com.lion.graveyard.util.LegacyItemStacks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtOps;
@@ -14,10 +15,15 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Leashable;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -54,6 +60,22 @@ public final class LegacyEntityData {
         readLeash(mob, input);
     }
 
+    public static <T extends Mob & NeutralMob> void readLegacyAngerTarget(T mob, Level level, ValueInput input) {
+        if (mob.getPersistentAngerTarget() != null) {
+            return;
+        }
+
+        input.read("AngryAt", UUIDUtil.CODEC).ifPresent(id -> {
+            EntityReference<LivingEntity> reference = EntityReference.of(id);
+
+            mob.setPersistentAngerTarget(reference);
+
+            if (level instanceof ServerLevel) {
+                mob.setTarget(EntityReference.getLivingEntity(reference, level));
+            }
+        });
+    }
+
     @Nullable
     public static Component storedCustomName(HolderLookup.Provider registries, CompoundTag entity) {
         Tag name = entity.get("CustomName");

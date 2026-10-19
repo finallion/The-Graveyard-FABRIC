@@ -192,7 +192,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     }
 
     @Override
-    protected void updateTrades() {
+    protected void updateTrades(ServerLevel level) {
         List<VillagerTrades.ItemListing> factorys = NamelessHangedTrades.TRADES_REGISTRY;
         MerchantOffers tradeOfferList = this.getOffers();
         GraveyardConfig config = Graveyard.getConfig();
@@ -200,7 +200,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         int maxOffers = Math.max(minOffers, (int) config.number("namelessHangedMaxOffers", 9.0D));
         int offers = minOffers + random.nextInt(maxOffers - minOffers + 1);
         this.offersDay = currentDay();
-        this.addOffersFromItemListings(tradeOfferList, factorys.toArray(new VillagerTrades.ItemListing[0]), offers);
+        this.addOffersFromItemListings(level, tradeOfferList, factorys.toArray(new VillagerTrades.ItemListing[0]), offers);
     }
 
     @Override

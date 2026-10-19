@@ -3,7 +3,6 @@ package com.lion.graveyard.entities;
 import com.lion.graveyard.Graveyard;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -11,6 +10,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
@@ -28,9 +28,9 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     private static final EntityDataAccessor<Boolean> ANGRY;
     private static final EntityDataAccessor<Boolean> PROVOKED;
     private static final UniformInt ANGER_TIME;
-    private UUID target;
+    private EntityReference<LivingEntity> target;
     private int ageWhenTargetSet;
-    private int angerTime;
+    private long angerEndTime;
 
     public AngerableGraveyardEntity(EntityType<? extends Monster> entityType, Level world, String name) {
         super(entityType, world, name);
@@ -66,34 +66,40 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
     }
 
     @Override
+    public void readPersistentAngerSaveData(Level level, ValueInput input) {
+        NeutralMob.super.readPersistentAngerSaveData(level, input);
+        LegacyEntityData.readLegacyAngerTarget(this, level, input);
+    }
+
+    @Override
     public boolean isAngry() {
         return this.entityData.get(ANGRY);
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int ticks) {
-        this.angerTime = ticks;
+    public void setPersistentAngerEndTime(long endTime) {
+        this.angerEndTime = endTime;
     }
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.angerTime;
+    public long getPersistentAngerEndTime() {
+        return this.angerEndTime;
     }
 
     @Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.target;
     }
 
     @Override
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.target = uuid;
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> reference) {
+        this.target = reference;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(ANGER_TIME.sample(this.random));
     }
 
     @Override
@@ -104,7 +110,7 @@ public abstract class AngerableGraveyardEntity extends HordeGraveyardEntity impl
         if (target == null) {
             this.ageWhenTargetSet = 0;
             this.entityData.set(ANGRY, false);
-            this.setRemainingPersistentAngerTime(0);
+            this.setTimeToRemainAngry(0);
             this.entityData.set(PROVOKED, false);
             entityAttributeInstance.removeModifier(ATTACKING_SPEED_BOOST);
         } else {

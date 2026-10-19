@@ -140,7 +140,7 @@ public class HopGoal extends Goal {
         this.magpie.setYBodyRot(yaw);
         this.magpie.setYHeadRot(yaw);
         this.magpie.setDeltaMovement(direction.x * HOP_FORWARD, HOP_UP, direction.z * HOP_FORWARD);
-        this.magpie.hasImpulse = true;
+        this.magpie.needsSync = true;
         this.hopsLeft--;
         this.timer = this.getHopInterval();
     }

@@ -18,7 +18,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 public class SpawnHordeCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
-        commandDispatcher.register(Commands.literal("horde").requires((source) -> source.hasPermission(3)).then(Commands.literal("trigger").executes((context) -> executeSpawn(context.getSource()))));
+        commandDispatcher.register(Commands.literal("horde").requires(Commands.hasPermission(Commands.LEVEL_ADMINS)).then(Commands.literal("trigger").executes((context) -> executeSpawn(context.getSource()))));
     }
 
     public static int executeSpawn(CommandSourceStack source) {

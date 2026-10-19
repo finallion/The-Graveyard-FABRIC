@@ -15,6 +15,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,15 +39,23 @@ public final class GhoulingBindings extends SavedData {
 
     private static final SavedDataType<GhoulingBindings> TYPE = new SavedDataType<>(
             KEY,
-            context -> importLegacy(context.levelOrThrow().getServer()),
-            context -> CODEC,
+            GhoulingBindings::new,
+            CODEC,
             DataFixTypes.LEVEL
     );
 
     private final Map<UUID, Binding> bindings = new HashMap<>();
 
     public static GhoulingBindings get(ServerLevel world) {
-        return world.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
+        DimensionDataStorage storage = world.getServer().overworld().getDataStorage();
+        GhoulingBindings bindings = storage.get(TYPE);
+
+        if (bindings == null) {
+            bindings = importLegacy(world.getServer());
+            storage.set(TYPE, bindings);
+        }
+
+        return bindings;
     }
 
     /// `pos` is unknown for bonds imported from the legacy file until the Ghouling ticks once.

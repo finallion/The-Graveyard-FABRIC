@@ -969,7 +969,7 @@ public class LichEntity extends Monster implements GeoEntity {
             double speed = Mth.clamp(reach / POUNCE_AIR_FACTOR, 0.15D, 0.9D);
             direction = direction.normalize();
             setDeltaMovement(direction.x * speed, 0.3D, direction.z * speed);
-            hasImpulse = true;
+            needsSync = true;
             pounceAirborne = true;
         } else if (pounceAirborne && elapsed > POUNCE_LEAP_TICK + 2 && onGround()) {
             pounceAirborne = false;

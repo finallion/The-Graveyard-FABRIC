@@ -447,7 +447,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
         @Override
         public boolean canUse() {
             if (!(WraithEntity.this.level() instanceof ServerLevel serverLevel)
-                    || !serverLevel.getGameRules().getBoolean(net.minecraft.world.level.gamerules.GameRules.RULE_MOBGRIEFING)
+                    || !serverLevel.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.MOB_GRIEFING)
                     || !com.lion.graveyard.Graveyard.getConfig().flag("wraithGriefing", true)) {
                 return false;
             }

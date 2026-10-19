@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -34,9 +34,23 @@ public abstract class HostileGraveyardEntity extends Monster {
         super.defineSynchedData(builder);
     }
 
-    @Override
     protected boolean isSunBurnTick() {
-        return super.isSunBurnTick();
+        if (this.level().isClientSide()) {
+            return false;
+        }
+
+        if (!this.level().environmentAttributes().getValue(EnvironmentAttributes.MONSTERS_BURN, this.position())) {
+            return false;
+        }
+
+        float brightness = this.getLightLevelDependentMagicValue();
+        BlockPos eyePos = BlockPos.containing(this.getX(), this.getEyeY(), this.getZ());
+        boolean wet = this.isInWaterOrRain() || this.isInPowderSnow || this.wasInPowderSnow;
+
+        return brightness > 0.5F
+                && this.random.nextFloat() * 30.0F < (brightness - 0.4F) * 2.0F
+                && !wet
+                && this.level().canSeeSky(eyePos);
     }
 
     protected boolean burnsInDaylight() {
@@ -113,7 +127,7 @@ public abstract class HostileGraveyardEntity extends Monster {
             BlockPos pos,
             net.minecraft.util.RandomSource random
     ) {
-        if (world.getBiome(pos).is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
+        if (!world.environmentAttributes().getValue(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, pos)) {
             return false;
         }
 

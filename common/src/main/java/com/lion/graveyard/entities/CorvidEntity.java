@@ -537,21 +537,21 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
             this.setYHeadRot(yaw);
             Vec3 v = this.getDeltaMovement();
             this.setDeltaMovement(v.x, 0.25D, v.z);
-            this.hasImpulse = true;
+            this.needsSync = true;
         }
 
         // In a cobweb, Entity.move sets the velocity to zero, so apply the climb here.
         if (this.webbed && this.isAlive()) {
             Vec3 v = this.getDeltaMovement();
             this.setDeltaMovement(v.x, 0.3D, v.z);
-            this.hasImpulse = true;
+            this.needsSync = true;
             this.webbed = false;
         }
 
         if (this.isInWater() && !this.onGround() && this.deathTime == 0) {
             Vec3 v = this.getDeltaMovement();
             this.setDeltaMovement(v.x, Math.max(v.y, 0.3D), v.z);
-            this.hasImpulse = true;
+            this.needsSync = true;
         }
     }
 
@@ -610,7 +610,7 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
 
         Vec3 v = this.getDeltaMovement();
         this.setDeltaMovement(v.x, 0.22D, v.z);
-        this.hasImpulse = true;
+        this.needsSync = true;
         this.landingTicks = 0;
 
         if (this.takeoffSoundCooldown == 0) {

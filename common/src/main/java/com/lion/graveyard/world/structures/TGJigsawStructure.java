@@ -25,6 +25,7 @@ import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.DimensionPadding;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 
 public class TGJigsawStructure extends Structure {
@@ -135,7 +136,7 @@ public class TGJigsawStructure extends Structure {
                 blockpos,
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
-                this.maxDistanceFromCenter,
+                new JigsawStructure.MaxDistance(this.maxDistanceFromCenter),
                 PoolAliasLookup.EMPTY,
                 DimensionPadding.ZERO,
                 LiquidSettings.APPLY_WATERLOGGING

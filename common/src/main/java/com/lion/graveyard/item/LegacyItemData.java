@@ -28,10 +28,10 @@ public final class LegacyItemData {
         return stack.has(DataComponents.CUSTOM_DATA);
     }
 
-    /// Returns the live tag of the stack; change it only through edit.
+    /// Returns a copy of the custom data. Write changes with edit.
     public static CompoundTag view(ItemStack stack) {
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-        return data == null ? NONE : data.getUnsafe();
+        return data == null ? NONE : data.copyTag();
     }
 
     public static void edit(ItemStack stack, Consumer<CompoundTag> change) {

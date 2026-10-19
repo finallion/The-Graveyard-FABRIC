@@ -2,6 +2,7 @@ package com.lion.graveyard.chronicle;
 
 import com.lion.graveyard.init.TGAdvancements;
 import com.lion.graveyard.platform.ChronicleSync;
+import com.lion.graveyard.util.NotifySounds;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -101,12 +102,12 @@ public final class Chronicle {
             return false;
         }
 
-        ChronicleState state = ChronicleState.get(player.getServer());
+        ChronicleState state = ChronicleState.get(player.level().getServer());
         boolean added = state.add(player.getUUID(), page);
         ChronicleSync.send(player, state.found(player.getUUID()), added ? page : null);
 
         if (added) {
-            player.playNotifySound(SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0f, 1.0f);
+            NotifySounds.play(player, SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0f, 1.0f);
             TGAdvancements.FIRST_CHRONICLE_PAGE.trigger(player);
             Set<String> pages = state.found(player.getUUID());
 
@@ -123,7 +124,7 @@ public final class Chronicle {
     }
 
     public static void syncAll(ServerPlayer player) {
-        ChronicleSync.send(player, ChronicleState.get(player.getServer()).found(player.getUUID()), null);
+        ChronicleSync.send(player, ChronicleState.get(player.level().getServer()).found(player.getUUID()), null);
     }
 
     @Nullable

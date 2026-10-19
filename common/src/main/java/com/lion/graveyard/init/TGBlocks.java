@@ -17,7 +17,7 @@ public class TGBlocks {
     public static List<Block> coffins = new ArrayList<>();
 
     private static BlockBehaviour.Properties boneDisplayProperties() {
-        return BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK);
+        return BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK);
     }
 
     private static BlockBehaviour.Properties urnProperties() {
@@ -25,19 +25,19 @@ public class TGBlocks {
     }
 
     private static BlockBehaviour.Properties vaseProperties() {
-        return BlockBehaviour.Properties.of().instabreak().noCollission().noOcclusion().sound(SoundType.GLASS);
+        return BlockBehaviour.Properties.of().instabreak().noCollision().noOcclusion().sound(SoundType.GLASS);
     }
 
     private static BlockBehaviour.Properties boneStaffFragmentProperties() {
-        return BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK).lightLevel(light -> 7);
+        return BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK).lightLevel(light -> 7);
     }
 
     private static BlockBehaviour.Properties loreBookProperties() {
-        return BlockBehaviour.Properties.of().noOcclusion().noCollission().strength(0.5F).sound(SoundType.WOOL);
+        return BlockBehaviour.Properties.of().noOcclusion().noCollision().strength(0.5F).sound(SoundType.WOOL);
     }
 
     private static BlockBehaviour.Properties gravestoneProperties() {
-        return BlockBehaviour.Properties.of().noCollission().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(1.5F);
+        return BlockBehaviour.Properties.of().noCollision().noOcclusion().sound(SoundType.DEEPSLATE_BRICKS).strength(1.5F);
     }
 
 
@@ -105,7 +105,7 @@ public class TGBlocks {
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     true
             ),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> HANGED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "hanged_full_wither_skeleton",
@@ -115,51 +115,51 @@ public class TGBlocks {
                     Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D),
                     true
             ),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> LYING_FULL_SKELETON = RegistryHelper.registerBlock(
             "lying_full_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> LYING_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "lying_full_wither_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> BACKSTABBED_FULL_SKELETON = RegistryHelper.registerBlock(
             "backstabbed_full_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> BACKSTABBED_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "backstabbed_full_wither_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> SHOT_FULL_SKELETON = RegistryHelper.registerBlock(
             "shot_full_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> SHOT_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "shot_full_wither_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> SIDEWAYS_FULL_SKELETON = RegistryHelper.registerBlock(
             "sideways_full_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
     public static final Supplier<Block> SIDEWAYS_FULL_WITHER_SKELETON = RegistryHelper.registerBlock(
             "sideways_full_wither_skeleton",
             props -> new LongDecoBlock(props, Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)),
-            BlockBehaviour.Properties.of().noOcclusion().noCollission().sound(SoundType.BONE_BLOCK)
+            BlockBehaviour.Properties.of().noOcclusion().noCollision().sound(SoundType.BONE_BLOCK)
     );
 
     public static final Supplier<Block> BLACK_URN = RegistryHelper.registerBlock("black_urn", UrnBlock::new, urnProperties());

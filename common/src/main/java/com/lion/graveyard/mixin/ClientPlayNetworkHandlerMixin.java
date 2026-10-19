@@ -25,7 +25,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "handleOpenSignEditor", at = @At(value = "HEAD"), cancellable = true)
     public void openSignEditor(ClientboundOpenSignEditorPacket packet, CallbackInfo info) {
-        PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, Minecraft.getInstance());
+        PacketUtils.ensureRunningOnSameThread(packet, (ClientGamePacketListener) this, Minecraft.getInstance().packetProcessor());
         BlockPos blockPos = packet.getPos();
 
         BlockEntity foundEntity = this.level.getBlockEntity(blockPos);

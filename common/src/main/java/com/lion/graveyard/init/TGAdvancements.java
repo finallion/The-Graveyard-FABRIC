@@ -54,7 +54,7 @@ public class TGAdvancements {
     }
 
     public static void grantNextStep(ServerPlayer player, Identifier advancementId, int steps) {
-        AdvancementHolder advancement = player.getServer().getAdvancements().get(advancementId);
+        AdvancementHolder advancement = player.level().getServer().getAdvancements().get(advancementId);
 
         if (advancement == null) {
             return;

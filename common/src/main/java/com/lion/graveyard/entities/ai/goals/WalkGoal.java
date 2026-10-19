@@ -64,7 +64,7 @@ public class WalkGoal extends HopGoal {
         this.magpie.setYHeadRot(yaw);
         Vec3 velocity = this.magpie.getDeltaMovement();
         this.magpie.setDeltaMovement(direction.x * WALK_SPEED, velocity.y, direction.z * WALK_SPEED);
-        this.magpie.hasImpulse = true;
+        this.magpie.needsSync = true;
     }
 
     @Override

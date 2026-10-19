@@ -74,7 +74,7 @@ public class BoneStaffItem extends Item {
     private static final double FETCH_DISTANCE_SQ = 24 * 24;
     private static final int USE_COOLDOWN_TICKS = 10;
 
-    private static final TicketType FETCH_TICKET = new TicketType(60L, false, TicketType.TicketUse.LOADING_AND_SIMULATION);
+    private static final TicketType FETCH_TICKET = new TicketType(60L, TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION);
 
     private static final int MAX_FETCH_MISSES = 5;
     private static final int MAX_LANDING_DROP = 8;

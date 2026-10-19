@@ -41,7 +41,7 @@ public class HordeSpawner {
         if (spawner != null) {
             ServerLevel overworld = level.getServer().overworld();
 
-            spawner.tick(overworld, GraveyardHordeSpawner.monstersAllowed(overworld), true);
+            spawner.tick(overworld, GraveyardHordeSpawner.monstersAllowed(overworld));
         }
     }
 }

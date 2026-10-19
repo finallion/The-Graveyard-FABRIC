@@ -19,6 +19,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
@@ -54,7 +55,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.EnumSet;
-import java.util.UUID;
 
 public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity, NeutralMob {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
@@ -76,8 +76,8 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     private static final EntityDataAccessor<Boolean> ANGRY;
     private static final EntityDataAccessor<Boolean> PROVOKED;
     private static final UniformInt ANGER_TIME;
-    private UUID target;
-    private int angerTime;
+    private EntityReference<LivingEntity> target;
+    private long angerEndTime;
     private int ageWhenTargetSet;
 
     public NightmareEntity(EntityType<? extends Monster> entityType, Level world) {
@@ -190,6 +190,12 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         this.readPersistentAngerSaveData(this.level(), input);
+    }
+
+    @Override
+    public void readPersistentAngerSaveData(Level level, ValueInput input) {
+        NeutralMob.super.readPersistentAngerSaveData(level, input);
+        LegacyEntityData.readLegacyAngerTarget(this, level, input);
     }
 
 
@@ -350,13 +356,13 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int ticks) {
-        this.angerTime = ticks;
+    public void setPersistentAngerEndTime(long endTime) {
+        this.angerEndTime = endTime;
     }
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.angerTime;
+    public long getPersistentAngerEndTime() {
+        return this.angerEndTime;
     }
 
     public void setProvoked() {
@@ -365,19 +371,19 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
 
     @Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.target;
     }
 
 
     @Override
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.target = uuid;
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> reference) {
+        this.target = reference;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(ANGER_TIME.sample(this.random));
     }
 
     @Override
@@ -387,7 +393,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
         if (target == null) {
             this.ageWhenTargetSet = 0;
             this.entityData.set(ANGRY, false);
-            this.setRemainingPersistentAngerTime(0);
+            this.setTimeToRemainAngry(0);
             this.entityData.set(PROVOKED, false);
         } else {
             this.ageWhenTargetSet = this.tickCount;

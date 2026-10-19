@@ -7,22 +7,20 @@ import com.lion.graveyard.entities.HostileGraveyardEntity;
 import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.init.TGEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -32,12 +30,12 @@ public class GraveyardHordeSpawner implements CustomSpawner {
     public GraveyardHordeSpawner() {}
 
     public static boolean monstersAllowed(ServerLevel world) {
-        return world.getDifficulty() != Difficulty.PEACEFUL && world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)
-                && world.getServer().isSpawningMonsters();
+        return world.getDifficulty() != Difficulty.PEACEFUL && world.getGameRules().get(GameRules.SPAWN_MOBS)
+                && world.isSpawningMonsters();
     }
 
     @Override
-    public void tick(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals) {
+    public void tick(ServerLevel world, boolean spawnMonsters) {
         if (!spawnMonsters) {
             return;
         } else if (!Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).enabled || Graveyard.getConfig().structuresOnly()) {
@@ -77,9 +75,7 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                                 if (!world.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
                                     return;
                                 } else {
-                                    Holder<Biome> registryEntry = world.getBiome(mutable);
-
-                                    if (registryEntry.is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
+                                    if (!world.environmentAttributes().getValue(EnvironmentAttributes.CAN_PILLAGER_PATROL_SPAWN, mutable)) {
                                         return;
                                     } else {
                                         int spawnAttempts = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;

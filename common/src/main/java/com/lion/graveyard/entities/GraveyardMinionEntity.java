@@ -8,6 +8,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -59,7 +60,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
         UUID ownerId = input.read("Owner", UUIDUtil.CODEC).orElse(null);
 
         if (ownerId == null) {
-            ownerId = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), input.getStringOr("Owner", ""));
+            ownerId = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), input.getStringOr("Owner", ""));
         }
 
         if (ownerId != null) {
@@ -185,8 +186,8 @@ public class GraveyardMinionEntity extends PathfinderMob {
                 }
 
                 return !(otherOwner instanceof Player otherPlayer && owner instanceof Player ownerPlayer
-                        && (!this.level().getServer().isPvpAllowed() || !ownerPlayer.canHarmPlayer(otherPlayer)));
-            } else if (target instanceof Player && owner instanceof Player && (!this.level().getServer().isPvpAllowed() || !((Player)owner).canHarmPlayer((Player)target))) {
+                        && (!this.isPvpAllowed() || !ownerPlayer.canHarmPlayer(otherPlayer)));
+            } else if (target instanceof Player && owner instanceof Player && (!this.isPvpAllowed() || !((Player)owner).canHarmPlayer((Player)target))) {
                 return false;
             } else if (target instanceof AbstractHorse && ((AbstractHorse)target).isTamed()) {
                 return false;
@@ -196,6 +197,10 @@ public class GraveyardMinionEntity extends PathfinderMob {
         } else {
             return false;
         }
+    }
+
+    private boolean isPvpAllowed() {
+        return this.level() instanceof ServerLevel serverLevel && serverLevel.isPvpAllowed();
     }
 
     static {

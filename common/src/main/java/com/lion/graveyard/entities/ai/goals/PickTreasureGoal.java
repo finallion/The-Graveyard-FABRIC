@@ -36,7 +36,7 @@ public class PickTreasureGoal extends Goal {
         }
 
         // The vanilla pickup needs the mobGriefing game rule.
-        if (!(this.magpie.level() instanceof ServerLevel world) || !world.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
+        if (!(this.magpie.level() instanceof ServerLevel world) || !world.getGameRules().get(GameRules.MOB_GRIEFING) || this.magpie.getRandom().nextDouble() >= Graveyard.getConfig().number("corvidTheftChance", 0.1D)) {
             return false;
         }
 

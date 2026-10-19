@@ -16,7 +16,7 @@ public final class ChronicleCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("chronicle")
-                .requires(source -> source.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("find")
                         .then(Commands.argument("page", StringArgumentType.word()).executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
@@ -29,13 +29,13 @@ public final class ChronicleCommand {
                         .then(Commands.argument("page", StringArgumentType.word()).executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             String page = StringArgumentType.getString(context, "page");
-                            ChronicleState.get(player.getServer()).remove(player.getUUID(), page);
+                            ChronicleState.get(player.level().getServer()).remove(player.getUUID(), page);
                             Chronicle.syncAll(player);
                             return 1;
                         })))
                 .then(Commands.literal("reset").executes(context -> {
                     ServerPlayer player = context.getSource().getPlayerOrException();
-                    ChronicleState.get(player.getServer()).clear(player.getUUID());
+                    ChronicleState.get(player.level().getServer()).clear(player.getUUID());
                     Chronicle.syncAll(player);
                     return 1;
                 }))
