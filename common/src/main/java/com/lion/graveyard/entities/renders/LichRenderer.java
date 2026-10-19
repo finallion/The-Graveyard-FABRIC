@@ -3,6 +3,7 @@ package com.lion.graveyard.entities.renders;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.LichEntity;
+import com.lion.graveyard.entities.animation.BoneReturn;
 import com.lion.graveyard.entities.models.LichModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -25,6 +26,12 @@ public class LichRenderer<R extends LivingEntityRenderState & GeoRenderState> ex
         super(context, new LichModel());
         this.shadowRadius = 1.0F;
         this.withRenderLayer(new GraveyardEyesLayer<>(this, EYES));
+    }
+
+    @Override
+    public void applyAnimationControllers(RenderPassInfo<R> renderPassInfo, BoneSnapshots boneSnapshots) {
+        super.applyAnimationControllers(renderPassInfo, boneSnapshots);
+        BoneReturn.apply(renderPassInfo, boneSnapshots);
     }
 
     // stops the vanilla death animation

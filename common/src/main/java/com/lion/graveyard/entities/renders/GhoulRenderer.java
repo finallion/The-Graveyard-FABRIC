@@ -3,13 +3,16 @@ package com.lion.graveyard.entities.renders;
 import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.GhoulEntity;
+import com.lion.graveyard.entities.animation.BoneReturn;
 import com.lion.graveyard.entities.models.BaseGhoulModel;
 import com.lion.graveyard.entities.renders.features.GraveyardEyesLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.base.BoneSnapshots;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
+import software.bernie.geckolib.renderer.base.RenderPassInfo;
 
 public class GhoulRenderer<R extends LivingEntityRenderState & GeoRenderState> extends GeoEntityRenderer<GhoulEntity, R> {
 
@@ -17,6 +20,12 @@ public class GhoulRenderer<R extends LivingEntityRenderState & GeoRenderState> e
         super(context, new BaseGhoulModel());
         this.shadowRadius = 0.7F;
         this.withRenderLayer(new GraveyardEyesLayer<>(this, GhoulRenderer::eyesTexture));
+    }
+
+    @Override
+    public void applyAnimationControllers(RenderPassInfo<R> renderPassInfo, BoneSnapshots boneSnapshots) {
+        super.applyAnimationControllers(renderPassInfo, boneSnapshots);
+        BoneReturn.apply(renderPassInfo, boneSnapshots);
     }
 
     // stops the vanilla death animation

@@ -2,6 +2,7 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.GhoulingEntity;
+import com.lion.graveyard.entities.animation.BoneReturn;
 import com.lion.graveyard.entities.models.GhoulingModel;
 import com.lion.graveyard.entities.renders.features.GhoulingCoffinLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -18,6 +19,12 @@ public class GhoulingRenderer<R extends LivingEntityRenderState & GeoRenderState
         super(context, new GhoulingModel());
         this.shadowRadius = 0.6F;
         this.withRenderLayer(new GhoulingCoffinLayer<>(this));
+    }
+
+    @Override
+    public void applyAnimationControllers(RenderPassInfo<R> renderPassInfo, BoneSnapshots boneSnapshots) {
+        super.applyAnimationControllers(renderPassInfo, boneSnapshots);
+        BoneReturn.apply(renderPassInfo, boneSnapshots);
     }
 
     // stops the vanilla death animation

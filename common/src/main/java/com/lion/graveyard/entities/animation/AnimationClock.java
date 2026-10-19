@@ -5,12 +5,15 @@ import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationPoint;
 import software.bernie.geckolib.animation.state.AnimationTimeline;
+import software.bernie.geckolib.animation.state.ControllerState;
+import software.bernie.geckolib.loading.math.MolangQueries;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.base.GeoRenderState;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.ToDoubleFunction;
@@ -92,6 +95,9 @@ public final class AnimationClock {
         @Nullable
         private AnimationTimeline.Stage runningStage;
         private double lastAnimationTime;
+        @Nullable
+        private AnimationPoint returnFrom;
+        private double returnStartAge;
 
         ClockController(
                 String name,
@@ -106,7 +112,6 @@ public final class AnimationClock {
             receiveTriggeredAnimations();
         }
 
-        // A stopped controller must restart the same animation.
         private static <T extends GeoAnimatable> AnimationStateHandler<T> guard(AnimationStateHandler<T> handler) {
             return test -> {
                 AnimationController<T> controller = test.controller();
@@ -119,9 +124,9 @@ public final class AnimationClock {
                 RawAnimation previous = controller.getCurrentRawAnimation();
                 PlayState result = handler.handle(test);
 
-                if (stopped && result != PlayState.STOP && previous != null && previous.equals(controller.getCurrentRawAnimation())) {
-                    controller.reset();
-                    controller.setAnimation(previous);
+                if (stopped && result != PlayState.STOP && previous != null && previous.equals(controller.getCurrentRawAnimation())
+                        && controller instanceof ClockController<T> clock) {
+                    clock.resumeAfterStop(previous);
                 }
 
                 return result;
@@ -132,7 +137,17 @@ public final class AnimationClock {
             this.currentRawAnimation = null;
         }
 
-        // The base check is false in the first frame of a trigger, while animationPoint is still null.
+        void resumeAfterStop(RawAnimation animation) {
+            boolean finished = this.timelineTime <= 0;
+            this.currentRawAnimation = null;
+            setAnimation(animation);
+
+            if (finished) {
+                setTransitionTicks(0);
+            }
+        }
+
+        /// The base check is false on the first frame of a trigger. animationPoint is still null then.
         boolean isRunningTriggeredClip() {
             if (this.triggeredAnimTime < 0) {
                 return false;
@@ -152,8 +167,9 @@ public final class AnimationClock {
 
             super.checkControllerState(animatable, renderState, manager, geoModel);
 
-            if (wasStopped && this.playState == PlayState.STOP && isLoopingClip()) {
-                reset();
+            if (!wasStopped && this.playState == PlayState.STOP) {
+                this.transitionFromPoint = null;
+                appendResetStage();
             }
 
             AnimationTimeline.Stage stage = currentAnimationStage();
@@ -181,13 +197,106 @@ public final class AnimationClock {
             return isAnimatingBones();
         }
 
-        private boolean isLoopingClip() {
-            if (this.animationPoint == null) {
-                return false;
+        @Override
+        protected void progressExistingAnimation(
+                T animatable,
+                GeoRenderState renderState,
+                double prevTimelineTime,
+                double timeAdvanced
+        ) {
+            if (this.playState != PlayState.STOP || timeAdvanced <= 0 || this.animationPoint == null || this.timeline == null) {
+                super.progressExistingAnimation(animatable, renderState, prevTimelineTime, timeAdvanced);
+                return;
             }
 
-            LoopType loop = this.animationPoint.loopType() == LoopType.DEFAULT ? this.animationPoint.animation().loopType() : this.animationPoint.loopType();
-            return loop == LoopType.LOOP;
+            // A stopped clip does not loop. Its reset transition runs instead.
+            this.transitionFromPoint = null;
+
+            if (this.timelineTime >= this.timeline.totalTime()) {
+                this.timelineTime = FINISHED_ANIMATING;
+            }
+        }
+
+        @Override
+        @Nullable
+        public ControllerState extractControllerState(
+                T animatable,
+                GeoRenderState renderState,
+                AnimatableManager<T> manager,
+                MolangQueries.Actor<T> actor,
+                GeoModel<T> geoModel
+        ) {
+            ControllerState state = super.extractControllerState(animatable, renderState, manager, actor, geoModel);
+
+            if (state != null && state.transitionTicks() == 0 && state.transitionTime() >= 0) {
+                state = new ControllerState(
+                        state.animationPoint(),
+                        null,
+                        state.transitionTime(),
+                        this.transitionTicks,
+                        state.additive(),
+                        state.easingOverride(),
+                        renderState,
+                        state.queryValues()
+                );
+            }
+
+            if (state == null || state.prevAnimationPoint() == null || state.transitionTime() >= 0 || state.transitionTicks() != 0) {
+                this.returnFrom = null;
+                return state;
+            }
+
+            AnimationPoint from = state.prevAnimationPoint();
+            double age = renderState.getAnimatableAge();
+
+            if (from != this.returnFrom) {
+                this.returnFrom = from;
+                this.returnStartAge = age;
+            }
+
+            double seconds = (age - this.returnStartAge) / TICKS_PER_SECOND;
+
+            if (seconds < BoneReturn.TICKS / TICKS_PER_SECOND) {
+                BoneReturn.add(
+                        renderState,
+                        new ControllerState(
+                                from,
+                                null,
+                                seconds,
+                                BoneReturn.TICKS,
+                                state.additive(),
+                                state.easingOverride(),
+                                renderState,
+                                state.queryValues()
+                        )
+                );
+            }
+
+            return state;
+        }
+
+        private void appendResetStage() {
+            if (this.timeline == null || this.transitionTicks <= 0) {
+                return;
+            }
+
+            AnimationTimeline.Stage[] stages = this.timeline.stages();
+            AnimationTimeline.Stage last = stages[stages.length - 1];
+
+            if (last.isTransition()) {
+                return;
+            }
+
+            AnimationTimeline.Stage reset = new AnimationTimeline.Stage(
+                    last.endTime(),
+                    last.endTime() + this.transitionTicks / TICKS_PER_SECOND,
+                    true,
+                    last.animation(),
+                    null
+            );
+            AnimationTimeline.Stage[] extended = Arrays.copyOf(stages, stages.length + 1);
+            extended[stages.length] = reset;
+            this.timeline = new AnimationTimeline(extended);
         }
 
         @Nullable

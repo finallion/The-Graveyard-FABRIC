@@ -2,6 +2,7 @@ package com.lion.graveyard.entities.renders;
 
 import com.lion.graveyard.client.GraveyardDataTickets;
 import com.lion.graveyard.entities.AnimatedCorruptedIllager;
+import com.lion.graveyard.entities.animation.BoneReturn;
 import com.lion.graveyard.entities.models.CorruptedIllagerGeoModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -22,6 +23,12 @@ public class CorruptedIllagerGeoRenderer<T extends AnimatedCorruptedIllager, R e
     @Override
     protected float getDeathMaxRotation(GeoRenderState renderState) {
         return 0.0F;
+    }
+
+    @Override
+    public void applyAnimationControllers(RenderPassInfo<R> renderPassInfo, BoneSnapshots boneSnapshots) {
+        super.applyAnimationControllers(renderPassInfo, boneSnapshots);
+        BoneReturn.apply(renderPassInfo, boneSnapshots);
     }
 
     @Override
