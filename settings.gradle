@@ -7,6 +7,10 @@ pluginManagement {
     }
 }
 
+if (JavaVersion.current().ordinal() + 1 < 25) {
+    throw new IllegalStateException("Please run Gradle with Java 25 or newer.")
+}
+
 include("common")
 include("fabric")
 include("neoforge")

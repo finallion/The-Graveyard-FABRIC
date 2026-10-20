@@ -2,7 +2,6 @@ apply plugin: "com.gradleup.shadow"
 
 base.archivesName = "graveyard-FABRIC"
 
-
 architectury {
 	platformSetupLoomIde()
 	fabric()
@@ -18,24 +17,20 @@ configurations {
 
 loom {
 	accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-repositories {
-	maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+	injectAccessWidener(tasks.named("jar"))
 }
 
 dependencies {
-	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+	api "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+	api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-	modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+	implementation "com.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
 
-	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
-
-	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	common(project(path: ":common")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
 	// changing = true makes Gradle re-read the mavenLocal copy.
-	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
+	implementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
 	}
 }
@@ -52,22 +47,34 @@ processResources {
 	}
 }
 
+jar {
+	archiveClassifier.set("raw")
+}
+
 shadowJar {
 	exclude "architectury.common.json"
 
+	dependsOn jar
+	mainSpec.sourcePaths.clear()
+	from(zipTree(jar.archiveFile))
 	configurations = [project.configurations.shadowCommon]
-	archiveClassifier.set("dev-shadow")
+	archiveClassifier.set(null)
+	zip64 = true
 }
 
-remapJar {
-	injectAccessWidener = true
-	input.set shadowJar.archiveFile
-	dependsOn shadowJar
-	archiveClassifier.set("")
-}
+assemble.dependsOn shadowJar
 
-jar {
-	archiveClassifier.set("dev")
+shadow.addShadowVariantIntoJavaComponent = false
+
+configurations {
+	apiElements {
+		outgoing.artifacts.clear()
+		outgoing.artifact(shadowJar)
+	}
+	runtimeElements {
+		outgoing.artifacts.clear()
+		outgoing.artifact(shadowJar)
+	}
 }
 
 sourcesJar {
@@ -75,12 +82,6 @@ sourcesJar {
 	dependsOn commonSources
 	from commonSources.archiveFile.map { zipTree(it) }
 	duplicatesStrategy 'exclude'
-}
-
-components.java {
-	withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-		skip()
-	}
 }
 
 publishing {

@@ -1,11 +1,14 @@
 dependencies {
-	modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+	implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 
-	modImplementation "software.bernie.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
+	compileOnly "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+	implementation "com.geckolib:geckolib-fabric-${rootProject.minecraft_version}:${rootProject.geckolib_version_fabric}"
 
 	// changing = true makes Gradle re-read the mavenLocal copy.
-	modImplementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
+	implementation("lion.villagertradingplus:villagertradingplus-fabric:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
+		transitive = false
 	}
 }
 
@@ -19,10 +22,6 @@ architectury {
 
 loom {
 	accessWidenerPath = file("src/main/resources/graveyard.accesswidener")
-}
-
-repositories {
-	maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 repositories {

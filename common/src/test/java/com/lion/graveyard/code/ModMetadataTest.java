@@ -39,8 +39,8 @@ class ModMetadataTest {
         List<String> problems = new ArrayList<>();
         String[] lines = text.split("\\R");
 
-        if (lines.length == 0 || !lines[0].matches("accessWidener\\s+v[12]\\s+named")) {
-            problems.add("header must be 'accessWidener v2 named'");
+        if (lines.length == 0 || !lines[0].matches("accessWidener\\s+v[12]\\s+official")) {
+            problems.add("header must be 'accessWidener v2 official'");
         }
 
         for (int i = 1; i < lines.length; i++) {
@@ -158,8 +158,8 @@ class ModMetadataTest {
     @Test
     void accessWidenerCheckRejectsBadHeaderAndBadRule() {
         assertEquals(2, accessWidenerProblems("accessWidener named\naccessible methode a/B c ()V").size());
-        assertTrue(accessWidenerProblems("accessWidener v2 named\n\naccessible method a/B <init> (Z)V").isEmpty());
-        assertTrue(accessWidenerProblems("accessWidener v2 named\naccessible class a/B$C\nmutable field a/B f I").isEmpty());
+        assertTrue(accessWidenerProblems("accessWidener v2 official\n\naccessible method a/B <init> (Z)V").isEmpty());
+        assertTrue(accessWidenerProblems("accessWidener v2 official\naccessible class a/B$C\nmutable field a/B f I").isEmpty());
     }
 
     @Test

@@ -23,20 +23,16 @@ configurations {
 	developmentNeoForge.extendsFrom common
 }
 
-repositories {
-	maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-}
-
 dependencies {
 	neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
 
-	modImplementation "software.bernie.geckolib:geckolib-neoforge-${rootProject.minecraft_version}:${rootProject.geckolib_version_neoforge}"
+	implementation "com.geckolib:geckolib-neoforge-${rootProject.minecraft_version}:${rootProject.geckolib_version_neoforge}"
 
-	common(project(path: ":common", configuration: "namedElements")) { transitive false }
+	common(project(path: ":common")) { transitive false }
 	shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
 	// changing = true makes Gradle re-read the mavenLocal copy.
-	modImplementation("lion.villagertradingplus:villagertradingplus-neoforge:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
+	implementation("lion.villagertradingplus:villagertradingplus-neoforge:${rootProject.villagertradingplus_version}+mc${rootProject.minecraft_version}") {
 		changing = true
 	}
 }
@@ -53,34 +49,41 @@ processResources {
 	}
 }
 
+jar {
+	archiveClassifier.set("raw")
+}
+
 shadowJar {
 	exclude "fabric.mod.json"
 	exclude "architectury.common.json"
 
+	dependsOn jar
+	mainSpec.sourcePaths.clear()
+	from(zipTree(jar.archiveFile))
 	configurations = [project.configurations.shadowCommon]
-	archiveClassifier.set("dev-shadow")
+	archiveClassifier.set(null)
+	zip64 = true
 }
 
-remapJar {
-	input.set shadowJar.archiveFile
-	dependsOn shadowJar
-	archiveClassifier.set("")
-}
+assemble.dependsOn shadowJar
 
-jar {
-	archiveClassifier.set("dev")
+shadow.addShadowVariantIntoJavaComponent = false
+
+configurations {
+	apiElements {
+		outgoing.artifacts.clear()
+		outgoing.artifact(shadowJar)
+	}
+	runtimeElements {
+		outgoing.artifacts.clear()
+		outgoing.artifact(shadowJar)
+	}
 }
 
 sourcesJar {
 	def commonSources = project(":common").sourcesJar
 	dependsOn commonSources
 	from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-	withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-		skip()
-	}
 }
 
 publishing {

@@ -1,6 +1,6 @@
 plugins {
 	id "architectury-plugin" version "${architectury_plugin_version}"
-	id "dev.architectury.loom" version "${loom_version}" apply false
+	id "dev.architectury.loom-no-remap" version "${loom_version}" apply false
 	id "com.gradleup.shadow" version "${shadow_version}" apply false
 }
 
@@ -8,37 +8,16 @@ architectury {
 	minecraft = rootProject.minecraft_version
 }
 
-tasks.register("dropLibraryCache", Delete) {
-	description = "Removes the cached remap of VillagerTradingPlus so a fresh publishToMavenLocal is picked up. Run on its own, before the build."
-	group = "build"
-	delete fileTree(dir: "${rootDir}/.gradle/loom-cache/remapped_mods", include: "*/lion/villagertradingplus/**")
-}
-
 subprojects {
-	apply plugin: "dev.architectury.loom"
-
-	loom {
-		silentMojangMappingsLicense()
-		mixin {
-			useLegacyMixinAp = true
-		}
-	}
-
-	repositories {
-		maven { url = 'https://maven.parchmentmc.org' }
-	}
+	apply plugin: "dev.architectury.loom-no-remap"
 
 	dependencies {
 		minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-		mappings loom.layered {
-			officialMojangMappings()
-			parchment("org.parchmentmc.data:parchment-1.21.11:2025.12.20@zip")
-		}
 	}
 }
 
 allprojects {
-	apply plugin: "java"
+	apply plugin: "java-library"
 	apply plugin: "architectury-plugin"
 	apply plugin: "maven-publish"
 
@@ -50,14 +29,27 @@ allprojects {
 		mavenLocal()
 		maven { url = 'https://maven.neoforged.net/releases' }
 		maven { url = 'https://jitpack.io' }
+		exclusiveContent {
+			forRepository {
+				maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+			}
+			filter {
+				includeGroupAndSubgroups('com.geckolib')
+			}
+		}
 	}
 
-	tasks.withType(JavaCompile) {
+	tasks.withType(JavaCompile).configureEach {
 		options.encoding = "UTF-8"
-		options.release = 21
+		options.release = 25
+		options.compilerArgs += ["-Xmaxerrs", "10000"]
 	}
 
 	java {
 		withSourcesJar()
 	}
 }
+
+evaluationDependsOn(":common")
+evaluationDependsOn(":fabric")
+evaluationDependsOn(":neoforge")
