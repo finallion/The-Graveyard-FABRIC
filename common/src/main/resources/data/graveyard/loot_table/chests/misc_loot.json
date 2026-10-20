@@ -95,7 +95,7 @@
               "add": false
             }
           ],
-          "name": "minecraft:chain"
+          "name": "minecraft:iron_chain"
         },
         {
           "type": "minecraft:item",

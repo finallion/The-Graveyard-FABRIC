@@ -43,11 +43,10 @@ class AnimationPatternTest {
     private static final Pattern START_AT_SPAWN = Pattern.compile("\\.startAt\\(\\s*SPAWN\\w*");
     private static final Pattern CURRENT_CLIP = Pattern.compile("(?i)current|previous|prior|came");
     private static final Pattern BARE_ZERO = Pattern.compile("(?<![\\w.])0(?![\\w.])");
-    private static final Pattern RETURN_VALUE = Pattern.compile("\\breturn\\s+([^;]+);");
     private static final Pattern TIMER_CONSTANT = Pattern.compile("\\bfinal\\s+int\\s+(\\w+_(?:TICKS|DURATION))\\s*=");
     private static final Pattern IF_HEAD = Pattern.compile("\\bif\\s*\\(");
     private static final double SPIN_LIMIT_DEGREES = 90.0D;
-    private static final Pattern FIRST_FRAME_NULL_CHECK = Pattern.compile("getCurrentAnimation\\(\\)\\s*==\\s*null");
+    private static final Pattern FIRST_FRAME_NULL_CHECK = Pattern.compile("getCurrentAnimationPoint\\(\\)\\s*==\\s*null");
     private static final Pattern ZERO_BRANCH = Pattern.compile("\\?\\s*0\\s*:");
     private static final Pattern DEATH_REMOVAL = Pattern.compile("deathTime\\s*(?:==|>=)\\s*(\\w+)");
     private static final Pattern SOUND_METHOD = Pattern.compile("\\w*Sound|\\w*AnimationSound\\w*");
@@ -113,10 +112,10 @@ class AnimationPatternTest {
     static List<String> controllerHandlerProblems(String code) {
         List<String> problems = new ArrayList<>();
         for (String args : JavaText.callArguments(code, "AnimationClock.controller(")) {
-            int at = args.indexOf("transitionLength(");
+            int at = args.indexOf("setTransitionTicks(");
 
             if (at < 0) {
-                problems.add("handler never calls transitionLength");
+                problems.add("handler never calls setTransitionTicks");
                 continue;
             }
 
@@ -124,12 +123,12 @@ class AnimationPatternTest {
             String before = args.substring(0, at);
 
             if (braceDepth(before) != 1) {
-                problems.add("transitionLength is not set on every frame: " + statement);
+                problems.add("setTransitionTicks is not set on every frame: " + statement);
             }
 
             if (!FIRST_FRAME_NULL_CHECK.matcher(before + statement).find()
                     || !ZERO_BRANCH.matcher(statement).find()) {
-                problems.add("transitionLength is not 0 while getCurrentAnimation() is null: " + statement);
+                problems.add("setTransitionTicks is not 0 while getCurrentAnimationPoint() is null: " + statement);
             }
         }
         return problems;
@@ -156,7 +155,7 @@ class AnimationPatternTest {
         int controllers = 0;
         List<String> problems = new ArrayList<>();
         for (Path file : ModProject.files(ModProject.JAVA, ".java")) {
-            String code = Sources.code(file);
+            String code = Sources.code(file).replaceAll("AnimationClock\\.<[^>]*>controller\\(", "AnimationClock.controller(");
             int count = JavaText.callArguments(code, "AnimationClock.controller(").size();
             controllers += count;
             controllerHandlerProblems(code).forEach(p -> problems.add(ModProject.display(file) + ": " + p));
@@ -182,10 +181,10 @@ class AnimationPatternTest {
 
     @Test
     void firstFrameCheckCatchesBrokenHandlers() {
-        String good = "AnimationClock.controller(a, n, 5, state -> { state.getController().transitionLength(state.getController().getCurrentAnimation() == null ? 0 : 5); return X; })";
-        String noNullCheck = "AnimationClock.controller(a, n, 5, state -> { state.getController().transitionLength(5); return X; })";
-        String nested = "AnimationClock.controller(a, n, 5, state -> { if (c) { state.getController().transitionLength(state.getController().getCurrentAnimation() == null ? 0 : 5); } return X; })";
-        String missing = "AnimationClock.controller(a, n, 5, state -> { return X; })";
+        String good = "AnimationClock.controller(n, 5, state -> { state.controller().setTransitionTicks(state.controller().getCurrentAnimationPoint() == null ? 0 : 5); return X; })";
+        String noNullCheck = "AnimationClock.controller(n, 5, state -> { state.controller().setTransitionTicks(5); return X; })";
+        String nested = "AnimationClock.controller(n, 5, state -> { if (c) { state.controller().setTransitionTicks(state.controller().getCurrentAnimationPoint() == null ? 0 : 5); } return X; })";
+        String missing = "AnimationClock.controller(n, 5, state -> { return X; })";
         assertEquals(List.of(), controllerHandlerProblems(good));
         assertFalse(controllerHandlerProblems(noNullCheck).isEmpty());
         assertFalse(controllerHandlerProblems(nested).isEmpty());
@@ -855,58 +854,87 @@ class AnimationPatternTest {
         return text.equals("linear") || text.equals("catmullrom") || text.equals("step");
     }
 
-    /// A reset value below one tick has no effect.
-    static List<String> boneResetValueProblems(String code, Map<String, Integer> constants) {
+    private static final Pattern RETURN_APPLIED = Pattern.compile("\\bBoneReturn\\.apply\\(");
+    private static final Pattern HARD_CUT = Pattern.compile(
+            ZERO_BRANCH.pattern()
+                    + "|setTransitionTicks\\(\\s*0\\s*\\)"
+                    + "|\\.build\\([^,()]+,\\s*0\\s*\\)"
+                    + "|transitionTicks\\(\\(\\)\\s*->\\s*0\\s*\\)"
+                    + "|controller\\([^,()]+,\\s*0\\s*,"
+    );
+
+    static List<String> boneReturnProblems(String mobName, String entityCode, String rendererCode, int returnTicks) {
         List<String> problems = new ArrayList<>();
-        for (String body : JavaText.methods(code).getOrDefault("getBoneResetTime", List.of())) {
-            Matcher returned = RETURN_VALUE.matcher(body);
 
-            if (!returned.find()) {
-                problems.add("getBoneResetTime returns nothing readable");
-                continue;
-            }
-
-            do {
-                String expression = returned.group(1)
-                        .replaceAll("(\\d+)\\.0+(?![\\d])", "$1")
-                        .replaceAll("(?<=\\d)[dDfFlL]\\b", "");
-                OptionalInt value = JavaText.evaluate(expression, constants);
-
-                if (value.isEmpty()) {
-                    problems.add("getBoneResetTime returns '" + expression.trim() + "', which the test cannot read");
-                } else if (value.getAsInt() < 1) {
-                    problems.add("getBoneResetTime returns " + value.getAsInt() + ", so the bones never reset");
-                }
-            } while (returned.find());
+        if (returnTicks < 1) {
+            problems.add("The bone return lasts " + returnTicks + " ticks, so the bones never ease back.");
         }
+
+        boolean applied = RETURN_APPLIED.matcher(rendererCode).find();
+
+        if (HARD_CUT.matcher(entityCode).find() && !applied) {
+            problems.add(mobName + " cuts a clip with a 0-tick blend but its renderer never calls BoneReturn.apply.");
+        }
+
         return problems;
+    }
+
+    private static String rendererOf(String mobName) {
+        Pattern named = Pattern.compile("\\b" + mobName + "\\b");
+        StringBuilder found = new StringBuilder();
+        for (Path file : ModProject.files(MobAnimations.ENTITIES.resolve("renders"), ".java")) {
+            String code = Sources.code(file);
+
+            if (named.matcher(code).find()) {
+                found.append(code);
+            }
+        }
+        return found.toString();
+    }
+
+    @Test
+    void theClockControllerRecordsTheBoneReturn() {
+        String code = Sources.code(MobAnimations.ENTITIES.resolve("animation/AnimationClock.java"));
+        String body = JavaText.joinedBodies(JavaText.methods(code), "extractControllerState");
+        assertTrue(body.contains("BoneReturn.add("), "AnimationClock.extractControllerState never calls BoneReturn.add");
     }
 
     @TestFactory
     Stream<DynamicTest> everyMobResetsBonesOrKeepsChannelsInAllClips() {
+        int returnTicks = JavaText.intConstants(Sources.code(MobAnimations.ENTITIES.resolve("animation/BoneReturn.java")), Map.of()).getOrDefault("TICKS", 0);
         return MobAnimations.mobs().stream()
                 .map(mob -> DynamicTest.dynamicTest(mob.name(), () -> {
-                    if (JavaText.methods(mob.code()).containsKey("getBoneResetTime")) {
-                        assertEquals(List.of(), boneResetValueProblems(mob.code(), mob.constants()));
+                    Set<String> snapping = new TreeSet<>(snappingChannels(mob.animations()));
+                    snapping.removeAll(UNRESET_CHANNELS_ALLOWED.getOrDefault(mob.name(), Set.of()));
+
+                    if (snapping.isEmpty()) {
                         return;
                     }
 
-                    Set<String> snapping = new TreeSet<>(snappingChannels(mob.animations()));
-                    snapping.removeAll(UNRESET_CHANNELS_ALLOWED.getOrDefault(mob.name(), Set.of()));
-                    assertEquals(Set.of(), snapping, mob.name() + " has no getBoneResetTime override");
+                    assertEquals(List.of(), boneReturnProblems(mob.name(), mob.code(), rendererOf(mob.name()), returnTicks));
                 }));
     }
 
     @Test
-    void boneResetValueCheckCatchesAZeroReset() {
-        Map<String, Integer> constants = Map.of("TRANSITION_TICKS", 5);
-        assertEquals(List.of(), boneResetValueProblems("double getBoneResetTime() { return AnimationTable.TRANSITION_TICKS; }", constants));
-        assertEquals(List.of(), boneResetValueProblems("double getBoneResetTime() { return 5.0D; }", constants));
-        assertEquals(1, boneResetValueProblems("double getBoneResetTime() { return 0; }", constants).size());
-        assertEquals(1, boneResetValueProblems("double getBoneResetTime() { return 0.0D; }", constants).size());
-        assertEquals(1, boneResetValueProblems("double getBoneResetTime() { return compute(); }", constants).size());
-        assertEquals(1, boneResetValueProblems("double getBoneResetTime() { return TRANSITION_TICKS - 5; }", constants).size());
-        assertEquals(List.of(), boneResetValueProblems("void tick() { }", constants));
+    void boneReturnCheckCatchesAHardCutWithoutReturn() {
+        String cut = "class E { int t() { return fast ? 0 : 5; } }";
+        String soft = "class E { int t() { return 5; } }";
+        String applied = "class R { void r() { BoneReturn.apply(info, snapshots); } }";
+        assertEquals(List.of(), boneReturnProblems("E", cut, applied, 5));
+        assertEquals(List.of(), boneReturnProblems("E", soft, "class R { }", 5));
+        assertEquals(1, boneReturnProblems("E", cut, "class R { }", 5).size());
+        assertEquals(1, boneReturnProblems("E", soft, applied, 0).size());
+
+        for (String form : List.of(
+                "c.setTransitionTicks(0);",
+                "b.build(\"controller\", 0);",
+                "b.transitionTicks(() -> 0);",
+                "AnimationClock.controller(name, 0, handler);"
+        )) {
+            String code = "class E { void t() { " + form + " } }";
+            assertEquals(1, boneReturnProblems("E", code, "class R { }", 5).size(), form);
+            assertEquals(List.of(), boneReturnProblems("E", code, applied, 5), form);
+        }
     }
 
     @Test
@@ -946,10 +974,10 @@ class AnimationPatternTest {
 
     static List<String> rearmPathProblems(String code) {
         List<String> problems = new ArrayList<>();
-        int call = code.indexOf("forceAnimationReset(");
+        int call = code.indexOf("AnimationClock.restart(");
 
         if (call < 0) {
-            problems.add("The entity never calls forceAnimationReset.");
+            problems.add("The entity never calls AnimationClock.restart.");
             return problems;
         }
 
@@ -971,13 +999,13 @@ class AnimationPatternTest {
         }
 
         if (!guarded) {
-            problems.add("forceAnimationReset is not inside a timer comparison.");
+            problems.add("AnimationClock.restart is not inside a timer comparison.");
         }
 
         String method = enclosingMethod(code, call);
 
         if (method == null || Pattern.compile("(?<![\\w.])(?:this\\.)?" + method + "\\s*\\(").matcher(code).results().count() < 2) {
-            problems.add("The method around forceAnimationReset is never called.");
+            problems.add("The method around AnimationClock.restart is never called.");
         }
 
         return problems;
@@ -1016,10 +1044,10 @@ class AnimationPatternTest {
     void rearmCheckCatchesMissingReset() {
         String goal = "void attack() { this.resetCooldown(20); }";
         Map<String, Integer> constants = Map.of("ATTACK_ANIMATION_DURATION", 27);
-        String rearm = "void tick() { restart(); } void restart() { if (timer > last + 1) { if (c != null) { c.forceAnimationReset(); } } last = timer; }";
-        String unguarded = "void tick() { restart(); } void restart() { c.forceAnimationReset(); }";
-        String neverCalled = "void restart() { if (timer > last + 1) { c.forceAnimationReset(); } }";
-        String wrongCondition = "void tick() { restart(); } void restart() { if (c != null) { c.forceAnimationReset(); } }";
+        String rearm = "void tick() { restart(); } void restart() { if (timer > last + 1) { if (c != null) { AnimationClock.restart(c); } } last = timer; }";
+        String unguarded = "void tick() { restart(); } void restart() { AnimationClock.restart(c); }";
+        String neverCalled = "void restart() { if (timer > last + 1) { AnimationClock.restart(c); } }";
+        String wrongCondition = "void tick() { restart(); } void restart() { if (c != null) { AnimationClock.restart(c); } }";
         assertEquals(1, rearmProblems("g", goal, "class E { }", constants).size());
         assertEquals(List.of(), rearmProblems("g", goal, rearm, constants));
         assertEquals(1, rearmProblems("g", goal, unguarded, constants).size());

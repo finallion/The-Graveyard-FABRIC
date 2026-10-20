@@ -56,7 +56,7 @@ public class GraveyardNeoforge {
     public GraveyardNeoforge(IEventBus modBus) {
         Graveyard.init();
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             GraveyardClient.init();
         }
 

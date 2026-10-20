@@ -162,6 +162,69 @@ class AnimationTest {
         );
     }
 
+    private static List<String> keyframeOrderProblems(String path, List<String> keys) {
+        List<String> problems = new ArrayList<>();
+        double previous = Double.NEGATIVE_INFINITY;
+        for (String key : keys) {
+            double time = Double.parseDouble(key);
+
+            if (time < previous) {
+                problems.add(path + ": key " + key + " comes after " + previous);
+            }
+
+            previous = time;
+        }
+        return problems;
+    }
+
+    static List<String> startingKeyframeProblems(String rawText) {
+        List<String> problems = new ArrayList<>();
+        Json.walkObjects(rawText, (path, keys) -> {
+            if (keys.isEmpty() || !keys.stream().allMatch(AnimationTest::isNumeric)) {
+                return;
+            }
+
+            if (keys.stream().anyMatch(key -> Double.parseDouble(key) < 0.0D)) {
+                problems.add(path + ": negative keyframe time in " + keys);
+                return;
+            }
+
+            if (!keyframeOrderProblems(path, keys).isEmpty()) {
+                problems.add(path + ": keyframes are not ascending in " + keys);
+                return;
+            }
+
+            List<String> zeros = keys.stream()
+                    .filter(key -> Double.parseDouble(key) == 0.0D)
+                    .toList();
+
+            if (zeros.size() > 1) {
+                problems.add(path + ": more than one starting keyframe " + zeros);
+            } else if (zeros.size() == 1 && !keys.get(0).equals(zeros.get(0))) {
+                problems.add(path + ": starting keyframe " + zeros.get(0) + " is not first");
+            }
+        });
+        return problems;
+    }
+
+    @TestFactory
+    Stream<DynamicTest> startingKeyframeComesFirstInEveryChannel() {
+        return ModProject.files(DIR, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(DIR, file, ".json"), () -> {
+                    List<String> problems = startingKeyframeProblems(ModProject.read(file));
+                    assertTrue(problems.isEmpty(), () -> String.join("\n", problems));
+                }));
+    }
+
+    @Test
+    void startingKeyframeCheckCatchesALateOrDoubleZero() {
+        assertEquals(1, startingKeyframeProblems("{\"r\": {\"0.5\": 1, \"0\": 2}}").size());
+        assertEquals(1, startingKeyframeProblems("{\"r\": {\"0\": 1, \"0.0\": 2}}").size());
+        assertEquals(1, startingKeyframeProblems("{\"r\": {\"-0.05\": 1, \"1.9\": 2}}").size());
+        assertEquals(1, startingKeyframeProblems("{\"r\": {\"0.5\": 1, \"0.2\": 2}}").size());
+        assertTrue(startingKeyframeProblems("{\"r\": {\"0\": 1, \"0.5\": 2}, \"s\": {\"0.5\": 1}, \"t\": {\"x\": 1, \"0\": 2}}").isEmpty());
+    }
+
     @Test
     void orderCheckCatchesIntegerKeyPulledToTheFront() {
         String broken = "{\"rotation\": {\"1\": [0,0,0], \"0.5\": [1,1,1], \"2\": [2,2,2]}}";

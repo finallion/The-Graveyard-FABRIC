@@ -78,7 +78,7 @@
       {
         "type": "villagertradingplus:sell_item",
         "sell": {
-          "item": "chain",
+          "item": "iron_chain",
           "count": 1
         },
         "priceIn": {

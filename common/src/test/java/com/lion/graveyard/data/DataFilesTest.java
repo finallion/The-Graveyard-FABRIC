@@ -73,6 +73,44 @@ class DataFilesTest {
         return problems;
     }
 
+    private static final Set<String> RENAMED_ENTITY_TARGETS = Set.of("killer", "killer_player", "direct_killer");
+
+    static List<String> renamedEntityTargets(JsonElement element, String path) {
+        List<String> found = new ArrayList<>();
+
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+            if (RENAMED_ENTITY_TARGETS.contains(element.getAsString())) {
+                found.add(path + ": " + element.getAsString());
+            }
+        } else if (element.isJsonArray()) {
+            int index = 0;
+            for (JsonElement child : element.getAsJsonArray()) {
+                found.addAll(renamedEntityTargets(child, path + "[" + index++ + "]"));
+            }
+        } else if (element.isJsonObject()) {
+            for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
+                found.addAll(renamedEntityTargets(entry.getValue(), path + "." + entry.getKey()));
+            }
+        }
+
+        return found;
+    }
+
+    @TestFactory
+    Stream<DynamicTest> lootTablesUseNoRenamedEntityTargets() {
+        Path dir = ModProject.DATA.resolve(ModProject.LOOT_TABLES);
+        return ModProject.files(dir, ".json").stream()
+                .map(file -> DynamicTest.dynamicTest(ModProject.idOf(dir, file, ".json"), () -> {
+                    List<String> found = renamedEntityTargets(Json.parseStrict(ModProject.read(file)), "$");
+                    assertTrue(found.isEmpty(), () -> "Use attacker, attacking_player or direct_attacker: " + found);
+                }));
+    }
+
+    @Test
+    void renamedTargetCheckFindsOldNames() {
+        assertEquals(2, renamedEntityTargets(Json.parseStrict("{\"conditions\":[{\"entity\":\"killer_player\"},{\"entity\":\"attacker\"},{\"x\":[\"direct_killer\"]}]}"), "$").size());
+    }
+
     @TestFactory
     Stream<DynamicTest> lootTablesReferenceExistingIds() {
         return referenceTests(ModProject.LOOT_TABLES);
