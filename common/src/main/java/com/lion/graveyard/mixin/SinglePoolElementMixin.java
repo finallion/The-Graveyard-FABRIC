@@ -34,7 +34,13 @@ public abstract class SinglePoolElementMixin {
     protected Holder<StructureProcessorList> processors;
 
     @Inject(method = "getShuffledJigsawBlocks", at = @At("RETURN"), cancellable = true)
-    private void graveyard$applyPoolAliases(StructureTemplateManager structureTemplateManager, BlockPos pos, Rotation rotation, RandomSource random, CallbackInfoReturnable<List<JigsawBlockInfo>> callback) {
+    private void graveyard$applyPoolAliases(
+            StructureTemplateManager structureTemplateManager,
+            BlockPos pos,
+            Rotation rotation,
+            RandomSource random,
+            CallbackInfoReturnable<List<JigsawBlockInfo>> callback
+    ) {
         if (!this.processors.isBound()) {
             return;
         }
@@ -59,7 +65,13 @@ public abstract class SinglePoolElementMixin {
     }
 
     @Inject(method = "getSettings", at = @At("RETURN"))
-    private void graveyard$keepWorldWaterOut(Rotation rotation, BoundingBox box, LiquidSettings liquidSettings, boolean keepJigsaws, CallbackInfoReturnable<StructurePlaceSettings> callback) {
+    private void graveyard$keepWorldWaterOut(
+            Rotation rotation,
+            BoundingBox box,
+            LiquidSettings liquidSettings,
+            boolean keepJigsaws,
+            CallbackInfoReturnable<StructurePlaceSettings> callback
+    ) {
         if (!this.processors.isBound()) {
             return;
         }

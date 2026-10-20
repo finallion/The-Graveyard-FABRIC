@@ -17,7 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MobEntitySpawnMixin {
 
     @Inject(method = "checkSpawnRules(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/world/entity/EntitySpawnReason;)Z", at = @At("HEAD"), cancellable = true)
-    private void graveyard$gateAutomaticSpawn(LevelAccessor world, EntitySpawnReason spawnReason, CallbackInfoReturnable<Boolean> callback) {
+    private void graveyard$gateAutomaticSpawn(
+            LevelAccessor world,
+            EntitySpawnReason spawnReason,
+            CallbackInfoReturnable<Boolean> callback
+    ) {
         Mob mob = (Mob) (Object) this;
 
         if (MobSpawnGate.blocks(mob.getType(), spawnReason) || MobSpawnGate.inForbiddenBiome(world, mob.blockPosition(), mob.getType(), spawnReason)) {
@@ -27,7 +31,13 @@ public abstract class MobEntitySpawnMixin {
 
     // Structure entities and spawners with custom rules never call checkSpawnRules.
     @Inject(method = "finalizeSpawn", at = @At("HEAD"))
-    private void graveyard$discardGatedStructureMob(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, @Nullable SpawnGroupData entityData, CallbackInfoReturnable<SpawnGroupData> callback) {
+    private void graveyard$discardGatedStructureMob(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            EntitySpawnReason spawnReason,
+            @Nullable SpawnGroupData entityData,
+            CallbackInfoReturnable<SpawnGroupData> callback
+    ) {
         Mob mob = (Mob) (Object) this;
 
         if ((spawnReason == EntitySpawnReason.STRUCTURE || spawnReason == EntitySpawnReason.SPAWNER) && MobSpawnGate.blocks(mob.getType(), spawnReason)) {

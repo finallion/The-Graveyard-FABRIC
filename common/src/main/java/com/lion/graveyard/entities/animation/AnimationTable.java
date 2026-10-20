@@ -138,6 +138,9 @@ public final class AnimationTable<T extends GeoAnimatable> {
                 || state.renderState() instanceof LivingEntityRenderState living && Math.abs(living.walkAnimationSpeed) > MOVEMENT_THRESHOLD;
     }
 
-    private record Entry<T extends GeoAnimatable>(Predicate<AnimationTest<T>> condition, @Nullable RawAnimation animation) {
+    private record Entry<T extends GeoAnimatable>(
+            Predicate<AnimationTest<T>> condition,
+            @Nullable RawAnimation animation
+    ) {
     }
 }

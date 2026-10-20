@@ -20,7 +20,12 @@ public abstract class InventoryChangedCriterionMixin {
     private static final int DISTINCT_ITEMS_NEEDED = 10;
 
     @Inject(method = "trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;)V", at = @At("TAIL"))
-    private void graveyard$countSkeletonDecoration(ServerPlayer player, Inventory inventory, ItemStack stack, CallbackInfo callback) {
+    private void graveyard$countSkeletonDecoration(
+            ServerPlayer player,
+            Inventory inventory,
+            ItemStack stack,
+            CallbackInfo callback
+    ) {
         if (stack.isEmpty() || !stack.is(TGTags.SKELETON_DECORATION)) {
             return;
         }
