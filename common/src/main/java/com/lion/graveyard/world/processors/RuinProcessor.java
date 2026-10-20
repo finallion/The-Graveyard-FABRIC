@@ -344,7 +344,7 @@ public class RuinProcessor extends StructureProcessor {
         Map<Long, Integer> shifts = new HashMap<>();
         for (StructureBlockInfo info : solid) {
             BlockPos pos = info.pos();
-            long column = ChunkPos.asLong(pos.getX(), pos.getZ());
+            long column = ChunkPos.pack(pos.getX(), pos.getZ());
 
             if (isColumnIn(chunkBox, pos.getX(), pos.getZ()) && !shifts.containsKey(column)) {
                 shifts.put(column, groundShift(world, pos.getX(), base, pos.getZ()));
@@ -367,7 +367,7 @@ public class RuinProcessor extends StructureProcessor {
         Map<BlockPos, BlockPos> origins = new HashMap<>();
         for (StructureBlockInfo info : solid) {
             BlockPos pos = info.pos();
-            Integer shift = unitShift != null ? unitShift : shifts.get(ChunkPos.asLong(pos.getX(), pos.getZ()));
+            Integer shift = unitShift != null ? unitShift : shifts.get(ChunkPos.pack(pos.getX(), pos.getZ()));
 
             if (shift == null) {
                 result.add(info);
@@ -610,7 +610,7 @@ public class RuinProcessor extends StructureProcessor {
 
                 BlockPos pos = info.pos();
                 this.blocks.put(pos, info);
-                this.columnBottoms.merge(ChunkPos.asLong(pos.getX(), pos.getZ()), pos.getY(), Math::min);
+                this.columnBottoms.merge(ChunkPos.pack(pos.getX(), pos.getZ()), pos.getY(), Math::min);
                 this.minX = Math.min(this.minX, pos.getX());
                 this.minY = Math.min(this.minY, pos.getY());
                 this.minZ = Math.min(this.minZ, pos.getZ());
@@ -775,7 +775,7 @@ public class RuinProcessor extends StructureProcessor {
                     }
 
                     if (this.piles(info.state())) {
-                        this.debris.putIfAbsent(ChunkPos.asLong(pos.getX(), pos.getZ()), info.state());
+                        this.debris.putIfAbsent(ChunkPos.pack(pos.getX(), pos.getZ()), info.state());
                         sumX[deepest] += pos.getX();
                         sumZ[deepest] += pos.getZ();
                         fallenBlocks[deepest]++;
@@ -1100,7 +1100,7 @@ public class RuinProcessor extends StructureProcessor {
                     for (int z = centerZ - reach; z <= centerZ + reach; z++) {
                         float distance = Mth.sqrt((x - heap.x()) * (x - heap.x()) + (z - heap.z()) * (z - heap.z()));
                         float amount = (heap.height() + 0.5F) * (1.0F - distance / heap.radius()) + (hash(seed, x, z) - 0.5F) * HEAP_ROUGHNESS;
-                        amounts.merge(ChunkPos.asLong(x, z), amount, Math::max);
+                        amounts.merge(ChunkPos.pack(x, z), amount, Math::max);
                     }
                 }
             }
@@ -1140,7 +1140,7 @@ public class RuinProcessor extends StructureProcessor {
         }
 
         private boolean standsOnTemplate(int x, int z) {
-            Integer bottom = this.columnBottoms.get(ChunkPos.asLong(x, z));
+            Integer bottom = this.columnBottoms.get(ChunkPos.pack(x, z));
             return bottom != null && bottom <= this.minY + 1;
         }
 
@@ -1159,7 +1159,7 @@ public class RuinProcessor extends StructureProcessor {
         }
 
         private BlockPos templateBase(int x, int z) {
-            for (int y = this.columnBottoms.get(ChunkPos.asLong(x, z)) + 1; y <= this.minY + MAX_HEAP_LAYERS; y++) {
+            for (int y = this.columnBottoms.get(ChunkPos.pack(x, z)) + 1; y <= this.minY + MAX_HEAP_LAYERS; y++) {
                 BlockPos pos = new BlockPos(x, y, z);
                 StructureBlockInfo below = this.blocks.get(pos.below());
 
@@ -1195,7 +1195,7 @@ public class RuinProcessor extends StructureProcessor {
             for (int reach = 0; reach <= MAX_HEAP_LAYERS; reach++) {
                 for (int offsetX = -reach; offsetX <= reach; offsetX++) {
                     for (int offsetZ = -reach; offsetZ <= reach; offsetZ++) {
-                        BlockState state = this.debris.get(ChunkPos.asLong(x + offsetX, z + offsetZ));
+                        BlockState state = this.debris.get(ChunkPos.pack(x + offsetX, z + offsetZ));
 
                         if (state != null) {
                             return state;
@@ -1470,7 +1470,7 @@ public class RuinProcessor extends StructureProcessor {
                     for (int offsetZ = -FEATHER_REACH; offsetZ <= FEATHER_REACH; offsetZ++) {
                         int x = info.pos().getX() + offsetX;
                         int z = info.pos().getZ() + offsetZ;
-                        long column = ChunkPos.asLong(x, z);
+                        long column = ChunkPos.pack(x, z);
 
                         if (!this.columnBottoms.containsKey(column) && isColumnIn(chunkBox, x, z)) {
                             distances.merge(column, Mth.sqrt(offsetX * offsetX + offsetZ * offsetZ), Math::min);
@@ -1515,7 +1515,7 @@ public class RuinProcessor extends StructureProcessor {
                 BlockPos neighbor = pos.relative(direction);
                 boolean inBounds = neighbor.getX() >= this.minX && neighbor.getX() <= this.maxX && neighbor.getZ() >= this.minZ && neighbor.getZ() <= this.maxZ;
 
-                if (inBounds && !this.columnBottoms.containsKey(ChunkPos.asLong(neighbor.getX(), neighbor.getZ()))) {
+                if (inBounds && !this.columnBottoms.containsKey(ChunkPos.pack(neighbor.getX(), neighbor.getZ()))) {
                     return true;
                 }
             }
@@ -1642,7 +1642,7 @@ public class RuinProcessor extends StructureProcessor {
         private Map<Long, Integer> columnTops() {
             Map<Long, Integer> tops = new LinkedHashMap<>();
             for (BlockPos pos : this.blocks.keySet()) {
-                tops.merge(ChunkPos.asLong(pos.getX(), pos.getZ()), pos.getY(), Math::max);
+                tops.merge(ChunkPos.pack(pos.getX(), pos.getZ()), pos.getY(), Math::max);
             }
             return tops;
         }

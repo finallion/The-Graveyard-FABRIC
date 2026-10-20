@@ -189,7 +189,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     @Override
     public void aiStep() {
         if (isInSittingPose() && random.nextInt(5) == 0) {
-            MathUtil.createParticleCircle(level(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().random, 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY() + 0.6D, this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().getRandom(), 0.5F);
         }
 
         if (isAggressive() && playAttackSound) {
@@ -202,8 +202,8 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
                 playSound(SoundEvents.SOUL_ESCAPE.value(), 2.0F, -10.0F);
             }
 
-            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().random, 0.5F);
-            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, level().random, 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, TGParticles.GRAVEYARD_SOUL_PARTICLE, level().getRandom(), 0.5F);
+            MathUtil.createParticleCircle(level(), this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D, 1.5F, ParticleTypes.SOUL_FIRE_FLAME, level().getRandom(), 0.5F);
         }
 
         super.aiStep();
@@ -468,7 +468,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
         this.playSound(TGSounds.GHOULING_GROAN.get(), 1.0F, -2.0F);
         boolean sit = !this.isSitting();
         this.setSitting(sit);
-        player.displayClientMessage(Component.translatable(sit ? "entity.graveyard.ghouling.wait" : "entity.graveyard.ghouling.nowait"), true);
+        player.sendOverlayMessage(Component.translatable(sit ? "entity.graveyard.ghouling.wait" : "entity.graveyard.ghouling.nowait"));
         this.jumping = false;
         this.navigation.stop();
         this.setTarget((LivingEntity) null);

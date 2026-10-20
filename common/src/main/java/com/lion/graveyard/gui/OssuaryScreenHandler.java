@@ -204,7 +204,7 @@ public class OssuaryScreenHandler extends AbstractContainerMenu {
 
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             RecipeHolder<OssuaryRecipe> carvingRecipe = this.availableRecipes.get(this.selectedRecipe.get());
-            ItemStack itemStack = carvingRecipe.value().assemble(new SingleRecipeInput(this.input.getItem(0)), this.world.registryAccess());
+            ItemStack itemStack = carvingRecipe.value().assemble(new SingleRecipeInput(this.input.getItem(0)));
 
             if (itemStack.isItemEnabled(this.world.enabledFeatures())) {
                 this.output.setRecipeUsed(carvingRecipe);

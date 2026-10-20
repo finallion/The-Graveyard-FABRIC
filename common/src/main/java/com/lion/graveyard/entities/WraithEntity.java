@@ -98,7 +98,7 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
     public WraithEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world, "wraith");
         this.moveControl = new FlyingMoveControl(this, 0, true);
-        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
         this.setPathfindingMalus(PathType.COCOA, -1.0F);

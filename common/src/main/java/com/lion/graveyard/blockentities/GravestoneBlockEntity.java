@@ -20,6 +20,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.ResolutionContext;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.RegistryOps;
@@ -29,7 +30,6 @@ import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -184,7 +184,7 @@ public class GravestoneBlockEntity extends BlockEntity {
             ServerLevel serverWorld = (ServerLevel)world;
 
             try {
-                return ComponentUtils.updateForEntity(createCommandSource((Player)null, serverWorld, this.worldPosition), text, (Entity)null, 0);
+                return ComponentUtils.resolve(ResolutionContext.create(createCommandSource((Player)null, serverWorld, this.worldPosition)), text);
             } catch (CommandSyntaxException exception) {
                 LOGGER.debug("Cannot resolve the sign text {}", text.getString(), exception);
             }

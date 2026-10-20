@@ -115,8 +115,8 @@ public class CorvidEntity extends PathfinderMob implements GeoEntity {
     public CorvidEntity(EntityType<? extends CorvidEntity> type, Level world) {
         super(type, world);
         this.moveControl = new CorvidMoveControl(this);
-        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
-        this.setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0F);
+        this.setPathfindingMalus(PathType.FIRE, -1.0F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
     }
 

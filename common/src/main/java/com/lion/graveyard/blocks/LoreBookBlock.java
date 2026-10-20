@@ -154,7 +154,7 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
         }
 
         if (player instanceof ServerPlayer serverPlayer && !Chronicle.find(serverPlayer, book.getPage())) {
-            serverPlayer.displayClientMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY), true);
+            serverPlayer.sendOverlayMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY));
         }
 
         return InteractionResult.SUCCESS;

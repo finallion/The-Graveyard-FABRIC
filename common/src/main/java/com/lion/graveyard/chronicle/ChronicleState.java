@@ -1,6 +1,7 @@
 package com.lion.graveyard.chronicle;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.util.LegacySavedData;
 import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,6 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -17,21 +20,40 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/// Saves the found chronicle pages of each player on the overworld.
 public final class ChronicleState extends SavedData {
 
-    private static final String KEY = "graveyard_chronicle";
+    private static final String LEGACY_FILE = "graveyard_chronicle.dat";
 
     private static final int MAX_PAGES_PER_PLAYER = 512;
 
     private static final Codec<ChronicleState> CODEC = CompoundTag.CODEC.xmap(ChronicleState::fromNbt, ChronicleState::toNbt);
 
-    private static final SavedDataType<ChronicleState> TYPE = new SavedDataType<>(KEY, ChronicleState::new, CODEC, DataFixTypes.LEVEL);
+    private static final SavedDataType<ChronicleState> TYPE = new SavedDataType<>(Graveyard.id("chronicle"), ChronicleState::new, CODEC, DataFixTypes.LEVEL);
 
     private final Map<UUID, Set<String>> found = new HashMap<>();
 
     public static ChronicleState get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+        SavedDataStorage storage = server.getDataStorage();
+        ChronicleState state = storage.get(TYPE);
+
+        if (state == null) {
+            state = importLegacy(server);
+            storage.set(TYPE, state);
+        }
+
+        return state;
+    }
+
+    private static ChronicleState importLegacy(MinecraftServer server) {
+        CompoundTag legacy = LegacySavedData.read(server.getWorldPath(LevelResource.DATA), LEGACY_FILE);
+
+        if (legacy == null) {
+            return new ChronicleState();
+        }
+
+        ChronicleState state = fromNbt(legacy);
+        state.setDirty();
+        return state;
     }
 
     public Set<String> found(UUID player) {

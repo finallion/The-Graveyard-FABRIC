@@ -125,7 +125,7 @@ public class BoneStaffItem extends Item {
             UUID owner = LegacyItemData.ownerUuid(stack);
 
             if (owner != null && !owner.equals(player.getUUID())) {
-                player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
+                player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.obey"));
                 return InteractionResult.FAIL;
             }
 
@@ -164,9 +164,9 @@ public class BoneStaffItem extends Item {
             });
 
             if (firstBond) {
-                player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.spawn"), true);
+                player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.spawn"));
             } else {
-                player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.respawn"), true);
+                player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.respawn"));
             }
 
             ghouling.setStaff(stack);
@@ -217,7 +217,7 @@ public class BoneStaffItem extends Item {
                 .add(player.getViewVector(1.0F).scale(0.4D));
         int count = 2 + usedTicks * 6 / STORE_TICKS;
         for (int i = 0; i < count; i++) {
-            Vec3 p = from.lerp(to, world.random.nextDouble());
+            Vec3 p = from.lerp(to, world.getRandom().nextDouble());
             world.sendParticles(TGParticles.GRAVEYARD_SOUL_PARTICLE, p.x, p.y, p.z, 1, 0.1D, 0.1D, 0.1D, 0.0D);
 
             if (i % 2 == 0) {
@@ -242,25 +242,25 @@ public class BoneStaffItem extends Item {
                 ghouling.playSpawnSounds();
                 LegacyItemData.clearStored(stack);
                 GhoulingBindings.get(world).update(ghouling);
-                player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.released"), true);
+                player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.released"));
                 return;
             }
         }
 
-        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.release_failed"), true);
+        player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.release_failed"));
     }
 
     private static void store(ServerLevel world, Player player, ItemStack stack, GhoulingEntity ghouling) {
         if (!fitsInStack(ghouling)) {
             stopDrawSound(world, player);
-            player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.too_heavy"), true);
+            player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.too_heavy"));
             return;
         }
 
         world.playSound(null, ghouling.blockPosition(), STORE_DONE_SOUND, SoundSource.PLAYERS, 2.0F, 1.0F);
         LegacyItemData.store(stack, ghouling.removeForStorage());
         player.getCooldowns().addCooldown(stack, 20);
-        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.stored"), true);
+        player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.stored"));
     }
 
     private static boolean fitsInStack(GhoulingEntity ghouling) {
@@ -403,7 +403,7 @@ public class BoneStaffItem extends Item {
             GhoulingBindings.get(serverWorld).update(ghouling);
         }
 
-        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.rebound"), true);
+        player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.rebound"));
     }
 
     public static boolean rejectsStaff(GhoulingEntity ghouling, ItemStack stack, Player player) {
@@ -419,7 +419,7 @@ public class BoneStaffItem extends Item {
 
         LegacyItemData.clearBond(stack);
 
-        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.forgotten"), true);
+        player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.forgotten"));
         return true;
     }
 
@@ -463,7 +463,7 @@ public class BoneStaffItem extends Item {
 
         if (calling && serverWorld.getGameTime() > callDeadline) {
             LegacyItemData.clearFetchCall(stack);
-            player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.lost"), true);
+            player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.lost"));
             calling = false;
         }
 
@@ -497,13 +497,13 @@ public class BoneStaffItem extends Item {
 
             if (binding.pos() != null && player.getUUID().equals(binding.owner()) && (calling || !ownerAirborne(player))
                     && (calling || misses < MAX_FETCH_MISSES)) {
-                home.getChunkSource().addTicketWithRadius(FETCH_TICKET, new ChunkPos(binding.pos()), 2);
+                home.getChunkSource().addTicketWithRadius(FETCH_TICKET, ChunkPos.containing(binding.pos()), 2);
 
                 if (!calling) {
                     LegacyItemData.edit(stack, data -> data.putInt(LegacyItemData.FETCH_MISSES, misses + 1));
 
                     if (misses + 1 == MAX_FETCH_MISSES) {
-                        player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.gave_up"), true);
+                        player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.gave_up"));
                     }
                 }
             }
@@ -521,7 +521,7 @@ public class BoneStaffItem extends Item {
             LegacyItemData.clearFetchCall(stack);
 
             if (!fetch(ghouling, serverWorld, player)) {
-                player.displayClientMessage(Component.translatable("entity.graveyard.ghouling.no_landing"), true);
+                player.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.no_landing"));
             }
 
             return;
@@ -538,7 +538,7 @@ public class BoneStaffItem extends Item {
         GhoulingBindings.Binding binding = GhoulingBindings.get(world).get(ghoulingId);
 
         if (binding == null) {
-            owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.severed"), true);
+            owner.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.severed"));
             return;
         }
 
@@ -550,7 +550,7 @@ public class BoneStaffItem extends Item {
             LegacyItemData.clearFetchCall(stack);
 
             if (!fetch(ghouling, world, owner)) {
-                owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.no_landing"), true);
+                owner.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.no_landing"));
             }
 
             return;
@@ -560,15 +560,15 @@ public class BoneStaffItem extends Item {
 
         if (home == null || binding.pos() == null) {
             LegacyItemData.clearFetchCall(stack);
-            owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.not_found"), true);
+            owner.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.not_found"));
             return;
         }
 
-        home.getChunkSource().addTicketWithRadius(FETCH_TICKET, new ChunkPos(binding.pos()), 2);
+        home.getChunkSource().addTicketWithRadius(FETCH_TICKET, ChunkPos.containing(binding.pos()), 2);
         long callDeadline = world.getGameTime() + CALL_TIMEOUT;
         LegacyItemData.clearFetchMisses(stack);
         LegacyItemData.edit(stack, data -> data.putLong(LegacyItemData.FETCH_CALL, callDeadline));
-        owner.displayClientMessage(Component.translatable("entity.graveyard.ghouling.call"), true);
+        owner.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.call"));
     }
 
     @Nullable
@@ -686,7 +686,7 @@ public class BoneStaffItem extends Item {
 
         if (owned && !ownerId.equals(user.getUUID())) {
             if (!world.isClientSide()) {
-                user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.obey"), true);
+                user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.obey"));
             }
 
             return InteractionResult.FAIL;
@@ -701,7 +701,7 @@ public class BoneStaffItem extends Item {
         }
 
         if (LegacyItemData.isStored(stack)) {
-            user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.resting"), true);
+            user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.resting"));
             return InteractionResult.SUCCESS;
         }
 
@@ -747,21 +747,21 @@ public class BoneStaffItem extends Item {
 
                     if (targetItem != null) {
                         if (!ghouling.hasCoffin()) {
-                            user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.no_coffin"), true);
+                            user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.no_coffin"));
                         } else if (ghouling.isCoffinFull()) {
-                            user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.coffin_full"), true);
+                            user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.coffin_full"));
                         } else {
                             ghouling.setTarget(null);
                             ghouling.setAggressive(false);
                             ghouling.setSitting(false);
                             ghouling.collect(targetItem);
-                            user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.collect"), true);
+                            user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.collect"));
                         }
                     } else if (result != null && result.getType() == HitResult.Type.ENTITY) {
                         Entity entity = ((EntityHitResult) result).getEntity();
 
                         if (entity instanceof LivingEntity livingEntity) {
-                            user.displayClientMessage(Component.translatable("entity.graveyard.ghouling.kill"), true);
+                            user.sendOverlayMessage(Component.translatable("entity.graveyard.ghouling.kill"));
                             ghouling.playAttackSound = true;
                             ghouling.setTarget(livingEntity);
                             ghouling.setAggressive(true);

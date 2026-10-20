@@ -32,7 +32,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
     public GraveyardMinionEntity(EntityType<? extends GraveyardMinionEntity> entityType, Level world) {
         super(entityType, world);
         this.setPathfindingMalus(PathType.POWDER_SNOW, -1.0F);
-        this.setPathfindingMalus(PathType.DANGER_POWDER_SNOW, -1.0F);
+        this.setPathfindingMalus(PathType.ON_TOP_OF_POWDER_SNOW, -1.0F);
     }
 
     @Override

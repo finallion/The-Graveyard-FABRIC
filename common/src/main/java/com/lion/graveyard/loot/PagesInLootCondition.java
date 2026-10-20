@@ -1,9 +1,9 @@
 package com.lion.graveyard.loot;
 
 import com.lion.graveyard.Graveyard;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 /// Lets the chronicle pages sit in the shipped loot tables and still be switched off: a loot table
 /// is data and cannot ask the config on its own, so the question is asked here, per roll.
@@ -13,13 +13,13 @@ public class PagesInLootCondition implements LootItemCondition {
 
     public static final PagesInLootCondition INSTANCE = new PagesInLootCondition();
 
-    public static LootItemConditionType TYPE;
+    public static final MapCodec<PagesInLootCondition> MAP_CODEC = MapCodec.unit(INSTANCE);
 
     private PagesInLootCondition() {}
 
     @Override
-    public LootItemConditionType getType() {
-        return TYPE;
+    public MapCodec<? extends LootItemCondition> codec() {
+        return MAP_CODEC;
     }
 
     @Override

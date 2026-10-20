@@ -202,7 +202,7 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
         double f = (double) pos.getZ() + 0.5D;
 
 
-        world.playSound((Player) null, d, e, f, soundEvent, SoundSource.BLOCKS, 0.5F, world.random.nextFloat() * 0.1F + 0.9F);
+        world.playSound((Player) null, d, e, f, soundEvent, SoundSource.BLOCKS, 0.5F, world.getRandom().nextFloat() * 0.1F + 0.9F);
 
     }
 

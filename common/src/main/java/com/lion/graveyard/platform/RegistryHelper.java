@@ -1,5 +1,6 @@
 package com.lion.graveyard.platform;
 
+import com.mojang.serialization.MapCodec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.advancements.CriterionTrigger;
 import java.util.List;
@@ -37,7 +38,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 public class RegistryHelper {
 
@@ -211,9 +212,8 @@ public class RegistryHelper {
         throw new AssertionError();
     }
 
-    /// Returns the same type it was handed, so the caller can keep it without asking the registry back.
     @ExpectPlatform
-    public static LootItemConditionType registerLootCondition(String name, LootItemConditionType type) {
+    public static <T extends LootItemCondition> MapCodec<T> registerLootCondition(String name, MapCodec<T> codec) {
         throw new AssertionError();
     }
 }

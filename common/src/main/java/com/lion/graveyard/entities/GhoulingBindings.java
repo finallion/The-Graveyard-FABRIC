@@ -1,6 +1,7 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
+import com.lion.graveyard.util.LegacySavedData;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -15,8 +16,8 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelResource;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -31,14 +32,14 @@ import java.util.UUID;
 /// An unloaded Ghouling cannot be queried, so its last position is stored here.
 public final class GhoulingBindings extends SavedData {
 
-    private static final String KEY = "graveyard_ghoulings";
+    private static final String LEGACY_DATA_FILE = "graveyard_ghoulings.dat";
 
     private static final String LEGACY_FILE = "graveyardGhoulingUUIDmapping.txt";
 
     private static final Codec<GhoulingBindings> CODEC = CompoundTag.CODEC.xmap(GhoulingBindings::fromNbt, GhoulingBindings::toNbt);
 
     private static final SavedDataType<GhoulingBindings> TYPE = new SavedDataType<>(
-            KEY,
+            Graveyard.id("ghoulings"),
             GhoulingBindings::new,
             CODEC,
             DataFixTypes.LEVEL
@@ -47,7 +48,7 @@ public final class GhoulingBindings extends SavedData {
     private final Map<UUID, Binding> bindings = new HashMap<>();
 
     public static GhoulingBindings get(ServerLevel world) {
-        DimensionDataStorage storage = world.getServer().overworld().getDataStorage();
+        SavedDataStorage storage = world.getServer().getDataStorage();
         GhoulingBindings bindings = storage.get(TYPE);
 
         if (bindings == null) {
@@ -145,6 +146,14 @@ public final class GhoulingBindings extends SavedData {
 
     /// Runs once per world, the first time no state exists yet. The file itself is left in place.
     private static GhoulingBindings importLegacy(MinecraftServer server) {
+        CompoundTag legacyData = LegacySavedData.read(server.getWorldPath(LevelResource.DATA), LEGACY_DATA_FILE);
+
+        if (legacyData != null) {
+            GhoulingBindings imported = fromNbt(legacyData);
+            imported.setDirty();
+            return imported;
+        }
+
         GhoulingBindings state = new GhoulingBindings();
         Path file = server.getWorldPath(LevelResource.ROOT).resolve(LEGACY_FILE);
 

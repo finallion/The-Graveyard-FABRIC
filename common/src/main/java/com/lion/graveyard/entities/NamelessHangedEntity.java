@@ -4,6 +4,7 @@ import com.lion.graveyard.Graveyard;
 import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
+import com.lion.villagertradingplus.tradeoffers.TradeFactory;
 import net.minecraft.core.particles.ParticleTypes;
 
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.InteractGoal;
 import net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
@@ -42,6 +42,7 @@ import software.bernie.geckolib.animation.object.LoopType;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NamelessHangedEntity extends AbstractVillager implements GeoEntity {
@@ -162,7 +163,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     }
 
     private long currentDay() {
-        return this.level().getDayTime() / 24000L;
+        return this.level().getOverworldClockTime() / 24000L;
     }
 
     @Override
@@ -172,7 +173,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
         }
 
         if (level().isBrightOutside() && !this.level().isClientSide()) {
-            player.displayClientMessage(Component.translatable("entity.graveyard.nameless_hanged.wait"), true);
+            player.sendOverlayMessage(Component.translatable("entity.graveyard.nameless_hanged.wait"));
             level().playSound(null, player.blockPosition(), TGSounds.NAMELESS_HANGED_INTERACT.get(), SoundSource.HOSTILE, 0.5F, 1.0F);
         }
 
@@ -191,14 +192,24 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
 
     @Override
     protected void updateTrades(ServerLevel level) {
-        List<VillagerTrades.ItemListing> factorys = NamelessHangedTrades.TRADES_REGISTRY;
+        List<TradeFactory> factorys = new ArrayList<>(NamelessHangedTrades.factories());
         MerchantOffers tradeOfferList = this.getOffers();
         GraveyardConfig config = Graveyard.getConfig();
         int minOffers = Math.max(1, (int) config.number("namelessHangedMinOffers", 7.0D));
         int maxOffers = Math.max(minOffers, (int) config.number("namelessHangedMaxOffers", 9.0D));
         int offers = minOffers + random.nextInt(maxOffers - minOffers + 1);
         this.offersDay = currentDay();
-        this.addOffersFromItemListings(level, tradeOfferList, factorys.toArray(new VillagerTrades.ItemListing[0]), offers);
+        int added = 0;
+
+        while (added < offers && !factorys.isEmpty()) {
+            TradeFactory factory = factorys.remove(this.random.nextInt(factorys.size()));
+            MerchantOffer offer = factory.create(level, this, this.random);
+
+            if (offer != null) {
+                tradeOfferList.add(offer);
+                added++;
+            }
+        }
     }
 
     @Override

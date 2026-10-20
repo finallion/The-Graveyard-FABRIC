@@ -1,6 +1,7 @@
 package com.lion.graveyard.platform.fabric;
 
 import com.lion.graveyard.Graveyard;
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -46,7 +47,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -221,7 +222,7 @@ public class RegistryHelperImpl {
         return () -> registry;
     }
 
-    public static LootItemConditionType registerLootCondition(String name, LootItemConditionType type) {
-        return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Graveyard.id(name), type);
+    public static <T extends LootItemCondition> MapCodec<T> registerLootCondition(String name, MapCodec<T> codec) {
+        return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Graveyard.id(name), codec);
     }
 }

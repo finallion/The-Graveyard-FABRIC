@@ -74,7 +74,7 @@ public class OssuaryBlockEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     public static void tick(Level world, BlockPos pos, BlockState state, OssuaryBlockEntity blockEntity) {
-        if (world.random.nextInt(100) == 0) {
+        if (world.getRandom().nextInt(100) == 0) {
             world.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.BLOCKS, 4.0F, -3.0F);
         }
 

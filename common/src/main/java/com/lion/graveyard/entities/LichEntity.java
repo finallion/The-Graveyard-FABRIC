@@ -190,7 +190,7 @@ public class LichEntity extends Monster implements GeoEntity {
 
     public LichEntity(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        this.bossBar = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(champion().bossBarDarkenSky()).setCreateWorldFog(champion().bossBarThickenFog());
+        this.bossBar = (ServerBossEvent) (new ServerBossEvent(this.getUUID(), this.getDisplayName(), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(champion().bossBarDarkenSky()).setCreateWorldFog(champion().bossBarThickenFog());
 
         if (!world.isClientSide()) {
             this.entityData.set(SPAWN_DURATION, Math.max(1, spawnInvulTicks()));

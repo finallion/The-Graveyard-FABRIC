@@ -56,7 +56,7 @@ public class DiaryPageItem extends BlockItem {
             boolean fresh = Chronicle.find(player, page);
 
             if (!fresh) {
-                player.displayClientMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY), true);
+                player.sendOverlayMessage(Component.translatable("chronicle.graveyard.already_found").withStyle(ChatFormatting.GRAY));
             }
 
             if (!player.getAbilities().instabuild) {

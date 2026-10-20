@@ -88,8 +88,10 @@ public final class SmolderingWood {
             world.playSound(player, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             if (world.isClientSide()) {
+                RandomSource random = world.getRandom();
+
                 for (int i = 0; i < 6; i++) {
-                    world.addParticle(ParticleTypes.SMOKE, pos.getX() + world.random.nextDouble(), pos.getY() + 1.0D, pos.getZ() + world.random.nextDouble(), 0.0D, 0.05D, 0.0D);
+                    world.addParticle(ParticleTypes.SMOKE, pos.getX() + random.nextDouble(), pos.getY() + 1.0D, pos.getZ() + random.nextDouble(), 0.0D, 0.05D, 0.0D);
                 }
             } else {
                 setLit(world, pos, state, false);

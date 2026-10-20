@@ -155,7 +155,7 @@ public class AltarBlock extends Block {
             String failure = findSummonFailure(world, pos, blood);
 
             if (failure != null) {
-                player.displayClientMessage(Component.translatable(failure), true);
+                player.sendOverlayMessage(Component.translatable(failure));
             }
         }
 

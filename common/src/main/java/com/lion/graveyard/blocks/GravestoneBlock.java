@@ -3,6 +3,7 @@ package com.lion.graveyard.blocks;
 import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -137,11 +138,12 @@ public class GravestoneBlock extends StandingSignBlock implements EntityBlock {
                 if (signBlockEntity.isWaxed()) {
                     world.playSound(null, signBlockEntity.getBlockPos(), SoundEvents.WAXED_SIGN_INTERACT_FAIL, SoundSource.BLOCKS);
                     return InteractionResult.TRY_WITH_EMPTY_HAND;
-                } else if (canApplySignItem && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, player)) {
+                } else if (canApplySignItem && !this.isOtherPlayerEditing(player, signBlockEntity) && signChangingItem2.canApplyToSign(signText, itemStack, player)) {
                     boolean useOnSign = false;
 
-                    if (signChangingItem2 instanceof DyeItem dyeItem) {
-                        useOnSign = useDyeOnSign(world, signBlockEntity, dyeItem.getDyeColor());
+                    if (signChangingItem2 instanceof DyeItem) {
+                        DyeColor dyeColor = itemStack.get(DataComponents.DYE);
+                        useOnSign = dyeColor != null && useDyeOnSign(world, signBlockEntity, dyeColor);
                     } else if (signChangingItem2 instanceof InkSacItem) {
                         useOnSign = useInkOnSign(world, signBlockEntity);
                     } else if (signChangingItem2 instanceof HoneycombItem) {

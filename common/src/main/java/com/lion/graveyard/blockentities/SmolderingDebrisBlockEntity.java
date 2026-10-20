@@ -21,7 +21,7 @@ public class SmolderingDebrisBlockEntity extends BlockEntity {
             BlockState state,
             SmolderingDebrisBlockEntity blockEntity
     ) {
-        RandomSource random = world.random;
+        RandomSource random = world.getRandom();
 
         if (random.nextFloat() < 0.11F && !world.getBlockState(pos.above()).isSolidRender()) {
             boolean tallColumn = Math.floorMod(pos.hashCode(), 3) == 0;

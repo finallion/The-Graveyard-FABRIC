@@ -148,7 +148,7 @@ public abstract class CorruptedIllager extends HordeGraveyardEntity {
     protected boolean considersEntityAsAlly(Entity other) {
         if (super.considersEntityAsAlly(other)) {
             return true;
-        } else if (other instanceof LivingEntity && other.getType().is(EntityTypeTags.ILLAGER)) {
+        } else if (other instanceof LivingEntity && other.is(EntityTypeTags.ILLAGER)) {
             return this.getTeam() == null && other.getTeam() == null;
         } else {
             return false;

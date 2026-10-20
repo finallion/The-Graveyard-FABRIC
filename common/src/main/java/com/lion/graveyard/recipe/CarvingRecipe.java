@@ -10,7 +10,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -86,8 +85,13 @@ public abstract class CarvingRecipe implements Recipe<SingleRecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput inventory, HolderLookup.Provider registries) {
+    public ItemStack assemble(SingleRecipeInput inventory) {
         return this.output.copy();
+    }
+
+    @Override
+    public boolean showNotification() {
+        return true;
     }
 
     private static DataResult<Item> notAir(Item item) {
@@ -155,40 +159,27 @@ public abstract class CarvingRecipe implements Recipe<SingleRecipeInput> {
         }
     }
 
-    public static class Serializer<T extends CarvingRecipe> implements RecipeSerializer<T> {
-        private final MapCodec<T> codec;
-        private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+    public static <T extends CarvingRecipe> RecipeSerializer<T> serializer(RecipeFactory<T> recipeFactory) {
+        MapCodec<T> codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
+                INGREDIENT_CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.input),
+                BuiltInRegistries.ITEM.byNameCodec().validate(CarvingRecipe::notAir).fieldOf("result").forGetter(recipe -> recipe.output.getItem()),
+                ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(recipe -> recipe.output.getCount())
+        ).apply(instance, (group, ingredient, item, count) -> recipeFactory.create(group, ingredient, new ItemStack(item, count))));
+        StreamCodec<RegistryFriendlyByteBuf, T> streamCodec = StreamCodec.composite(
+                ByteBufCodecs.STRING_UTF8,
+                recipe -> recipe.group,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                recipe -> recipe.input,
+                ItemStack.STREAM_CODEC,
+                recipe -> recipe.output,
+                recipeFactory::create
+        );
 
-        public Serializer(Serializer.RecipeFactory<T> recipeFactory) {
-            this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    Codec.STRING.optionalFieldOf("group", "").forGetter(recipe -> recipe.group),
-                    INGREDIENT_CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.input),
-                    BuiltInRegistries.ITEM.byNameCodec().validate(CarvingRecipe::notAir).fieldOf("result").forGetter(recipe -> recipe.output.getItem()),
-                    ExtraCodecs.POSITIVE_INT.fieldOf("count").forGetter(recipe -> recipe.output.getCount())
-            ).apply(instance, (group, ingredient, item, count) -> recipeFactory.create(group, ingredient, new ItemStack(item, count))));
-            this.streamCodec = StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8,
-                    recipe -> recipe.group,
-                    Ingredient.CONTENTS_STREAM_CODEC,
-                    recipe -> recipe.input,
-                    ItemStack.STREAM_CODEC,
-                    recipe -> recipe.output,
-                    recipeFactory::create
-            );
-        }
+        return new RecipeSerializer<>(codec, streamCodec);
+    }
 
-        @Override
-        public MapCodec<T> codec() {
-            return this.codec;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
-            return this.streamCodec;
-        }
-
-        public interface RecipeFactory<T extends CarvingRecipe> {
-            T create(String group, Ingredient input, ItemStack output);
-        }
+    public interface RecipeFactory<T extends CarvingRecipe> {
+        T create(String group, Ingredient input, ItemStack output);
     }
 }

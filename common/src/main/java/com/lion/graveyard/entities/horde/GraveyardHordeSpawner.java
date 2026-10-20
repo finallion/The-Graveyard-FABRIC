@@ -41,7 +41,7 @@ public class GraveyardHordeSpawner implements CustomSpawner {
         } else if (!Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).enabled || Graveyard.getConfig().structuresOnly()) {
            return;
         } else {
-            RandomSource random = world.random;
+            RandomSource random = world.getRandom();
             --this.ticksUntilNextSpawn;
 
             if (this.ticksUntilNextSpawn > 0) {
@@ -90,7 +90,7 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                                                 }
 
                                                 if (playerEntity instanceof ServerPlayer targeted) {
-                                                    targeted.displayClientMessage(Component.translatable("entity.graveyard.horde.appeared"), false);
+                                                    targeted.sendSystemMessage(Component.translatable("entity.graveyard.horde.appeared"));
                                                 }
                                             } else {
                                                 this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
