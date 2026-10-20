@@ -4,6 +4,7 @@ import com.lion.graveyard.entities.LichEntity;
 import com.lion.graveyard.init.TGParticles;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
@@ -39,7 +40,12 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
 
         if (target != null && this.mob.getPhase() == 1) {
             // The body stands still in phase 1. A path makes the move control turn the body away from the head.
-            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            if (!isStraightBelowOrAbove(target)) {
+                this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            }
+
+            // The body control turns a pushed body to yRot.
+            this.mob.setYRot(this.mob.yHeadRot);
             this.mob.getNavigation().stop();
             this.cooldown = Math.max(this.cooldown - 1, 0);
             this.animationTicker--;
@@ -63,8 +69,13 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
     }
 
     private boolean isPhaseOneHold(LivingEntity target) {
-        return this.mob.getPhase() == 1
-                && (this.canFinishAttack || this.mob.distanceToSqr(target) <= this.getSquaredMaxAttackDistance(target));
+        return this.mob.getPhase() == 1 && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target);
+    }
+
+    private boolean isStraightBelowOrAbove(LivingEntity target) {
+        double dx = target.getX() - this.mob.getX();
+        double dz = target.getZ() - this.mob.getZ();
+        return dx * dx + dz * dz < 1.0D && Math.abs(target.getY() - this.mob.getY()) > 2.0D;
     }
 
     private boolean isDirectChase(LivingEntity target) {

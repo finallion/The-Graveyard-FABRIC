@@ -24,8 +24,10 @@ class MobFixesTest {
 
         assertTrue(body("entities/ai/goals/LichMeleeGoal.java", "canContinueToUse").contains("isPhaseOneHold(target)"));
         assertTrue(hold.contains("getPhase() == 1"));
-        assertTrue(hold.contains("canFinishAttack"));
-        assertTrue(hold.contains("getSquaredMaxAttackDistance(target)"));
+        assertTrue(hold.contains("NO_CREATIVE_OR_SPECTATOR"));
+        assertFalse(hold.contains("getSquaredMaxAttackDistance"));
+        assertTrue(body("entities/ai/goals/LichMeleeGoal.java", "tick").contains("!isStraightBelowOrAbove(target)"));
+        assertTrue(body("entities/ai/goals/LichMeleeGoal.java", "tick").contains("setYRot(this.mob.yHeadRot)"));
         assertTrue(goal.contains("this.mob.getNavigation().stop();"));
     }
 
