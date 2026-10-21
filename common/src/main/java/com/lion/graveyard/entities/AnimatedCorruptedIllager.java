@@ -326,6 +326,16 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
     }
 
     @Override
+    public void aiStep() {
+        super.aiStep();
+
+        // Vanilla computes the walk animation only on the client, but the server AI reads its speed.
+        if (!this.level().isClientSide()) {
+            this.calculateEntityAnimation(false);
+        }
+    }
+
+    @Override
     protected void customServerAiStep(ServerLevel serverLevel) {
         super.customServerAiStep(serverLevel);
         boolean navigating = !ChaseTarget.isLive(this) && !this.getNavigation().isDone();
