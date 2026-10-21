@@ -119,4 +119,10 @@ class MobFixesTest {
     void minionStopsSittingPoseWhenItStopsStaying() {
         assertTrue(body("entities/GraveyardMinionEntity.java", "setSitting").contains("setInSittingPose(false)"));
     }
+
+    @Test
+    void serverComputesTheWalkAnimationForRunningMobs() {
+        assertTrue(body("entities/GhoulEntity.java", "aiStep").contains("calculateEntityAnimation(false)"));
+        assertTrue(body("entities/AnimatedCorruptedIllager.java", "aiStep").contains("calculateEntityAnimation(false)"));
+    }
 }
