@@ -11,7 +11,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxSong;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class TGItems {
@@ -409,7 +412,20 @@ public class TGItems {
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, UPPER_BONE_STAFF.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, MIDDLE_BONE_STAFF.get());
         RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, LOWER_BONE_STAFF.get());
-        RegistryHelper.addToItemGroup(TGItemGroups.ITEM_GROUP, VIAL_OF_BLOOD.get());
+        RegistryHelper.addStacksToItemGroup(TGItemGroups.ITEM_GROUP, TGItems::vialStages);
     }
 
+    private static List<ItemStack> vialStages() {
+        List<ItemStack> stages = new ArrayList<>();
+        float blood = 0.1F;
+
+        for (int stage = 1; stage <= 8; stage++) {
+            ItemStack vial = new ItemStack(VIAL_OF_BLOOD.get());
+            VialOfBlood.setBlood(vial, blood);
+            stages.add(vial);
+            blood += 0.1F;
+        }
+
+        return stages;
+    }
 }
