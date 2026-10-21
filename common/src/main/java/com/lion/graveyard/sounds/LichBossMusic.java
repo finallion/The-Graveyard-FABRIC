@@ -13,6 +13,7 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
     public LichEntity boss;
     private int ticksExisted = 0;
     private boolean done;
+    private final float fullVolume;
     public final SoundEvent soundEvent;
 
     public LichBossMusic(SoundEvent sound, LichEntity boss, RandomSource random) {
@@ -22,7 +23,8 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         this.attenuation = Attenuation.NONE;
         this.looping = true;
         this.delay = 0;
-        this.volume = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").bossMusicVolume();
+        this.fullVolume = Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").bossMusicVolume();
+        this.volume = this.fullVolume;
         this.x = boss.getX();
         this.y = boss.getY();
         this.z = boss.getZ();
@@ -42,9 +44,18 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
         this.done = true;
     }
 
+    private boolean isAudibleBoss() {
+        Minecraft minecraft = Minecraft.getInstance();
+        return boss != null
+                && boss.isAlive()
+                && !boss.isSilent()
+                && boss.level() == minecraft.level
+                && boss.canPlayerHearMusic(minecraft.player);
+    }
+
     @Override
     public void tick() {
-        if (boss == null || !boss.isAlive() || boss.isSilent()) {
+        if (!isAudibleBoss()) {
             boss = null;
 
             if (volume >= 0) {
@@ -53,6 +64,8 @@ public class LichBossMusic extends AbstractSoundInstance implements TickableSoun
                 BossMusicPlayer.music = null;
                 setDone();
             }
+        } else if (volume < fullVolume) {
+            volume = Math.min(fullVolume, volume + 0.03F);
         }
 
         if (ticksExisted % 100 == 0) {
