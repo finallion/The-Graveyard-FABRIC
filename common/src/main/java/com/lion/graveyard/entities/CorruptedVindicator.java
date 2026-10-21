@@ -48,6 +48,6 @@ public class CorruptedVindicator extends AnimatedCorruptedIllager {
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(TGSounds.CORRUPTED_ILLAGER_STEP.get(), 0.8F, 0.0F);
+        this.playSound(TGSounds.CORRUPTED_ILLAGER_STEP.get(), 0.25F, 0.0F);
     }
 }
