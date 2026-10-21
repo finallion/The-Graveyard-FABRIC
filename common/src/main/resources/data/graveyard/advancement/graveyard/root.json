@@ -13,7 +13,7 @@
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false,
-    "background": "minecraft:textures/block/soul_sand.png"
+    "background": "minecraft:block/soul_sand"
   },
   "criteria": {
     "grave_01": {
