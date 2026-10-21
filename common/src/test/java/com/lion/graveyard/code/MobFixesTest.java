@@ -105,4 +105,13 @@ class MobFixesTest {
         assertTrue(tick.contains("spawnHordeEntity(world, mutable, random, true, illagerSpawn)"));
         assertTrue(body(file, "spawnHordeEntity").contains("canSpawnInDarkness"));
     }
+
+    @Test
+    void sarcophagusRenderBoxCoversBothHalves() {
+        String box = body("blockentities/renders/SarcophagusBlockEntityRenderer.java", "getRenderBoundingBox");
+
+        assertTrue(code("blockentities/renders/SarcophagusBlockEntityRenderer.java").contains("AABB getRenderBoundingBox(BlockEntity blockEntity)"));
+        assertTrue(box.contains(".inflate(1.0D)"));
+        assertTrue(box.contains(".expandTowards(0.0D, 1.0D, 0.0D)"));
+    }
 }
