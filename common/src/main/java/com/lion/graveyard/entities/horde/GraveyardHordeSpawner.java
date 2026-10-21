@@ -7,7 +7,6 @@ import com.lion.graveyard.entities.HostileGraveyardEntity;
 import com.lion.graveyard.entities.MobSpawnGate;
 import com.lion.graveyard.init.TGEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,11 +21,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.CustomSpawner;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.NaturalSpawner;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public class GraveyardHordeSpawner implements CustomSpawner {
+    private static final int CAPTAIN_SPOTS = 10;
     private int ticksUntilNextSpawn;
 
     public GraveyardHordeSpawner() {}
@@ -69,46 +68,43 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                             } else if (world.isCloseToVillage(playerEntity.blockPosition(), 2)) {
                                 return 0;
                             } else {
-                                int distanceSpan = Math.max(1, horde.farDistance() - horde.nearDistance());
-                                int j = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
-                                int k = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
-                                BlockPos.MutableBlockPos mutable = playerEntity.blockPosition().mutable().move(j, 0, k);
+                                int spawnAttempts = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;
 
-                                if (!world.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
+                                if (spawnAttempts <= 0) {
                                     return 0;
-                                } else {
-                                    Holder<Biome> registryEntry = world.getBiome(mutable);
-
-                                    if (registryEntry.is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
-                                        return 0;
-                                    } else {
-                                        int n = 0;
-                                        int spawnAttempts = Graveyard.getConfig().getHorde(Graveyard.id("horde_spawn")).mobSpawnAttempts;
-                                        boolean illagerSpawn = random.nextBoolean();
-
-                                        for (int p = 0; p < spawnAttempts; ++p) {
-                                            ++n;
-                                            mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
-
-                                            if (p == 0) {
-                                                if (!this.spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
-                                                    break;
-                                                }
-
-                                                if (playerEntity instanceof ServerPlayer targeted) {
-                                                    targeted.displayClientMessage(Component.translatable("entity.graveyard.horde.appeared"), false);
-                                                }
-                                            } else {
-                                                this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
-                                            }
-
-                                            mutable.setX(mutable.getX() + random.nextInt(5) - random.nextInt(5));
-                                            mutable.setZ(mutable.getZ() + random.nextInt(5) - random.nextInt(5));
-                                        }
-
-                                        return n;
-                                    }
                                 }
+
+                                boolean illagerSpawn = random.nextBoolean();
+
+                                for (int spot = 0; spot < CAPTAIN_SPOTS; ++spot) {
+                                    int distanceSpan = Math.max(1, horde.farDistance() - horde.nearDistance());
+                                    int j = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
+                                    int k = (horde.nearDistance() + random.nextInt(distanceSpan)) * (random.nextBoolean() ? -1 : 1);
+                                    BlockPos.MutableBlockPos mutable = playerEntity.blockPosition().mutable().move(j, 0, k);
+
+                                    if (!world.hasChunksAt(mutable.getX() - 10, mutable.getZ() - 10, mutable.getX() + 10, mutable.getZ() + 10)) {
+                                        continue;
+                                    }
+
+                                    if (world.getBiome(mutable).is(BiomeTags.WITHOUT_PATROL_SPAWNS)) {
+                                        continue;
+                                    }
+
+                                    mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
+
+                                    if (!this.spawnHordeEntity(world, mutable, random, true, illagerSpawn)) {
+                                        continue;
+                                    }
+
+                                    if (playerEntity instanceof ServerPlayer targeted) {
+                                        targeted.displayClientMessage(Component.translatable("entity.graveyard.horde.appeared"), false);
+                                    }
+
+                                    this.spawnFollowers(world, mutable, random, illagerSpawn, spawnAttempts);
+                                    return spawnAttempts;
+                                }
+
+                                return 0;
                             }
                         }
                     }
@@ -116,6 +112,21 @@ public class GraveyardHordeSpawner implements CustomSpawner {
                     return 0;
                 }
             }
+        }
+    }
+
+    private void spawnFollowers(
+            ServerLevel world,
+            BlockPos.MutableBlockPos mutable,
+            RandomSource random,
+            boolean illagerSpawn,
+            int spawnAttempts
+    ) {
+        for (int p = 1; p < spawnAttempts; ++p) {
+            mutable.setX(mutable.getX() + random.nextInt(5) - random.nextInt(5));
+            mutable.setZ(mutable.getZ() + random.nextInt(5) - random.nextInt(5));
+            mutable.setY(world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mutable).getY());
+            this.spawnHordeEntity(world, mutable, random, false, illagerSpawn);
         }
     }
 
@@ -130,8 +141,6 @@ public class GraveyardHordeSpawner implements CustomSpawner {
         BlockState downState = world.getBlockState(pos.below());
 
         if (!NaturalSpawner.isValidEmptySpawnBlock(world, pos, blockState, blockState.getFluidState(), TGEntities.GHOUL.get()) || !NaturalSpawner.isValidEmptySpawnBlock(world, pos, blockState, blockState.getFluidState(), TGEntities.REVENANT.get())) {
-            return false;
-        } else if (world.getMaxLocalRawBrightness(pos) > 1) {
             return false;
         } else if (blockState.getFluidState().is(FluidTags.WATER)
                 || downState.getFluidState().is(FluidTags.WATER)) {
