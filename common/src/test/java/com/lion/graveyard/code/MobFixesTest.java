@@ -76,4 +76,33 @@ class MobFixesTest {
         assertTrue(code.contains("SIT_CLICK_TICKS = 8;"));
         assertTrue(code.contains("STORE_TICKS = 30;"));
     }
+
+    @Test
+    void namelessHangedExposesItsTradesToTheVtpButtons() {
+        String code = code("entities/NamelessHangedEntity.java");
+
+        assertTrue(code.contains("implements GeoEntity, TradeControl"));
+        assertTrue(body("entities/NamelessHangedEntity.java", "rerollAll").contains("updateTrades("));
+        assertTrue(body("entities/NamelessHangedEntity.java", "catalogPool").contains("TRADES_REGISTRY"));
+        assertTrue(body("entities/NamelessHangedEntity.java", "catalogMaxLevel").contains("return 1;"));
+        assertTrue(body("entities/NamelessHangedEntity.java", "catalogPicks").contains("maxOffers()"));
+        assertFalse(code.contains("supportsLevels"));
+    }
+
+    @Test
+    void lichMeleeSoundStaysOutOfTheVanillaAttackSoundHook() {
+        assertFalse(code("entities/LichEntity.java").contains("void playAttackSound("));
+        assertTrue(body("entities/ai/goals/LichMeleeGoal.java", "attack").contains("playMeleeSwingSound()"));
+    }
+
+    @Test
+    void hordeTriesSeveralSpotsForTheCaptain() {
+        String file = "entities/horde/GraveyardHordeSpawner.java";
+        String tick = body(file, "tick");
+
+        assertTrue(code(file).contains("CAPTAIN_SPOTS = 10;"));
+        assertTrue(tick.contains("spot < CAPTAIN_SPOTS"));
+        assertTrue(tick.contains("spawnHordeEntity(world, mutable, random, true, illagerSpawn)"));
+        assertTrue(body(file, "spawnHordeEntity").contains("canSpawnInDarkness"));
+    }
 }
