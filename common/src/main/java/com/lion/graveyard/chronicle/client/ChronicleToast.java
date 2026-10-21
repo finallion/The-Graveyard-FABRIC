@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 /// The small "page found" notice, drawn on the vanilla advancement-toast frame.
 @Environment(EnvType.CLIENT)
 public class ChronicleToast implements Toast {
-    private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/toasts.png");
+    private static final ResourceLocation SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DURATION = 5000L;
 
     private final Component title;
@@ -29,7 +29,7 @@ public class ChronicleToast implements Toast {
 
     @Override
     public Visibility render(GuiGraphics context, ToastComponent manager, long startTime) {
-        context.blit(TEXTURE, 0, 0, 0, 0, this.width(), this.height());
+        context.blitSprite(SPRITE, 0, 0, this.width(), this.height());
         context.drawString(manager.getMinecraft().font, this.title, 30, 7, 0xFF500050, false);
         context.drawString(manager.getMinecraft().font, this.description, 30, 18, 0xFF000000, false);
         context.renderItem(this.icon, 8, 8);
