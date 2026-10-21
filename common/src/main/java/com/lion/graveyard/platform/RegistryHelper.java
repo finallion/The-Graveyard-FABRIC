@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -126,11 +125,6 @@ public class RegistryHelper {
 
     @ExpectPlatform
     public static void registerCriterion(String name, CriterionTrigger<?> trigger) {
-        throw new AssertionError();
-    }
-
-    @ExpectPlatform
-    public static void registerRenderType(ChunkSectionLayer type, Block... blocks) {
         throw new AssertionError();
     }
 

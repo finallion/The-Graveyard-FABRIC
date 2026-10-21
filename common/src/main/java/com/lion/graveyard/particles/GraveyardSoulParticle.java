@@ -34,8 +34,8 @@ public class GraveyardSoulParticle extends RisingParticle {
     }
 
     @Override
-    public int getLightColor(float tint) {
-        return this.sculk ? 240 : super.getLightColor(tint);
+    protected int getLightCoords(float tint) {
+        return this.sculk ? 240 : super.getLightCoords(tint);
     }
 
     @Override

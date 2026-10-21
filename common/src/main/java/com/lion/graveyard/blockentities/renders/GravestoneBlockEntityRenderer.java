@@ -21,11 +21,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -33,9 +33,10 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -47,6 +48,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.PlainSignBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.Vec3;
@@ -55,6 +57,7 @@ import org.joml.Vector3fc;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +80,7 @@ public class GravestoneBlockEntityRenderer
         public int textColor;
         public int outlineColor;
         public int textLight;
+        public Direction facing = Direction.NORTH;
         public final ItemStackRenderState stone = new ItemStackRenderState();
     }
 
@@ -111,8 +115,10 @@ public class GravestoneBlockEntityRenderer
             state.textLight = state.lightCoords;
         }
 
+        BlockState blockState = gravestone.getBlockState();
+        state.facing = blockState.getValue(GravestoneBlock.FACING);
         state.stone.clear();
-        ItemStack stack = new ItemStack(state.blockState.getBlock().asItem(), 1);
+        ItemStack stack = new ItemStack(blockState.getBlock().asItem(), 1);
         this.itemModelResolver.updateForTopItem(state.stone, stack, ItemDisplayContext.GROUND, gravestone.getLevel(), null, 2);
     }
 
@@ -122,7 +128,7 @@ public class GravestoneBlockEntityRenderer
 
         poseStack.translate(0.5D, 0.25D, 0.5D);
 
-        float rotation = -state.blockState.getValue(GravestoneBlock.FACING).toYRot();
+        float rotation = -state.facing.toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         poseStack.translate(0.0D, 0.3333333432674408D, 0.23D);
 
@@ -155,7 +161,7 @@ public class GravestoneBlockEntityRenderer
         poseStack.pushPose();
         poseStack.translate(0.5, 0.43, 0.5);
         poseStack.scale(2.28F, 2.15F, 2.28F);
-        float rotation = state.blockState.getValue(GravestoneBlock.FACING).toYRot();
+        float rotation = state.facing.toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
 
         state.stone.submit(
@@ -205,7 +211,7 @@ public class GravestoneBlockEntityRenderer
     }
 
     public static Model.Simple createSignModel(EntityModelSet entityModelLoader, WoodType type) {
-        return SignRenderer.createSignModel(entityModelLoader, type, false);
+        return StandingSignRenderer.createSignModel(entityModelLoader, type, PlainSignBlock.Attachment.WALL);
     }
 
     static {
@@ -258,12 +264,19 @@ public class GravestoneBlockEntityRenderer
                 int outlineColor,
                 int[] tintLayers,
                 List<BakedQuad> quads,
-                RenderType renderType,
                 ItemStackRenderState.FoilType foilType
         ) {
-            this.delegate.submitModel(
-                    new QuadModel(quads, renderType),
-                    quads,
+            Map<RenderType, List<BakedQuad>> quadsByRenderType = new LinkedHashMap<>();
+
+            for (BakedQuad quad : quads) {
+                quadsByRenderType
+                        .computeIfAbsent(quad.materialInfo().itemRenderType(), renderType -> new ArrayList<>())
+                        .add(quad);
+            }
+
+            quadsByRenderType.forEach((renderType, group) -> this.delegate.submitModel(
+                    new QuadModel(group, renderType),
+                    group,
                     poseStack,
                     renderType,
                     light,
@@ -272,7 +285,7 @@ public class GravestoneBlockEntityRenderer
                     null,
                     outlineColor,
                     this.crumblingOverlay
-            );
+            ));
         }
 
         @Override
@@ -393,11 +406,6 @@ public class GravestoneBlockEntityRenderer
         }
 
         @Override
-        public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor) {
-            this.delegate.submitBlock(poseStack, state, light, overlay, outlineColor);
-        }
-
-        @Override
         public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState movingBlock) {
             this.delegate.submitMovingBlock(poseStack, movingBlock);
         }
@@ -406,25 +414,18 @@ public class GravestoneBlockEntityRenderer
         public void submitBlockModel(
                 PoseStack poseStack,
                 RenderType renderType,
-                BlockStateModel model,
-                float red,
-                float green,
-                float blue,
+                List<BlockStateModelPart> parts,
+                int[] tintLayers,
                 int light,
                 int overlay,
                 int outlineColor
         ) {
-            this.delegate.submitBlockModel(
-                    poseStack,
-                    renderType,
-                    model,
-                    red,
-                    green,
-                    blue,
-                    light,
-                    overlay,
-                    outlineColor
-            );
+            this.delegate.submitBlockModel(poseStack, renderType, parts, tintLayers, light, overlay, outlineColor);
+        }
+
+        @Override
+        public void submitBreakingBlockModel(PoseStack poseStack, BlockStateModel model, long seed, int progress) {
+            this.delegate.submitBreakingBlockModel(poseStack, model, seed, progress);
         }
 
         @Override

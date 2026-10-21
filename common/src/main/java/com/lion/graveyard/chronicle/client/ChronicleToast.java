@@ -5,7 +5,7 @@ import com.lion.graveyard.init.TGItems;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -41,10 +41,10 @@ public class ChronicleToast implements Toast {
     }
 
     @Override
-    public void render(GuiGraphics context, Font font, long visibleTime) {
+    public void extractRenderState(GuiGraphicsExtractor context, Font font, long visibleTime) {
         context.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, this.width(), this.height());
-        context.drawString(font, this.title, 30, 7, 0xFF500050, false);
-        context.drawString(font, this.description, 30, 18, 0xFF000000, false);
-        context.renderItem(this.icon, 8, 8);
+        context.text(font, this.title, 30, 7, 0xFF500050, false);
+        context.text(font, this.description, 30, 18, 0xFF000000, false);
+        context.item(this.icon, 8, 8);
     }
 }

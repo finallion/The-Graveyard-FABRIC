@@ -25,6 +25,5 @@ public class GraveyardClient {
     public static void postInit() {
         TGEntityRenderers.postInit();
         TGBlockEntityRenderers.postInit();
-        TGRenderTypes.postInit();
     }
 }

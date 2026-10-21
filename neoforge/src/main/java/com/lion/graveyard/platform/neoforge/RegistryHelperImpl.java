@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -176,9 +175,6 @@ public class RegistryHelperImpl {
 
     public static void registerScreenHandlerType(String name, MenuType<?> screenHandlerType) {
         MENUS.register(name, () -> screenHandlerType);
-    }
-
-    public static void registerRenderType(ChunkSectionLayer type, Block... blocks) {
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {

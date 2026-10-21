@@ -4,7 +4,7 @@ import com.lion.graveyard.blockentities.GravestoneBlockEntity;
 import com.lion.graveyard.blockentities.renders.GravestoneBlockEntityRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -126,36 +126,36 @@ public class GravestoneScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        this.renderTransparentBackground(context);
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        this.extractTransparentBackground(context);
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredString(this.font, this.title, this.width / 2, 40, 0xFFFFFFFF);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(context, mouseX, mouseY, delta);
+        context.centeredText(this.font, this.title, this.width / 2, 40, 0xFFFFFFFF);
         context.pose().pushMatrix();
         context.pose().translate((float) this.width / 2.0F, SIGN_Y_OFFSET);
         context.pose().pushMatrix();
-        this.renderSignBackground(context);
+        this.extractSignBackground(context);
         context.pose().popMatrix();
-        this.renderSignText(context);
+        this.extractSignText(context);
         context.pose().popMatrix();
     }
 
-    private void renderSignBackground(GuiGraphics context) {
+    private void extractSignBackground(GuiGraphicsExtractor context) {
         if (this.model == null) {
             return;
         }
 
         int center = this.width / 2;
         ScreenRectangle scissor = context.scissorStack.peek();
-        context.guiRenderState.submitPicturesInPictureState(
+        context.guiRenderState.addPicturesInPictureState(
                 new GravestoneSignRenderState(this.model, this.sign.getBlockState().getBlock(), center - 48, 66, center + 48, 168, SIGN_SCALE, scissor)
         );
     }
 
-    private void renderSignText(GuiGraphics context) {
+    private void extractSignText(GuiGraphicsExtractor context) {
         context.pose().scale(TEXT_SCALE, TEXT_SCALE);
         int color = ARGB.opaque(this.signText.getColor().getTextColor());
         boolean caretVisible = this.ticksSinceOpened / 6 % 2 == 0;
@@ -177,11 +177,11 @@ public class GravestoneScreen extends Screen {
             }
 
             int x = -this.font.width(line) / 2;
-            context.drawString(this.font, line, x, row * lineHeight - halfHeight, color, false);
+            context.text(this.font, line, x, row * lineHeight - halfHeight, color, false);
 
             if (row == this.currentRow && cursor >= 0 && caretVisible && cursor >= line.length()) {
                 int caretX = this.font.width(line.substring(0, Math.min(cursor, line.length()))) - this.font.width(line) / 2;
-                context.drawString(this.font, "_", caretX, caretY, color, false);
+                context.text(this.font, "_", caretX, caretY, color, false);
             }
         }
 

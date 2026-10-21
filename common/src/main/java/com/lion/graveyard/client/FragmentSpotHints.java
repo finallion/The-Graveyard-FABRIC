@@ -96,9 +96,9 @@ public final class FragmentSpotHints {
                 if (world.getBlockState(spot).isAir()) {
                     world.addParticle(
                             ParticleTypes.SOUL,
-                            spot.getX() + 0.2D + world.random.nextDouble() * 0.6D,
-                            spot.getY() + 0.1D + world.random.nextDouble() * 0.3D,
-                            spot.getZ() + 0.2D + world.random.nextDouble() * 0.6D,
+                            spot.getX() + 0.2D + world.getRandom().nextDouble() * 0.6D,
+                            spot.getY() + 0.1D + world.getRandom().nextDouble() * 0.3D,
+                            spot.getZ() + 0.2D + world.getRandom().nextDouble() * 0.6D,
                             0.0D,
                             0.03D,
                             0.0D
