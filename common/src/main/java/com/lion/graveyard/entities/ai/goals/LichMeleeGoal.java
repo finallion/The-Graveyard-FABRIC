@@ -106,7 +106,7 @@ public class LichMeleeGoal extends AbstractGraveyardMeleeGoal<LichEntity> {
                     }
 
                     if (this.mob.getAttackAnimTimer() == this.mob.ATTACK_ANIMATION_DURATION) {
-                        this.mob.playAttackSound();
+                        this.mob.playMeleeSwingSound();
                     }
 
                     canFinishAttack = true;
