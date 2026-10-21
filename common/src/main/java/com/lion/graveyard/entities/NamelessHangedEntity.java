@@ -1,10 +1,10 @@
 package com.lion.graveyard.entities;
 
 import com.lion.graveyard.Graveyard;
-import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGSounds;
 import com.lion.graveyard.trades.NamelessHangedTrades;
 import com.lion.villagertradingplus.tradeoffers.TradeFactory;
+import com.lion.villagertradingplus.tradeoffers.gui.TradeControl;
 import net.minecraft.core.particles.ParticleTypes;
 
 import net.minecraft.network.chat.Component;
@@ -45,7 +45,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NamelessHangedEntity extends AbstractVillager implements GeoEntity {
+public class NamelessHangedEntity extends AbstractVillager implements GeoEntity, TradeControl {
     private AnimatableInstanceCache factory = GeckoLibUtil.createInstanceCache(this);
     private static final String OFFERS_DAY_KEY = "OffersDay";
     private long offersDay = -1L;
@@ -194,10 +194,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
     protected void updateTrades(ServerLevel level) {
         List<TradeFactory> factorys = new ArrayList<>(NamelessHangedTrades.factories());
         MerchantOffers tradeOfferList = this.getOffers();
-        GraveyardConfig config = Graveyard.getConfig();
-        int minOffers = Math.max(1, (int) config.number("namelessHangedMinOffers", 7.0D));
-        int maxOffers = Math.max(minOffers, (int) config.number("namelessHangedMaxOffers", 9.0D));
-        int offers = minOffers + random.nextInt(maxOffers - minOffers + 1);
+        int offers = minOffers() + random.nextInt(maxOffers() - minOffers() + 1);
         this.offersDay = currentDay();
         int added = 0;
 
@@ -210,6 +207,37 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity 
                 added++;
             }
         }
+    }
+
+    private static int minOffers() {
+        return Math.max(1, (int) Graveyard.getConfig().number("namelessHangedMinOffers", 7.0D));
+    }
+
+    private static int maxOffers() {
+        return Math.max(minOffers(), (int) Graveyard.getConfig().number("namelessHangedMaxOffers", 9.0D));
+    }
+
+    @Override
+    public void villagertradingplus$rerollAll() {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            this.getOffers().clear();
+            this.updateTrades(serverLevel);
+        }
+    }
+
+    @Override
+    public List<TradeFactory> villagertradingplus$catalogPool(int level) {
+        return NamelessHangedTrades.factories();
+    }
+
+    @Override
+    public int villagertradingplus$catalogMaxLevel() {
+        return 1;
+    }
+
+    @Override
+    public int villagertradingplus$catalogPicks(int level) {
+        return maxOffers();
     }
 
     @Override
