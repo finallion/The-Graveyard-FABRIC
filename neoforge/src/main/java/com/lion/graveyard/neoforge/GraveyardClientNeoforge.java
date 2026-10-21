@@ -21,14 +21,10 @@ import com.lion.graveyard.particles.GraveyardHandParticle;
 import com.lion.graveyard.particles.GraveyardSoulParticle;
 import com.lion.graveyard.platform.neoforge.RegistryHelperImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.SonicBoomParticle;
-import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.world.level.GrassColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -41,6 +37,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -49,12 +46,7 @@ public class GraveyardClientNeoforge {
 
     @SubscribeEvent
     public static void clientInit(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            GraveyardClient.postInit();
-
-            ItemBlockRenderTypes.setRenderLayer(TGBlocks.TG_GRASS_BLOCK.get(), ChunkSectionLayer.CUTOUT);
-
-        });
+        event.enqueueWork(GraveyardClient::postInit);
     }
 
 
@@ -107,13 +99,8 @@ public class GraveyardClientNeoforge {
     }
 
     @SubscribeEvent
-    public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        final BlockColors blockColors = event.getBlockColors();
-        blockColors.register(
-                (state, reader, pos, color) -> reader != null && pos != null ? BiomeColors.getAverageGrassColor(reader, pos) : GrassColor.get(0.5D, 1.0D),
-                TGBlocks.TG_GRASS_BLOCK.get()
-        );
-
+    public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(List.of(BlockTintSources.grassBlock()), TGBlocks.TG_GRASS_BLOCK.get());
     }
 
 }

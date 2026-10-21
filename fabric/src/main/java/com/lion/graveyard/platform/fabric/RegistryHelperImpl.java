@@ -2,12 +2,11 @@ package com.lion.graveyard.platform.fabric;
 
 import com.lion.graveyard.Graveyard;
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -83,7 +82,7 @@ public class RegistryHelperImpl {
         Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
                 registryKey,
-                FabricItemGroup.builder()
+                FabricCreativeModeTab.builder()
                         .title(Component.literal(literalName))
                         .icon(() -> new ItemStack(item)).build()
         );
@@ -98,18 +97,18 @@ public class RegistryHelperImpl {
         Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
                 registryKey,
-                FabricItemGroup.builder()
+                FabricCreativeModeTab.builder()
                         .title(Component.literal(literalName))
                         .icon(icon).build()
         );
     }
 
     public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
-        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> content.accept(item.getDefaultInstance()));
+        CreativeModeTabEvents.modifyOutputEvent(itemGroup).register((content) -> content.accept(item.getDefaultInstance()));
     }
 
     public static void addStacksToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Supplier<List<ItemStack>> stacks) {
-        ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> stacks.get().forEach(content::accept));
+        CreativeModeTabEvents.modifyOutputEvent(itemGroup).register((content) -> stacks.get().forEach(content::accept));
     }
 
     public static <T extends Item> Supplier<T> registerSpawnEggItem(
@@ -167,7 +166,6 @@ public class RegistryHelperImpl {
     }
 
     public static void registerRenderType(ChunkSectionLayer type, Block... blocks) {
-        BlockRenderLayerMap.putBlocks(type, blocks);
     }
 
     public static <T extends SoundEvent> Supplier<T> registerSoundEvent(String name, Supplier<T> soundEvent) {
@@ -199,7 +197,7 @@ public class RegistryHelperImpl {
     }
 
     public static void registerEntityModelLayer(ModelLayerLocation location, Supplier<LayerDefinition> definition) {
-        EntityModelLayerRegistry.registerModelLayer(location, definition::get);
+        ModelLayerRegistry.registerModelLayer(location, definition::get);
     }
 
     public static void registerEntityAttribute(

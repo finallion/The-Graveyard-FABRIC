@@ -20,7 +20,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.InteractionResult;
@@ -33,8 +33,8 @@ public class GraveyardFabric implements ModInitializer {
         Graveyard.init();
         Graveyard.postInit();
 
-        PayloadTypeRegistry.playS2C().register(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(OssuaryRecipesSync.TYPE, OssuaryRecipesSync.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ChronicleSync.TYPE, ChronicleSync.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(OssuaryRecipesSync.TYPE, OssuaryRecipesSync.STREAM_CODEC);
 
         registerServerEvents();
         registerCommands();
@@ -51,9 +51,9 @@ public class GraveyardFabric implements ModInitializer {
 
 
     private void registerServerEvents() {
-        ServerWorldEvents.LOAD.register(new HordeSpawner.WorldLoad());
+        ServerLevelEvents.LOAD.register(new HordeSpawner.WorldLoad());
         ServerLifecycleEvents.SERVER_STOPPED.register(new HordeSpawner.ServerStopped());
-        ServerTickEvents.END_WORLD_TICK.register(new HordeSpawner.OnWorldTick());
+        ServerTickEvents.END_LEVEL_TICK.register(new HordeSpawner.OnWorldTick());
 
         ServerLifecycleEvents.SERVER_STARTED.register(new ServerEvents.DeleteOldConfigs());
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> Chronicle.syncAll(handler.player));

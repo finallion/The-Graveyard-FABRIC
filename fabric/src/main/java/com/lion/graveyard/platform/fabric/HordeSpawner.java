@@ -3,7 +3,7 @@ package com.lion.graveyard.platform.fabric;
 import com.lion.graveyard.entities.horde.GraveyardHordeSpawner;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -18,11 +18,11 @@ public class HordeSpawner {
 
     public HordeSpawner(){}
 
-    public static class WorldLoad implements ServerWorldEvents.Load {
+    public static class WorldLoad implements ServerLevelEvents.Load {
         public WorldLoad() {}
 
         @Override
-        public void onWorldLoad(MinecraftServer server, ServerLevel world) {
+        public void onLevelLoad(MinecraftServer server, ServerLevel world) {
             if (loaded) {
                 return;
             }
@@ -41,7 +41,7 @@ public class HordeSpawner {
         }
     }
 
-    public static class OnWorldTick implements ServerTickEvents.EndWorldTick {
+    public static class OnWorldTick implements ServerTickEvents.EndLevelTick {
 
         @Override
         public void onEndTick(ServerLevel world) {
