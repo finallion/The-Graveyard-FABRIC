@@ -1454,7 +1454,7 @@ public class LichEntity extends Monster implements GeoEntity {
         this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_SPAWN.get(), SoundSource.HOSTILE, 15.0F, 1.0F);
     }
 
-    public void playAttackSound() {
+    public void playMeleeSwingSound() {
         this.getCommandSenderWorld().playSound(null, this.blockPosition(), TGSounds.LICH_MELEE.get(), SoundSource.HOSTILE, 10.0F, 1.0F);
     }
 
