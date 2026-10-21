@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 @Environment(EnvType.CLIENT)
 public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<SarcophagusBlockEntity> {
@@ -33,6 +34,12 @@ public class SarcophagusBlockEntityRenderer<T extends BlockEntity & LidBlockEnti
     @Override
     public int getViewDistance() {
         return 45;
+    }
+
+    public AABB getRenderBoundingBox(BlockEntity blockEntity) {
+        return new AABB(blockEntity.getBlockPos())
+                .inflate(1.0D)
+                .expandTowards(0.0D, 1.0D, 0.0D);
     }
 
     @Override
