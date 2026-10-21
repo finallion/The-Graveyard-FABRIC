@@ -41,7 +41,7 @@ public class HordeSpawner {
             return;
         }
 
-        GraveyardHordeSpawner spawner = spawners.get(event.level.dimensionTypeId().location());
+        GraveyardHordeSpawner spawner = spawners.get(event.level.dimension().location());
 
         if (spawner != null) {
             ServerLevel overworld = event.level.getServer().overworld();
