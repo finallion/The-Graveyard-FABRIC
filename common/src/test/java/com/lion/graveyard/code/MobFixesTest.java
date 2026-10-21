@@ -123,4 +123,9 @@ class MobFixesTest {
         assertTrue(toast.contains("toast/advancement"));
         assertTrue(toast.contains("blitSprite(SPRITE"));
     }
+
+    @Test
+    void minionStopsSittingPoseWhenItStopsStaying() {
+        assertTrue(body("entities/GraveyardMinionEntity.java", "setSitting").contains("setInSittingPose(false)"));
+    }
 }
