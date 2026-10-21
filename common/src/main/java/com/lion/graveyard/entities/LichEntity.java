@@ -1512,7 +1512,7 @@ public class LichEntity extends Monster implements GeoEntity {
     }
 
     public boolean canPlayerHearMusic(Player player) {
-        return player != null && distanceTo(player) < 2500;
+        return player != null && distanceToSqr(player) < 2500.0D;
     }
 
     @Override
