@@ -22,6 +22,11 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler> {
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/stonecutter.png");
+    private static final Identifier SCROLLER_SPRITE = Identifier.withDefaultNamespace("container/stonecutter/scroller");
+    private static final Identifier SCROLLER_DISABLED_SPRITE = Identifier.withDefaultNamespace("container/stonecutter/scroller_disabled");
+    private static final Identifier RECIPE_SPRITE = Identifier.withDefaultNamespace("container/stonecutter/recipe");
+    private static final Identifier RECIPE_SELECTED_SPRITE = Identifier.withDefaultNamespace("container/stonecutter/recipe_selected");
+    private static final Identifier RECIPE_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("container/stonecutter/recipe_highlighted");
     private static final ItemStack INPUT_HINT = new ItemStack(Items.BONE_BLOCK);
     private static final Component INPUT_HINT_TEXT = Component.translatable("container.graveyard.ossuary.input_hint");
     private float scrollAmount;
@@ -53,7 +58,7 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
         int j = this.topPos;
         context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
         int k = (int)(41.0F * this.scrollAmount);
-        context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i + 119, j + 15 + k, 176.0F + (this.shouldScroll() ? 0 : 12), 0.0F, 12, 15, 256, 256);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, this.shouldScroll() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE, i + 119, j + 15 + k, 12, 15);
         int l = this.leftPos + 52;
         int m = this.topPos + 14;
         int n = this.scrollOffset + 12;
@@ -102,15 +107,15 @@ public class OssuaryScreen extends AbstractContainerScreen<OssuaryScreenHandler>
             int k = x + j % 4 * 16;
             int l = j / 4;
             int m = y + l * 18 + 2;
-            int n = this.imageHeight;
+            Identifier sprite = RECIPE_SPRITE;
 
             if (i == ((OssuaryScreenHandler)this.menu).getSelectedRecipe()) {
-                n += 18;
+                sprite = RECIPE_SELECTED_SPRITE;
             } else if (mouseX >= k && mouseY >= m && mouseX < k + 16 && mouseY < m + 18) {
-                n += 36;
+                sprite = RECIPE_HIGHLIGHTED_SPRITE;
             }
 
-            context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, k, m - 1, 0.0F, (float) n, 16, 18, 256, 256);
+            context.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, k, m - 1, 16, 18);
         }
 
     }
