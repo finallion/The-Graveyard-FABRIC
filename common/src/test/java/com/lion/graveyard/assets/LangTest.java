@@ -77,8 +77,8 @@ class LangTest {
     }
 
     @Test
-    void fourteenLanguagesExist() {
-        assertEquals(14, ModProject.files(LANG_DIR, ".json").size());
+    void fifteenLanguagesExist() {
+        assertEquals(15, ModProject.files(LANG_DIR, ".json").size());
     }
 
     @TestFactory
