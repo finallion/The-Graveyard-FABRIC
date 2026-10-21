@@ -104,6 +104,10 @@ public class GraveyardMinionEntity extends PathfinderMob {
 
     public void setSitting(boolean sitting) {
         this.sitting = sitting;
+
+        if (!sitting) {
+            this.setInSittingPose(false);
+        }
     }
 
     public boolean isInSittingPose() {
