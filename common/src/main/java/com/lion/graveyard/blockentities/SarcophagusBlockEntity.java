@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity {
     private NonNullList<ItemStack> inventory;
@@ -168,6 +169,12 @@ public class SarcophagusBlockEntity extends RandomizableContainerBlockEntity imp
     @Override
     public float getOpenNess(float tickDelta) {
         return this.lidAnimator.getProgress(tickDelta);
+    }
+
+    public AABB getRenderBoundingBox() {
+        return new AABB(this.getBlockPos())
+                .inflate(1.0D)
+                .expandTowards(0.0D, 1.0D, 0.0D);
     }
 
     public boolean isCoffin() {
