@@ -113,4 +113,9 @@ class MobFixesTest {
         assertTrue(box.contains(".inflate(1.0D)"));
         assertTrue(box.contains(".expandTowards(0.0D, 1.0D, 0.0D)"));
     }
+
+    @Test
+    void minionStopsSittingPoseWhenItStopsStaying() {
+        assertTrue(body("entities/GraveyardMinionEntity.java", "setSitting").contains("setInSittingPose(false)"));
+    }
 }
