@@ -291,6 +291,11 @@ public class GhoulEntity extends AngerableGraveyardEntity implements GeoEntity {
         }
 
         super.aiStep();
+
+        // Vanilla computes the walk animation only on the client, but the server AI reads its speed.
+        if (!this.level().isClientSide()) {
+            this.calculateEntityAnimation(false);
+        }
     }
 
     @Override
