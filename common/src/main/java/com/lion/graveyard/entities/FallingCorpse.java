@@ -82,6 +82,10 @@ public class FallingCorpse extends Monster implements GeoEntity {
 
     @Override
     public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            return super.hurtServer(serverLevel, source, amount);
+        }
+
         if (source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
             return true;
         }
