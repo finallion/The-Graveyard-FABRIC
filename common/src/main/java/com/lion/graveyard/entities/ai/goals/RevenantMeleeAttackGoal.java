@@ -4,7 +4,7 @@ import com.lion.graveyard.entities.RevenantEntity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class RevenantMeleeAttackGoal extends AbstractGraveyardMeleeGoal<RevenantEntity> {
-    private final int DAMAGE_START_IN_ANIM = 6;
+    private final int DAMAGE_START_IN_ANIM = 1;
 
     public RevenantMeleeAttackGoal(RevenantEntity mob, double speed, boolean pauseWhenMobIdle) {
         super(mob, speed, pauseWhenMobIdle, 15);
@@ -25,7 +25,10 @@ public class RevenantMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Revenant
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.doHurtTarget(getServerLevel(this.mob), target);
+            if (this.mob.distanceToSqr(target) <= d + 1.0D) {
+                this.mob.doHurtTarget(getServerLevel(this.mob), target);
+            }
+
             canFinishAttack = false;
         }
     }
