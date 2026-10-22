@@ -105,8 +105,29 @@ class ModMetadataTest {
     void bothLoadersTargetTheBuildMinecraftVersion() throws IOException {
         String minecraft = gradleProperties().getProperty("minecraft_version");
         JsonObject depends = Json.parseObject(ModProject.read(FABRIC_MOD_JSON)).getAsJsonObject("depends");
-        assertEquals(minecraft, depends.get("minecraft").getAsString());
-        assertTrue(ModProject.read(MODS_TOML).contains("versionRange = \"[" + minecraft + ","), "mods.toml range does not start at " + minecraft);
+        Matcher fabric = Pattern.compile("^>=(\\S+) <(\\S+)-$").matcher(depends.get("minecraft").getAsString());
+        assertTrue(fabric.matches(), "fabric minecraft range must look like '>=A <B-'");
+        Matcher toml = Pattern.compile("modId = \"minecraft\"[\\s\\S]*?versionRange = \"\\[([^,]+),([^)]+)\\)\"").matcher(ModProject.read(MODS_TOML));
+        assertTrue(toml.find(), "mods.toml has no closed minecraft range");
+        assertEquals(fabric.group(1), toml.group(1));
+        assertEquals(fabric.group(2), toml.group(2));
+        assertTrue(compareVersions(fabric.group(1), minecraft) <= 0, "range starts above " + minecraft);
+        assertTrue(compareVersions(minecraft, fabric.group(2)) < 0, "range ends at or below " + minecraft);
+    }
+
+    private static int compareVersions(String a, String b) {
+        String[] x = a.split("\\.");
+        String[] y = b.split("\\.");
+
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            int left = i < x.length ? Integer.parseInt(x[i]) : 0;
+            int right = i < y.length ? Integer.parseInt(y[i]) : 0;
+
+            if (left != right) {
+                return Integer.compare(left, right);
+            }
+        }
+        return 0;
     }
 
     @Test
