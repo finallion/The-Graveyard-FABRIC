@@ -28,7 +28,8 @@
   },
   "mixins": [
     "graveyard-fabric.mixins.json",
-    "graveyard-common.mixins.json"
+    "graveyard-common.mixins.json",
+    "graveyard-moonrise.mixins.json"
   ],
 
   "depends": {
