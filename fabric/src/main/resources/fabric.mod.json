@@ -33,9 +33,9 @@
 
   "depends": {
     "fabricloader": ">=0.16.0",
-    "fabric-api": ">=0.136.1",
-    "villagertradingplus": ">=1.0.0 <2",
-    "minecraft": "1.21.8",
+    "fabric-api": ">=0.129.0",
+    "villagertradingplus": ">=1.1.0 <2",
+    "minecraft": ">=1.21.8 <1.21.9-",
     "geckolib": ">=5.2.2 <6",
     "java": ">=21"
   },
