@@ -299,6 +299,10 @@ public class WraithEntity extends HostileGraveyardEntity implements GeoEntity {
 
     @Override
     public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            return super.isInvulnerableTo(serverLevel, damageSource);
+        }
+
         if (damageSource.is(DamageTypeTags.BYPASSES_ARMOR) ||
                 damageSource.is(DamageTypeTags.BYPASSES_EFFECTS) ||
                 damageSource.is(DamageTypeTags.BYPASSES_SHIELD)) {
