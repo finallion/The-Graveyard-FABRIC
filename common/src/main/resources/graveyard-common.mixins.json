@@ -17,7 +17,8 @@
     "CraftingScreenHandlerMixin",
     "CraftingResultSlotMixin",
     "CrafterBlockMixin",
-    "BlockEntityTypeMixin"
+    "BlockEntityTypeMixin",
+    "EntityChunkUpgradeMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
