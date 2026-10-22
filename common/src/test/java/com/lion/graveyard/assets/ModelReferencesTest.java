@@ -180,15 +180,19 @@ class ModelReferencesTest {
     @TestFactory
     Stream<DynamicTest> everyRegisteredBlockHasABlockstate() {
         return RegistryIds.of(RegistryIds.BLOCK).stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(ASSETS.exists(ASSETS.blockstate(id)), "No blockstate for block " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () -> assertTrue(ASSETS.exists(ASSETS.blockstate(id)), "No blockstate for block " + id)
+                ));
     }
 
     @TestFactory
     Stream<DynamicTest> everyRegisteredItemHasAnItemModel() {
         return RegistryIds.of(RegistryIds.ITEM).stream()
-                .map(id -> DynamicTest.dynamicTest(id, () ->
-                        assertTrue(ASSETS.exists(ASSETS.model("item/" + id)), "No item model for item " + id)));
+                .map(id -> DynamicTest.dynamicTest(
+                        id,
+                        () -> assertTrue(ASSETS.exists(ASSETS.model("item/" + id)), "No item model for item " + id)
+                ));
     }
 
     @TestFactory

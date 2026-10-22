@@ -109,8 +109,10 @@ class PlatformImplTest {
                             .resolve("platform/" + loader + "/" + className + "Impl.java");
                     tests.add(DynamicTest.dynamicTest(loader + ": " + className + "." + signature.name(), () -> {
                         assertTrue(Files.isRegularFile(impl), "Missing " + ModProject.display(impl));
-                        assertTrue(implemented(Sources.code(impl)).contains(signature),
-                                "No matching signature " + signature + " in " + ModProject.display(impl));
+                        assertTrue(
+                                implemented(Sources.code(impl)).contains(signature),
+                                "No matching signature " + signature + " in " + ModProject.display(impl)
+                        );
                     }));
                 }
             }

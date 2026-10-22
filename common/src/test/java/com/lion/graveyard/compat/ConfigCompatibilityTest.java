@@ -176,10 +176,24 @@ public class ConfigCompatibilityTest {
     void facadeKeepsCallSiteApi() {
         String code = Sources.code(CONFIG_DIR.resolve("GraveyardConfig.java"));
         List<String> members = List.of(
-                "structureConfigEntries", "mobConfigEntries", "hordeConfigEntries", "corruptedChampionConfigEntries",
-                "booleanEntries", "numberEntries", "boolean enabled(ResourceLocation", "double structureChance(",
-                "boolean flag(", "boolean structuresOnly(", "boolean mobMayAppear(", "double number(", "MobConfigEntry mobEntry(",
-                "boolean fogSpawn(", "StructureConfigEntry getStructure(", "ParticleConfigEntry getParticle(", "HordeConfigEntry getHorde(");
+                "structureConfigEntries",
+                "mobConfigEntries",
+                "hordeConfigEntries",
+                "corruptedChampionConfigEntries",
+                "booleanEntries",
+                "numberEntries",
+                "boolean enabled(ResourceLocation",
+                "double structureChance(",
+                "boolean flag(",
+                "boolean structuresOnly(",
+                "boolean mobMayAppear(",
+                "double number(",
+                "MobConfigEntry mobEntry(",
+                "boolean fogSpawn(",
+                "StructureConfigEntry getStructure(",
+                "ParticleConfigEntry getParticle(",
+                "HordeConfigEntry getHorde("
+        );
 
         for (String member : members) {
             assertTrue(code.contains(member), "Facade lost " + member);

@@ -182,8 +182,21 @@ class DataFilesTest {
 
     @Test
     void referenceCheckFindsMissingItemTagAndLootTable() {
-        DataIndex index = new DataIndex(Set.of("b"), Set.of("i"), Set.of(), Set.of(), Set.of("chests/c"), Set.of(), Set.of(),
-                Set.of("t"), Set.of(), Set.of(), Set.of(), Set.of(), Set.of());
+        DataIndex index = new DataIndex(
+                Set.of("b"),
+                Set.of("i"),
+                Set.of(),
+                Set.of(),
+                Set.of("chests/c"),
+                Set.of(),
+                Set.of(),
+                Set.of("t"),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of(),
+                Set.of()
+        );
         String json = "{\"a\": {\"item\": \"graveyard:i\"}, \"b\": {\"item\": \"graveyard:ghost\"}, \"c\": {\"tag\": \"graveyard:nope\"},"
                 + " \"d\": {\"type\": \"minecraft:loot_table\", \"name\": \"graveyard:chests/zzz\"}, \"e\": {\"item\": \"minecraft:stone\"}}";
         assertEquals(3, DataRefs.problems(Json.parseStrict(json), index).size());
@@ -191,7 +204,9 @@ class DataFilesTest {
 
     @Test
     void tagCheckFindsUnregisteredValue() {
-        assertEquals(List.of("unregistered graveyard:ghost"),
-                tagProblems("{\"values\": [\"minecraft:stone\", \"graveyard:ghost\", \"graveyard:real\"]}", id -> id.equals("real"), Set.of()));
+        assertEquals(
+                List.of("unregistered graveyard:ghost"),
+                tagProblems("{\"values\": [\"minecraft:stone\", \"graveyard:ghost\", \"graveyard:real\"]}", id -> id.equals("real"), Set.of())
+        );
     }
 }

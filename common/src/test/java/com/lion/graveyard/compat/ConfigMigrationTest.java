@@ -80,8 +80,10 @@ class ConfigMigrationTest {
         LegacyCorpus.put(old, "structureConfigEntries.altar.extraField", new JsonPrimitive(5));
         LegacyCorpus.put(old, "booleanEntries.madeUp", new JsonPrimitive(true));
         ConfigReader.Result result = LegacyMigration.migrate(old.toString());
-        assertEquals(Set.of("somethingNew", "mobConfigEntries.made_up", "structureConfigEntries.altar.extraField", "booleanEntries.madeUp"),
-                new HashSet<>(result.dropped()));
+        assertEquals(
+                Set.of("somethingNew", "mobConfigEntries.made_up", "structureConfigEntries.altar.extraField", "booleanEntries.madeUp"),
+                new HashSet<>(result.dropped())
+        );
     }
 
     @Test

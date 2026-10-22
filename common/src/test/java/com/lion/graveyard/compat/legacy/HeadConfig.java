@@ -13,9 +13,22 @@ public class HeadConfig {
     public Map<String, Double> numberEntries = new HashMap<>();
 
     private static final List<String> MANAGED_MOBS = List.of(
-            "ghoul", "revenant", "nightmare", "skeleton_creeper", "acolyte", "reaper",
-            "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker", "wraith", "raven", "magpie", "crow",
-            "tormented_villager", "nameless_hanged");
+            "ghoul",
+            "revenant",
+            "nightmare",
+            "skeleton_creeper",
+            "acolyte",
+            "reaper",
+            "corrupted_vindicator",
+            "corrupted_pillager",
+            "corrupted_evoker",
+            "wraith",
+            "raven",
+            "magpie",
+            "crow",
+            "tormented_villager",
+            "nameless_hanged"
+    );
 
     private static final Set<String> ENABLED_IGNORED = Set.of("acolyte", "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker", "wraith");
 
@@ -242,10 +255,30 @@ public class HeadConfig {
 
     private static HeadChampionEntry defaultChampion() {
         return HeadChampionEntry.of(
-                400.0F, 200.0F, 30.0D, 40.0D, 14.0D, 12.0D, 0.15D,
-                800, 400,  700, 150, 5,
-                30, 5, 6000, List.of("entity.minecraft.villager"), List.of("item.minecraft.debug_stick"),
-                true, true, true, 400, 600, 400, -15
+                400.0F,
+                200.0F,
+                30.0D,
+                40.0D,
+                14.0D,
+                12.0D,
+                0.15D,
+                800,
+                400,
+                700,
+                150,
+                5,
+                30,
+                5,
+                6000,
+                List.of("entity.minecraft.villager"),
+                List.of("item.minecraft.debug_stick"),
+                true,
+                true,
+                true,
+                400,
+                600,
+                400,
+                -15
         );
     }
 

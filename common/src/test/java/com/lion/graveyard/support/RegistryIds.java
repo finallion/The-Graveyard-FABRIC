@@ -38,12 +38,12 @@ public final class RegistryIds {
             Map.entry("RecipeType", RECIPE_TYPE),
             Map.entry("RecipeSerializer", RECIPE_SERIALIZER),
             Map.entry("LootCondition", LOOT_CONDITION),
-            Map.entry("ScreenHandlerType", SCREEN_HANDLER));
+            Map.entry("ScreenHandlerType", SCREEN_HANDLER)
+    );
 
     private static Set<String> cache;
 
-    private RegistryIds() {
-    }
+    private RegistryIds() {}
 
     public static synchronized Set<String> current() {
         if (cache == null) {

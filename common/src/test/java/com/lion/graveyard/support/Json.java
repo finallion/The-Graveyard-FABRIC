@@ -19,8 +19,7 @@ import java.util.function.BiConsumer;
 public final class Json {
     private static final Gson GSON = new Gson();
 
-    private Json() {
-    }
+    private Json() {}
 
     public static JsonElement parseStrict(String text) {
         try {

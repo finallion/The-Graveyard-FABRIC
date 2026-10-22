@@ -20,7 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NbtCompatibilityTest {
     private static final List<String> HOLDER_CLASSES = List.of(
-            "GravestoneBlockEntity", "UrnBlockEntity", "SarcophagusBlockEntity", "LoreBookBlockEntity", "ChronicleState");
+            "GravestoneBlockEntity",
+            "UrnBlockEntity",
+            "SarcophagusBlockEntity",
+            "LoreBookBlockEntity",
+            "ChronicleState"
+    );
 
     @Test
     void holderClassesStillDeclareAnNbtReader() {

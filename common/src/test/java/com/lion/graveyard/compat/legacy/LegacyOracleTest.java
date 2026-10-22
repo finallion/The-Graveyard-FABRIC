@@ -37,7 +37,8 @@ class LegacyOracleTest {
             "nightOnly", "onlyAtNight",
             "healthMultiplier", "health",
             "damageMultiplier", "damage",
-            "speedMultiplier", "speed");
+            "speedMultiplier", "speed"
+    );
 
     private static Path file;
 
@@ -186,8 +187,10 @@ class LegacyOracleTest {
 
         return LegacyKeys.entries().stream()
                 .filter(entry -> entry.rule() != LegacyKeys.Rule.SKIP)
-                .map(entry -> DynamicTest.dynamicTest(entry.oldPath(),
-                        () -> assertEquals(normalized(headValue(expected.config(), entry)), normalized(gameValue(game, entry)), entry.oldPath())));
+                .map(entry -> DynamicTest.dynamicTest(
+                        entry.oldPath(),
+                        () -> assertEquals(normalized(headValue(expected.config(), entry)), normalized(gameValue(game, entry)), entry.oldPath())
+                ));
     }
 
     @TestFactory

@@ -37,8 +37,13 @@ class TrackedStateTest {
     private static final Pattern NOT_INSTANCE_FIELD = Pattern.compile("\\b(?:static|final|return|import|package|abstract)\\b");
 
     private static final Set<String> SPAWN_SITE_FILES = Set.of(
-            "blocks/AltarBlock.java", "blocks/SarcophagusBlock.java", "item/BoneStaffItem.java",
-            "entities/LichEntity.java", "entities/horde/GraveyardHordeSpawner.java", "util/SpawnHordeCommand.java");
+            "blocks/AltarBlock.java",
+            "blocks/SarcophagusBlock.java",
+            "item/BoneStaffItem.java",
+            "entities/LichEntity.java",
+            "entities/horde/GraveyardHordeSpawner.java",
+            "util/SpawnHordeCommand.java"
+    );
 
     /// Reason per entry. A field listed here is read by a table although the server does not track it.
     private static final Map<String, String> UNTRACKED_READS_ALLOWED = Map.of();
@@ -79,9 +84,14 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> mobStateIsSetBeforeTheEntityIsSpawned() {
-        return Floors.atLeast(5, "files that spawn entities", ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> SPAWN_CALL.matcher(Sources.code(file)).find())
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), spawnOrderProblems(Sources.code(file))))));
+        return Floors.atLeast(
+                5,
+                "files that spawn entities",
+                ModProject.files(ModProject.JAVA, ".java")
+                        .stream()
+                        .filter(file -> SPAWN_CALL.matcher(Sources.code(file)).find())
+                        .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), spawnOrderProblems(Sources.code(file)))))
+        );
     }
 
     @Test
@@ -131,9 +141,14 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> trackedDefaultsAreConstants() {
-        return Floors.atLeast(12, "files that define tracked data", ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> Sources.code(file).contains("entityData.define("))
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), trackedDefaultProblems(Sources.code(file))))));
+        return Floors.atLeast(
+                12,
+                "files that define tracked data",
+                ModProject.files(ModProject.JAVA, ".java")
+                        .stream()
+                        .filter(file -> Sources.code(file).contains("entityData.define("))
+                        .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), trackedDefaultProblems(Sources.code(file)))))
+        );
     }
 
     @Test
@@ -155,9 +170,14 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> initDataTrackerDrawsNoRandomValues() {
-        return Floors.atLeast(12, "files that define synched data", ModProject.files(ModProject.JAVA, ".java").stream()
-                .filter(file -> Sources.code(file).contains("defineSynchedData"))
-                .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), initDataTrackerProblems(Sources.code(file))))));
+        return Floors.atLeast(
+                12,
+                "files that define synched data",
+                ModProject.files(ModProject.JAVA, ".java")
+                        .stream()
+                        .filter(file -> Sources.code(file).contains("defineSynchedData"))
+                        .map(file -> DynamicTest.dynamicTest(ModProject.display(file), () -> assertEquals(List.of(), initDataTrackerProblems(Sources.code(file)))))
+        );
     }
 
     @Test
@@ -197,7 +217,14 @@ class TrackedStateTest {
                 .toList();
     }
 
-    private static void scanForFields(String text, Map<String, List<String>> methods, Set<String> fields, Set<String> visited, int depth, List<String> problems) {
+    private static void scanForFields(
+            String text,
+            Map<String, List<String>> methods,
+            Set<String> fields,
+            Set<String> visited,
+            int depth,
+            List<String> problems
+    ) {
         for (String name : JavaText.identifiers(text)) {
             if (fields.contains(name)) {
                 problems.add(name);
@@ -299,12 +326,19 @@ class TrackedStateTest {
 
     @TestFactory
     Stream<DynamicTest> trackedChaseFlagsGoThroughTheLiveTargetCheck() {
-        return Floors.atLeast(4, "files with chase flags", ModProject.files(MobAnimations.ENTITIES, ".java").stream()
-                .filter(file -> !file.toString().replace('\\', '/').contains("/entities/renders/")
-                        && !file.toString().replace('\\', '/').contains("/entities/models/"))
-                .filter(file -> STALE_TARGET_FLAG.matcher(Sources.code(file)).find())
-                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(), () ->
-                        assertEquals(List.of(), staleTargetProblems(file.getFileName().toString().replace(".java", ""), Sources.code(file))))));
+        return Floors.atLeast(
+                4,
+                "files with chase flags",
+                ModProject.files(MobAnimations.ENTITIES, ".java")
+                        .stream()
+                        .filter(file -> !file.toString().replace('\\', '/').contains("/entities/renders/")
+                                && !file.toString().replace('\\', '/').contains("/entities/models/"))
+                        .filter(file -> STALE_TARGET_FLAG.matcher(Sources.code(file)).find())
+                        .map(file -> DynamicTest.dynamicTest(
+                                file.getFileName().toString(),
+                                () -> assertEquals(List.of(), staleTargetProblems(file.getFileName().toString().replace(".java", ""), Sources.code(file)))
+                        ))
+        );
     }
 
     @Test
@@ -342,8 +376,10 @@ class TrackedStateTest {
     @TestFactory
     Stream<DynamicTest> geckoLibEntityConstructorsDrawNoRandomValues() {
         return entityClassNames().stream()
-                .map(name -> DynamicTest.dynamicTest(name, () ->
-                        assertEquals(List.of(), constructorRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
+                .map(name -> DynamicTest.dynamicTest(
+                        name,
+                        () -> assertEquals(List.of(), constructorRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))
+                ));
     }
 
     @Test
@@ -370,8 +406,10 @@ class TrackedStateTest {
     @TestFactory
     Stream<DynamicTest> geckoLibEntityFieldInitializersDrawNoRandomValues() {
         return entityClassNames().stream()
-                .map(name -> DynamicTest.dynamicTest(name, () ->
-                        assertEquals(List.of(), fieldInitializerRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))));
+                .map(name -> DynamicTest.dynamicTest(
+                        name,
+                        () -> assertEquals(List.of(), fieldInitializerRandomProblems(name, Sources.code(MobAnimations.ENTITIES.resolve(name + ".java"))))
+                ));
     }
 
     @Test

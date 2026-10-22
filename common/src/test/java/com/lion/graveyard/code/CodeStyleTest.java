@@ -40,7 +40,8 @@ class CodeStyleTest {
                 ModProject.COMMON_MAIN.resolve("java"),
                 ModProject.FABRIC_MAIN.resolve("java"),
                 ModProject.FORGE_MAIN.resolve("java"),
-                ModProject.ROOT.resolve("common/src/test/java"));
+                ModProject.ROOT.resolve("common/src/test/java")
+        );
         List<Path> all = new ArrayList<>();
 
         for (Path root : roots) {
@@ -527,13 +528,15 @@ class CodeStyleTest {
             }
             """;
 
-    private static final String MASKED_BLOCK = String.join("\n",
+    private static final String MASKED_BLOCK = String.join(
+            "\n",
             "class A {",
             "    String block = \"\"\"",
             "        while (x) g();",
             "        \"\"\";",
             "}",
-            "");
+            ""
+    );
 
     private static List<String> rules(String source) {
         return check(source).stream()

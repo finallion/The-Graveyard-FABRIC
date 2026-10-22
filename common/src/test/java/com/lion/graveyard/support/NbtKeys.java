@@ -14,8 +14,7 @@ public final class NbtKeys {
     private static final Pattern READ_CALL = Pattern.compile("\\.(?:get\\w*|contains\\w*|has\\w*|remove)\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
     private static final Pattern WRITE_CALL = Pattern.compile("\\.put\\w*\\(\\s*(?:\"([^\"]+)\"|([A-Z][A-Z_0-9]+))");
 
-    private NbtKeys() {
-    }
+    private NbtKeys() {}
 
     public static boolean declaresNbtReader(String code) {
         return DECLARES_READER.matcher(code).find();

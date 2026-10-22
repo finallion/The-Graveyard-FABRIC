@@ -11,8 +11,17 @@ public class HeadMobEntry {
     public final Double damageMultiplier;
     public final Double speedMultiplier;
 
-    private HeadMobEntry(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered,
-                           Double healthMultiplier, Double damageMultiplier, Double speedMultiplier) {
+    private HeadMobEntry(
+            boolean enabled,
+            int weight,
+            int minGroup,
+            int maxGroup,
+            boolean canBurnInSunlight,
+            boolean canBeWithered,
+            Double healthMultiplier,
+            Double damageMultiplier,
+            Double speedMultiplier
+    ) {
         this.enabled = enabled;
         this.weight = weight;
         this.minGroup = minGroup;
@@ -43,15 +52,31 @@ public class HeadMobEntry {
     public HeadMobEntry sanitized() {
         int safeWeight = Math.max(0, weight);
         int safeMin = Math.max(safeWeight > 0 ? 1 : 0, minGroup);
-        return new HeadMobEntry(enabled, safeWeight, safeMin, Math.max(safeMin, maxGroup), canBurnInSunlight, canBeWithered,
-                health(), damage(), speed());
+        return new HeadMobEntry(
+                enabled,
+                safeWeight,
+                safeMin,
+                Math.max(safeMin, maxGroup),
+                canBurnInSunlight,
+                canBeWithered,
+                health(),
+                damage(),
+                speed()
+        );
     }
 
     public static HeadMobEntry of(boolean enabled, boolean canBurnInSunlight, boolean canBeWithered) {
         return of(enabled, 0, 0, 0, canBurnInSunlight, canBeWithered);
     }
 
-    public static HeadMobEntry of(boolean enabled, int weight, int minGroup, int maxGroup, boolean canBurnInSunlight, boolean canBeWithered) {
+    public static HeadMobEntry of(
+            boolean enabled,
+            int weight,
+            int minGroup,
+            int maxGroup,
+            boolean canBurnInSunlight,
+            boolean canBeWithered
+    ) {
         return new HeadMobEntry(enabled, weight, minGroup, maxGroup, canBurnInSunlight, canBeWithered, 1.0D, 1.0D, 1.0D);
     }
 }

@@ -76,8 +76,10 @@ class MixinConfigTest {
     Stream<DynamicTest> everyListedCommonMixinHasASourceFile() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
         return listed(ModProject.read(COMMON_CONFIG)).stream()
-                .map(name -> DynamicTest.dynamicTest(name, () ->
-                        assertTrue(Files.isRegularFile(mixinDir.resolve(name.replace('.', '/') + ".java")), "No source file for mixin " + name)));
+                .map(name -> DynamicTest.dynamicTest(
+                        name,
+                        () -> assertTrue(Files.isRegularFile(mixinDir.resolve(name.replace('.', '/') + ".java")), "No source file for mixin " + name)
+                ));
     }
 
     @TestFactory
@@ -96,8 +98,9 @@ class MixinConfigTest {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
         return ModProject.files(mixinDir, ".java").stream()
                 .map(file -> DynamicTest.dynamicTest(
-                        ModProject.idOf(mixinDir, file, ".java"), () ->
-                                assertTrue(Sources.code(file).contains("@Mixin("), "No @Mixin annotation")));
+                        ModProject.idOf(mixinDir, file, ".java"),
+                        () -> assertTrue(Sources.code(file).contains("@Mixin("), "No @Mixin annotation")
+                ));
     }
 
     @TestFactory

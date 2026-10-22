@@ -85,8 +85,10 @@ class SavedGoalTimerTest {
     @TestFactory
     Stream<DynamicTest> goalsOnSavedTimersResumeAfterReload() {
         return entityFiles().stream()
-                .map(file -> DynamicTest.dynamicTest(file.getFileName().toString(),
-                        () -> assertEquals(List.of(), problems(Sources.code(file)))));
+                .map(file -> DynamicTest.dynamicTest(
+                        file.getFileName().toString(),
+                        () -> assertEquals(List.of(), problems(Sources.code(file)))
+                ));
     }
 
     @Test

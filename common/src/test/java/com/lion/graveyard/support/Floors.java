@@ -9,8 +9,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class Floors {
-    private Floors() {
-    }
+    private Floors() {}
 
     public static Stream<DynamicTest> atLeast(int minimum, String what, Stream<DynamicTest> tests) {
         List<DynamicTest> collected = tests.collect(Collectors.toList());

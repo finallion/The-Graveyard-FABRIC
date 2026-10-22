@@ -48,8 +48,7 @@ public final class ModProject {
     public static final String TEMPLATE_POOLS = WORLDGEN + "/template_pool";
     public static final String PROCESSOR_LISTS = WORLDGEN + "/processor_list";
 
-    private ModProject() {
-    }
+    private ModProject() {}
 
     public static List<Path> files(Path dir, String suffix) {
         if (!Files.isDirectory(dir)) {
