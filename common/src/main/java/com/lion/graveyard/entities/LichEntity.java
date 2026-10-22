@@ -1621,6 +1621,7 @@ public class LichEntity extends Monster implements GeoEntity {
         }
 
         super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
     }
 
     static {

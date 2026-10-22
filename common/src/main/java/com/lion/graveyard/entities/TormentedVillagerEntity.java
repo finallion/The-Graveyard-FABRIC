@@ -299,6 +299,7 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
 
         if (nbt.contains(LIGHT_KEY)) {
             this.legacyLightPos = BlockPos.of(nbt.getLong(LIGHT_KEY));

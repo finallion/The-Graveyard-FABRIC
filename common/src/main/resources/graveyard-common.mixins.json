@@ -16,7 +16,8 @@
     "PotionEntityMixin",
     "CraftingScreenHandlerMixin",
     "CraftingResultSlotMixin",
-    "CrafterBlockMixin"
+    "CrafterBlockMixin",
+    "EntityChunkUpgradeMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",

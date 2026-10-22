@@ -5,6 +5,7 @@ import com.lion.graveyard.config.GraveyardConfig;
 import com.lion.graveyard.init.TGBlocks;
 import net.minecraft.core.particles.ParticleTypes;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -52,6 +53,12 @@ public class SkeletonCreeper extends Creeper {
         } else {
             super.dropCustomDeathLoot(level, source, recentlyHit);
         }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
     }
 
     public void explode() {

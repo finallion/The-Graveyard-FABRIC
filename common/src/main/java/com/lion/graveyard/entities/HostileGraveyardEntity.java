@@ -65,6 +65,7 @@ public abstract class HostileGraveyardEntity extends Monster {
         }
 
         super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
     }
 
     @Override

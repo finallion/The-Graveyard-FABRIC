@@ -155,6 +155,7 @@ public class NamelessHangedEntity extends AbstractVillager implements GeoEntity,
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
         this.offersDay = nbt.contains(OFFERS_DAY_KEY) ? nbt.getLong(OFFERS_DAY_KEY) : -1L;
     }
 

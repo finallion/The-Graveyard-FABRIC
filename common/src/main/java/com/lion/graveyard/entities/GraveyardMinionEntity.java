@@ -54,6 +54,7 @@ public class GraveyardMinionEntity extends PathfinderMob {
     @Override
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
+        LegacyEntityData.read(this, nbt);
         UUID ownerId;
 
         if (nbt.hasUUID("Owner")) {
