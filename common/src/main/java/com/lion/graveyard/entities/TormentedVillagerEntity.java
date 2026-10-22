@@ -85,7 +85,13 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
                 .add(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
-    public static boolean canSpawn(EntityType<TormentedVillagerEntity> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean canSpawn(
+            EntityType<TormentedVillagerEntity> type,
+            ServerLevelAccessor world,
+            MobSpawnType reason,
+            BlockPos pos,
+            RandomSource random
+    ) {
         return world.getLevel().isNight() && Mob.checkMobSpawnRules(type, world, reason, pos, random);
     }
 
@@ -117,7 +123,13 @@ public class TormentedVillagerEntity extends PathfinderMob implements GeoEntity 
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData,
+            @Nullable CompoundTag entityNbt
+    ) {
         this.setMood(Mood.SPAWNING, Mood.SPAWNING.ticks);
         this.entityData.set(SPAWN_TICKS_LEFT, Mood.SPAWNING.ticks);
         this.playSound(TGSounds.TORMENTED_VILLAGER_SPAWN.get(), 1.0F, 1.0F);

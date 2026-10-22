@@ -16,7 +16,16 @@ public class GraveyardSoulParticle extends RisingParticle {
     private final SpriteSet spriteProvider;
     protected boolean sculk;
 
-    GraveyardSoulParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteProvider) {
+    GraveyardSoulParticle(
+            ClientLevel world,
+            double x,
+            double y,
+            double z,
+            double velocityX,
+            double velocityY,
+            double velocityZ,
+            SpriteSet spriteProvider
+    ) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.spriteProvider = spriteProvider;
         this.scale(world.getRandom().nextFloat() + 1.25F);
@@ -48,7 +57,16 @@ public class GraveyardSoulParticle extends RisingParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(
+                SimpleParticleType defaultParticleType,
+                ClientLevel clientWorld,
+                double d,
+                double e,
+                double f,
+                double g,
+                double h,
+                double i
+        ) {
             GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);
             soulParticle.sculk = true;
@@ -65,7 +83,16 @@ public class GraveyardSoulParticle extends RisingParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(
+                SimpleParticleType defaultParticleType,
+                ClientLevel clientWorld,
+                double d,
+                double e,
+                double f,
+                double g,
+                double h,
+                double i
+        ) {
             GraveyardSoulParticle soulParticle = new GraveyardSoulParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);
             return soulParticle;

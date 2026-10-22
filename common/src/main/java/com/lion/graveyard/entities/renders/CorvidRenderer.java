@@ -25,7 +25,12 @@ public class CorvidRenderer extends GeoEntityRenderer<CorvidEntity> {
     }
 
     @Override
-    public RenderType getRenderType(CorvidEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            CorvidEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityCutoutNoCull(texture);
     }
 }

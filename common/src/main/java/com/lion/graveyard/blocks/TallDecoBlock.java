@@ -50,7 +50,12 @@ public class TallDecoBlock extends Block implements SimpleWaterloggedBlock {
         this(settings, lowerShape, upperShape, false);
     }
 
-    public TallDecoBlock(BlockBehaviour.Properties settings, VoxelShape lowerShape, VoxelShape upperShape, boolean hanging) {
+    public TallDecoBlock(
+            BlockBehaviour.Properties settings,
+            VoxelShape lowerShape,
+            VoxelShape upperShape,
+            boolean hanging
+    ) {
         super(settings);
         this.lowerShape = lowerShape;
         this.upperShape = upperShape;
@@ -76,7 +81,13 @@ public class TallDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
         if (this.hanging) {
             TallDeco.placeLowerHalf(world, pos, state);
         } else {
@@ -90,7 +101,14 @@ public class TallDecoBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbor, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighbor,
+            LevelAccessor world,
+            BlockPos pos,
+            BlockPos neighborPos
+    ) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }

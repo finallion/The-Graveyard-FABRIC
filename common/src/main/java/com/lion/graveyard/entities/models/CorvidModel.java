@@ -33,7 +33,11 @@ public class CorvidModel extends GeoModel<CorvidEntity> {
     }
 
     @Override
-    public void setCustomAnimations(CorvidEntity animatable, long instanceId, AnimationState<CorvidEntity> animationState) {
+    public void setCustomAnimations(
+            CorvidEntity animatable,
+            long instanceId,
+            AnimationState<CorvidEntity> animationState
+    ) {
         // The additive look rotation fights the head motion of the peck animation.
         float weight = animatable.stepLookWeight(this.isPlayingPeck(animatable, instanceId), animationState.getPartialTick());
 

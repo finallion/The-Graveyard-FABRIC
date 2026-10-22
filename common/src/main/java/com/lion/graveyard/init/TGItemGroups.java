@@ -17,10 +17,18 @@ public class TGItemGroups {
 
     public static void init() {
         RegistryHelper.registerItemGroup(ITEM_GROUP, "group", "The Graveyard", Items.SKELETON_SKULL);
-        RegistryHelper.registerItemGroupWithIcon(CHRONICLE_GROUP, "chronicle", "The Graveyard - Chronicle",
-                () -> new ItemStack(TGItems.DIARY_PAGE.get()));
-        RegistryHelper.addStacksToItemGroup(CHRONICLE_GROUP, () -> Chronicle.allPages().stream()
-                .map(page -> DiaryPageItem.of(TGItems.DIARY_PAGE.get(), page))
-                .toList());
+        RegistryHelper.registerItemGroupWithIcon(
+                CHRONICLE_GROUP,
+                "chronicle",
+                "The Graveyard - Chronicle",
+                () -> new ItemStack(TGItems.DIARY_PAGE.get())
+        );
+        RegistryHelper.addStacksToItemGroup(
+                CHRONICLE_GROUP,
+                () -> Chronicle.allPages()
+                        .stream()
+                        .map(page -> DiaryPageItem.of(TGItems.DIARY_PAGE.get(), page))
+                        .toList()
+        );
     }
 }

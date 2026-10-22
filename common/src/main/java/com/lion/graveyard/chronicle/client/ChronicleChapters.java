@@ -45,11 +45,13 @@ public final class ChronicleChapters {
                 for (JsonElement element : array) {
                     pages.add(element.getAsString());
                 }
-                chapters.add(new Chapter(chapterId,
+                chapters.add(new Chapter(
+                        chapterId,
                         GsonHelper.getAsInt(json, "act", 1),
                         GsonHelper.getAsInt(json, "order", 0),
                         GsonHelper.getAsString(json, "source", ""),
-                        pages));
+                        pages
+                ));
             } catch (Exception e) {
                 Graveyard.LOGGER.error("Skipping chronicle chapter {}: {}", id, e.getMessage());
             }

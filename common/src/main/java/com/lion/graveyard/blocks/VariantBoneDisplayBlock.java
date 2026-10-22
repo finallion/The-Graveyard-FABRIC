@@ -37,7 +37,14 @@ public class VariantBoneDisplayBlock extends BoneDisplayBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         if (hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty() || !player.mayBuild()) {
             return InteractionResult.PASS;
         }

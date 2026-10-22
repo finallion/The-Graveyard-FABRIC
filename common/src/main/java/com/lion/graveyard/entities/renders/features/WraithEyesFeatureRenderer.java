@@ -21,7 +21,17 @@ public class WraithEyesFeatureRenderer extends GeoRenderLayer<WraithEntity> {
     }
 
     @Override
-    public void render(PoseStack poseStack, WraithEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(
+            PoseStack poseStack,
+            WraithEntity animatable,
+            BakedGeoModel bakedModel,
+            RenderType renderType,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            float partialTick,
+            int packedLight,
+            int packedOverlay
+    ) {
         VertexConsumer vertexConsumer = bufferSource.getBuffer(TEXTURE);
         renderer.actuallyRender(
                 poseStack,
@@ -34,7 +44,10 @@ public class WraithEyesFeatureRenderer extends GeoRenderLayer<WraithEntity> {
                 partialTick,
                 15728640,
                 OverlayTexture.NO_OVERLAY,
-                1.0F, 1.0F, 1.0F, 1.0F
+                1.0F,
+                1.0F,
+                1.0F,
+                1.0F
         );
     }
 

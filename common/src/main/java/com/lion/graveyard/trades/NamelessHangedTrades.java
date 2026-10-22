@@ -19,8 +19,7 @@ public final class NamelessHangedTrades {
 
     public static final List<VillagerTrades.ItemListing> TRADES_REGISTRY = new ArrayList<>();
 
-    private NamelessHangedTrades() {
-    }
+    private NamelessHangedTrades() {}
 
     /// Rebuilt per reload, so `/reload` does not duplicate trades.
     public static void clear() {

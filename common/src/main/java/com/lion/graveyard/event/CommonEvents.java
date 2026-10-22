@@ -37,8 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class CommonEvents {
 
-    private CommonEvents() {
-    }
+    private CommonEvents() {}
 
     public static void onEntityLoad(Entity entity) {
         if (entity.level().isClientSide) {
@@ -104,7 +103,12 @@ public final class CommonEvents {
     }
 
     /// Strips axes on loaders without a tool-modification event.
-    public static InteractionResult stripSmolderingPillar(Player player, Level world, InteractionHand hand, BlockHitResult hit) {
+    public static InteractionResult stripSmolderingPillar(
+            Player player,
+            Level world,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         BlockPos pos = hit.getBlockPos();
         ItemStack stack = player.getItemInHand(hand);
         BlockState stripped = smolderingStrippedState(world.getBlockState(pos));

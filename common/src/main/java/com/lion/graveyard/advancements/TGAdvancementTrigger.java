@@ -29,7 +29,11 @@ public class TGAdvancementTrigger extends SimpleCriterionTrigger<TGAdvancementTr
     }
 
     @Override
-    protected Condition createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
+    protected Condition createInstance(
+            JsonObject obj,
+            ContextAwarePredicate playerPredicate,
+            DeserializationContext predicateDeserializer
+    ) {
         return new TGAdvancementTrigger.Condition(playerPredicate, identifier);
     }
 

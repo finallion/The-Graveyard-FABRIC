@@ -16,7 +16,14 @@ public class RemoveWaterloggedCryptProcessor extends StructureProcessor {
     public RemoveWaterloggedCryptProcessor() { }
 
     @Override
-    public StructureTemplate.StructureBlockInfo processBlock(LevelReader world, BlockPos pos, BlockPos pos2, StructureTemplate.StructureBlockInfo infoIn1, StructureTemplate.StructureBlockInfo infoIn2, StructurePlaceSettings settings) {
+    public StructureTemplate.StructureBlockInfo processBlock(
+            LevelReader world,
+            BlockPos pos,
+            BlockPos pos2,
+            StructureTemplate.StructureBlockInfo infoIn1,
+            StructureTemplate.StructureBlockInfo infoIn2,
+            StructurePlaceSettings settings
+    ) {
         return infoIn2;
     }
 

@@ -23,8 +23,7 @@ public final class TallDeco {
 
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 
-    private TallDeco() {
-    }
+    private TallDeco() {}
 
     @Nullable
     public static BlockState placementState(BlockPlaceContext ctx, BlockState lowerHalf) {
@@ -40,8 +39,12 @@ public final class TallDeco {
     /// The upper half is placed by hand after the lower one, the way vanilla does it.
     public static void placeUpperHalf(Level world, BlockPos pos, BlockState state) {
         boolean waterlogged = world.getFluidState(pos.above()).getType() == Fluids.WATER;
-        world.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER)
-                .setValue(BlockStateProperties.WATERLOGGED, waterlogged), Block.UPDATE_ALL);
+        world.setBlock(
+                pos.above(),
+                state.setValue(HALF, DoubleBlockHalf.UPPER)
+                        .setValue(BlockStateProperties.WATERLOGGED, waterlogged),
+                Block.UPDATE_ALL
+        );
     }
 
     /// The lower half needs solid ground, the upper half needs its lower half.
@@ -67,8 +70,12 @@ public final class TallDeco {
 
     public static void placeLowerHalf(Level world, BlockPos pos, BlockState state) {
         boolean waterlogged = world.getFluidState(pos.below()).getType() == Fluids.WATER;
-        world.setBlock(pos.below(), state.setValue(HALF, DoubleBlockHalf.LOWER)
-                .setValue(BlockStateProperties.WATERLOGGED, waterlogged), Block.UPDATE_ALL);
+        world.setBlock(
+                pos.below(),
+                state.setValue(HALF, DoubleBlockHalf.LOWER)
+                        .setValue(BlockStateProperties.WATERLOGGED, waterlogged),
+                Block.UPDATE_ALL
+        );
     }
 
     /// The upper half needs a ceiling to hang from, the lower half needs its upper half.
@@ -82,7 +89,13 @@ public final class TallDeco {
         return world.getBlockState(ceiling).isFaceSturdy(world, ceiling, Direction.DOWN);
     }
 
-    public static BlockState onNeighborUpdate(BlockState state, Direction direction, BlockState neighbor, LevelAccessor world, BlockPos pos) {
+    public static BlockState onNeighborUpdate(
+            BlockState state,
+            Direction direction,
+            BlockState neighbor,
+            LevelAccessor world,
+            BlockPos pos
+    ) {
         DoubleBlockHalf half = state.getValue(HALF);
         boolean towardsOtherHalf = direction.getAxis() == Direction.Axis.Y
                 && (half == DoubleBlockHalf.LOWER) == (direction == Direction.UP);

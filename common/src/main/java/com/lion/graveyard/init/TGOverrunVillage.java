@@ -88,9 +88,10 @@ public class TGOverrunVillage {
     public static final Supplier<Item> SCORCHED_DOOR_ITEM = RegistryHelper.registerItem("scorched_door", () -> new DoubleHighBlockItem(SCORCHED_DOOR.get(), new Item.Properties()));
     public static final Supplier<Item> SCORCHED_TRAPDOOR_ITEM = RegistryHelper.registerItem("scorched_trapdoor", () -> new BlockItem(SCORCHED_TRAPDOOR.get(), new Item.Properties()));
 
-    public static final Supplier<BlockEntityType<SmolderingDebrisBlockEntity>> SMOLDERING_DEBRIS_BLOCK_ENTITY = RegistryHelper.registerBlockEntity("smoldering_debris_block_entity", () -> BlockEntityType.Builder.of(SmolderingDebrisBlockEntity::new,
-            SMOLDERING_DEBRIS.get()
-    ).build(null));
+    public static final Supplier<BlockEntityType<SmolderingDebrisBlockEntity>> SMOLDERING_DEBRIS_BLOCK_ENTITY = RegistryHelper.registerBlockEntity(
+            "smoldering_debris_block_entity",
+            () -> BlockEntityType.Builder.of( SmolderingDebrisBlockEntity::new, SMOLDERING_DEBRIS.get() ).build(null)
+    );
 
     public static StructureProcessorType<RuinProcessor> RUIN = () -> RuinProcessor.CODEC;
     public static StructureProcessorType<PoolAliasProcessor> POOL_ALIASES = () -> PoolAliasProcessor.CODEC;

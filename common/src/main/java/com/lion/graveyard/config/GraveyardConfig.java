@@ -141,7 +141,8 @@ public class GraveyardConfig {
                 values.bool(prefix + "enabled"),
                 values.real(prefix + "chance"),
                 ranged ? values.integer(prefix + "minY") : null,
-                ranged ? values.integer(prefix + "maxY") : null);
+                ranged ? values.integer(prefix + "maxY") : null
+        );
     }
 
     private static MobConfigEntry mob(ConfigValues values, String prefix) {
@@ -154,7 +155,8 @@ public class GraveyardConfig {
                 values.bool(prefix + "canBeWithered"),
                 values.real(prefix + "health"),
                 values.real(prefix + "damage"),
-                values.real(prefix + "speed"));
+                values.real(prefix + "speed")
+        );
     }
 
     private static HordeConfigEntry horde(ConfigValues values) {
@@ -166,7 +168,8 @@ public class GraveyardConfig {
                 values.real("hordes.chancePerCheck"),
                 values.integer("hordes.minDistance"),
                 values.integer("hordes.maxDistance"),
-                values.bool("hordes.nightOnly"));
+                values.bool("hordes.nightOnly")
+        );
     }
 
     private static CorruptedChampionEntry champion(ConfigValues values) {
@@ -195,7 +198,8 @@ public class GraveyardConfig {
                 values.integer(c + "spells.corpseCooldown"),
                 values.integer(c + "spells.healingCooldown"),
                 values.integer(c + "spells.levitationCooldown"),
-                values.integer(c + "spells.playerTeleportYOffset"));
+                values.integer(c + "spells.playerTeleportYOffset")
+        );
         entry.bossBarDarkenSky = values.bool(c + "effects.darkenSky");
         entry.bossBarThickenFog = values.bool(c + "effects.thickenFog");
         entry.bossMusicVolume = values.floating(c + "effects.musicVolume");

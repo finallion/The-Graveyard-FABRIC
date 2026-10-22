@@ -22,7 +22,17 @@ public class GhoulEyes extends GeoRenderLayer<GhoulEntity> {
     }
 
     @Override
-    public void render(PoseStack matrices, GhoulEntity entity, BakedGeoModel model, RenderType renderType, MultiBufferSource vertexConsumers, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(
+            PoseStack matrices,
+            GhoulEntity entity,
+            BakedGeoModel model,
+            RenderType renderType,
+            MultiBufferSource vertexConsumers,
+            VertexConsumer buffer,
+            float partialTick,
+            int packedLight,
+            int packedOverlay
+    ) {
         RenderType eyes = RenderType.eyes(Graveyard.id("textures/entity/ghoul_eyes_skin" + entity.getVariant() + ".png"));
         this.renderer.actuallyRender(matrices, entity, model, renderType, vertexConsumers, vertexConsumers.getBuffer(eyes), true, partialTick, FULL_LIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
     }

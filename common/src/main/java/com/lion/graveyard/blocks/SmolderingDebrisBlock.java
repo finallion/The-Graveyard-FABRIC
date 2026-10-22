@@ -35,7 +35,11 @@ public class SmolderingDebrisBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            Level world,
+            BlockState state,
+            BlockEntityType<T> type
+    ) {
         return world.isClientSide ? createTickerHelper(type, TGOverrunVillage.SMOLDERING_DEBRIS_BLOCK_ENTITY.get(), SmolderingDebrisBlockEntity::clientTick) : null;
     }
 

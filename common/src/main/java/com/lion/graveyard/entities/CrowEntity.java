@@ -137,8 +137,11 @@ public class CrowEntity extends CorvidEntity {
             return;
         }
 
-        List<CrowEntity> others = this.level().getEntitiesOfClass(CrowEntity.class,
-                this.getBoundingBox().inflate(FLOCK_SEARCH_RADIUS), other -> other != this && other.isAlive());
+        List<CrowEntity> others = this.level().getEntitiesOfClass(
+                CrowEntity.class,
+                this.getBoundingBox().inflate(FLOCK_SEARCH_RADIUS),
+                other -> other != this && other.isAlive()
+        );
         for (CrowEntity other : others) {
             CrowEntity head = other.getFlockHead();
 
@@ -175,9 +178,11 @@ public class CrowEntity extends CorvidEntity {
         this.playSound(TGSounds.CROW_ALARM.get(), 0.7F, 0.9F + this.getRandom().nextFloat() * 0.2F);
 
         CrowEntity head = this.getFlockHead();
-        List<CrowEntity> flock = this.level().getEntitiesOfClass(CrowEntity.class,
+        List<CrowEntity> flock = this.level().getEntitiesOfClass(
+                CrowEntity.class,
                 this.getBoundingBox().inflate(ALARM_SPREAD_RADIUS),
-                other -> other != this && other.isAlive() && other.getFlockHead() == head);
+                other -> other != this && other.isAlive() && other.getFlockHead() == head
+        );
         for (CrowEntity other : flock) {
             if (other.alarm == 0 && other.alarmDelay == 0) {
                 other.alarmDelay = 1 + Mth.floor(this.distanceTo(other) * ALARM_TICKS_PER_BLOCK);

@@ -48,7 +48,14 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
     }
 
     @Override
-    public void render(GravestoneBlockEntity signBlockEntity, float f, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, int j) {
+    public void render(
+            GravestoneBlockEntity signBlockEntity,
+            float f,
+            PoseStack matrixStack,
+            MultiBufferSource vertexConsumerProvider,
+            int i,
+            int j
+    ) {
         BlockState blockState = signBlockEntity.getBlockState();
         Level world = signBlockEntity.getLevel();
         matrixStack.pushPose();
@@ -103,7 +110,15 @@ public class GravestoneBlockEntityRenderer implements BlockEntityRenderer<Graves
         renderGrave(blockState, f, matrixStack, vertexConsumerProvider, i, j, world);
     }
 
-    public void renderGrave(BlockState state, float f, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i, int j, Level world) {
+    public void renderGrave(
+            BlockState state,
+            float f,
+            PoseStack matrixStack,
+            MultiBufferSource vertexConsumerProvider,
+            int i,
+            int j,
+            Level world
+    ) {
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.43, 0.5);
         matrixStack.scale(2.28F, 2.15F, 2.28F);

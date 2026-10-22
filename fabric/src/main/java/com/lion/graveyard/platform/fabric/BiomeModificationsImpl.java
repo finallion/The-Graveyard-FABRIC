@@ -12,11 +12,22 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public class BiomeModificationsImpl {
 
-    public static void addMobSpawn(TagKey<Biome> tag, MobCategory spawnGroup, EntityType<?> entityType, int weight, int minGroupSize, int maxGroupSize) {
+    public static void addMobSpawn(
+            TagKey<Biome> tag,
+            MobCategory spawnGroup,
+            EntityType<?> entityType,
+            int weight,
+            int minGroupSize,
+            int maxGroupSize
+    ) {
         BiomeModifications.addSpawn(biomeSelector -> biomeSelector.hasTag(tag) && biomeSelector.hasTag(BiomeTags.IS_OVERWORLD), spawnGroup, entityType, weight, minGroupSize, maxGroupSize);
     }
 
-    public static void addPlacedFeature(TagKey<Biome> tag, GenerationStep.Decoration step, ResourceKey<PlacedFeature> featureKey) {
+    public static void addPlacedFeature(
+            TagKey<Biome> tag,
+            GenerationStep.Decoration step,
+            ResourceKey<PlacedFeature> featureKey
+    ) {
         BiomeModifications.addFeature(biomeSelector -> biomeSelector.hasTag(tag), step, featureKey);
     }
 }

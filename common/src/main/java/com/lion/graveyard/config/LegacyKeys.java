@@ -93,8 +93,7 @@ public final class LegacyKeys {
 
     private static final List<Entry> ENTRIES = build();
 
-    private LegacyKeys() {
-    }
+    private LegacyKeys() {}
 
     public static List<Entry> entries() {
         return ENTRIES;

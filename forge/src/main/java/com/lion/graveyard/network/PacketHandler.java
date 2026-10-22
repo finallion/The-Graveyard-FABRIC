@@ -12,8 +12,14 @@ public class PacketHandler {
     public static final SimpleChannel CHRONICLE_CHANNEL = NetworkRegistry.newSimpleChannel(ChronicleSync.CHANNEL, () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
     public static void registerMessages() {
-        CHRONICLE_CHANNEL.registerMessage(0, ChroniclePacket.class, ChroniclePacket::encode, ChroniclePacket::decode, ChroniclePacket::handle,
-                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHRONICLE_CHANNEL.registerMessage(
+                0,
+                ChroniclePacket.class,
+                ChroniclePacket::encode,
+                ChroniclePacket::decode,
+                ChroniclePacket::handle,
+                java.util.Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
 }

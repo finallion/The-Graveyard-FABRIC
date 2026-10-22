@@ -130,7 +130,13 @@ public class GraveyardHordeSpawner implements CustomSpawner {
         }
     }
 
-    private boolean spawnHordeEntity(ServerLevel world, BlockPos pos, RandomSource random, boolean captain, boolean illagerSpawn) {
+    private boolean spawnHordeEntity(
+            ServerLevel world,
+            BlockPos pos,
+            RandomSource random,
+            boolean captain,
+            boolean illagerSpawn
+    ) {
         BlockState blockState = world.getBlockState(pos);
         BlockState downState = world.getBlockState(pos.below());
 

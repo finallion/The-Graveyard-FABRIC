@@ -22,7 +22,18 @@ public class AcolyteEyes extends RenderLayer<AcolyteEntity, CorruptedIllagerMode
     }
 
     @Override
-    public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, AcolyteEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+    public void render(
+            PoseStack matrices,
+            MultiBufferSource vertexConsumers,
+            int light,
+            AcolyteEntity entity,
+            float limbAngle,
+            float limbDistance,
+            float tickDelta,
+            float animationProgress,
+            float headYaw,
+            float headPitch
+    ) {
         VertexConsumer vertex = vertexConsumers.getBuffer(RenderType.eyes(Graveyard.id("textures/entity/acolyte_eyes.png")));
 
         this.getParentModel().renderToBuffer(matrices, vertex, 15728640, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);

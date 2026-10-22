@@ -18,13 +18,24 @@ public class FallingCorpseRenderer extends GeoEntityRenderer<FallingCorpse> {
     }
 
     @Override
-    protected void applyRotations(FallingCorpse entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+    protected void applyRotations(
+            FallingCorpse entityLiving,
+            PoseStack matrixStackIn,
+            float ageInTicks,
+            float rotationYaw,
+            float partialTicks
+    ) {
         rotationYaw = entityLiving.getRotation();
         super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
     }
 
     @Override
-    public RenderType getRenderType(FallingCorpse animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            FallingCorpse animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityCutoutNoCull(texture);
     }
 

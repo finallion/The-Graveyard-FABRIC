@@ -17,8 +17,19 @@ public class ChronicleButton extends ImageButton {
     private final HandledScreenAccessor inventory;
 
     private ChronicleButton(InventoryScreen inventory) {
-        super(0, 0, 20, 20, 0, 0, 20, ChronicleScreen.BUTTON_TEXTURE, 20, 40,
-                button -> Minecraft.getInstance().setScreen(new ChronicleScreen(inventory)));
+        super(
+                0,
+                0,
+                20,
+                20,
+                0,
+                0,
+                20,
+                ChronicleScreen.BUTTON_TEXTURE,
+                20,
+                40,
+                button -> Minecraft.getInstance().setScreen(new ChronicleScreen(inventory))
+        );
         this.inventory = (HandledScreenAccessor) inventory;
         this.setTooltip(Tooltip.create(Component.translatable("chronicle.graveyard.open")));
         this.followInventory();

@@ -30,7 +30,13 @@ public class FollowOwnerGoal extends Goal {
     private float oldWaterPathfindingPenalty;
     private final boolean leavesAllowed;
 
-    public FollowOwnerGoal(GraveyardMinionEntity tameable, double speed, float minDistance, float maxDistance, boolean leavesAllowed) {
+    public FollowOwnerGoal(
+            GraveyardMinionEntity tameable,
+            double speed,
+            float minDistance,
+            float maxDistance,
+            boolean leavesAllowed
+    ) {
         this.tameable = tameable;
         this.world = tameable.getCommandSenderWorld();
         this.speed = speed;

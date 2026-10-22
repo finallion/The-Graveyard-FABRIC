@@ -78,7 +78,14 @@ public class SkullEntity extends AbstractHurtingProjectile {
     }
 
     @Override
-    public float getBlockExplosionResistance(Explosion explosion, BlockGetter world, BlockPos pos, BlockState blockState, FluidState fluidState, float max) {
+    public float getBlockExplosionResistance(
+            Explosion explosion,
+            BlockGetter world,
+            BlockPos pos,
+            BlockState blockState,
+            FluidState fluidState,
+            float max
+    ) {
         return this.isCharged() && WitherBoss.canDestroy(blockState) ? Math.min(0.8F, max) : max;
     }
 

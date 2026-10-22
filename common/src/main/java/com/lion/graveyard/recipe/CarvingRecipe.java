@@ -23,7 +23,14 @@ public abstract class CarvingRecipe implements Recipe<Container> {
     protected final ResourceLocation id;
     protected final String group;
 
-    public CarvingRecipe(RecipeType<?> type, RecipeSerializer<?> serializer, ResourceLocation id, String group, Ingredient input, ItemStack output) {
+    public CarvingRecipe(
+            RecipeType<?> type,
+            RecipeSerializer<?> serializer,
+            ResourceLocation id,
+            String group,
+            Ingredient input,
+            ItemStack output
+    ) {
         this.type = type;
         this.serializer = serializer;
         this.id = id;

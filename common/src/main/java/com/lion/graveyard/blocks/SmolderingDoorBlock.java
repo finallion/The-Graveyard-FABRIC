@@ -27,7 +27,14 @@ public class SmolderingDoorBlock extends DoorBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         InteractionResult result = SmolderingWood.use(state, world, pos, player, hand);
         return result == InteractionResult.PASS ? super.use(state, world, pos, player, hand, hit) : result;
     }

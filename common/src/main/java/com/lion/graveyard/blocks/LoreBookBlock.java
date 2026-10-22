@@ -104,7 +104,13 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable net.minecraft.world.entity.LivingEntity placer,
+            ItemStack stack
+    ) {
         String page = DiaryPageItem.pageOf(stack);
 
         if (page != null && world.getBlockEntity(pos) instanceof LoreBookBlockEntity book) {
@@ -117,7 +123,14 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult use(
+            BlockState state,
+            Level world,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hit
+    ) {
         if (player.isShiftKeyDown()) {
             if (!player.mayBuild()) {
                 return InteractionResult.PASS;
@@ -167,7 +180,14 @@ public class LoreBookBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(
+            BlockState state,
+            Direction direction,
+            BlockState neighborState,
+            LevelAccessor world,
+            BlockPos pos,
+            BlockPos neighborPos
+    ) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }

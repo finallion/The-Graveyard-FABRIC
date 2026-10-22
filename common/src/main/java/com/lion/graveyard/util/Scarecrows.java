@@ -18,8 +18,7 @@ public final class Scarecrows {
 
     public static final int RADIUS = 8;
 
-    private Scarecrows() {
-    }
+    private Scarecrows() {}
 
     public static boolean isNear(Level world, BlockPos center, int radius) {
         AABB box = new AABB(center).inflate(radius);

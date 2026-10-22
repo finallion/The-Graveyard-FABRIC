@@ -57,18 +57,36 @@ public class RegistryHelperImpl {
         return () -> registry;
     }
 
-    public static void registerItemGroup(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Item item) {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, registryKey,
+    public static void registerItemGroup(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Item item
+    ) {
+        Registry.register(
+                BuiltInRegistries.CREATIVE_MODE_TAB,
+                registryKey,
                 FabricItemGroup.builder()
                         .title(Component.literal(literalName))
-                        .icon(() -> new ItemStack(item)).build());
+                        .icon(() -> new ItemStack(item))
+                        .build()
+        );
     }
 
-    public static void registerItemGroupWithIcon(ResourceKey<CreativeModeTab> registryKey, String name, String literalName, Supplier<ItemStack> icon) {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, registryKey,
+    public static void registerItemGroupWithIcon(
+            ResourceKey<CreativeModeTab> registryKey,
+            String name,
+            String literalName,
+            Supplier<ItemStack> icon
+    ) {
+        Registry.register(
+                BuiltInRegistries.CREATIVE_MODE_TAB,
+                registryKey,
                 FabricItemGroup.builder()
                         .title(Component.literal(literalName))
-                        .icon(icon).build());
+                        .icon(icon)
+                        .build()
+        );
     }
 
     public static void addToItemGroup(ResourceKey<CreativeModeTab> itemGroup, Item item) {
@@ -79,11 +97,23 @@ public class RegistryHelperImpl {
         ItemGroupEvents.modifyEntriesEvent(itemGroup).register((content) -> stacks.get().forEach(content::accept));
     }
 
-    public static <T extends Item> Supplier<T> registerSpawnEggItem(String name, Supplier<? extends EntityType<? extends Mob>> type, int backgroundColor, int highlightColor, Item.Properties props) {
+    public static <T extends Item> Supplier<T> registerSpawnEggItem(
+            String name,
+            Supplier<? extends EntityType<? extends Mob>> type,
+            int backgroundColor,
+            int highlightColor,
+            Item.Properties props
+    ) {
         return (Supplier<T>) registerItem(name, () -> new SpawnEggItem(type.get(), backgroundColor, highlightColor, props));
     }
 
-    public static <T extends Item> Supplier<T> registerMusicDiscItem(String name, int compOutput, Supplier<SoundEvent> event, Item.Properties props, int length) {
+    public static <T extends Item> Supplier<T> registerMusicDiscItem(
+            String name,
+            int compOutput,
+            Supplier<SoundEvent> event,
+            Item.Properties props,
+            int length
+    ) {
         return (Supplier<T>) registerItem(name, () -> new RecordItem(compOutput, event.get(), props, length));
     }
 
@@ -121,15 +151,24 @@ public class RegistryHelperImpl {
         return () -> registry;
     }
 
-    public static <T extends Entity> void registerEntityRenderer(Supplier<EntityType<T>> type, EntityRendererProvider<T> renderProvider) {
+    public static <T extends Entity> void registerEntityRenderer(
+            Supplier<EntityType<T>> type,
+            EntityRendererProvider<T> renderProvider
+    ) {
         EntityRendererRegistry.register(type.get(), renderProvider);
     }
 
-    public static <T extends BlockEntity> void registerBlockEntityRenderer(Supplier<BlockEntityType<T>> type, BlockEntityRendererProvider<T> renderProvider) {
+    public static <T extends BlockEntity> void registerBlockEntityRenderer(
+            Supplier<BlockEntityType<T>> type,
+            BlockEntityRendererProvider<T> renderProvider
+    ) {
         BlockEntityRendererRegistry.register(type.get(), renderProvider);
     }
 
-    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(String name, Supplier<EntityType<T>> entityType) {
+    public static <T extends Entity> Supplier<EntityType<T>> registerEntityType(
+            String name,
+            Supplier<EntityType<T>> entityType
+    ) {
         var registry = Registry.register(BuiltInRegistries.ENTITY_TYPE, Graveyard.id(name), entityType.get());
         return () -> registry;
     }
@@ -138,7 +177,10 @@ public class RegistryHelperImpl {
         EntityModelLayerRegistry.registerModelLayer(location, definition::get);
     }
 
-    public static void registerEntityAttribute(Supplier<? extends EntityType<? extends LivingEntity>> type, Supplier<AttributeSupplier.Builder> attribute) {
+    public static void registerEntityAttribute(
+            Supplier<? extends EntityType<? extends LivingEntity>> type,
+            Supplier<AttributeSupplier.Builder> attribute
+    ) {
         FabricDefaultAttributeRegistry.register(type.get(), attribute.get());
     }
 
@@ -147,7 +189,10 @@ public class RegistryHelperImpl {
         return () -> registry;
     }
 
-    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(String name, RecipeSerializer<S> serializer) {
+    public static <S extends Recipe<?>> Supplier<RecipeSerializer<S>> registerRecipeSerializer(
+            String name,
+            RecipeSerializer<S> serializer
+    ) {
         var registry = RecipeSerializer.register(Graveyard.createStringID(name), serializer);
         return () -> registry;
     }

@@ -17,8 +17,7 @@ public final class AnimationClock {
     @Nullable
     private static Listener listener;
 
-    private AnimationClock() {
-    }
+    private AnimationClock() {}
 
     public interface Listener {
         void keyframeZero(Entity entity, String animation, double startOffsetTicks);
@@ -49,11 +48,23 @@ public final class AnimationClock {
         }
     }
 
-    public static <T extends GeoAnimatable> AnimationController<T> controller(T animatable, String name, int transitionTicks, AnimationController.AnimationStateHandler<T> handler) {
+    public static <T extends GeoAnimatable> AnimationController<T> controller(
+            T animatable,
+            String name,
+            int transitionTicks,
+            AnimationController.AnimationStateHandler<T> handler
+    ) {
         return new ClockController<>(animatable, name, transitionTicks, handler, null, null);
     }
 
-    public static <T extends GeoAnimatable> AnimationController<T> controller(T animatable, String name, int transitionTicks, AnimationController.AnimationStateHandler<T> handler, @Nullable String offsetAnimation, @Nullable ToDoubleFunction<T> startOffset) {
+    public static <T extends GeoAnimatable> AnimationController<T> controller(
+            T animatable,
+            String name,
+            int transitionTicks,
+            AnimationController.AnimationStateHandler<T> handler,
+            @Nullable String offsetAnimation,
+            @Nullable ToDoubleFunction<T> startOffset
+    ) {
         return new ClockController<>(animatable, name, transitionTicks, handler, offsetAnimation, startOffset);
     }
 
@@ -65,7 +76,14 @@ public final class AnimationClock {
         @Nullable
         private String lastStarted;
 
-        ClockController(T animatable, String name, int transitionTicks, AnimationStateHandler<T> handler, @Nullable String offsetAnimation, @Nullable ToDoubleFunction<T> startOffset) {
+        ClockController(
+                T animatable,
+                String name,
+                int transitionTicks,
+                AnimationStateHandler<T> handler,
+                @Nullable String offsetAnimation,
+                @Nullable ToDoubleFunction<T> startOffset
+        ) {
             super(animatable, name, transitionTicks, handler);
             this.offsetAnimation = offsetAnimation;
             this.startOffset = startOffset;

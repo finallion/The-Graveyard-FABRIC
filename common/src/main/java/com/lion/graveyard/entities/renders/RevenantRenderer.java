@@ -26,7 +26,12 @@ public class RevenantRenderer extends GeoEntityRenderer<RevenantEntity> {
     }
 
     @Override
-    public RenderType getRenderType(RevenantEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            RevenantEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityCutoutNoCull(texture);
     }
 

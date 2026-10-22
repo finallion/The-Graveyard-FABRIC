@@ -13,7 +13,9 @@ public final class ChronicleSyncImpl {
     private ChronicleSyncImpl() {}
 
     public static void send(ServerPlayer player, Collection<String> found, @Nullable String newlyFound) {
-        PacketHandler.CHRONICLE_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
-                new ChroniclePacket(new LinkedHashSet<>(found), newlyFound));
+        PacketHandler.CHRONICLE_CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> player),
+                new ChroniclePacket(new LinkedHashSet<>(found), newlyFound)
+        );
     }
 }

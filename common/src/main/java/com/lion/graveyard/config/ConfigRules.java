@@ -3,8 +3,7 @@ package com.lion.graveyard.config;
 import java.util.List;
 
 final class ConfigRules {
-    private ConfigRules() {
-    }
+    private ConfigRules() {}
 
     static void apply(ConfigValues values, List<String> reset) {
         for (String mob : ConfigSchema.FULL_MOB_IDS) {

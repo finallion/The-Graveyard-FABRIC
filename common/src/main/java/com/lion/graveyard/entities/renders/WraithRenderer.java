@@ -25,7 +25,12 @@ public class WraithRenderer extends GeoEntityRenderer<WraithEntity> {
     }
 
     @Override
-    public RenderType getRenderType(WraithEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            WraithEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityTranslucent(texture);
     }
 

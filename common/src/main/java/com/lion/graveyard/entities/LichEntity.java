@@ -202,8 +202,10 @@ public class LichEntity extends Monster implements GeoEntity {
                 // Set from the respawn method: drops every animation of the phase before.
                 .stopWhen(() -> getAnimationState() == ANIMATION_STOP)
                 .when(this::isSpawning, SPAWN_ANIMATION)
-                .startAt(SPAWN_ANIMATION, lich -> lich.isSpawning() && lich.getPhase() == 1 && AnimationPreview.forcedAnimation(lich) == null
-                        ? (double) (lich.getSpawnDuration() - lich.getInvulnerableTimer()) * SPAWN_CLIP_TICKS / Math.max(1, lich.getSpawnDuration()) : 0)
+                .startAt(
+                        SPAWN_ANIMATION,
+                        lich -> lich.isSpawning() && lich.getPhase() == 1 && AnimationPreview.forcedAnimation(lich) == null ? (double) (lich.getSpawnDuration() - lich.getInvulnerableTimer()) * SPAWN_CLIP_TICKS / Math.max(1, lich.getSpawnDuration()) : 0
+                )
                 .when(() -> isDeadOrDying(), DEATH_ANIMATION)
 
                 .when(() -> getPhase() == 1 && getAnimationState() == ANIMATION_CORPSE_SPELL, CORPSE_SPELL_ANIMATION)
@@ -1858,8 +1860,13 @@ public class LichEntity extends Monster implements GeoEntity {
 
                         int amount = random.nextInt(Graveyard.getConfig().corruptedChampionConfigEntries.get("corrupted_champion").maxAmountSkullsInShootSkullSpell) + 2;
                         for (int i = 0; i < amount; ++i) {
-                            SkullEntity devSkull = new SkullEntity(this.mob.level(), this.mob, this.mob.getRandom().triangle(e, 2.297D * h),
-                                    f, this.mob.getRandom().triangle(g, 2.297D * h));
+                            SkullEntity devSkull = new SkullEntity(
+                                    this.mob.level(),
+                                    this.mob,
+                                    this.mob.getRandom().triangle(e, 2.297D * h),
+                                    f,
+                                    this.mob.getRandom().triangle(g, 2.297D * h)
+                            );
                             devSkull.setPos(this.mob.getX() - vec3d3.x * 0.5, this.mob.getY(0.5D) + 1.25D, this.mob.getZ() - vec3d3.z * 0.5D);
                             world.addFreshEntity(devSkull);
                         }

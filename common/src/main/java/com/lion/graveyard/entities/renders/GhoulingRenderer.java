@@ -26,7 +26,12 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
     }
 
     @Override
-    public RenderType getRenderType(GhoulingEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            GhoulingEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         ghouling = animatable;
         return RenderType.entityCutoutNoCull(texture);
     }
@@ -38,7 +43,22 @@ public class GhoulingRenderer extends GeoEntityRenderer<GhoulingEntity> {
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, GhoulingEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderRecursively(
+            PoseStack poseStack,
+            GhoulingEntity animatable,
+            GeoBone bone,
+            RenderType renderType,
+            MultiBufferSource bufferSource,
+            VertexConsumer buffer,
+            boolean isReRender,
+            float partialTick,
+            int packedLight,
+            int packedOverlay,
+            float red,
+            float green,
+            float blue,
+            float alpha
+    ) {
         if (bone.getName().equals("chain") && ghouling != null) {
             bone.setHidden(!ghouling.hasCoffin());
         }

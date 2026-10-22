@@ -14,8 +14,7 @@ public final class ConfigFiles {
 
     private static final int MAX_LISTED = 10;
 
-    private ConfigFiles() {
-    }
+    private ConfigFiles() {}
 
     public static ConfigValues load(Path directory, ConfigLog log) {
         try {

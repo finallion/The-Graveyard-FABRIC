@@ -35,8 +35,7 @@ public final class AnimationTable<T extends GeoAnimatable> {
     @Nullable
     private ToDoubleFunction<T> startOffset;
 
-    private AnimationTable() {
-    }
+    private AnimationTable() {}
 
     public static <T extends GeoAnimatable> AnimationTable<T> create() {
         return new AnimationTable<>();

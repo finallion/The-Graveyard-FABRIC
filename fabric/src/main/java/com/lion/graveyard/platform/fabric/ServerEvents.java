@@ -10,13 +10,11 @@ import java.util.List;
 
 public class ServerEvents {
 
-    public ServerEvents() {
-    }
+    public ServerEvents() {}
 
     public static class DeleteOldConfigs implements ServerLifecycleEvents.ServerStarted {
 
-        public DeleteOldConfigs() {
-        }
+        public DeleteOldConfigs() {}
 
         @Override
         public void onServerStarted(MinecraftServer server) {

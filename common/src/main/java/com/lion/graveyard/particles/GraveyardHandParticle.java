@@ -16,7 +16,16 @@ public class GraveyardHandParticle extends RisingParticle {
     private final SpriteSet spriteProvider;
     protected boolean sculk;
 
-    GraveyardHandParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, SpriteSet spriteProvider) {
+    GraveyardHandParticle(
+            ClientLevel world,
+            double x,
+            double y,
+            double z,
+            double velocityX,
+            double velocityY,
+            double velocityZ,
+            SpriteSet spriteProvider
+    ) {
         super(world, x, y, z, velocityX, velocityY, velocityZ);
         this.lifetime = (int)(8.0D / (Math.random() * 0.8D + 0.2D)) + 100;
         this.yd = this.yd * 0.005999999776482582D + velocityY;
@@ -52,7 +61,16 @@ public class GraveyardHandParticle extends RisingParticle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(
+                SimpleParticleType defaultParticleType,
+                ClientLevel clientWorld,
+                double d,
+                double e,
+                double f,
+                double g,
+                double h,
+                double i
+        ) {
             GraveyardHandParticle soulParticle = new GraveyardHandParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
             soulParticle.setAlpha(1.0F);
             return soulParticle;

@@ -19,18 +19,36 @@ import net.minecraft.world.level.biome.Biome;
 /// Eggs, commands, buckets and player summons never pass through this check.
 public final class MobSpawnGate {
     public static final List<String> MANAGED_MOBS = List.of(
-            "ghoul", "revenant", "nightmare", "skeleton_creeper", "acolyte", "reaper",
-            "corrupted_vindicator", "corrupted_pillager", "corrupted_evoker", "wraith", "raven", "magpie", "crow",
-            "tormented_villager", "nameless_hanged");
+            "ghoul",
+            "revenant",
+            "nightmare",
+            "skeleton_creeper",
+            "acolyte",
+            "reaper",
+            "corrupted_vindicator",
+            "corrupted_pillager",
+            "corrupted_evoker",
+            "wraith",
+            "raven",
+            "magpie",
+            "crow",
+            "tormented_villager",
+            "nameless_hanged"
+    );
 
     private static final Set<MobSpawnType> AUTOMATIC = EnumSet.of(
-            MobSpawnType.NATURAL, MobSpawnType.CHUNK_GENERATION, MobSpawnType.STRUCTURE, MobSpawnType.SPAWNER,
-            MobSpawnType.PATROL, MobSpawnType.EVENT, MobSpawnType.REINFORCEMENT);
+            MobSpawnType.NATURAL,
+            MobSpawnType.CHUNK_GENERATION,
+            MobSpawnType.STRUCTURE,
+            MobSpawnType.SPAWNER,
+            MobSpawnType.PATROL,
+            MobSpawnType.EVENT,
+            MobSpawnType.REINFORCEMENT
+    );
 
     private static final TagKey<Biome> NO_MOB_SPAWNS = TagKey.create(Registries.BIOME, Graveyard.id("no_mob_spawns"));
 
-    private MobSpawnGate() {
-    }
+    private MobSpawnGate() {}
 
     public static boolean inForbiddenBiome(LevelAccessor world, BlockPos pos, EntityType<?> type, MobSpawnType reason) {
         return (reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION)

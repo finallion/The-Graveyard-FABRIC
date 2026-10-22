@@ -42,7 +42,13 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
             }
 
             @Override
-            protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+            protected void openerCountChanged(
+                    Level world,
+                    BlockPos pos,
+                    BlockState state,
+                    int oldViewerCount,
+                    int newViewerCount
+            ) {
                 UrnBlockEntity.this.onInvOpenOrClose(world, pos, state, oldViewerCount, newViewerCount);
             }
 
@@ -134,7 +140,13 @@ public class UrnBlockEntity extends RandomizableContainerBlockEntity {
     }
 
 
-    protected void onInvOpenOrClose(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+    protected void onInvOpenOrClose(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            int oldViewerCount,
+            int newViewerCount
+    ) {
         Block block = state.getBlock();
         world.blockEvent(pos, block, 1, newViewerCount);
     }

@@ -55,8 +55,10 @@ public final class GhoulingBindings extends SavedData {
             return;
         }
 
-        this.bindings.put(ghouling.getUUID(), new Binding(owner, ghouling.level().dimension(),
-                ghouling.blockPosition(), ghouling.isSitting()));
+        this.bindings.put(
+                ghouling.getUUID(),
+                new Binding( owner, ghouling.level().dimension(), ghouling.blockPosition(), ghouling.isSitting() )
+        );
         this.setDirty();
     }
 
@@ -105,8 +107,10 @@ public final class GhoulingBindings extends SavedData {
             }
 
             BlockPos pos = entry.contains("x") ? new BlockPos(entry.getInt("x"), entry.getInt("y"), entry.getInt("z")) : null;
-            state.bindings.put(entry.getUUID("ghouling"), new Binding(entry.getUUID("owner"),
-                    ResourceKey.create(Registries.DIMENSION, dimension), pos, entry.getBoolean("sitting")));
+            state.bindings.put(
+                    entry.getUUID("ghouling"),
+                    new Binding( entry.getUUID("owner"), ResourceKey.create(Registries.DIMENSION, dimension), pos, entry.getBoolean("sitting") )
+            );
         }
         return state;
     }
@@ -125,8 +129,10 @@ public final class GhoulingBindings extends SavedData {
                 String[] pair = line.split(":", 2);
 
                 if (pair.length == 2) {
-                    state.bindings.put(UUID.fromString(pair[0].trim()),
-                            new Binding(UUID.fromString(pair[1].trim()), Level.OVERWORLD, null, false));
+                    state.bindings.put(
+                            UUID.fromString(pair[0].trim()),
+                            new Binding(UUID.fromString(pair[1].trim()), Level.OVERWORLD, null, false)
+                    );
                 }
             }
             state.setDirty();

@@ -23,7 +23,12 @@ public class OssuaryBlockEntityRenderer extends GeoBlockRenderer<OssuaryBlockEnt
     }
 
     @Override
-    public RenderType getRenderType(OssuaryBlockEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(
+            OssuaryBlockEntity animatable,
+            ResourceLocation texture,
+            @Nullable MultiBufferSource bufferSource,
+            float partialTick
+    ) {
         return RenderType.entityCutout(getTextureLocation(animatable));
     }
 

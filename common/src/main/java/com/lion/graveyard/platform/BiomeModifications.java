@@ -12,12 +12,23 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 public class BiomeModifications {
 
     @ExpectPlatform
-    public static void addMobSpawn(TagKey<Biome> tag, MobCategory spawnGroup, EntityType<?> entityType, int weight, int minGroupSize, int maxGroupSize) {
+    public static void addMobSpawn(
+            TagKey<Biome> tag,
+            MobCategory spawnGroup,
+            EntityType<?> entityType,
+            int weight,
+            int minGroupSize,
+            int maxGroupSize
+    ) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    public static void addPlacedFeature(TagKey<Biome> tag, GenerationStep.Decoration step, ResourceKey<PlacedFeature> featureKey) {
+    public static void addPlacedFeature(
+            TagKey<Biome> tag,
+            GenerationStep.Decoration step,
+            ResourceKey<PlacedFeature> featureKey
+    ) {
         throw new AssertionError();
     }
 

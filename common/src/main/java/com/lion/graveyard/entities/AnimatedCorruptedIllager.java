@@ -136,7 +136,13 @@ public abstract class AnimatedCorruptedIllager extends CorruptedIllager implemen
 
     @Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData entityData, @Nullable CompoundTag entityNbt) {
+    public SpawnGroupData finalizeSpawn(
+            ServerLevelAccessor world,
+            DifficultyInstance difficulty,
+            MobSpawnType spawnReason,
+            @Nullable SpawnGroupData entityData,
+            @Nullable CompoundTag entityNbt
+    ) {
         SpawnGroupData result = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityNbt);
         this.entityData.set(DECAY, (byte) (this.random.nextInt(DECAY_LEVELS) + 1));
         this.entityData.set(CLAWS, (byte) this.random.nextInt((LEFT_CLAW | RIGHT_CLAW) + 1));

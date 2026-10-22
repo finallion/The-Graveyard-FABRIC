@@ -607,8 +607,15 @@ public class BoneStaffItem extends Item {
         ghouling.setAggressive(false);
         ghouling.setSitting(false);
         ghouling.getNavigation().stop();
-        ghouling.teleportTo(world, landing.x, landing.y, landing.z,
-                EnumSet.noneOf(RelativeMovement.class), ghouling.getYRot(), ghouling.getXRot());
+        ghouling.teleportTo(
+                world,
+                landing.x,
+                landing.y,
+                landing.z,
+                EnumSet.noneOf(RelativeMovement.class),
+                ghouling.getYRot(),
+                ghouling.getXRot()
+        );
         // A dimension change creates a new entity. Move the timer to the live instance.
         GhoulingEntity arrived = world.getEntity(ghouling.getUUID()) instanceof GhoulingEntity found ? found : ghouling;
         arrived.setTeleportTimer(15);

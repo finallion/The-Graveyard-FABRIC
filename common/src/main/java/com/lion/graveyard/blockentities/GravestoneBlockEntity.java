@@ -148,8 +148,11 @@ public class GravestoneBlockEntity extends BlockEntity {
             if (player.isTextFilteringEnabled()) {
                 text = text.setMessage(i, Component.literal(filteredMessage.filteredOrEmpty()).setStyle(style));
             } else {
-                text = text.setMessage(i, Component.literal(filteredMessage.raw()).setStyle(style),
-                        Component.literal(filteredMessage.filteredOrEmpty()).setStyle(style));
+                text = text.setMessage(
+                        i,
+                        Component.literal(filteredMessage.raw()).setStyle(style),
+                        Component.literal(filteredMessage.filteredOrEmpty()).setStyle(style)
+                );
             }
         }
 

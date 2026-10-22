@@ -57,8 +57,11 @@ public class GhoulingCollectItemsGoal extends Goal {
             return;
         }
 
-        var nearby = mob.level().getEntitiesOfClass(ItemEntity.class, item.getBoundingBox().inflate(COLLECT_RANGE),
-                other -> !other.hasPickUpDelay() && other.distanceToSqr(mob) <= COLLECT_RANGE * COLLECT_RANGE * 4);
+        var nearby = mob.level().getEntitiesOfClass(
+                ItemEntity.class,
+                item.getBoundingBox().inflate(COLLECT_RANGE),
+                other -> !other.hasPickUpDelay() && other.distanceToSqr(mob) <= COLLECT_RANGE * COLLECT_RANGE * 4
+        );
         mob.storeInCoffin(item);
         for (ItemEntity other : nearby) {
             if (other != item) {

@@ -49,7 +49,12 @@ public class OminousBoneStaffFragment extends Block {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag options) {
+    public void appendHoverText(
+            ItemStack stack,
+            @Nullable BlockGetter world,
+            List<Component> tooltip,
+            TooltipFlag options
+    ) {
         String key = this == TGBlocks.MIDDLE_BONE_STAFF.get()
                 ? "block.graveyard.bone_staff_fragment.middle.lore"
                 : "block.graveyard.bone_staff_fragment.end.lore";
@@ -57,7 +62,13 @@ public class OminousBoneStaffFragment extends Block {
     }
 
     @Override
-    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(
+            Level world,
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer,
+            ItemStack itemStack
+    ) {
         world.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, TGSounds.BONE_PLACED.get(), SoundSource.BLOCKS, 15.0F,1.5F, true);
         super.setPlacedBy(world, pos, state, placer, itemStack);
     }

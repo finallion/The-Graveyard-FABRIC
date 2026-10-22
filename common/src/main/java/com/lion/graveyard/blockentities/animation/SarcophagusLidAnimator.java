@@ -7,8 +7,7 @@ public class SarcophagusLidAnimator {
     private float progress;
     private float lastProgress;
 
-    public SarcophagusLidAnimator() {
-    }
+    public SarcophagusLidAnimator() {}
 
     public void step() {
         this.lastProgress = this.progress;
