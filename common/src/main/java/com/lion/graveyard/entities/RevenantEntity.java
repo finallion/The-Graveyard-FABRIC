@@ -71,7 +71,7 @@ public class RevenantEntity extends AngerableGraveyardEntity implements GeoEntit
     // An animation cannot hold its last frame. A fake death state holds it.
     protected static final int ANIMATION_FAKE_DEATH = 6;
 
-    public final int ATTACK_ANIMATION_DURATION = 15;
+    public final int ATTACK_ANIMATION_DURATION = 10;
     public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
     private int lastAttackAnimTimer;
     private int ticksWithoutTarget;
