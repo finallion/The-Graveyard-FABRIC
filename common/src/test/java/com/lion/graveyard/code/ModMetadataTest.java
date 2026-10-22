@@ -136,7 +136,7 @@ class ModMetadataTest {
         String[] version = properties.getProperty("geckolib_version_fabric").split("\\.");
         String majorMinor = version[0] + "." + version[1];
         assertTrue(Json.parseObject(ModProject.read(FABRIC_MOD_JSON)).getAsJsonObject("depends").get("geckolib").getAsString().contains(majorMinor));
-        assertTrue(ModProject.read(MODS_TOML).contains("versionRange=\"[" + properties.getProperty("geckolib_version_fabric") + ","));
+        assertTrue(ModProject.read(MODS_TOML).contains("versionRange=\"[" + majorMinor + "."));
         assertEquals(properties.getProperty("geckolib_version_fabric"), properties.getProperty("geckolib_version_forge"));
     }
 
