@@ -4,7 +4,7 @@ import com.lion.graveyard.entities.GhoulEntity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class GhoulMeleeAttackGoal extends AbstractGraveyardMeleeGoal<GhoulEntity> {
-    private final int DAMAGE_START_IN_ANIM = 10;
+    private final int DAMAGE_START_IN_ANIM = 7;
 
     public GhoulMeleeAttackGoal(GhoulEntity mob, double speed, boolean pauseWhenMobIdle) {
         super(mob, speed, pauseWhenMobIdle, 14);
