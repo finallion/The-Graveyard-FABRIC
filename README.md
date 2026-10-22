@@ -15,8 +15,8 @@ Adds new bosses, structures, mobs and blocks themed around the graveyard.
 | 1.20.1 | Forge 47 (47.1 or newer) | GeckoLib 4 (4.2.2 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
 | 1.21.1 | Fabric (Loader 0.16.0 or newer) | Fabric API 0.102.0 or newer, GeckoLib 4 (4.9.3 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
 | 1.21.1 | NeoForge 21.1 | GeckoLib 4 (4.9.3 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
-| 1.21.8 | Fabric (Loader 0.16.0 or newer) | Fabric API 0.129.0 or newer, GeckoLib 5 (5.2.2 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
-| 1.21.8 | NeoForge 21.8 | GeckoLib 5 (5.2.2 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
+| 1.21.8 | Fabric (Loader 0.16.0 or newer) | Fabric API 0.129.0 or newer, GeckoLib 5 (5.2.0 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
+| 1.21.8 | NeoForge 21.8 | GeckoLib 5 (5.2.0 or newer), VillagerTradingPlus 1.x (1.1.0 or newer) |
 
 The current version is 4.0.0. 1.20.1 needs Java 17. 1.21.1 and 1.21.8 need Java 21.
 
