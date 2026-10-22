@@ -141,4 +141,34 @@ class MobFixesTest {
     void ghoulDamageLandsOnTheVisibleHitFrame() {
         assertTrue(code("entities/ai/goals/GhoulMeleeAttackGoal.java").contains("DAMAGE_START_IN_ANIM = 7;"));
     }
+
+    @Test
+    void fallingCorpseLetsKillAndVoidDamageThrough() {
+        String body = body("entities/FallingCorpse.java", "hurt");
+
+        assertTrue(body.indexOf("BYPASSES_INVULNERABILITY") >= 0);
+        assertTrue(body.indexOf("BYPASSES_INVULNERABILITY") < body.indexOf("BYPASSES_RESISTANCE"));
+    }
+
+    @Test
+    void meleeMobsEndTheAttackStateAtTheLastHitFrame() {
+        assertTrue(code("entities/RevenantEntity.java").contains("ATTACK_ANIMATION_DURATION = 10;"));
+        assertTrue(code("entities/NightmareEntity.java").contains("ATTACK_ANIMATION_DURATION = 10;"));
+        assertTrue(code("entities/GhoulingEntity.java").contains("ATTACK_ANIMATION_DURATION = 12;"));
+        assertTrue(code("entities/ai/goals/RevenantMeleeAttackGoal.java").contains("DAMAGE_START_IN_ANIM = 1;"));
+        assertTrue(code("entities/ai/goals/NightmareMeleeAttackGoal.java").contains("DAMAGE_START_IN_ANIM = 0;"));
+        assertTrue(code("entities/ai/goals/GhoulingMeleeAttackGoal.java").contains("DAMAGE_START_IN_ANIM = 0;"));
+    }
+
+    @Test
+    void meleeMobsCheckReachBeforeTheHit() {
+        for (String goal : new String[] {"Revenant", "Nightmare", "Ghouling", "Ghoul"}) {
+            String code = code("entities/ai/goals/" + goal + "MeleeAttackGoal.java");
+
+            assertTrue(code.contains("distanceToSqr(target) <= d + 1.0D"), goal);
+            assertTrue(code.indexOf("distanceToSqr(target) <= d + 1.0D") < code.indexOf("doHurtTarget"), goal);
+        }
+
+        assertTrue(code("entities/ai/goals/LichMeleeGoal.java").contains("distanceToSqr(target) <= d + 1.0D && this.mob.doHurtTarget"));
+    }
 }

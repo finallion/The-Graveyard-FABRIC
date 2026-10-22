@@ -67,7 +67,7 @@ public class NightmareEntity extends HostileGraveyardEntity implements GeoEntity
     protected static final byte ANIMATION_ATTACK = 5;
     protected static final EntityDataAccessor<Byte> ANIMATION = SynchedEntityData.defineId(NightmareEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> ATTACK_ANIM_TIMER = SynchedEntityData.defineId(NightmareEntity.class, EntityDataSerializers.INT);
-    public final int ATTACK_ANIMATION_DURATION = 15;
+    public final int ATTACK_ANIMATION_DURATION = 10;
     public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
     private int lastAttackAnimTimer;
 

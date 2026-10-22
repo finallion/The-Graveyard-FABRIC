@@ -5,7 +5,7 @@ import com.lion.graveyard.init.TGSounds;
 import net.minecraft.world.entity.LivingEntity;
 
 public class GhoulingMeleeAttackGoal extends AbstractGraveyardMeleeGoal<GhoulingEntity> {
-    private final int DAMAGE_START_IN_ANIM = 4;
+    private final int DAMAGE_START_IN_ANIM = 0;
 
     public GhoulingMeleeAttackGoal(GhoulingEntity mob, double speed, boolean pauseWhenMobIdle) {
         super(mob, speed, pauseWhenMobIdle, 16);
@@ -27,7 +27,10 @@ public class GhoulingMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Ghouling
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.doHurtTarget(target);
+            if (this.mob.distanceToSqr(target) <= d + 1.0D) {
+                this.mob.doHurtTarget(target);
+            }
+
             canFinishAttack = false;
         }
     }
