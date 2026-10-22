@@ -125,4 +125,17 @@ class MobFixesTest {
         assertTrue(body("entities/GhoulEntity.java", "aiStep").contains("calculateEntityAnimation(false)"));
         assertTrue(body("entities/AnimatedCorruptedIllager.java", "aiStep").contains("calculateEntityAnimation(false)"));
     }
+
+    @Test
+    void wraithLetsKillAndVoidDamageThrough() {
+        String body = body("entities/WraithEntity.java", "isInvulnerableTo");
+
+        assertTrue(body.indexOf("BYPASSES_INVULNERABILITY") >= 0);
+        assertTrue(body.indexOf("BYPASSES_INVULNERABILITY") < body.indexOf("BYPASSES_ARMOR"));
+    }
+
+    @Test
+    void ghoulDamageLandsOnTheVisibleHitFrame() {
+        assertTrue(code("entities/ai/goals/GhoulMeleeAttackGoal.java").contains("DAMAGE_START_IN_ANIM = 7;"));
+    }
 }
