@@ -74,7 +74,7 @@ class AnimationPatternTest {
             new TimerRule("GhoulEntity", "SPAWN_ANIMATION_DURATION", "spawn", 0),
             new TimerRule("GhoulEntity", "ATTACK_ANIM_SYNC_TICKS", "attack", MobAnimations.TRANSITION_TICKS),
             new TimerRule("GhoulingEntity", "SPAWN_ANIMATION_DURATION", "spawn", 0),
-            new TimerRule("GhoulingEntity", "ATTACK_ANIMATION_DURATION", "attack", MobAnimations.TRANSITION_TICKS),
+            new TimerRule("GhoulingEntity", "ATTACK_ANIMATION_DURATION", "attack", 0),
             new TimerRule("GhoulingEntity", "ATTACK_ANIM_SYNC_TICKS", "attack", MobAnimations.TRANSITION_TICKS),
             new TimerRule("NightmareEntity", "ATTACK_ANIM_SYNC_TICKS", "attack", MobAnimations.TRANSITION_TICKS),
             new TimerRule("RevenantEntity", "ATTACK_ANIM_SYNC_TICKS", "attack", MobAnimations.TRANSITION_TICKS),
@@ -89,10 +89,10 @@ class AnimationPatternTest {
             new TimerRule("LichEntity", "POUNCE_TICKS", "crawl_pounce", MobAnimations.TRANSITION_TICKS),
             new TimerRule("LichEntity", "CRAWL_STRIKE_TICKS", "crawl_attack", MobAnimations.TRANSITION_TICKS),
             new TimerRule("LichEntity", "PHASE_TWO_STRIKE_TICKS", "phase_two_attack", MobAnimations.TRANSITION_TICKS),
-            new TimerRule("NightmareEntity", "ATTACK_ANIMATION_DURATION", "attack", MobAnimations.TRANSITION_TICKS),
+            new TimerRule("NightmareEntity", "ATTACK_ANIMATION_DURATION", "attack", 0),
             new TimerRule("ReaperEntity", "SPAWN_TICKS", "spawn", 0),
             new TimerRule("ReaperEntity", "ATTACK_TICKS", "attack", MobAnimations.TRANSITION_TICKS),
-            new TimerRule("RevenantEntity", "ATTACK_ANIMATION_DURATION", "attack", MobAnimations.TRANSITION_TICKS),
+            new TimerRule("RevenantEntity", "ATTACK_ANIMATION_DURATION", "attack", 0),
             new TimerRule("WraithEntity", "SPAWN_TICKS", "spawn", 0)
     );
 
