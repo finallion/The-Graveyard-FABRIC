@@ -44,3 +44,7 @@ test {
 		exceptionFormat "short"
 	}
 }
+
+processResources {
+	from(rootProject.file("LICENSE"))
+}

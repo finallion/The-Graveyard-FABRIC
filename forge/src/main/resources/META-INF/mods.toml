@@ -6,7 +6,7 @@ license = "GPL-3.0-only"
 modId = "graveyard"
 version = "${version}"
 displayName = "The Graveyard"
-authors = "Lion"
+authors = "Finallion"
 displayURL = "https://modrinth.com/mod/the-graveyard-forge"
 issueTrackerURL = "https://github.com/finallion/The-Graveyard-FABRIC/issues"
 description = '''
@@ -19,14 +19,14 @@ logoFile = "graveyard_logo.png"
 [[dependencies.graveyard]]
 modId = "forge"
 mandatory = true
-versionRange = "[47.2,48)"
+versionRange = "[47.1,48)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.graveyard]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,1.20.2)"
+versionRange = "[1.20,1.20.2)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -41,6 +41,6 @@ side="BOTH"
 [[dependencies.graveyard]]
 modId = "villagertradingplus"
 mandatory = true
-versionRange = "[1.0.0,2)"
+versionRange = "[1.1.0,2)"
 ordering = "AFTER"
 side = "BOTH"
