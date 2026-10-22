@@ -36,7 +36,7 @@ public final class NamelessHangedTrades {
 
             for (JsonObject trade : PENDING_TRADES) {
                 // The parser logs the reason before it returns null.
-                TradeFactory factory = TradeOfferManager.deserializeTrade(trade);
+                TradeFactory factory = parse(trade);
 
                 if (factory != null) {
                     parsed.add(factory);
@@ -77,6 +77,15 @@ public final class NamelessHangedTrades {
 
                 PENDING_TRADES.add(element.getAsJsonObject());
             }
+        }
+    }
+
+    private static TradeFactory parse(JsonObject entry) {
+        try {
+            return TradeOfferManager.deserializeTrade(entry);
+        } catch (RuntimeException e) {
+            Graveyard.getLogger().warn("Skipping nameless hanged trade entry {}: {}", entry, e.toString());
+            return null;
         }
     }
 }

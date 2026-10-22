@@ -91,4 +91,13 @@ class WorldFixesTest {
         assertTrue(code.contains("nbt.copy()"));
         assertTrue(code.contains("SpawnPotentials"));
     }
+
+    @Test
+    void namelessHangedTradeEntryFailureIsContained() {
+        String parse = body("trades/NamelessHangedTrades.java", "parse");
+
+        assertTrue(parse.contains("TradeOfferManager.deserializeTrade("));
+        assertTrue(parse.contains("catch (RuntimeException"));
+        assertTrue(parse.contains("return null;"));
+    }
 }
