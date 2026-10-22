@@ -22,24 +22,27 @@ config = "graveyard-common.mixins.json"
 [[mixins]]
 config = "graveyard-neoforge.mixins.json"
 
+[[mixins]]
+config = "graveyard-moonrise.mixins.json"
+
 [[dependencies.graveyard]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.8.20,21.9.0)"
+versionRange = "[21.7.25-beta,21.9.0)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.graveyard]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.8,1.21.9)"
+versionRange = "[1.21.7,1.21.9)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.graveyard]]
 modId="geckolib"
 type="required"
-versionRange="[5.2.2,6)"
+versionRange="[5.2.0,6)"
 ordering="NONE"
 side="BOTH"
 

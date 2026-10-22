@@ -1,9 +1,7 @@
 package com.lion.graveyard.mixin;
 
-import net.minecraft.SharedConstants;
+import com.lion.graveyard.util.EntityChunkUpgrade;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.chunk.storage.SimpleRegionStorage;
 import org.spongepowered.asm.mixin.Final;
@@ -34,42 +32,15 @@ public abstract class EntityChunkUpgradeMixin {
             return;
         }
 
-        if (NbtUtils.getDataVersion(tag, defaultVersion) >= SharedConstants.WORLD_VERSION) {
-            return;
+        SimpleRegionStorage self = (SimpleRegionStorage) (Object) this;
+        CompoundTag result = EntityChunkUpgrade.upgradeWithoutGraveyardEntities(
+                tag,
+                defaultVersion,
+                copy -> self.upgradeChunkTag(copy, defaultVersion)
+        );
+
+        if (result != null) {
+            cir.setReturnValue(result);
         }
-
-        if (!hasModEntity(tag.getListOrEmpty("Entities"))) {
-            return;
-        }
-
-        CompoundTag copy = tag.copy();
-        ListTag entities = copy.getListOrEmpty("Entities");
-        ListTag modEntities = new ListTag();
-
-        for (int i = entities.size() - 1; i >= 0; i--) {
-            if (isModEntity(entities.getCompoundOrEmpty(i))) {
-                modEntities.add(0, entities.remove(i));
-            }
-        }
-
-        CompoundTag result = ((SimpleRegionStorage) (Object) this).upgradeChunkTag(copy, defaultVersion);
-        ListTag upgraded = result.getListOrEmpty("Entities");
-        upgraded.addAll(modEntities);
-        result.put("Entities", upgraded);
-        cir.setReturnValue(result);
-    }
-
-    private static boolean hasModEntity(ListTag entities) {
-        for (int i = 0; i < entities.size(); i++) {
-            if (isModEntity(entities.getCompoundOrEmpty(i))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean isModEntity(CompoundTag entity) {
-        return entity.getStringOr("id", "").startsWith("graveyard:");
     }
 }

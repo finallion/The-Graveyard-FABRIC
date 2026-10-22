@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MixinConfigTest {
     private static final Path COMMON_CONFIG = ModProject.RESOURCES.resolve("graveyard-common.mixins.json");
+    private static final Path MOONRISE_CONFIG = ModProject.RESOURCES.resolve("graveyard-moonrise.mixins.json");
     private static final Path FABRIC_CONFIG = ModProject.FABRIC_MAIN.resolve("resources/graveyard-fabric.mixins.json");
     private static final Path NEOFORGE_CONFIG = ModProject.NEOFORGE_MAIN.resolve("resources/graveyard-neoforge.mixins.json");
 
@@ -37,6 +38,12 @@ class MixinConfigTest {
                 }
             }
         }
+        return names;
+    }
+
+    static Set<String> allListed() {
+        Set<String> names = new TreeSet<>(listed(ModProject.read(COMMON_CONFIG)));
+        names.addAll(listed(ModProject.read(MOONRISE_CONFIG)));
         return names;
     }
 
@@ -75,7 +82,7 @@ class MixinConfigTest {
     @TestFactory
     Stream<DynamicTest> everyListedCommonMixinHasASourceFile() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
-        return listed(ModProject.read(COMMON_CONFIG)).stream()
+        return allListed().stream()
                 .map(name -> DynamicTest.dynamicTest(
                         name,
                         () ->
@@ -86,11 +93,11 @@ class MixinConfigTest {
     @TestFactory
     Stream<DynamicTest> everyMixinSourceFileIsListed() {
         Path mixinDir = ModProject.JAVA.resolve("mixin");
-        Set<String> listed = listed(ModProject.read(COMMON_CONFIG));
+        Set<String> listed = allListed();
         return ModProject.files(mixinDir, ".java").stream()
                 .map(file -> {
                     String name = ModProject.idOf(mixinDir, file, ".java").replace('/', '.');
-                    return DynamicTest.dynamicTest(name, () -> assertTrue(listed.contains(name), "Mixin class not in graveyard-common.mixins.json: " + name));
+                    return DynamicTest.dynamicTest(name, () -> assertTrue(listed.contains(name), "Mixin class not in a mixin config: " + name));
                 });
     }
 

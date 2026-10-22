@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "package": "com.lion.graveyard.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "mixins": [
+    "MoonriseEntityChunkMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}
