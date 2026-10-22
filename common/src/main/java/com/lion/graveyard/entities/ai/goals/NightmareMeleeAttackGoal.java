@@ -4,7 +4,7 @@ import com.lion.graveyard.entities.NightmareEntity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class NightmareMeleeAttackGoal extends AbstractGraveyardMeleeGoal<NightmareEntity> {
-    private final int DAMAGE_START_IN_ANIM = 5;
+    private final int DAMAGE_START_IN_ANIM = 0;
 
     public NightmareMeleeAttackGoal(NightmareEntity mob, double speed, boolean pauseWhenMobIdle) {
         super(mob, speed, pauseWhenMobIdle, 20);
@@ -25,7 +25,10 @@ public class NightmareMeleeAttackGoal extends AbstractGraveyardMeleeGoal<Nightma
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.doHurtTarget(target);
+            if (this.mob.distanceToSqr(target) <= d + 1.0D) {
+                this.mob.doHurtTarget(target);
+            }
+
             canFinishAttack = false;
         }
     }

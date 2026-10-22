@@ -27,7 +27,10 @@ public class GhoulMeleeAttackGoal extends AbstractGraveyardMeleeGoal<GhoulEntity
         }
 
         if (canFinishAttack && animationTicker == DAMAGE_START_IN_ANIM) {
-            this.mob.doHurtTarget(target);
+            if (this.mob.distanceToSqr(target) <= d + 1.0D) {
+                this.mob.doHurtTarget(target);
+            }
+
             canFinishAttack = false;
         }
     }

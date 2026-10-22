@@ -97,7 +97,7 @@ public class GhoulingEntity extends GraveyardMinionEntity implements GeoEntity, 
     protected static final int ANIMATION_WALK = 3;
     protected static final int ANIMATION_DEATH = 4;
 
-    public final int ATTACK_ANIMATION_DURATION = 16;
+    public final int ATTACK_ANIMATION_DURATION = 12;
     public final int ATTACK_ANIM_SYNC_TICKS = ATTACK_ANIMATION_DURATION + AnimationTable.TRANSITION_TICKS;
     private int lastAttackAnimTimer;
     protected Container inventory;
