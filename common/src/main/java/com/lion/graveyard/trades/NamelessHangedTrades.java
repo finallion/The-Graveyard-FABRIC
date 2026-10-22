@@ -53,12 +53,21 @@ public final class NamelessHangedTrades {
                 }
 
                 // Null means unusable. The parser already logged the reason.
-                VillagerTrades.ItemListing factory = TradeOfferManager.deserializeTrade(element.getAsJsonObject());
+                VillagerTrades.ItemListing factory = parse(element.getAsJsonObject());
 
                 if (factory != null) {
                     TRADES_REGISTRY.add(factory);
                 }
             }
+        }
+    }
+
+    private static VillagerTrades.ItemListing parse(JsonObject entry) {
+        try {
+            return TradeOfferManager.deserializeTrade(entry);
+        } catch (RuntimeException e) {
+            Graveyard.getLogger().warn("Skipping nameless hanged trade entry {}: {}", entry, e.toString());
+            return null;
         }
     }
 }
